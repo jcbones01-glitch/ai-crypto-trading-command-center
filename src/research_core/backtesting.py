@@ -80,11 +80,16 @@ def run_backtest(
 
             if delta_notional > 0:
                 fill = _execution_price(bar.open, config.slippage_rate, buying=True)
-                qty = delta_notional / (fill * (Decimal("1") + config.commission_rate))
-                gross = qty * fill
-                fee = gross * config.commission_rate
-                cash -= gross + fee
-                lots.append({"units": qty, "entry_cost": gross + fee})
+                # Treat delta_notional as the canonical total acquisition
+                # budget. Deriving gross and fee from that budget makes
+                # gross + fee exactly reconcile to the amount removed from
+                # cash, avoiding a negative Decimal rounding residue when a
+                # target of 100% is reached.
+                gross = delta_notional / (Decimal("1") + config.commission_rate)
+                fee = delta_notional - gross
+                qty = gross / fill
+                cash -= delta_notional
+                lots.append({"units": qty, "entry_cost": delta_notional})
                 units = sum((lot["units"] for lot in lots), Decimal("0"))
                 total_costs += fee
             elif delta_notional < 0 and units > 0:
