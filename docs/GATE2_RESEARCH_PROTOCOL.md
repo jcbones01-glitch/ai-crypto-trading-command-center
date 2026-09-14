@@ -62,6 +62,25 @@ Before a backtest is treated as evidence, record:
 
 Exploratory experiments may discover observations, but they must not be relabeled as pre-registered evidence after seeing the result.
 
+## Prospective validation eligibility criteria
+
+The Development-to-Validation decision rule must be frozen **before Validation data is accessed**. It must not be backfilled from Development results. Changing a frozen threshold after seeing Validation evidence requires a new registered strategy/hypothesis version and the affected Validation experiment is treated as exploratory rather than preregistered evidence.
+
+Unless a strategy-specific preregistration explicitly sets stricter requirements, a candidate must satisfy **all** of the following to enter Validation:
+
+1. **Reproducibility:** exact registered code, dataset identity, parameters, costs, slippage, and execution model reproduce the Development result; leakage and continuity checks pass.
+2. **Cash hurdle:** net compound return is strictly greater than cash/no-position on the same eligible segments.
+3. **Economic significance:** net compound return is at least +10% over Development and mean eligible-segment return is positive.
+4. **Sample support:** at least 20 eligible strategy segments and at least 300 completed trades across the preregistered BTCUSDT/ETHUSDT Development universe.
+5. **Cross-asset support:** net profitability after costs on both BTCUSDT and ETHUSDT, unless the preregistration explicitly designates a single asset before Development evidence is reviewed.
+6. **Drawdown constraint:** maximum drawdown is below 70% on every evaluated asset and no evaluated segment has a loss worse than -50%.
+7. **Benchmark comparability:** buy-and-hold and cash results are reported using the same eligible segments and continuity boundaries used for the strategy. Benchmark methodology must be explicit about warm-up and execution timing.
+8. **Robustness:** preregistered parameter-neighborhood, fee/slippage, execution-timing, regime, concentration, and sample-size tests are completed and meet their strategy-specific frozen thresholds. A headline Development result alone is insufficient.
+
+Promotion is binary: `PROMOTE_TO_VALIDATION` only when every mandatory criterion passes; otherwise `REJECT` or `ITERATE_WITH_NEW_VERSION`. Validation data may not be accessed to rescue a failed Development candidate.
+
+These criteria govern future promotion decisions. They do **not** retroactively change or relabel the already completed Development experiment.
+
 ## Anti-leakage controls
 
 The research engine must explicitly guard against:
@@ -92,7 +111,7 @@ Every strategy family should be evaluated against appropriate simple baselines b
 - cash/no-position baseline
 - simple rule-based benchmark where appropriate
 
-Benchmark definitions must obey the same research-continuity boundaries and must not bridge excluded regions.
+Benchmark definitions must obey the same research-continuity boundaries and must not bridge excluded regions. Where a strategy has a warm-up requirement, benchmark reporting must also provide a same-eligible-segment comparison so benchmark performance is not made artificially favorable by using a different segment universe.
 
 ## Multiple testing and overfitting
 
@@ -141,7 +160,8 @@ A candidate can be promoted from development to validation only when:
 - the development result is reproducible
 - leakage controls pass
 - costs/slippage are explicit
-- the candidate meets the pre-registered development decision rule
+- the candidate meets the frozen prospective development decision rule above
+- required robustness gates are completed before Validation access
 
 A candidate can be promoted beyond validation only when validation evidence and robustness evidence satisfy the pre-registered decision rule without using locked OOS results.
 
