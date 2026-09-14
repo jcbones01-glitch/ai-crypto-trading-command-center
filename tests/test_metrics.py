@@ -53,5 +53,15 @@ def test_invalid_metric_inputs_are_rejected():
 
 def test_extreme_decimal_values_remain_decimal():
     metrics = calculate_metrics([Decimal("1E+20"), Decimal("1.0000000001E+20")], [Decimal("1E+10")])
+    # There is exactly one return observation. Its variance is zero, so
+    # Sharpe is mathematically undefined. There are no negative returns,
+    # so Sortino is also undefined. Defined numeric metrics remain Decimal.
     assert isinstance(metrics.total_return, Decimal)
-    assert isinstance(metrics.sharpe, Decimal)
+    assert metrics.sharpe is None
+    assert metrics.sortino is None
+    assert isinstance(metrics.win_rate, Decimal)
+    assert isinstance(metrics.average_win, Decimal)
+    assert isinstance(metrics.average_loss, Decimal)
+    assert isinstance(metrics.expectancy, Decimal)
+    assert isinstance(metrics.max_drawdown, Decimal)
+    assert isinstance(metrics.exposure, Decimal)
