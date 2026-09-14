@@ -127,3 +127,4 @@ def test_repeated_partial_rebalances_do_not_empty_fifo_ledger_while_position_rem
     )
     assert result.positions[-1] == Decimal("0")
     assert result.unrealized_pnl == Decimal("0")
+    assert result.trade_pnls
