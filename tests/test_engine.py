@@ -110,3 +110,20 @@ def test_spot_position_bounds():
 def test_noncausal_execution_delay_is_rejected():
     with pytest.raises(ValueError):
         BacktestConfig(Decimal("1000"), Decimal("0"), Decimal("0"), execution_delay_bars=0)
+
+
+def test_repeated_partial_rebalances_do_not_empty_fifo_ledger_while_position_remains():
+    prices = [str(100 + i) for i in range(13)]
+    targets = [
+        Decimal("0.1"), Decimal("0.2"), Decimal("0.3"), Decimal("0.4"),
+        Decimal("0.5"), Decimal("0"), Decimal("0.1"), Decimal("0.2"),
+        Decimal("0.3"), Decimal("0.4"), Decimal("0.5"), Decimal("0"),
+        Decimal("0"),
+    ]
+    result = run_backtest(
+        bars(prices),
+        targets,
+        BacktestConfig(Decimal("1000"), Decimal("0.001"), Decimal("0.0005")),
+    )
+    assert result.positions[-1] == Decimal("0")
+    assert result.unrealized_pnl == Decimal("0")
