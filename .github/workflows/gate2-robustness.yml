@@ -1,4 +1,4 @@
-name: Gate 2 Robustness
+name: Gate 2 Robustness Battery
 
 on:
   workflow_dispatch:
