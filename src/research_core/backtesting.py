@@ -16,8 +16,8 @@ class BacktestConfig:
             raise ValueError("initial_capital must be positive")
         if self.commission_rate < 0 or self.slippage_rate < 0:
             raise ValueError("commission_rate and slippage_rate must be non-negative")
-        if self.execution_delay_bars != 1:
-            raise ValueError("execution_delay_bars must be exactly 1 for causal bar-close signals")
+        if self.execution_delay_bars not in (1, 2):
+            raise ValueError("execution_delay_bars must be 1 or 2; same-bar execution is prohibited")
 
 
 @dataclass(frozen=True)
@@ -39,15 +39,10 @@ def run_backtest(
 ) -> BacktestResult:
     """Run a deterministic causal spot simulation.
 
-    target_positions are fractions of equity invested, constrained to [0, 1].
-    A target generated from bar ``t`` is executed at bar ``t+1`` OPEN, never
-    at the same bar close that generated the signal. The first bar therefore
-    has no executable signal, and a signal on the final bar is not executed.
-
-    Buys pay upward slippage; sells receive downward slippage. Commission is
-    proportional to gross fill value. Closed quantities are matched FIFO to
-    entry lots, including allocated entry and exit fees. Open quantity is
-    marked to the final close for unrealized P&L.
+    A target generated from bar ``t`` is executed at the OPEN of bar
+    ``t + execution_delay_bars``. Same-bar execution is prohibited. Buys pay
+    upward slippage; sells receive downward slippage. Commission is
+    proportional to gross fill value. Closed quantities are matched FIFO.
     """
     if len(bars) != len(target_positions):
         raise ValueError("bars and target_positions must have equal length")
@@ -66,13 +61,9 @@ def run_backtest(
     total_costs = Decimal("0")
 
     for i, bar in enumerate(bars):
-        if i > 0:
-            # The FIFO ledger is the authoritative inventory record. Derive
-            # units from it before sizing each rebalance so Decimal arithmetic
-            # cannot create a sell quantity that exceeds the lot inventory.
+        if i >= config.execution_delay_bars:
             units = sum((lot["units"] for lot in lots), Decimal("0"))
-
-            target = target_positions[i - 1]
+            target = target_positions[i - config.execution_delay_bars]
             current_equity_at_open = cash + units * bar.open
             current_notional = units * bar.open
             target_notional = current_equity_at_open * target
@@ -80,11 +71,6 @@ def run_backtest(
 
             if delta_notional > 0:
                 fill = _execution_price(bar.open, config.slippage_rate, buying=True)
-                # Treat delta_notional as the canonical total acquisition
-                # budget for cash accounting. Derive the executed quantity
-                # from that budget, while retaining the transaction-derived
-                # gross+fee as the FIFO lot cost so existing realized-P&L
-                # semantics remain tied to the actual fill quantity.
                 gross = delta_notional / (Decimal("1") + config.commission_rate)
                 fee = delta_notional - gross
                 qty = gross / fill
@@ -96,12 +82,6 @@ def run_backtest(
                 sell_fill = _execution_price(bar.open, config.slippage_rate, buying=False)
 
                 if target == 0:
-                    # A zero target is a full liquidation. Do not derive the
-                    # sale quantity from a rounded aggregate and then deplete
-                    # the FIFO lots sequentially: Decimal rounding can make
-                    # those two mathematically equivalent quantities differ by
-                    # a tiny residual after the final lot is consumed. The
-                    # ledger itself is authoritative for a full close.
                     qty_to_sell = units
                     gross = qty_to_sell * sell_fill
                     fee = gross * config.commission_rate
