@@ -37,8 +37,8 @@ Trend persistence and temporary countertrend moves may coexist: pullbacks can re
 
 - Commission: 10 bps per side.
 - Slippage: 5 bps per side.
-- Fill timing: deterministic bar-close execution according to the existing backtester.
-- Liquidity assumptions: no unlimited-liquidity claim.
+- Fill timing: next bar OPEN after the signal bar closes; no same-bar execution or intrabar assumptions.
+- Liquidity assumptions: no claim of unlimited liquidity.
 
 ## Research plan
 
