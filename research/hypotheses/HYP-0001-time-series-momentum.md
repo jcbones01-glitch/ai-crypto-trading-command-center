@@ -36,7 +36,7 @@ Persistent directional moves can create short-horizon trend continuation. This i
 
 - Commission: 10 bps per side for the initial stress-case experiment.
 - Slippage: 5 bps per side for the initial stress-case experiment.
-- Fill timing: next available deterministic bar-close execution according to the existing backtester; no intrabar assumptions.
+- Fill timing: next bar OPEN after the signal bar closes; no same-bar execution or intrabar assumptions.
 - Liquidity: no unlimited-liquidity claim; sensitivity testing required.
 
 ## Research plan
