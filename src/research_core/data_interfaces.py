@@ -14,6 +14,10 @@ class MarketBar:
     volume: Decimal
 
     def __post_init__(self) -> None:
+        if self.high < max(self.open, self.close):
+            raise ValueError("high must contain open and close")
+        if self.low > min(self.open, self.close):
+            raise ValueError("low must contain open and close")
         if self.high < self.low:
             raise ValueError("high cannot be below low")
         if self.volume < 0:
