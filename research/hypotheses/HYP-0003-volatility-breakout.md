@@ -37,7 +37,7 @@ Expansion from compressed or recently expanding ranges can coincide with new inf
 
 - Commission: 10 bps per side.
 - Slippage: 5 bps per side.
-- Fill timing: deterministic bar-close execution according to the existing backtester.
+- Fill timing: next bar OPEN after the signal bar closes; no same-bar execution or intrabar assumptions.
 - Liquidity assumptions: no unlimited-liquidity claim.
 
 ## Research plan
