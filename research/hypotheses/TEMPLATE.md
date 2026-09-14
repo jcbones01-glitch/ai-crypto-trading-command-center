@@ -59,7 +59,25 @@ List every parameter, fixed value, and permitted search range. Do not add a para
 
 **Robustness tests:**
 
-**Minimum evidence required for promotion:**
+### Prospective validation eligibility rule
+
+The following thresholds must be defined and frozen **before any Validation data is accessed**. They must not be backfilled from Development results and must not be changed after viewing Validation results without registering a new strategy/hypothesis version.
+
+A candidate is eligible to enter Validation only if all applicable conditions below are satisfied:
+
+1. **Development reproducibility:** exact registered code, dataset identity, parameters, costs, slippage, and execution model reproduce the recorded Development result; no leakage or continuity violation is present.
+2. **Cash hurdle:** net compound return is strictly greater than the cash/no-position baseline on the same eligible segments.
+3. **Economic significance:** net compound return is at least **+10%** over the Development window and the strategy has positive mean eligible-segment return.
+4. **Sample support:** at least **20 eligible strategy segments** and at least **300 completed trades** across the BTCUSDT/ETHUSDT Development universe, unless a new preregistered rationale explicitly justifies a different threshold.
+5. **Cross-asset support:** the strategy must be net profitable after costs on **both BTCUSDT and ETHUSDT**, or the preregistration must explicitly designate a single-asset hypothesis before Development evidence is reviewed.
+6. **Drawdown constraint:** maximum drawdown must be **< 70%** on every evaluated asset and the combined Development result must not exhibit a single-segment loss worse than **-50%**.
+7. **Benchmark context:** buy-and-hold and cash results must be reported on the same eligible segments. A candidate is not eligible solely because it has lower drawdown; it must satisfy the cash/economic-support criteria above.
+8. **Robustness gate:** before Validation, parameter-neighborhood, fee/slippage, execution-timing, regime, concentration, and sample-size checks must show no material collapse under the preregistered stress tests. Exact robustness pass/fail thresholds must be recorded in the strategy-specific registration before those tests are run.
+
+**Promotion decision:**
+
+- `PROMOTE_TO_VALIDATION` only if every mandatory criterion passes.
+- Otherwise `REJECT` or `ITERATE_WITH_NEW_VERSION`; no Validation data may be used to rescue a failed candidate.
 
 ## Invalidation criteria
 
