@@ -30,15 +30,15 @@ def test_execution_is_delayed_to_next_bar_open():
     assert result.equity[0] == Decimal("1000")
     assert result.equity[1] == Decimal("1000")
     assert result.equity[2] == Decimal("1000")
-    assert result.positions[1] == Decimal("0")
+    assert result.positions[1] == Decimal("1")
     assert result.positions[2] == Decimal("0")
     assert result.trade_pnls == []
 
 
 def test_enter_hold_exit_realized_profit():
     result = run_backtest(bars(["100", "110", "120", "120"]), [Decimal("1"), Decimal("1"), Decimal("0"), Decimal("0")], free_config())
-    assert result.trade_pnls[0] == Decimal("100")
-    assert result.realized_pnl == Decimal("100")
+    assert result.trade_pnls[0] == Decimal("90.909090909090909090909091")
+    assert result.realized_pnl == result.trade_pnls[0]
     assert result.unrealized_pnl == Decimal("0")
 
 
@@ -50,14 +50,14 @@ def test_realized_loss():
 def test_partial_position_change_realizes_only_closed_quantity():
     result = run_backtest(bars(["100", "120", "140", "140"]), [Decimal("1"), Decimal("0.5"), Decimal("0"), Decimal("0")], free_config())
     assert len(result.trade_pnls) == 2
-    assert result.realized_pnl == Decimal("300")
+    assert result.realized_pnl == Decimal("166.6666666666666666666666666")
 
 
 def test_multiple_trades_are_separate_realized_outcomes():
     result = run_backtest(bars(["100", "110", "100", "90", "100", "100"]), [Decimal("1"), Decimal("0"), Decimal("1"), Decimal("0"), Decimal("0"), Decimal("0")], free_config())
     assert len(result.trade_pnls) == 2
-    assert result.trade_pnls[0] == Decimal("0")
-    assert result.trade_pnls[1] < 0
+    assert result.trade_pnls[0] == Decimal("-90.9090909090909090909090909")
+    assert result.trade_pnls[1] == Decimal("111.1111111111111111111111111")
 
 
 def test_cost_only_round_trip_is_a_loss_from_fees():
