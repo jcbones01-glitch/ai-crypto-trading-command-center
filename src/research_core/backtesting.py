@@ -81,15 +81,15 @@ def run_backtest(
             if delta_notional > 0:
                 fill = _execution_price(bar.open, config.slippage_rate, buying=True)
                 # Treat delta_notional as the canonical total acquisition
-                # budget. Deriving gross and fee from that budget makes
-                # gross + fee exactly reconcile to the amount removed from
-                # cash, avoiding a negative Decimal rounding residue when a
-                # target of 100% is reached.
+                # budget for cash accounting. Derive the executed quantity
+                # from that budget, while retaining the transaction-derived
+                # gross+fee as the FIFO lot cost so existing realized-P&L
+                # semantics remain tied to the actual fill quantity.
                 gross = delta_notional / (Decimal("1") + config.commission_rate)
                 fee = delta_notional - gross
                 qty = gross / fill
                 cash -= delta_notional
-                lots.append({"units": qty, "entry_cost": delta_notional})
+                lots.append({"units": qty, "entry_cost": gross + fee})
                 units = sum((lot["units"] for lot in lots), Decimal("0"))
                 total_costs += fee
             elif delta_notional < 0 and units > 0:
