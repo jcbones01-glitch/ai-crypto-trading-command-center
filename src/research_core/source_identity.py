@@ -6,15 +6,12 @@ import json
 from dataclasses import asdict, replace
 from pathlib import Path
 
-from .data_quality_treatment import ResearchTreatmentManifest
+from .data_quality_treatment_v2 import ResearchTreatmentManifest
 
 
 def source_identity(paths: list[Path]) -> str:
-    records = []
-    for path in sorted(paths, key=lambda value: value.name):
-        records.append((path.name, hashlib.sha256(path.read_bytes()).hexdigest()))
-    payload = json.dumps(records, separators=(",", ":"), ensure_ascii=True).encode()
-    return hashlib.sha256(payload).hexdigest()
+    records = [(path.name, hashlib.sha256(path.read_bytes()).hexdigest()) for path in sorted(paths, key=lambda value: value.name)]
+    return hashlib.sha256(json.dumps(records, separators=(",", ":"), ensure_ascii=True).encode()).hexdigest()
 
 
 def bind_source_identity(manifest: ResearchTreatmentManifest, paths: list[Path]) -> ResearchTreatmentManifest:
