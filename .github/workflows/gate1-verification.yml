@@ -21,3 +21,10 @@ jobs:
         run: python tests/gate1_binance_verification.py
       - name: Apply Gate 1A data-quality treatment
         run: python tests/gate1a_binance_verification.py
+      - name: Publish Gate 1A certification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate1a-certification-evidence
+          path: gate1a_reports/
+          if-no-files-found: error
+          retention-days: 30
