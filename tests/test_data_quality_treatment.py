@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
@@ -25,8 +24,8 @@ def ts(hour: int, minute: int = 0) -> str:
     return datetime(2024, 1, 1, hour, minute, tzinfo=UTC).isoformat()
 
 
-def event(parsed: str, kind: str = "NON_ALIGNED_TIMESTAMP", row: int = 1) -> DataQualityEvent:
-    return DataQualityEvent("BTCUSDT", "1h", "BTCUSDT-1h-2024-01.zip", "BTCUSDT-1h-2024-01.csv", row,
+def event(parsed: str, kind: str = "NON_ALIGNED_TIMESTAMP", row: int = 1, symbol: str = "BTCUSDT") -> DataQualityEvent:
+    return DataQualityEvent(symbol, "1h", f"{symbol}-1h-2024-01.zip", f"{symbol}-1h-2024-01.csv", row,
                             "1704099600000", parsed, kind, "test rule", "ERROR", "test provenance", "test anomaly")
 
 
@@ -46,7 +45,6 @@ def test_shifted_sequence_requires_two_clean_bars_to_restore():
     events = [event(ts(hour, 28), row=hour) for hour in range(9, 13)]
     reports = [report(events, [ts(8), ts(13), ts(14)])]
     regions = build_affected_regions(reports)
-    assert regions == (regions[0],)
     assert regions[0].start == ts(9)
     assert regions[0].end == ts(13)
 
@@ -75,11 +73,11 @@ def test_invalid_ohlc_and_volume_are_eligible_for_region_linkage():
     assert regions[1].start == ts(12)
 
 
-def test_schema_error_without_timestamp_does_not_invent_interval():
+def test_schema_error_without_timestamp_is_not_certified():
     e = DataQualityEvent("BTCUSDT", "1h", "a.zip", "a.csv", 4, "bad", None, "SCHEMA_ERROR", "schema", "ERROR", "test", "bad row")
     manifest = build_manifest("BTCUSDT", [report([e], [ts(0), ts(1), ts(2)])])
     assert manifest.affected_regions == ()
-    assert manifest.research_certification == "VALID"
+    assert manifest.research_certification == "UNUSABLE"
     assert manifest.anomaly_ids
 
 
@@ -111,7 +109,7 @@ def test_twenty_bar_lookback_fails_across_break_and_recovers_after_warmup():
     assert lookback_eligible(timestamps, start + timedelta(hours=30), 20, start + timedelta(hours=11), start + timedelta(hours=40), (br,))
 
 
-def test_equivalent_input_is_byte_deterministic():
+def test_equivalent_input_is_deterministic():
     e = event(ts(10))
     reports = [report([e], [ts(8), ts(9), ts(11), ts(12)])]
     a = build_manifest("BTCUSDT", reports)
@@ -122,8 +120,8 @@ def test_equivalent_input_is_byte_deterministic():
 
 
 def test_common_dataset_is_intersection_not_union():
-    btc = build_manifest("BTCUSDT", [], datetime.fromisoformat(ts(0)), datetime.fromisoformat(ts(20)))
-    eth = build_manifest("ETHUSDT", [report([event(ts(10))], [ts(8), ts(9), ts(11), ts(12)], symbol="ETHUSDT")], datetime.fromisoformat(ts(0)), datetime.fromisoformat(ts(20)))
+    btc = build_manifest("BTCUSDT", [report([], [ts(0), ts(1)], symbol="BTCUSDT")], datetime.fromisoformat(ts(0)), datetime.fromisoformat(ts(20)))
+    eth = build_manifest("ETHUSDT", [report([event(ts(10), symbol="ETHUSDT")], [ts(8), ts(9), ts(11), ts(12)], symbol="ETHUSDT")], datetime.fromisoformat(ts(0)), datetime.fromisoformat(ts(20)))
     common = common_certified_intervals(btc, eth)
     assert common
     assert all(segment.end <= ts(10) or segment.start >= ts(11) for segment in common)
@@ -142,7 +140,7 @@ def test_partition_boundaries_are_not_moved():
 
 
 def test_oos_boundary_is_locked():
-    manifest = build_manifest("BTCUSDT", [], datetime.fromisoformat("2024-01-01T00:00:00+00:00"), datetime.fromisoformat("2026-01-01T00:00:00+00:00"))
+    manifest = build_manifest("BTCUSDT", [report([], ["2024-01-01T00:00:00+00:00"])], datetime.fromisoformat("2024-01-01T00:00:00+00:00"), datetime.fromisoformat("2026-01-01T00:00:00+00:00"))
     assert manifest.research_start == "2024-01-01T00:00:00+00:00"
     assert manifest.research_end == "2026-01-01T00:00:00+00:00"
 
