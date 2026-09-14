@@ -88,7 +88,6 @@ def run_backtest(
                 gross = qty_to_sell * sell_fill
                 fee = gross * config.commission_rate
                 cash += gross - fee
-                units -= qty_to_sell
                 total_costs += fee
 
                 remaining = qty_to_sell
@@ -104,12 +103,9 @@ def run_backtest(
                     if lot["units"] == 0:
                         lots.pop(0)
 
-                # Decimal arithmetic can round the independent `units -= qty`
-                # calculation differently from the FIFO lot reductions. The
-                # lot ledger is authoritative for remaining inventory, so
-                # reconcile units to it after every sell and prevent tiny
-                # rounding drift from creating an impossible units-without-lot
-                # state on a later exit.
+                # FIFO is authoritative for inventory quantity. Reconcile the
+                # position from the ledger after the sell so independent Decimal
+                # arithmetic cannot leave units and lots inconsistent.
                 units = sum((lot["units"] for lot in lots), Decimal("0"))
 
         equity = cash + units * bar.close
