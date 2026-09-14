@@ -19,3 +19,5 @@ jobs:
       - run: pytest
       - name: Verify Binance historical data
         run: python tests/gate1_binance_verification.py
+      - name: Apply Gate 1A data-quality treatment
+        run: python tests/gate1a_binance_verification.py
