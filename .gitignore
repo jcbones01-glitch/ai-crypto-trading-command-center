@@ -12,3 +12,9 @@ htmlcov/
 .idea/
 .vscode/
 .DS_Store
+
+# V1 historical data is external to Git.
+data/raw/
+data/normalized/
+data/archives/
+*.zip
