@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .data_ingestion import DatasetMetadata, find_missing_intervals, make_metadata, read_archive, validate_dataset
@@ -35,10 +35,8 @@ def ingest_archives(paths: list[Path], source_symbol: str, expected_start: datet
         raise ValueError(f"historical dataset failed validation: {details}")
     if expected_start is not None and all_bars[0].timestamp != expected_start.astimezone(timezone.utc):
         raise ValueError("dataset start does not match required boundary")
-    if expected_end is not None:
-        expected_last = expected_end.astimezone(timezone.utc)
-        if all_bars[-1].timestamp >= expected_last:
-            raise ValueError("dataset contains a bar at or beyond the exclusive end")
+    if expected_end is not None and all_bars[-1].timestamp >= expected_end.astimezone(timezone.utc):
+        raise ValueError("dataset contains a bar at or beyond the exclusive end")
     metadata = make_metadata(all_bars, source_symbol, next(iter(units)))
     return HistoricalDataset(source_symbol, tuple(all_bars), metadata)
 
@@ -49,11 +47,9 @@ def require_complete_hourly_window(data: HistoricalDataset, start: datetime, end
     end = end.astimezone(timezone.utc)
     if not data.bars or data.bars[0].timestamp != start:
         raise ValueError("dataset does not begin at the requested boundary")
-    if data.bars[-1].timestamp != end.replace(minute=0, second=0, microsecond=0):
-        # The caller should normally supply the exclusive end; the final expected bar is one hour earlier.
-        expected_last = end.replace(minute=0, second=0, microsecond=0) - __import__("datetime").timedelta(hours=1)
-        if data.bars[-1].timestamp != expected_last:
-            raise ValueError("dataset does not end at the requested exclusive boundary")
+    expected_last = end - timedelta(hours=1)
+    if data.bars[-1].timestamp != expected_last:
+        raise ValueError("dataset does not end at the requested exclusive boundary")
     missing = find_missing_intervals(list(data.bars))
     if missing:
         raise ValueError("dataset contains missing hourly intervals")
