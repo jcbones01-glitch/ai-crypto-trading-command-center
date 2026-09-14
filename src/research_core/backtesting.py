@@ -67,6 +67,11 @@ def run_backtest(
 
     for i, bar in enumerate(bars):
         if i > 0:
+            # The FIFO ledger is the authoritative inventory record. Derive
+            # units from it before sizing each rebalance so Decimal arithmetic
+            # cannot create a sell quantity that exceeds the lot inventory.
+            units = sum((lot["units"] for lot in lots), Decimal("0"))
+
             target = target_positions[i - 1]
             current_equity_at_open = cash + units * bar.open
             current_notional = units * bar.open
@@ -79,8 +84,8 @@ def run_backtest(
                 gross = qty * fill
                 fee = gross * config.commission_rate
                 cash -= gross + fee
-                units += qty
                 lots.append({"units": qty, "entry_cost": gross + fee})
+                units = sum((lot["units"] for lot in lots), Decimal("0"))
                 total_costs += fee
             elif delta_notional < 0 and units > 0:
                 sell_fill = _execution_price(bar.open, config.slippage_rate, buying=False)
@@ -103,9 +108,6 @@ def run_backtest(
                     if lot["units"] == 0:
                         lots.pop(0)
 
-                # FIFO is authoritative for inventory quantity. Reconcile the
-                # position from the ledger after the sell so independent Decimal
-                # arithmetic cannot leave units and lots inconsistent.
                 units = sum((lot["units"] for lot in lots), Decimal("0"))
 
         equity = cash + units * bar.close
