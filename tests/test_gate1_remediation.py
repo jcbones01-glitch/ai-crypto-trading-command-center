@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from io import BytesIO
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
@@ -10,6 +9,7 @@ from research_core.data_ingestion import parse_timestamp, verify_sha256_bytes
 from research_core.historical_dataset import ingest_archives
 
 
+# Gate 1 verification fixture tests are deterministic and contain no historical data.
 def _row(dt: datetime, unit: str) -> str:
     scale = 1_000 if unit == "milliseconds" else 1_000_000
     stamp = int(dt.timestamp()) * scale
