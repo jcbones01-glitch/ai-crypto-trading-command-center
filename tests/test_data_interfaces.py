@@ -13,4 +13,4 @@ def test_market_bar_contract() -> None:
 
 def test_invalid_bar_rejected() -> None:
     with pytest.raises(ValueError):
-        MarketBar(datetime(2026, 1, 1, tzinfo=timezone.utc), "BTC", Decimal("100"), Decimal("90"), Decimal("80"), Decimal("85"), Decimal("100"))
+        MarketBar(datetime(2026, 1, 1, tzinfo=timezone.utc), "BTC", Decimal("100"), Decimal("99"), Decimal("80"), Decimal("85"), Decimal("100"))
