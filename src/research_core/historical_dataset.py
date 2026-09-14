@@ -1,20 +1,12 @@
 """Deterministic assembly of validated Gate 1 historical archives."""
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from .data_ingestion import (
-    DatasetMetadata,
-    SUPPORTED_SYMBOLS,
-    TIMEFRAME,
-    combined_source_identity,
-    find_missing_intervals,
-    make_metadata,
-    read_archive,
-    validate_dataset,
-)
+from .data_ingestion import DatasetMetadata, SUPPORTED_SYMBOLS, TIMEFRAME, find_missing_intervals, make_metadata, read_archive, validate_dataset
 from .data_interfaces import MarketBar
 
 
@@ -26,13 +18,20 @@ class HistoricalDataset:
 
 
 def _verify_archive_filename(path: Path, expected_symbol: str) -> None:
-    """Bind the caller's expected symbol to Binance's internal archive filename."""
+    """Bind the caller's expected symbol to the archive filename."""
     if expected_symbol not in SUPPORTED_SYMBOLS:
         raise ValueError("unsupported symbol")
-    names = path.name
-    prefix = f"{expected_symbol}-{TIMEFRAME}-"
-    if not names.startswith(prefix) or not names.endswith(".zip"):
+    if not path.name.startswith(f"{expected_symbol}-{TIMEFRAME}-") or not path.name.endswith(".zip"):
         raise ValueError(f"archive path symbol mismatch: expected {expected_symbol}")
+
+
+def _archive_set_identity(paths: list[Path]) -> str:
+    records = []
+    for path in paths:
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        records.append(f"{path.name}:{digest}")
+    payload = ("\n".join(records) + "\n").encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def ingest_archives(paths: list[Path], source_symbol: str, expected_start: datetime | None = None, expected_end: datetime | None = None) -> HistoricalDataset:
@@ -46,8 +45,6 @@ def ingest_archives(paths: list[Path], source_symbol: str, expected_start: datet
         bars, unit = read_archive(path, source_symbol)
         all_bars.extend(bars)
         units.add(unit)
-    if not units:
-        raise ValueError("no timestamp precision detected")
     report = validate_dataset(all_bars, source_symbol, ",".join(sorted(units)))
     if not report.valid:
         details = "; ".join(f"{issue.code}: {issue.message}" for issue in report.issues[:5])
@@ -57,12 +54,7 @@ def ingest_archives(paths: list[Path], source_symbol: str, expected_start: datet
     if expected_end is not None and all_bars[-1].timestamp >= expected_end.astimezone(timezone.utc):
         raise ValueError("dataset contains a bar at or beyond the exclusive end")
     timestamp_unit = ",".join(sorted(units))
-    metadata = make_metadata(
-        all_bars,
-        source_symbol,
-        timestamp_unit,
-        source_identity=combined_source_identity(paths),
-    )
+    metadata = make_metadata(all_bars, source_symbol, timestamp_unit, source_identity=_archive_set_identity(paths))
     return HistoricalDataset(source_symbol, tuple(all_bars), metadata)
 
 
