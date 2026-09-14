@@ -1,11 +1,11 @@
 """Generic research-continuity guards used by Gate 1A."""
-from __future__ import annotations__
+from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Sequence, TypeVar
 
-from .data_quality_treatment_v2 import CertifiedSegment, ContinuityBreak
+from .data_quality_treatment import CertifiedSegment, ContinuityBreak
 
 DATA_BOUNDARY_TERMINATION = "DATA_BOUNDARY_TERMINATION"
 T = TypeVar("T")
