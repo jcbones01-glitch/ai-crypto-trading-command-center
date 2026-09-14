@@ -1,14 +1,16 @@
 """Deterministic assembly of validated Gate 1 historical archives."""
 from __future__ import annotations
 
+import csv
 import hashlib
+import io
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zipfile import ZipFile
 
 from .archive_security import archive_member_symbol
-from .data_ingestion import DatasetMetadata, SUPPORTED_SYMBOLS, TIMEFRAME, find_missing_intervals, make_metadata, read_archive, validate_dataset
+from .data_ingestion import DatasetMetadata, SUPPORTED_SYMBOLS, TIMEFRAME, _timestamp_unit, find_missing_intervals, make_metadata, parse_timestamp, read_archive, validate_dataset
 from .data_interfaces import MarketBar
 
 
@@ -37,6 +39,37 @@ def _verify_archive_member(path: Path, expected_symbol: str) -> None:
             raise ValueError(f"archive symbol mismatch: expected {expected_symbol}, found {actual}")
 
 
+def _diagnose_timestamp_failure(path: Path, expected_symbol: str) -> None:
+    """Re-run only timestamp parsing to enrich a rejection without changing validation."""
+    with ZipFile(path) as archive:
+        names = [name for name in archive.namelist() if not name.endswith("/")]
+        if len(names) != 1:
+            return
+        member = names[0]
+        with archive.open(member, "r") as binary:
+            text = io.TextIOWrapper(binary, encoding="utf-8", newline="")
+            for row_number, row in enumerate(csv.reader(text), start=1):
+                if not row or all(not cell.strip() for cell in row):
+                    continue
+                if row[0].strip().lower() in {"open time", "timestamp"}:
+                    continue
+                raw_timestamp = row[0]
+                try:
+                    parse_timestamp(raw_timestamp)
+                except ValueError as exc:
+                    unit = _timestamp_unit(raw_timestamp)
+                    integer = int(raw_timestamp)
+                    divisor = 1_000 if unit == "milliseconds" else 1_000_000
+                    seconds, remainder = divmod(integer, divisor)
+                    microseconds = remainder if unit == "microseconds" else remainder * 1_000
+                    parsed_utc = datetime.fromtimestamp(seconds, tz=timezone.utc).replace(microsecond=microseconds)
+                    raise ValueError(
+                        f"{exc}; ARCHIVE={path}; MEMBER={member}; ROW={row_number}; "
+                        f"RAW_TIMESTAMP={raw_timestamp}; UNIT={unit}; PARSED_UTC={parsed_utc.isoformat()}; "
+                        f"SYMBOL={expected_symbol}; TIMEFRAME={TIMEFRAME}"
+                    ) from exc
+
+
 def _archive_set_identity(paths: list[Path]) -> str:
     records = []
     for path in paths:
@@ -55,7 +88,11 @@ def ingest_archives(paths: list[Path], source_symbol: str, expected_start: datet
     for path in paths:
         _verify_archive_filename(path, source_symbol)
         _verify_archive_member(path, source_symbol)
-        bars, unit = read_archive(path, source_symbol)
+        try:
+            bars, unit = read_archive(path, source_symbol)
+        except ValueError:
+            _diagnose_timestamp_failure(path, source_symbol)
+            raise
         all_bars.extend(bars)
         units.add(unit)
     report = validate_dataset(all_bars, source_symbol, ",".join(sorted(units)))
