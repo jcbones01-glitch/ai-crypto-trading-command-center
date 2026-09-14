@@ -128,3 +128,37 @@ def test_repeated_partial_rebalances_do_not_empty_fifo_ledger_while_position_rem
     assert result.positions[-1] == Decimal("0")
     assert result.unrealized_pnl == Decimal("0")
     assert result.trade_pnls
+
+
+def test_buy_budget_reconciliation_keeps_position_at_or_below_one():
+    prices = [
+        "100",
+        "101.3700",
+        "102.75876900",
+        "104.166564135300",
+        "105.5936460639536100",
+        "107.04027901502977445700",
+        "108.506730837535682367060900",
+        "109.9932730500099212154896343",
+        "111.5001808907950571361418423",
+        "113.0277333689989494189069855",
+        "114.5762133161542350259460112",
+        "116.1459074385855480458014716",
+        "117.7371063704941700540289518",
+        "119.3501047277699401837691484",
+        "120.9852011625403883642867857",
+        "122.6426984184671916848775147",
+        "124.3229033868001922109603367",
+        "126.0261271631993548442504933",
+        "127.7526851053351860056167251",
+        "129.5028968912782780538936742",
+    ]
+    targets = [Decimal("0")] * len(prices)
+    targets[6] = Decimal("1")
+    targets[8] = Decimal("1")
+    result = run_backtest(
+        bars(prices),
+        targets,
+        BacktestConfig(Decimal("1000"), Decimal("0.001"), Decimal("0.0005")),
+    )
+    assert all(Decimal("0") <= position <= Decimal("1") for position in result.positions)
