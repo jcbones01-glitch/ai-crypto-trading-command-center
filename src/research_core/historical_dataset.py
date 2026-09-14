@@ -17,7 +17,7 @@ class HistoricalDataset:
 
 
 def ingest_archives(paths: list[Path], source_symbol: str, expected_start: datetime | None = None, expected_end: datetime | None = None) -> HistoricalDataset:
-    """Read raw Binance archives, normalize, and require a research-ready result."""
+    """Read raw Binance archives in supplied order and require a research-ready result."""
     if not paths:
         raise ValueError("at least one archive is required")
     all_bars: list[MarketBar] = []
@@ -28,7 +28,6 @@ def ingest_archives(paths: list[Path], source_symbol: str, expected_start: datet
         units.add(unit)
     if len(units) != 1:
         raise ValueError("mixed timestamp precision across archives")
-    all_bars.sort(key=lambda bar: bar.timestamp)
     report = validate_dataset(all_bars, source_symbol, next(iter(units)))
     if not report.valid:
         details = "; ".join(f"{issue.code}: {issue.message}" for issue in report.issues[:5])
