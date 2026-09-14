@@ -89,30 +89,53 @@ def run_backtest(
                 total_costs += fee
             elif delta_notional < 0 and units > 0:
                 sell_fill = _execution_price(bar.open, config.slippage_rate, buying=False)
-                qty_to_sell = min(units, -delta_notional / sell_fill)
-                gross = qty_to_sell * sell_fill
-                fee = gross * config.commission_rate
-                cash += gross - fee
-                total_costs += fee
 
-                remaining = qty_to_sell
-                while remaining > 0:
-                    lot = lots[0]
-                    closed = min(remaining, lot["units"])
-                    allocated_entry_cost = lot["entry_cost"] * (closed / lot["units"])
-                    allocated_exit_proceeds = closed * sell_fill - fee * (closed / qty_to_sell)
-                    trade_pnls.append(allocated_exit_proceeds - allocated_entry_cost)
-                    lot["units"] -= closed
-                    lot["entry_cost"] -= allocated_entry_cost
-                    remaining -= closed
-                    if lot["units"] == 0:
-                        lots.pop(0)
+                if target == 0:
+                    # A zero target is a full liquidation. Do not derive the
+                    # sale quantity from a rounded aggregate and then deplete
+                    # the FIFO lots sequentially: Decimal rounding can make
+                    # those two mathematically equivalent quantities differ by
+                    # a tiny residual after the final lot is consumed. The
+                    # ledger itself is authoritative for a full close.
+                    qty_to_sell = units
+                    gross = qty_to_sell * sell_fill
+                    fee = gross * config.commission_rate
+                    cash += gross - fee
+                    total_costs += fee
 
-                units = sum((lot["units"] for lot in lots), Decimal("0"))
+                    for lot in lots:
+                        closed = lot["units"]
+                        allocated_entry_cost = lot["entry_cost"]
+                        allocated_exit_proceeds = closed * sell_fill - fee * (closed / qty_to_sell)
+                        trade_pnls.append(allocated_exit_proceeds - allocated_entry_cost)
+
+                    lots.clear()
+                    units = Decimal("0")
+                else:
+                    qty_to_sell = min(units, -delta_notional / sell_fill)
+                    gross = qty_to_sell * sell_fill
+                    fee = gross * config.commission_rate
+                    cash += gross - fee
+                    total_costs += fee
+
+                    remaining = qty_to_sell
+                    while remaining > 0:
+                        lot = lots[0]
+                        closed = min(remaining, lot["units"])
+                        allocated_entry_cost = lot["entry_cost"] * (closed / lot["units"])
+                        allocated_exit_proceeds = closed * sell_fill - fee * (closed / qty_to_sell)
+                        trade_pnls.append(allocated_exit_proceeds - allocated_entry_cost)
+                        lot["units"] -= closed
+                        lot["entry_cost"] -= allocated_entry_cost
+                        remaining -= closed
+                        if lot["units"] == 0:
+                            lots.pop(0)
+
+                    units = sum((lot["units"] for lot in lots), Decimal("0"))
 
         equity = cash + units * bar.close
-        equity_curve.append(equity)
         position_curve.append(units * bar.close / equity if equity > 0 else Decimal("0"))
+        equity_curve.append(equity)
 
     final_close = bars[-1].close
     unrealized_pnl = sum(
