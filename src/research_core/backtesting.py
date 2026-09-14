@@ -104,6 +104,14 @@ def run_backtest(
                     if lot["units"] == 0:
                         lots.pop(0)
 
+                # Decimal arithmetic can round the independent `units -= qty`
+                # calculation differently from the FIFO lot reductions. The
+                # lot ledger is authoritative for remaining inventory, so
+                # reconcile units to it after every sell and prevent tiny
+                # rounding drift from creating an impossible units-without-lot
+                # state on a later exit.
+                units = sum((lot["units"] for lot in lots), Decimal("0"))
+
         equity = cash + units * bar.close
         equity_curve.append(equity)
         position_curve.append(units * bar.close / equity if equity > 0 else Decimal("0"))
