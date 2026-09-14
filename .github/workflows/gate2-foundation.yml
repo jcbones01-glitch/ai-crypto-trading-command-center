@@ -33,3 +33,12 @@ jobs:
               raise AssertionError("non-causal same-bar execution must be rejected")
           print("CAUSAL EXECUTION CONTRACT: PASS")
           PY
+      - name: Run preregistered Development experiments
+        run: python tests/gate2_development_experiments.py
+      - name: Publish Development experiment evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate2-development-experiment-results
+          path: gate2_results/development_experiments.json
+          if-no-files-found: error
+          retention-days: 30
