@@ -8,7 +8,7 @@ from pathlib import Path
 
 from research_core.data_ingestion import RESEARCH_END, RESEARCH_START, archive_url, checksum_url, verify_sha256_bytes
 from research_core.data_quality import ArchiveQualityReport, DataQualityEvent, scan_archive
-from research_core.data_quality_treatment import build_manifest, common_certification, common_certified_intervals
+from research_core.data_quality_treatment_v2 import build_manifest, common_certification, common_certified_intervals
 from research_core.source_identity import bind_source_identity
 
 
@@ -115,11 +115,6 @@ if __name__ == "__main__":
                 for b in btc.continuity_breaks for e in eth.continuity_breaks
                 if max(b.start, e.start) < min(b.end, e.end)
             ],
-            "development_validation_oos": {
-                "development": [asdict(x) for x in btc.partitions if x.partition == "development"],
-                "validation": [asdict(x) for x in btc.partitions if x.partition == "validation"],
-                "oos": [asdict(x) for x in btc.partitions if x.partition == "oos"],
-            },
         }
         (output / "COMMON-gate1a.json").write_text(json.dumps(common_payload, sort_keys=True, indent=2), encoding="utf-8")
         print(f"GATE1A BTC SOURCE={btc.source_integrity} RESEARCH={btc.research_certification} REGIONS={len(btc.affected_regions)} BREAKS={len(btc.continuity_breaks)} EXCLUSIONS={len(btc.exclusions)}")
