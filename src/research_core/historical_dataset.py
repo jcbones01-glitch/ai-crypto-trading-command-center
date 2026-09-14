@@ -5,7 +5,9 @@ import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zipfile import ZipFile
 
+from .archive_security import archive_member_symbol
 from .data_ingestion import DatasetMetadata, SUPPORTED_SYMBOLS, TIMEFRAME, find_missing_intervals, make_metadata, read_archive, validate_dataset
 from .data_interfaces import MarketBar
 
@@ -25,6 +27,16 @@ def _verify_archive_filename(path: Path, expected_symbol: str) -> None:
         raise ValueError(f"archive path symbol mismatch: expected {expected_symbol}")
 
 
+def _verify_archive_member(path: Path, expected_symbol: str) -> None:
+    with ZipFile(path) as archive:
+        names = [name for name in archive.namelist() if not name.endswith("/")]
+        if len(names) != 1:
+            raise ValueError("unexpected archive structure: expected exactly one data file")
+        actual = archive_member_symbol(names[0])
+        if actual != expected_symbol:
+            raise ValueError(f"archive symbol mismatch: expected {expected_symbol}, found {actual}")
+
+
 def _archive_set_identity(paths: list[Path]) -> str:
     records = []
     for path in paths:
@@ -42,6 +54,7 @@ def ingest_archives(paths: list[Path], source_symbol: str, expected_start: datet
     units: set[str] = set()
     for path in paths:
         _verify_archive_filename(path, source_symbol)
+        _verify_archive_member(path, source_symbol)
         bars, unit = read_archive(path, source_symbol)
         all_bars.extend(bars)
         units.add(unit)
