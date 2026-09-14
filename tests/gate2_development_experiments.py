@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import os
 import tempfile
 import time
 import urllib.request
@@ -25,14 +26,21 @@ COMMISSION = Decimal("0.001")
 SLIPPAGE = Decimal("0.0005")
 INITIAL = Decimal("1000")
 PERIODS_PER_YEAR = 8760
-EXPERIMENT_VERSION = "gate2-dev-v1"
+EXPERIMENT_VERSION = "gate2-dev-v2"
+ROOT = Path(__file__).resolve().parents[1]
+HYPOTHESIS_DIR = ROOT / "research" / "hypotheses"
+PROTOCOL_PATH = ROOT / "docs" / "GATE2_RESEARCH_PROTOCOL.md"
 
 HYPOTHESES = {
-    "HYP-0001": {"name": "time_series_momentum", "lookback": 168},
-    "HYP-0002": {"name": "short_horizon_mean_reversion", "lookback": 48},
-    "HYP-0003": {"name": "volatility_range_breakout", "lookback": 24},
-    "HYP-0004": {"name": "trend_pullback", "lookback": 224},
+    "HYP-0001": {"name": "time_series_momentum", "lookback": 168, "strategy_version": "HYP-0001-v1"},
+    "HYP-0002": {"name": "short_horizon_mean_reversion", "lookback": 48, "strategy_version": "HYP-0002-v1"},
+    "HYP-0003": {"name": "volatility_range_breakout", "lookback": 24, "strategy_version": "HYP-0003-v1"},
+    "HYP-0004": {"name": "trend_pullback", "lookback": 224, "strategy_version": "HYP-0004-v1"},
 }
+
+
+def sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def months(start: datetime, end: datetime):
@@ -117,7 +125,8 @@ def signals(name: str, bars: list[MarketBar]) -> list[Decimal]:
     targets = [Decimal("0")] * len(bars)
     active = False
     if name == "time_series_momentum":
-        for i in range(167, len(bars)):
+        # A 168-bar trailing return requires bars [i-168, i].
+        for i in range(168, len(bars)):
             targets[i] = Decimal("1") if closes[i] / closes[i-168] - Decimal("1") > 0 and closes[i] / closes[i-24] - Decimal("1") > 0 else Decimal("0")
     elif name == "short_horizon_mean_reversion":
         for i in range(47, len(bars)):
@@ -133,9 +142,9 @@ def signals(name: str, bars: list[MarketBar]) -> list[Decimal]:
             prior_low = min(closes[i-24:i])
             window = bars[i-23:i+1]
             normalized_range = (
-              (max(b.high for b in window) - min(b.low for b in window))
-    / (sum((b.close for b in window), Decimal("0")) / Decimal(24))
-)
+                (max(b.high for b in window) - min(b.low for b in window))
+                / (sum((b.close for b in window), Decimal("0")) / Decimal(24))
+            )
             if active and closes[i] < prior_low:
                 active = False
             elif not active and closes[i] > prior_high and normalized_range >= Decimal("0.01"):
@@ -156,11 +165,18 @@ def signals(name: str, bars: list[MarketBar]) -> list[Decimal]:
     return targets
 
 
-def summarize_segment(strategy: str, bars: list[MarketBar], target: list[Decimal], segment_id: int) -> dict:
+def summarize_segment(label: str, bars: list[MarketBar], target: list[Decimal], segment_id: int) -> dict:
     config = BacktestConfig(INITIAL, COMMISSION, SLIPPAGE)
     result = run_backtest(bars, target, config)
     metrics = calculate_metrics(result.equity, result.trade_pnls, result.positions, periods_per_year=PERIODS_PER_YEAR)
-    return {"segment": segment_id, "start": bars[0].timestamp.isoformat(), "end": bars[-1].timestamp.isoformat(), "bars": len(bars), "metrics": {k: (str(v) if v is not None else None) for k, v in asdict(metrics).items()}}
+    return {
+        "label": label,
+        "segment": segment_id,
+        "start": bars[0].timestamp.isoformat(),
+        "end": bars[-1].timestamp.isoformat(),
+        "bars": len(bars),
+        "metrics": {k: (str(v) if v is not None else None) for k, v in asdict(metrics).items()},
+    }
 
 
 def aggregate(parts: list[dict]) -> dict:
@@ -168,13 +184,49 @@ def aggregate(parts: list[dict]) -> dict:
     compounded = Decimal("1")
     for r in returns:
         compounded *= Decimal("1") + r
-    return {"segments": len(parts), "compound_segment_return": str(compounded - Decimal("1")), "mean_segment_return": str(sum(returns, Decimal("0")) / Decimal(len(returns))) if returns else "0", "positive_segment_fraction": str(Decimal(sum(r > 0 for r in returns)) / Decimal(len(returns))) if returns else "0", "max_segment_drawdown": str(max(Decimal(p["metrics"]["max_drawdown"]) for p in parts)) if parts else "0", "trade_count": sum(int(p["metrics"]["trade_count"]) for p in parts)}
+    return {
+        "segments": len(parts),
+        "aggregation": "independent_segment_returns_compounded_without_bridging_gaps",
+        "compound_segment_return": str(compounded - Decimal("1")),
+        "mean_segment_return": str(sum(returns, Decimal("0")) / Decimal(len(returns))) if returns else "0",
+        "positive_segment_fraction": str(Decimal(sum(r > 0 for r in returns)) / Decimal(len(returns))) if returns else "0",
+        "max_segment_drawdown": str(max(Decimal(p["metrics"]["max_drawdown"]) for p in parts)) if parts else "0",
+        "trade_count": sum(int(p["metrics"]["trade_count"]) for p in parts),
+    }
 
 
 def main() -> None:
     output = Path("gate2_results")
     output.mkdir(exist_ok=True)
-    all_results = {"experiment_version": EXPERIMENT_VERSION, "development_window": [START.isoformat(), END.isoformat()], "oos_accessed": False, "commission": str(COMMISSION), "slippage": str(SLIPPAGE), "initial_capital": str(INITIAL), "hypotheses": {}}
+    hypothesis_provenance = {}
+    for hyp_id, spec in HYPOTHESES.items():
+        matches = sorted(HYPOTHESIS_DIR.glob(f"{hyp_id}-*.md"))
+        if len(matches) != 1:
+            raise RuntimeError(f"expected exactly one hypothesis registration for {hyp_id}, found {len(matches)}")
+        hypothesis_provenance[hyp_id] = {
+            "strategy_id": hyp_id,
+            "strategy_version": spec["strategy_version"],
+            "hypothesis_file": str(matches[0].relative_to(ROOT)),
+            "hypothesis_sha256": sha256_file(matches[0]),
+        }
+    protocol_sha = sha256_file(PROTOCOL_PATH)
+    all_results = {
+        "experiment_version": EXPERIMENT_VERSION,
+        "code_commit": os.environ.get("GITHUB_SHA", "UNKNOWN"),
+        "protocol": {"path": str(PROTOCOL_PATH.relative_to(ROOT)), "sha256": protocol_sha},
+        "development_window": [START.isoformat(), END.isoformat()],
+        "validation_window": [END.isoformat(), datetime(2024, 1, 1, tzinfo=timezone.utc).isoformat()],
+        "oos_window": [datetime(2024, 1, 1, tzinfo=timezone.utc).isoformat(), datetime(2026, 1, 1, tzinfo=timezone.utc).isoformat()],
+        "oos_accessed": False,
+        "commission": str(COMMISSION),
+        "slippage": str(SLIPPAGE),
+        "initial_capital": str(INITIAL),
+        "benchmarks": {
+            "buy_and_hold": "100% target throughout each eligible segment; same execution/cost model",
+            "cash": "0% target throughout each eligible segment",
+        },
+        "hypotheses": {},
+    }
     with tempfile.TemporaryDirectory(prefix="gate2-dev-") as directory:
         root = Path(directory)
         for symbol in ("BTCUSDT", "ETHUSDT"):
@@ -199,7 +251,13 @@ def main() -> None:
                 bars.extend(parse_valid_bars(path, symbol, set(report.valid_timestamps)))
             bars.sort(key=lambda b: b.timestamp)
             segments = continuous_segments(bars, manifest.continuity_breaks)
-            symbol_results = {"dataset_identity": manifest.dataset_identity, "source_integrity": manifest.source_integrity, "certification": manifest.research_certification, "segments": len(segments), "hypotheses": {}}
+            symbol_results = {
+                "dataset_identity": manifest.dataset_identity,
+                "source_integrity": manifest.source_integrity,
+                "certification": manifest.research_certification,
+                "segments": len(segments),
+                "hypotheses": {},
+            }
             for hyp_id, spec in HYPOTHESES.items():
                 parts = []
                 for idx, segment in enumerate(segments):
@@ -207,11 +265,20 @@ def main() -> None:
                         continue
                     target = signals(spec["name"], segment)
                     parts.append(summarize_segment(spec["name"], segment, target, idx))
-                symbol_results["hypotheses"][hyp_id] = {"name": spec["name"], "pre_registered_parameters": spec, "aggregate": aggregate(parts), "segments": parts}
-            all_results["hypotheses"].setdefault(symbol, symbol_results)
+                buy_hold_parts = [summarize_segment("buy_and_hold", segment, [Decimal("1")] * len(segment), idx) for idx, segment in enumerate(segments)]
+                cash_parts = [summarize_segment("cash", segment, [Decimal("0")] * len(segment), idx) for idx, segment in enumerate(segments)]
+                symbol_results["hypotheses"][hyp_id] = {
+                    "name": spec["name"],
+                    "pre_registered_parameters": spec,
+                    "provenance": hypothesis_provenance[hyp_id],
+                    "aggregate": aggregate(parts),
+                    "benchmarks": {"buy_and_hold": aggregate(buy_hold_parts), "cash": aggregate(cash_parts)},
+                    "segments": parts,
+                }
+            all_results["hypotheses"][symbol] = symbol_results
     (output / "development_experiments.json").write_text(json.dumps(all_results, sort_keys=True, indent=2), encoding="utf-8")
     print("GATE2 DEVELOPMENT EXPERIMENTS COMPLETE")
-    print(json.dumps({s: {h: v["aggregate"] for h, v in d["hypotheses"].items()} for s, d in all_results["hypotheses"].items()}, sort_keys=True))
+    print(json.dumps({s: {h: {"strategy": v["aggregate"], "buy_and_hold": v["benchmarks"]["buy_and_hold"], "cash": v["benchmarks"]["cash"]} for h, v in d["hypotheses"].items()} for s, d in all_results["hypotheses"].items()}, sort_keys=True))
 
 
 if __name__ == "__main__":
