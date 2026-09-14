@@ -1,0 +1,12 @@
+market:
+  type: spot
+  quote_currency: USD
+
+backtest:
+  initial_capital: "10000.00"
+  commission_rate: "0.0010"
+  slippage_rate: "0.0005"
+
+research:
+  timezone: UTC
+  currency: USD
