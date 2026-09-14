@@ -195,6 +195,15 @@ def aggregate(parts: list[dict]) -> dict:
     }
 
 
+def benchmark_parts(label: str, segments: list[list[MarketBar]], eligible_segment_ids: set[int]) -> list[dict]:
+    """Build a benchmark on exactly the strategy's eligible segment universe."""
+    return [
+        summarize_segment(label, segment, [Decimal("1")] * len(segment), idx)
+        for idx, segment in enumerate(segments)
+        if idx in eligible_segment_ids
+    ]
+
+
 def main() -> None:
     output = Path("gate2_results")
     output.mkdir(exist_ok=True)
@@ -223,7 +232,7 @@ def main() -> None:
         "initial_capital": str(INITIAL),
         "benchmarks": {
             "buy_and_hold": "100% target throughout each eligible segment; same execution/cost model",
-            "cash": "0% target throughout each eligible segment",
+            "cash": "0% target throughout each eligible segment; same execution/cost model",
         },
         "hypotheses": {},
     }
@@ -260,25 +269,40 @@ def main() -> None:
             }
             for hyp_id, spec in HYPOTHESES.items():
                 parts = []
+                eligible_segment_ids: set[int] = set()
                 for idx, segment in enumerate(segments):
                     if len(segment) < spec["lookback"] + 2:
                         continue
                     target = signals(spec["name"], segment)
                     parts.append(summarize_segment(spec["name"], segment, target, idx))
-                buy_hold_parts = [summarize_segment("buy_and_hold", segment, [Decimal("1")] * len(segment), idx) for idx, segment in enumerate(segments)]
-                cash_parts = [summarize_segment("cash", segment, [Decimal("0")] * len(segment), idx) for idx, segment in enumerate(segments)]
+                    eligible_segment_ids.add(idx)
+                buy_hold_parts = benchmark_parts("buy_and_hold", segments, eligible_segment_ids)
+                cash_parts = [
+                    summarize_segment("cash", segment, [Decimal("0")] * len(segment), idx)
+                    for idx, segment in enumerate(segments)
+                    if idx in eligible_segment_ids
+                ]
+                full_universe_buy_hold_parts = [
+                    summarize_segment("buy_and_hold", segment, [Decimal("1")] * len(segment), idx)
+                    for idx, segment in enumerate(segments)
+                ]
                 symbol_results["hypotheses"][hyp_id] = {
                     "name": spec["name"],
                     "pre_registered_parameters": spec,
                     "provenance": hypothesis_provenance[hyp_id],
+                    "eligible_segment_ids": sorted(eligible_segment_ids),
                     "aggregate": aggregate(parts),
-                    "benchmarks": {"buy_and_hold": aggregate(buy_hold_parts), "cash": aggregate(cash_parts)},
+                    "benchmarks": {
+                        "buy_and_hold": aggregate(buy_hold_parts),
+                        "cash": aggregate(cash_parts),
+                        "buy_and_hold_full_segment_universe": aggregate(full_universe_buy_hold_parts),
+                    },
                     "segments": parts,
                 }
             all_results["hypotheses"][symbol] = symbol_results
     (output / "development_experiments.json").write_text(json.dumps(all_results, sort_keys=True, indent=2), encoding="utf-8")
     print("GATE2 DEVELOPMENT EXPERIMENTS COMPLETE")
-    print(json.dumps({s: {h: {"strategy": v["aggregate"], "buy_and_hold": v["benchmarks"]["buy_and_hold"], "cash": v["benchmarks"]["cash"]} for h, v in d["hypotheses"].items()} for s, d in all_results["hypotheses"].items()}, sort_keys=True))
+    print(json.dumps({s: {h: {"strategy": v["aggregate"], "buy_and_hold_same_eligible_segments": v["benchmarks"]["buy_and_hold"], "cash_same_eligible_segments": v["benchmarks"]["cash"]} for h, v in d["hypotheses"].items()} for s, d in all_results["hypotheses"].items()}, sort_keys=True))
 
 
 if __name__ == "__main__":
