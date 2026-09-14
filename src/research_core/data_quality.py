@@ -24,6 +24,7 @@ KNOWN_BINANCE_ISSUE_77_ARCHIVES = {
 }
 KNOWN_BINANCE_ISSUE_77_TIMESTAMPS = {"1518168494789", "1518319694789"}
 
+
 @dataclass(frozen=True)
 class DataQualityEvent:
     symbol: str
@@ -39,6 +40,7 @@ class DataQualityEvent:
     source_provenance: str
     message: str
 
+
 @dataclass(frozen=True)
 class ArchiveQualityReport:
     symbol: str
@@ -46,10 +48,12 @@ class ArchiveQualityReport:
     rows_processed: int
     events: tuple[DataQualityEvent, ...]
     checksum_verified: bool
+    valid_timestamps: tuple[datetime, ...] = ()
 
     @property
     def invalid_rows(self) -> int:
         return len({event.row for event in self.events if event.row is not None})
+
 
 def _event(*, symbol: str, archive: Path, member: str | None, row: int | None,
            raw_timestamp: str | None, parsed_timestamp: datetime | None,
@@ -58,6 +62,7 @@ def _event(*, symbol: str, archive: Path, member: str | None, row: int | None,
     return DataQualityEvent(symbol, TIMEFRAME, archive.name, member, row, raw_timestamp,
                             parsed_timestamp.isoformat() if parsed_timestamp else None,
                             anomaly_type, validation_rule, "ERROR", source_provenance, message)
+
 
 def _parsed_timestamp(value: str) -> datetime | None:
     try:
@@ -70,6 +75,7 @@ def _parsed_timestamp(value: str) -> datetime | None:
     except (TypeError, ValueError, OverflowError, OSError):
         return None
 
+
 def _decimal(value: str, field: str) -> Decimal:
     try:
         result = Decimal(value)
@@ -79,10 +85,12 @@ def _decimal(value: str, field: str) -> Decimal:
         raise ValueError(f"non-finite decimal in {field}")
     return result
 
+
 def scan_archive(path: Path, symbol: str, checksum_verified: bool = True) -> ArchiveQualityReport:
     """Scan every source row and record validation failures without repairing data."""
     events: list[DataQualityEvent] = []
     rows_processed = 0
+    valid_timestamps: list[datetime] = []
     with ZipFile(path) as archive:
         names = [name for name in archive.namelist() if not name.endswith("/")]
         if len(names) != 1:
@@ -90,7 +98,7 @@ def scan_archive(path: Path, symbol: str, checksum_verified: bool = True) -> Arc
                                  parsed_timestamp=None, anomaly_type="SCHEMA_ERROR",
                                  validation_rule="exactly one non-directory ZIP member",
                                  message="unexpected archive structure"))
-            return ArchiveQualityReport(symbol, path.name, 0, tuple(events), checksum_verified)
+            return ArchiveQualityReport(symbol, path.name, 0, tuple(events), checksum_verified, tuple())
         member = names[0]
         try:
             if archive_member_symbol(member) != symbol:
@@ -106,7 +114,6 @@ def scan_archive(path: Path, symbol: str, checksum_verified: bool = True) -> Arc
             text = io.TextIOWrapper(binary, encoding="utf-8", newline="")
             previous_timestamp = None
             seen: set[datetime] = set()
-            valid_timestamps: list[datetime] = []
             for row_number, row in enumerate(csv.reader(text), start=1):
                 if not row or all(not cell.strip() for cell in row):
                     continue
@@ -134,7 +141,8 @@ def scan_archive(path: Path, symbol: str, checksum_verified: bool = True) -> Arc
                                          validation_rule="1-hour kline timestamp must be on an exact UTC hour boundary",
                                          message=str(exc), source_provenance=provenance))
                     continue
-                if timestamp in seen:
+                duplicate = timestamp in seen
+                if duplicate:
                     events.append(_event(symbol=symbol, archive=path, member=member, row=row_number,
                                          raw_timestamp=raw_timestamp, parsed_timestamp=timestamp,
                                          anomaly_type="DUPLICATE_TIMESTAMP", validation_rule="timestamps must be unique",
@@ -145,9 +153,6 @@ def scan_archive(path: Path, symbol: str, checksum_verified: bool = True) -> Arc
                                          anomaly_type="OUT_OF_ORDER_TIMESTAMP",
                                          validation_rule="timestamps must be strictly increasing",
                                          message="timestamp is earlier than the previous valid timestamp"))
-                seen.add(timestamp)
-                previous_timestamp = timestamp
-                valid_timestamps.append(timestamp)
                 try:
                     MarketBar(timestamp=timestamp, symbol=symbol, open=_decimal(row[1], "open"),
                               high=_decimal(row[2], "high"), low=_decimal(row[3], "low"),
@@ -157,6 +162,13 @@ def scan_archive(path: Path, symbol: str, checksum_verified: bool = True) -> Arc
                     events.append(_event(symbol=symbol, archive=path, member=member, row=row_number,
                                          raw_timestamp=raw_timestamp, parsed_timestamp=timestamp,
                                          anomaly_type=anomaly_type, validation_rule=str(exc), message=str(exc)))
+                    previous_timestamp = timestamp
+                    seen.add(timestamp)
+                    continue
+                if not duplicate:
+                    valid_timestamps.append(timestamp)
+                seen.add(timestamp)
+                previous_timestamp = timestamp
             provenance = "Binance Public Data issue #77" if path.name in KNOWN_BINANCE_ISSUE_77_ARCHIVES else "Binance Public Data archive"
             for previous, current in zip(valid_timestamps, valid_timestamps[1:]):
                 cursor = previous + timedelta(hours=1)
@@ -166,7 +178,8 @@ def scan_archive(path: Path, symbol: str, checksum_verified: bool = True) -> Arc
                                          anomaly_type="MISSING_INTERVAL", validation_rule="hourly intervals must be complete",
                                          message="missing hourly interval", source_provenance=provenance))
                     cursor += timedelta(hours=1)
-    return ArchiveQualityReport(symbol, path.name, rows_processed, tuple(events), checksum_verified)
+    return ArchiveQualityReport(symbol, path.name, rows_processed, tuple(events), checksum_verified, tuple(valid_timestamps))
+
 
 def certify(reports: list[ArchiveQualityReport]) -> str:
     events = [event for report in reports for event in report.events]
