@@ -130,11 +130,12 @@ def signals(name: str, bars: list[MarketBar]) -> list[Decimal]:
     elif name == "volatility_range_breakout":
         for i in range(24, len(bars)):
             prior_high = max(closes[i-24:i])
+            prior_low = min(closes[i-24:i])
             window = bars[i-23:i+1]
             normalized_range = (
-    (max(b.high for b in window) - min(b.low for b in window))
+              (max(b.high for b in window) - min(b.low for b in window))
     / (sum((b.close for b in window), Decimal("0")) / Decimal(24))
-) = min(closes[i-24:i])
+)
             if active and closes[i] < prior_low:
                 active = False
             elif not active and closes[i] > prior_high and normalized_range >= Decimal("0.01"):
