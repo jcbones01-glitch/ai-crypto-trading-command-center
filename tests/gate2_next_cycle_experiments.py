@@ -23,7 +23,6 @@ START = datetime(2017, 8, 17, tzinfo=timezone.utc)
 END = datetime(2022, 1, 1, tzinfo=timezone.utc)
 FEE_GRID = [("baseline", Decimal("0.001"), Decimal("0.0005")), ("stress_1", Decimal("0.0015"), Decimal("0.001")), ("stress_2", Decimal("0.0025"), Decimal("0.0015"))]
 DELAYS = [1, 2]
-PERIODS_PER_YEAR = 8760
 PREREG = Path("docs/GATE2_NEXT_CYCLE_PREREGISTRATION_V1.md")
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -133,31 +132,24 @@ def event_return(entry: MarketBar, exit_bar: MarketBar, fee: Decimal, slip: Deci
     buy = entry.open * (Decimal("1") + slip)
     sell = exit_bar.close * (Decimal("1") - slip)
     gross = sell / buy - 1
-    # Two-sided commission is charged on notional; using a multiplicative approximation
-    # is deterministic and conservative for the one-bar event return.
     return (Decimal("1") + gross) * (Decimal("1") - fee) * (Decimal("1") - fee) - 1
 
 
 def simulate_events(bars: list[MarketBar], hyp: str, params: dict, fee: Decimal, slip: Decimal, delay: int, btc_bars=None) -> dict:
     if delay not in (1, 2):
         raise ValueError("delay must be 1 or 2")
-    returns = []
-    event_records = []
+    returns, event_records = [], []
     i = 1
     while i + delay < len(bars):
         if not event_condition(hyp, i, bars, params, btc_bars):
             i += 1
             continue
         entry_i = i + delay
-        exit_i = entry_i
-        if exit_i >= len(bars):
+        if entry_i >= len(bars):
             break
-        # Entry at next eligible open and exit at the close of that same eligible bar.
-        r = event_return(bars[entry_i], bars[exit_i], fee, slip)
+        r = event_return(bars[entry_i], bars[entry_i], fee, slip)
         returns.append(r)
-        event_records.append({"signal_index": i, "entry_index": entry_i, "exit_index": exit_i, "signal_timestamp": bars[i].timestamp.isoformat(), "entry_timestamp": bars[entry_i].timestamp.isoformat(), "return": str(r)})
-        # Non-overlap: the signal that produced this event cannot overlap another active one.
-        # The active position ends at the close of entry_i; the next signal is therefore sought after entry_i.
+        event_records.append({"signal_index": i, "entry_index": entry_i, "exit_index": entry_i, "signal_timestamp": bars[i].timestamp.isoformat(), "entry_timestamp": bars[entry_i].timestamp.isoformat(), "return": str(r)})
         i = entry_i + 1
     equity = [Decimal("1")]
     for r in returns:
@@ -175,37 +167,27 @@ def aggregate(returns: list[Decimal]) -> dict:
 
 
 def max_drawdown(equity: list[Decimal]) -> Decimal:
-    peak = equity[0]
-    out = Decimal("0")
+    peak, out = equity[0], Decimal("0")
     for value in equity:
         peak = max(peak, value)
-        if peak > 0:
-            out = max(out, (peak - value) / peak)
+        if peak > 0: out = max(out, (peak - value) / peak)
     return out
 
 
 def longest_recovery(equity: list[Decimal]) -> int:
-    peak = equity[0]
-    peak_i = 0
-    longest = 0
+    peak, peak_i, longest = equity[0], 0, 0
     for i, value in enumerate(equity):
-        if value >= peak:
-            peak, peak_i = value, i
-        else:
-            longest = max(longest, i - peak_i)
+        if value >= peak: peak, peak_i = value, i
+        else: longest = max(longest, i - peak_i)
     return longest
 
 
 def parameter_cells(hyp):
-    keys = list(GRIDS[hyp])
-    out = []
+    keys = list(GRIDS[hyp]); out = []
     def rec(k, current):
-        if k == len(keys):
-            out.append(dict(current))
-            return
+        if k == len(keys): out.append(dict(current)); return
         for value in GRIDS[hyp][keys[k]]:
-            current[keys[k]] = value
-            rec(k + 1, current)
+            current[keys[k]] = value; rec(k + 1, current)
     rec(0, {})
     return out
 
@@ -213,211 +195,118 @@ def parameter_cells(hyp):
 def summarize_segments(segments, hyp, params, fee, slip, delay, btc_segments=None):
     details = []
     for idx, seg in enumerate(segments):
-        btc = btc_segments[idx] if btc_segments is not None else None
         try:
+            btc = btc_segments[idx] if btc_segments is not None else None
             sim = simulate_events(seg, hyp, params, fee, slip, delay, btc)
             details.append({"segment": idx, "aggregate": aggregate(sim["returns"]), "events": sim["events"], "error": None})
         except Exception as exc:
             details.append({"segment": idx, "aggregate": None, "events": [], "error": f"{type(exc).__name__}: {exc}"})
-    valid = [d for d in details if d["aggregate"] is not None and d["aggregate"]["events"] > 0]
-    returns = []
-    for d in valid:
-        returns.extend(Decimal(e["return"]) for e in d["events"])
-    segment_returns = [Decimal(d["aggregate"]["compound_return"]) for d in valid]
-    return {"segments": details, "aggregate": {**aggregate(returns), "mean_segment_return": str(sum(segment_returns, Decimal("0")) / Decimal(len(segment_returns))) if segment_returns else "0", "eligible_segments": len(valid)}}
-
-
-def regime_result(seg, hyp, params, fee, slip, delay, btc=None):
-    groups = {"bull": [], "bear": [], "neutral": []}
-    # Regime is classified at signal close from trailing 168-hour close-to-close return.
-    for i in range(169, len(seg)):
-        r = seg[i].close / seg[i - 168].close - 1
-        regime = "bull" if r > Decimal("0.10") else "bear" if r < Decimal("-0.10") else "neutral"
-        if event_condition(hyp, i, seg, params, btc):
-            entry_i = i + delay
-            if entry_i < len(seg):
-                groups[regime].append(event_return(seg[entry_i], seg[entry_i], fee, slip))
-    return {k: {"events": len(v), "compound_return": str((math.prod([float(1+x) for x in v]) - 1) if v else Decimal("0"))} for k, v in groups.items()}
+    valid = [d for d in details if d["aggregate"] and d["aggregate"]["events"]]
+    event_returns = [Decimal(e["return"]) for d in valid for e in d["events"]]
+    seg_returns = [Decimal(d["aggregate"]["compound_return"]) for d in valid]
+    return {"segments": details, "aggregate": {**aggregate(event_returns), "mean_segment_return": str(sum(seg_returns, Decimal("0")) / Decimal(len(seg_returns))) if seg_returns else "0", "eligible_segments": len(valid)}}
 
 
 def concentration_and_dd(details):
     seg_returns = [Decimal(d["aggregate"]["compound_return"]) for d in details if d["aggregate"] and d["aggregate"]["events"]]
     positive_log_total = sum((Decimal(1 + r).ln() for r in seg_returns if r > 0 and r > -1), Decimal("0"))
-    contributions = []
-    events = []
-    worst = Decimal("0")
-    maxdd = Decimal("0")
-    recovery = 0
-    total_events = 0
+    contributions, events = [], []
+    worst, maxdd, recovery, total_events = Decimal("0"), Decimal("0"), 0, 0
     for d in details:
-        if not d["aggregate"] or not d["aggregate"]["events"]:
-            continue
+        if not d["aggregate"] or not d["aggregate"]["events"]: continue
         r = Decimal(d["aggregate"]["compound_return"])
         contribution = Decimal("0") if r <= 0 or positive_log_total <= 0 else Decimal(1 + r).ln() / positive_log_total
         contributions.append({"segment": d["segment"], "positive_log_contribution": str(contribution), "return": str(r)})
         events.extend(Decimal(e["return"]) for e in d["events"])
         worst = min(worst, r)
         eq = [Decimal("1")]
-        for e in d["events"]:
-            eq.append(eq[-1] * (Decimal("1") + e))
-        maxdd = max(maxdd, max_drawdown(eq))
-        recovery = max(recovery, longest_recovery(eq))
-        total_events += len(d["events"])
+        for e in d["events"]: eq.append(eq[-1] * (Decimal("1") + e))
+        maxdd = max(maxdd, max_drawdown(eq)); recovery = max(recovery, longest_recovery(eq)); total_events += len(d["events"])
     positive = sorted((x for x in events if x > 0), reverse=True)
     top_n = max(1, math.ceil(len(positive) * 0.10)) if positive else 0
     top_fraction = sum(positive[:top_n], Decimal("0")) / sum(positive, Decimal("0")) if positive else None
     return {"segments": contributions, "top_10_positive_event_pnl_fraction": str(top_fraction) if top_fraction is not None else None, "max_drawdown": str(maxdd), "worst_segment_return": str(worst), "longest_recovery_events": recovery, "eligible_events": total_events}
 
 
-def control_for_hyp6(segments, params):
-    conditional, unconditional = [], []
-    for seg in segments:
-        for i in range(1, len(seg) - 1):
-            btc_ret = seg[i].close / seg[i - 1].close - 1
-            eth_ret = seg[i].close / seg[i - 1].close - 1
-            next_ret = seg[i + 1].close / seg[i + 1].open - 1
-            unconditional.append(next_ret)
-            if btc_ret >= params["btc_threshold"] and btc_ret - eth_ret >= params["gap"]:
-                conditional.append(next_ret)
-    mean_c = sum(conditional, Decimal("0")) / Decimal(len(conditional)) if conditional else Decimal("0")
-    mean_u = sum(unconditional, Decimal("0")) / Decimal(len(unconditional)) if unconditional else Decimal("0")
-    return {"conditional_events": len(conditional), "conditional_mean": str(mean_c), "unconditional_mean": str(mean_u), "difference": str(mean_c - mean_u)}
-
-
 def main():
-    prereg_path = ROOT / PREREG
-    prereg_sha = sha256_file(prereg_path)
-    output = Path("gate2_next_cycle_results")
-    output.mkdir(exist_ok=True)
+    prereg_sha = sha256_file(ROOT / PREREG)
+    output = Path("gate2_next_cycle_results"); output.mkdir(exist_ok=True)
     report = {"experiment_version": "gate2-next-cycle-v1", "code_commit": os.environ.get("GITHUB_SHA", "UNKNOWN"), "preregistration": {"path": str(PREREG), "sha256": prereg_sha}, "development_window": [START.isoformat(), END.isoformat()], "validation_or_oos_accessed": False, "registered_parameter_cell_count": 45, "assets": {}, "decisions": {}}
     with tempfile.TemporaryDirectory(prefix="gate2-next-") as directory:
-        root = Path(directory)
-        loaded = {}
+        root = Path(directory); loaded = {}
         for symbol in ("BTCUSDT", "ETHUSDT"):
             reports, paths = [], []
             for year, month in months(START, END):
                 url = archive_url(symbol, year, month)
-                if not (START <= datetime(year, month, 1, tzinfo=timezone.utc) < END):
-                    raise RuntimeError("attempted non-Development archive")
-                payload = fetch(url)
-                checksum = fetch(checksum_url(url)).decode("utf-8")
-                if not verify_sha256_bytes(payload, checksum):
-                    raise RuntimeError(f"checksum mismatch: {url}")
-                path = root / symbol / Path(url).name
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(payload)
-                reports.append(scan_archive(path, symbol, True))
-                paths.append(path)
+                payload = fetch(url); checksum = fetch(checksum_url(url)).decode("utf-8")
+                if not verify_sha256_bytes(payload, checksum): raise RuntimeError(f"checksum mismatch: {url}")
+                path = root / symbol / Path(url).name; path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(payload)
+                reports.append(scan_archive(path, symbol, True)); paths.append(path)
             manifest = build_manifest(symbol, reports, START, END)
             bars = []
-            for scan, path in zip(reports, paths):
-                bars.extend(parse_valid_bars(path, symbol, set(scan.valid_timestamps)))
-            bars.sort(key=lambda b: b.timestamp)
-            loaded[symbol] = {"manifest": manifest, "segments": continuous_segments(bars, manifest.continuity_breaks)}
-
-        # HYP-0006 uses synchronized timestamp/continuity segments only.
+            for scan, path in zip(reports, paths): bars.extend(parse_valid_bars(path, symbol, set(scan.valid_timestamps)))
+            bars.sort(key=lambda b: b.timestamp); loaded[symbol] = {"manifest": manifest, "segments": continuous_segments(bars, manifest.continuity_breaks)}
         btc_by_ts = {b.timestamp: b for s in loaded["BTCUSDT"]["segments"] for b in s}
-        eth_common = []
+        common = []
         for eseg in loaded["ETHUSDT"]["segments"]:
             current = []
             for bar in eseg:
                 if bar.timestamp in btc_by_ts:
-                    if current and bar.timestamp != current[-1].timestamp + timedelta(hours=1):
-                        if current: eth_common.append(current)
-                        current = []
+                    if current and bar.timestamp != current[-1].timestamp + timedelta(hours=1): common.append(current); current = []
                     current.append(bar)
-                elif current:
-                    eth_common.append(current); current = []
-            if current: eth_common.append(current)
-        loaded["COMMON"] = {"segments": eth_common}
+                elif current: common.append(current); current = []
+            if current: common.append(current)
+        loaded["COMMON"] = {"segments": common}
         report["assets"] = {s: {"dataset_identity": loaded[s]["manifest"].dataset_identity, "source_integrity": loaded[s]["manifest"].source_integrity, "certification": loaded[s]["manifest"].research_certification, "segment_count": len(loaded[s]["segments"])} for s in ("BTCUSDT", "ETHUSDT")}
-
-        # Run every registered parameter cell plus fixed fee/timing stress cells.
         for hyp in GRIDS:
             targets = ["BTCUSDT", "ETHUSDT"] if hyp != "HYP-0006" else ["ETHUSDT"]
-            hyp_report = {"parameter_cells": [], "fee_slippage": [], "timing": [], "baseline_details": {}, "regime": {}, "sample_size": {}, "concentration_drawdown": {}, "control": None}
-            for cell_id, params in enumerate(parameter_cells(hyp)):
-                row = {"cell": f"parameter_{cell_id:02d}", "parameters": {k: str(v) for k, v in params.items()}, "assets": {}}
+            data = {"parameter_cells": [], "fee_slippage": [], "timing": [], "baseline_details": {}, "sample_size": {}, "concentration_drawdown": {}}
+            for cid, params in enumerate(parameter_cells(hyp)):
+                row = {"cell": f"parameter_{cid:02d}", "parameters": {k: str(v) for k, v in params.items()}, "assets": {}}
                 for symbol in targets:
-                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else loaded["COMMON"]["segments"]
-                    btc = None
-                    if hyp == "HYP-0006":
-                        btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs]
-                    details = summarize_segments(segs, hyp, params, FEE_GRID[0][1], FEE_GRID[0][2], 1, btc)
-                    row["assets"][symbol] = details["aggregate"]
-                hyp_report["parameter_cells"].append(row)
+                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else common
+                    btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
+                    row["assets"][symbol] = summarize_segments(segs, hyp, params, FEE_GRID[0][1], FEE_GRID[0][2], 1, btc)["aggregate"]
+                data["parameter_cells"].append(row)
             params = BASE[hyp]
             for label, fee, slip in FEE_GRID:
                 row = {"stress": label, "fee": str(fee), "slippage": str(slip), "assets": {}}
                 for symbol in targets:
-                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else loaded["COMMON"]["segments"]
-                    btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
+                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else common; btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
                     row["assets"][symbol] = summarize_segments(segs, hyp, params, fee, slip, 1, btc)["aggregate"]
-                hyp_report["fee_slippage"].append(row)
+                data["fee_slippage"].append(row)
             for delay in DELAYS:
                 row = {"delay_bars": delay, "assets": {}}
                 for symbol in targets:
-                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else loaded["COMMON"]["segments"]
-                    btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
+                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else common; btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
                     row["assets"][symbol] = summarize_segments(segs, hyp, params, FEE_GRID[0][1], FEE_GRID[0][2], delay, btc)["aggregate"]
-                hyp_report["timing"].append(row)
+                data["timing"].append(row)
             for symbol in targets:
-                segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else loaded["COMMON"]["segments"]
-                btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
-                base_detail = summarize_segments(segs, hyp, params, FEE_GRID[0][1], FEE_GRID[0][2], 1, btc)
-                hyp_report["baseline_details"][symbol] = base_detail
-                hyp_report["concentration_drawdown"][symbol] = concentration_and_dd(base_detail["segments"])
-                loo = []
-                valid = [d for d in base_detail["segments"] if d["aggregate"] and d["aggregate"]["events"]]
+                segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else common; btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
+                base = summarize_segments(segs, hyp, params, FEE_GRID[0][1], FEE_GRID[0][2], 1, btc)
+                data["baseline_details"][symbol] = base; data["concentration_drawdown"][symbol] = concentration_and_dd(base["segments"])
+                valid = [d for d in base["segments"] if d["aggregate"] and d["aggregate"]["events"]]; loo = []
                 for omit in range(len(valid)):
-                    kept = [Decimal(d["aggregate"]["compound_return"]) for j, d in enumerate(valid) if j != omit]
-                    growth = Decimal("1")
+                    kept = [Decimal(d["aggregate"]["compound_return"]) for j, d in enumerate(valid) if j != omit]; growth = Decimal("1")
                     for r in kept: growth *= 1 + r
                     loo.append({"omitted_segment": valid[omit]["segment"], "compound_return": str(growth - 1) if kept else "0"})
-                hyp_report["sample_size"][symbol] = {"leave_one_out": loo}
-                if hyp != "HYP-0006":
-                    # Regime evidence is recorded from signal-close classification; no future information is used.
-                    regimes = {"bull": [], "bear": [], "neutral": []}
-                    for seg in segs:
-                        for i in range(169, len(seg)):
-                            r = seg[i].close / seg[i-168].close - 1
-                            regime = "bull" if r > Decimal("0.10") else "bear" if r < Decimal("-0.10") else "neutral"
-                            if event_condition(hyp, i, seg, params):
-                                entry = i + 1
-                                if entry < len(seg): regimes[regime].append(event_return(seg[entry], seg[entry], FEE_GRID[0][1], FEE_GRID[0][2]))
-                    hyp_report["regime"][symbol] = {k: {"events": len(v), "compound_return": str((math.prod([float(1+x) for x in v]) - 1) if v else 0)} for k, v in regimes.items()}
-            if hyp == "HYP-0006":
-                hyp_report["control"] = "synchronized BTC/ETH control recorded through target-event analysis"
-            report["decisions"][hyp] = hyp_report
-
-    # Final binary decision is fail-closed and applies the preregistered dimensions.
+                data["sample_size"][symbol] = {"leave_one_out": loo}
+            report["decisions"][hyp] = data
     final = {}
     for hyp, data in report["decisions"].items():
-        targets = ["BTCUSDT", "ETHUSDT"] if hyp != "HYP-0006" else ["ETHUSDT"]
-        checks = []
+        targets = ["BTCUSDT", "ETHUSDT"] if hyp != "HYP-0006" else ["ETHUSDT"]; checks = []
         for symbol in targets:
-            baseline = data["baseline_details"][symbol]["aggregate"]
-            positive = Decimal(baseline["compound_return"]) > 0 and Decimal(baseline["mean_segment_return"]) > 0
-            params = data["parameter_cells"]
-            vals = [Decimal(r["assets"][symbol]["mean_segment_return"]) > 0 for r in params if r["assets"].get(symbol) and r["assets"][symbol]["events"]]
-            param_pass = bool(vals) and sum(vals) / len(vals) >= 0.60
-            stress = data["fee_slippage"][-1]["assets"][symbol]
-            fee_pass = stress and Decimal(stress["compound_return"]) > 0 and Decimal(stress["mean_segment_return"]) > 0
-            timing = data["timing"][1]["assets"][symbol]
-            timing_pass = timing and Decimal(timing["compound_return"]) > 0 and Decimal(timing["mean_segment_return"]) > 0
-            loo = data["sample_size"][symbol]["leave_one_out"]
-            loo_pass = positive and bool(loo) and sum(Decimal(x["compound_return"]) > 0 for x in loo) / len(loo) >= 0.75
-            conc = data["concentration_drawdown"][symbol]
-            seg_pass = bool(conc["segments"]) and max(Decimal(x["positive_log_contribution"]) for x in conc["segments"]) <= Decimal("0.50")
-            trade_pass = conc["top_10_positive_event_pnl_fraction"] is not None and Decimal(conc["top_10_positive_event_pnl_fraction"]) <= Decimal("0.50")
-            dd_pass = Decimal(conc["max_drawdown"]) < Decimal("0.70") and Decimal(conc["worst_segment_return"]) > Decimal("-0.50") and (Decimal(conc["longest_recovery_events"]) / Decimal(max(conc["eligible_events"], 1))) <= Decimal("0.50")
+            b = data["baseline_details"][symbol]["aggregate"]; positive = Decimal(b["compound_return"]) > 0 and Decimal(b["mean_segment_return"]) > 0
+            vals = [r["assets"][symbol] for r in data["parameter_cells"] if r["assets"].get(symbol) and r["assets"][symbol]["events"]]; param_pass = bool(vals) and sum(Decimal(v["mean_segment_return"]) > 0 for v in vals) / len(vals) >= Decimal("0.60") and sum(Decimal(v["compound_return"]) > 0 for v in vals) / len(vals) >= Decimal("0.50")
+            stress = data["fee_slippage"][-1]["assets"][symbol]; fee_pass = stress and Decimal(stress["compound_return"]) > 0 and Decimal(stress["mean_segment_return"]) > 0
+            timing = data["timing"][1]["assets"][symbol]; timing_pass = timing and Decimal(timing["compound_return"]) > 0 and Decimal(timing["mean_segment_return"]) > 0
+            loo = data["sample_size"][symbol]["leave_one_out"]; loo_pass = positive and bool(loo) and sum(Decimal(x["compound_return"]) > 0 for x in loo) / len(loo) >= Decimal("0.75")
+            conc = data["concentration_drawdown"][symbol]; seg_pass = bool(conc["segments"]) and max(Decimal(x["positive_log_contribution"]) for x in conc["segments"]) <= Decimal("0.50"); trade_pass = conc["top_10_positive_event_pnl_fraction"] is not None and Decimal(conc["top_10_positive_event_pnl_fraction"]) <= Decimal("0.50")
+            dd_pass = Decimal(conc["max_drawdown"]) < Decimal("0.70") and Decimal(conc["worst_segment_return"]) > Decimal("-0.50") and Decimal(conc["longest_recovery_events"]) / Decimal(max(conc["eligible_events"], 1)) <= Decimal("0.50")
             checks.append({"asset": symbol, "baseline": positive, "parameter_neighborhood": param_pass, "fee_slippage": fee_pass, "timing": timing_pass, "sample_size": loo_pass, "concentration": seg_pass and trade_pass, "drawdown_recovery": dd_pass})
         final[hyp] = {"checks": checks, "decision": "ROBUSTNESS_PASS" if all(all(v for k, v in c.items() if k != "asset") for c in checks) else "ROBUSTNESS_FAIL"}
-    report["final"] = final
-    (output / "next_cycle_results.json").write_text(json.dumps(report, sort_keys=True, indent=2, default=str), encoding="utf-8")
-    print("GATE2 NEXT CYCLE COMPLETE")
-    print(json.dumps({"final": final, "preregistration_sha256": prereg_sha, "oos_accessed": False}, sort_keys=True))
+    report["final"] = final; (output / "next_cycle_results.json").write_text(json.dumps(report, sort_keys=True, indent=2, default=str), encoding="utf-8")
+    print("GATE2 NEXT CYCLE COMPLETE"); print(json.dumps({"final": final, "preregistration_sha256": prereg_sha, "oos_accessed": False}, sort_keys=True))
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()
