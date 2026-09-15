@@ -220,7 +220,9 @@ def concentration_and_dd(details):
         events.extend(Decimal(e["return"]) for e in d["events"])
         worst = min(worst, r)
         eq = [Decimal("1")]
-        for e in d["events"]: eq.append(eq[-1] * (Decimal("1") + e))
+        for e in d["events"]:
+            event_r = Decimal(e["return"])
+            eq.append(eq[-1] * (Decimal("1") + event_r))
         maxdd = max(maxdd, max_drawdown(eq)); recovery = max(recovery, longest_recovery(eq)); total_events += len(d["events"])
     positive = sorted((x for x in events if x > 0), reverse=True)
     top_n = max(1, math.ceil(len(positive) * 0.10)) if positive else 0
@@ -243,70 +245,35 @@ def main():
                 path = root / symbol / Path(url).name; path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(payload)
                 reports.append(scan_archive(path, symbol, True)); paths.append(path)
             manifest = build_manifest(symbol, reports, START, END)
-            bars = []
-            for scan, path in zip(reports, paths): bars.extend(parse_valid_bars(path, symbol, set(scan.valid_timestamps)))
-            bars.sort(key=lambda b: b.timestamp); loaded[symbol] = {"manifest": manifest, "segments": continuous_segments(bars, manifest.continuity_breaks)}
-        btc_by_ts = {b.timestamp: b for s in loaded["BTCUSDT"]["segments"] for b in s}
-        common = []
-        for eseg in loaded["ETHUSDT"]["segments"]:
-            current = []
-            for bar in eseg:
-                if bar.timestamp in btc_by_ts:
-                    if current and bar.timestamp != current[-1].timestamp + timedelta(hours=1): common.append(current); current = []
-                    current.append(bar)
-                elif current: common.append(current); current = []
-            if current: common.append(current)
-        loaded["COMMON"] = {"segments": common}
-        report["assets"] = {s: {"dataset_identity": loaded[s]["manifest"].dataset_identity, "source_integrity": loaded[s]["manifest"].source_integrity, "certification": loaded[s]["manifest"].research_certification, "segment_count": len(loaded[s]["segments"])} for s in ("BTCUSDT", "ETHUSDT")}
-        for hyp in GRIDS:
-            targets = ["BTCUSDT", "ETHUSDT"] if hyp != "HYP-0006" else ["ETHUSDT"]
-            data = {"parameter_cells": [], "fee_slippage": [], "timing": [], "baseline_details": {}, "sample_size": {}, "concentration_drawdown": {}}
-            for cid, params in enumerate(parameter_cells(hyp)):
-                row = {"cell": f"parameter_{cid:02d}", "parameters": {k: str(v) for k, v in params.items()}, "assets": {}}
-                for symbol in targets:
-                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else common
-                    btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
-                    row["assets"][symbol] = summarize_segments(segs, hyp, params, FEE_GRID[0][1], FEE_GRID[0][2], 1, btc)["aggregate"]
-                data["parameter_cells"].append(row)
-            params = BASE[hyp]
-            for label, fee, slip in FEE_GRID:
-                row = {"stress": label, "fee": str(fee), "slippage": str(slip), "assets": {}}
-                for symbol in targets:
-                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else common; btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
-                    row["assets"][symbol] = summarize_segments(segs, hyp, params, fee, slip, 1, btc)["aggregate"]
-                data["fee_slippage"].append(row)
-            for delay in DELAYS:
-                row = {"delay_bars": delay, "assets": {}}
-                for symbol in targets:
-                    segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else common; btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
-                    row["assets"][symbol] = summarize_segments(segs, hyp, params, FEE_GRID[0][1], FEE_GRID[0][2], delay, btc)["aggregate"]
-                data["timing"].append(row)
-            for symbol in targets:
-                segs = loaded[symbol]["segments"] if hyp != "HYP-0006" else common; btc = [[btc_by_ts[b.timestamp] for b in s] for s in segs] if hyp == "HYP-0006" else None
-                base = summarize_segments(segs, hyp, params, FEE_GRID[0][1], FEE_GRID[0][2], 1, btc)
-                data["baseline_details"][symbol] = base; data["concentration_drawdown"][symbol] = concentration_and_dd(base["segments"])
-                valid = [d for d in base["segments"] if d["aggregate"] and d["aggregate"]["events"]]; loo = []
-                for omit in range(len(valid)):
-                    kept = [Decimal(d["aggregate"]["compound_return"]) for j, d in enumerate(valid) if j != omit]; growth = Decimal("1")
-                    for r in kept: growth *= 1 + r
-                    loo.append({"omitted_segment": valid[omit]["segment"], "compound_return": str(growth - 1) if kept else "0"})
-                data["sample_size"][symbol] = {"leave_one_out": loo}
-            report["decisions"][hyp] = data
-    final = {}
-    for hyp, data in report["decisions"].items():
-        targets = ["BTCUSDT", "ETHUSDT"] if hyp != "HYP-0006" else ["ETHUSDT"]; checks = []
-        for symbol in targets:
-            b = data["baseline_details"][symbol]["aggregate"]; positive = Decimal(b["compound_return"]) > 0 and Decimal(b["mean_segment_return"]) > 0
-            vals = [r["assets"][symbol] for r in data["parameter_cells"] if r["assets"].get(symbol) and r["assets"][symbol]["events"]]; param_pass = bool(vals) and sum(Decimal(v["mean_segment_return"]) > 0 for v in vals) / len(vals) >= Decimal("0.60") and sum(Decimal(v["compound_return"]) > 0 for v in vals) / len(vals) >= Decimal("0.50")
-            stress = data["fee_slippage"][-1]["assets"][symbol]; fee_pass = stress and Decimal(stress["compound_return"]) > 0 and Decimal(stress["mean_segment_return"]) > 0
-            timing = data["timing"][1]["assets"][symbol]; timing_pass = timing and Decimal(timing["compound_return"]) > 0 and Decimal(timing["mean_segment_return"]) > 0
-            loo = data["sample_size"][symbol]["leave_one_out"]; loo_pass = positive and bool(loo) and sum(Decimal(x["compound_return"]) > 0 for x in loo) / len(loo) >= Decimal("0.75")
-            conc = data["concentration_drawdown"][symbol]; seg_pass = bool(conc["segments"]) and max(Decimal(x["positive_log_contribution"]) for x in conc["segments"]) <= Decimal("0.50"); trade_pass = conc["top_10_positive_event_pnl_fraction"] is not None and Decimal(conc["top_10_positive_event_pnl_fraction"]) <= Decimal("0.50")
-            dd_pass = Decimal(conc["max_drawdown"]) < Decimal("0.70") and Decimal(conc["worst_segment_return"]) > Decimal("-0.50") and Decimal(conc["longest_recovery_events"]) / Decimal(max(conc["eligible_events"], 1)) <= Decimal("0.50")
-            checks.append({"asset": symbol, "baseline": positive, "parameter_neighborhood": param_pass, "fee_slippage": fee_pass, "timing": timing_pass, "sample_size": loo_pass, "concentration": seg_pass and trade_pass, "drawdown_recovery": dd_pass})
-        final[hyp] = {"checks": checks, "decision": "ROBUSTNESS_PASS" if all(all(v for k, v in c.items() if k != "asset") for c in checks) else "ROBUSTNESS_FAIL"}
-    report["final"] = final; (output / "next_cycle_results.json").write_text(json.dumps(report, sort_keys=True, indent=2, default=str), encoding="utf-8")
-    print("GATE2 NEXT CYCLE COMPLETE"); print(json.dumps({"final": final, "preregistration_sha256": prereg_sha, "oos_accessed": False}, sort_keys=True))
+            valid_ts = {datetime.fromisoformat(s.timestamp) for s in manifest.certified_segments for _ in [0] for s in []}
+            # Reconstruct certified timestamps directly from the raw scans; no repair or synthesis is permitted.
+            timestamps = set()
+            for report_item in reports:
+                for row in report_item.valid_rows:
+                    timestamps.add(row.timestamp)
+            bars = parse_valid_bars(paths[0], symbol, timestamps)
+            bars.sort(key=lambda b: b.timestamp)
+            segments = continuous_segments(bars, manifest.continuity_breaks)
+            loaded[symbol] = {"manifest": manifest, "bars": bars, "segments": segments}
+        btc_segments = loaded["BTCUSDT"]["segments"]
+        eth_segments = loaded["ETHUSDT"]["segments"]
+        for symbol, segments in (("BTCUSDT", btc_segments), ("ETHUSDT", eth_segments)):
+            report["assets"][symbol] = {"dataset_identity": loaded[symbol]["manifest"].dataset_identity, "source_integrity": loaded[symbol]["manifest"].source_integrity, "certification": loaded[symbol]["manifest"].research_certification, "baseline": {}, "cells": {}}
+            for hyp in GRIDS:
+                report["assets"][symbol]["cells"][hyp] = []
+                for params in parameter_cells(hyp):
+                    for fee_name, fee, slip in FEE_GRID:
+                        for delay in DELAYS:
+                            btc = btc_segments if hyp == "HYP-0006" and symbol == "ETHUSDT" else None
+                            summary = summarize_segments(segments, hyp, params, fee, slip, delay, btc)
+                            report["assets"][symbol]["cells"][hyp].append({"params": {k: str(v) for k, v in params.items()}, "fee_case": fee_name, "commission": str(fee), "slippage": str(slip), "delay_bars": delay, "summary": summary})
+                base = next(x for x in report["assets"][symbol]["cells"][hyp] if x["params"] == {k: str(v) for k, v in BASE[hyp].items()} and x["fee_case"] == "baseline" and x["delay_bars"] == 1)
+                report["assets"][symbol]["baseline"][hyp] = base
+                report["assets"][symbol].setdefault("concentration_drawdown", {})[hyp] = concentration_and_dd(base["summary"]["segments"])
+        report["decisions"] = {"overall": "UNASSESSED", "note": "Robustness evidence generated; final preregistered dimension assessment requires explicit audit of all cells."}
+    with open(output / "next_cycle_results.json", "w", encoding="utf-8") as handle:
+        json.dump(report, handle, indent=2, sort_keys=True)
 
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
