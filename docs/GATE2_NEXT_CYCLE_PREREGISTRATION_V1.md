@@ -19,7 +19,7 @@ No result from this registration may be treated as evidence until the registered
 - Data: Gate 1A-certified observations only; continuity breaks are never bridged
 - Execution: spot-only, long-only, 0–100% exposure, no leverage, no shorting, no intrabar fills
 
-The Gate 2 protocol remains controlling. fileciteturn314file0
+The Gate 2 protocol remains controlling.
 
 ## Common causal execution contract
 
@@ -33,6 +33,8 @@ For every candidate:
 6. No synthetic observation, interpolation, forward-fill, timestamp repair, or gap bridging is permitted.
 7. If required history crosses a continuity break, the signal is invalid.
 8. A position cannot be carried through an unresolved research-continuity boundary for performance accounting.
+9. **Non-overlap rule:** each candidate may have at most one active position. For HYP-0005, HYP-0006, and HYP-0007, a new signal observed while that candidate already has an active one-bar position is ignored. A new event becomes eligible only after the position is flat. This rule is fixed across every parameter and robustness cell and is not a selection/tuning parameter.
+10. **One-bar holding rule:** for HYP-0005 and HYP-0007, an executed entry is held for exactly one eligible bar and exits at that bar's close for research return accounting. HYP-0006 follows the same one-eligible-bar holding period on ETH.
 
 ## Registered candidates
 
