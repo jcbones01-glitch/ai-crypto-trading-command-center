@@ -20,7 +20,7 @@ This cycle is new research. It does not modify, rescue, or retune HYP-0001 throu
 
 ## HYP-0011 — Close-Location Reversal
 
-Mechanism: after a materially negative completed bar, a strong recovery close within that same current bar may contain short-horizon reversal information.
+Mechanism: after a materially negative completed bar, a strong recovery close within the same current bar may contain short-horizon reversal information.
 
 At signal t:
 - return[t-1] <= -R;
@@ -47,15 +47,16 @@ Baseline: N=24, K=3, L=0.85.
 
 ## HYP-0013 — Trend-Filter Pullback Recovery
 
-Mechanism: a positive medium-horizon trend followed by a one-bar downside pullback that closes above its open may contain short-horizon continuation/recovery information.
+Mechanism: a positive medium-horizon trend followed by a downside pullback bar and recovery close may contain short-horizon continuation information.
 
 At signal t:
 - close[t-24] < close[t-1] (positive 24-hour trend);
-- return[t] <= -P;
+- return[t-1] <= -P (the completed pullback is the prior bar);
 - close[t] > open[t];
-- current close remains above the 24-hour trend anchor close[t-24].
+- close[t] remains above close[t-24];
+- current close location `(close[t]-low[t])/(high[t]-low[t]) >= L`.
 
-Grid: P = 0.5%, 1%, 1.5% × trend lookback = 24, 48 × recovery close-location L = 0.5, 0.7 = 12 cells, where recovery requires `(close[t]-low[t])/(high[t]-low[t]) >= L`.
+Grid: P = 0.5%, 1%, 1.5% × trend lookback = 24, 48 × recovery close-location L = 0.5, 0.7 = 12 cells, where the trend anchor is the selected lookback before the pullback.
 Baseline: P=1%, trend lookback=24, L=0.7.
 
 ## Robustness
@@ -66,7 +67,7 @@ Errors are recorded, not omitted. A candidate cannot enter Validation unless eve
 
 ## Logical-integrity rule
 
-All signal predicates must be jointly satisfiable on the same bar. A zero-event result caused by contradictory predicates is classified as registration/implementation invalidity, not as economic evidence.
+All signal predicates must be jointly satisfiable on the same bar. A zero-event result caused by contradictory predicates is classified as registration/implementation invalidity, not economic evidence.
 
 ## Closure
 
