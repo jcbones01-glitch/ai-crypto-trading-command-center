@@ -50,13 +50,21 @@ def test_hyp0006_requires_exact_timestamp_alignment():
         raise AssertionError("HYP-0006 accepted non-synchronized timestamps")
 
 
-def test_delay_one_enters_next_bar_and_delay_two_skips_one_bar():
+def test_delay_one_and_two_use_future_bar_opens_without_overlap():
     ts = datetime(2021, 1, 1, tzinfo=timezone.utc)
-    bars = [bar(ts + timedelta(hours=i), 100 + i, 100) for i in range(5)]
-    params = BASE["HYP-0005"]
-    fee = Decimal("0")
-    slip = Decimal("0")
-    result_1 = simulate_events(bars, "HYP-0005", params, fee, slip, 1)
-    result_2 = simulate_events(bars, "HYP-0005", params, fee, slip, 2)
-    assert result_1["events"] == []
-    assert result_2["events"] == []
+    bars = [
+        bar(ts + timedelta(hours=0), 100, 100),
+        bar(ts + timedelta(hours=1), 101, 100),
+        bar(ts + timedelta(hours=2), 102, 100),
+        bar(ts + timedelta(hours=3), 103, 100),
+        bar(ts + timedelta(hours=4), 104, 100),
+    ]
+    params = {"volume_lookback": 1, "shock": Decimal("1"), "return_threshold": Decimal("0.005")}
+    result_1 = simulate_events(bars, "HYP-0005", params, Decimal("0"), Decimal("0"), 1)
+    result_2 = simulate_events(bars, "HYP-0005", params, Decimal("0"), Decimal("0"), 2)
+    assert result_1["events"][0]["signal_index"] == 1
+    assert result_1["events"][0]["entry_index"] == 2
+    assert result_1["events"][0]["exit_index"] == 2
+    assert result_2["events"][0]["signal_index"] == 1
+    assert result_2["events"][0]["entry_index"] == 3
+    assert result_2["events"][0]["exit_index"] == 3
