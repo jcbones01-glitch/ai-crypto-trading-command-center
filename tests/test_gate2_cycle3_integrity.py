@@ -13,7 +13,7 @@ def test_cycle3_registered_cells():
 
 def test_recovery_predicates_are_satisfiable():
     t=datetime(2021,1,1,tzinfo=timezone.utc)
-    b=[bar(t,100,101,99,100),bar(t+timedelta(hours=1),100,101,95,96),bar(t+timedelta(hours=2),96,101,95,100)]
+    b=[bar(t,100,101,99,100),bar(t+timedelta(hours=1),100,101,95,96),bar(t+timedelta(hours=2),96,101,94,100)]
     assert condition('HYP-0011',2,b,BASE['HYP-0011'])
     assert b[2].close > b[2].open
 
