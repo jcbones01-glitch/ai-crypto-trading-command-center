@@ -7,14 +7,17 @@ from tests.gate2_cycle2_experiments import BASE, GRID, cartesian, event_conditio
 
 def bar(ts, close, open_=None, volume=100):
     v=Decimal(str(close)); o=v if open_ is None else Decimal(str(open_))
-    return MarketBar(ts, 'BTC/USDT', o, v, v, v, Decimal(str(volume)))
+    high=max(o,v); low=min(o,v)
+    return MarketBar(ts, 'BTC/USDT', o, high, low, v, Decimal(str(volume)))
 
 
 def test_cycle2_registered_parameter_cells():
+    # The frozen preregistration enumerates 18 + 18 + 9 = 45 cells.
+    # Its HYP-0009 prose says "27", but the listed values are 3 x 2 x 3 = 18.
     assert len(list(cartesian(GRID['HYP-0008']))) == 18
-    assert len(list(cartesian(GRID['HYP-0009']))) == 27
+    assert len(list(cartesian(GRID['HYP-0009']))) == 18
     assert len(list(cartesian(GRID['HYP-0010']))) == 9
-    assert sum(len(list(cartesian(GRID[h]))) for h in GRID) == 54
+    assert sum(len(list(cartesian(GRID[h]))) for h in GRID) == 45
 
 
 def test_volume_median_uses_only_previous_completed_bars():
