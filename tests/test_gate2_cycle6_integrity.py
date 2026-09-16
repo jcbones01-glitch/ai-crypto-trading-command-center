@@ -13,17 +13,18 @@ def test_cycle6_registered_cells():
 
 def test_hour_condition_satisfiable():
     t=datetime(2021,1,1,0,tzinfo=timezone.utc)
-    b=[bar(t,100,101,99,100),bar(t+timedelta(hours=1),100,101,99,100),bar(t+timedelta(hours=24),100,102,99,101)]
+    b=[bar(t,100,101,99,100),bar(t+timedelta(hours=1),100,101,99,100),bar(t+timedelta(hours=24),100,102,99,101.8)]
     assert condition('HYP-0020',2,b,BASE['HYP-0020'])
 
 def test_streak_exhaustion_uses_previous_completed_returns():
     t=datetime(2021,1,1,tzinfo=timezone.utc)
-    b=[bar(t+timedelta(hours=i),100+i,101+i,99+i,100+i+0.4) for i in range(5)]
+    b=[bar(t+timedelta(hours=i),100+i,101+i,99+i,100+i+0.4) for i in range(4)]
+    b.append(bar(t+timedelta(hours=4),104.4,105,103,104))
     assert condition('HYP-0021',4,b,BASE['HYP-0021'])
 
 def test_body_dominance_uses_body_return_threshold():
     t=datetime(2021,1,1,tzinfo=timezone.utc)
-    b=[bar(t,100,100,99,100),bar(t+timedelta(hours=1),100,102,99.5,101)]
+    b=[bar(t,100,100,99,100),bar(t+timedelta(hours=1),100,102,99.5,101.8)]
     assert condition('HYP-0022',1,b,BASE['HYP-0022'])
     p=dict(BASE['HYP-0022']); p['body_return']=Decimal('.02')
     assert not condition('HYP-0022',1,b,p)
