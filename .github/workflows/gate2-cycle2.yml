@@ -31,10 +31,8 @@ jobs:
               raise SystemExit(f'unsupported delay accepted: {d}')
           print('causal timing contract passed')
           PY
-      - name: Record checked-out commit
-        run: echo "CHECKED_OUT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
       - name: Run preregistered Cycle 2 Development experiments
-        run: python tests/gate2_cycle2_experiments.py
+        run: CHECKED_OUT_SHA=$(git rev-parse HEAD) GITHUB_SHA=$(git rev-parse HEAD) python tests/gate2_cycle2_experiments.py
       - name: Upload Cycle 2 evidence
         uses: actions/upload-artifact@v4
         with:
