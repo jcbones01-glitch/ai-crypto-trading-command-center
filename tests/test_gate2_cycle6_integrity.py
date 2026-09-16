@@ -16,10 +16,10 @@ def test_hour_condition_satisfiable():
     b=[bar(t,100,101,99,100),bar(t+timedelta(hours=1),100,101,99,100),bar(t+timedelta(hours=24),100,102,99,101)]
     assert condition('HYP-0020',2,b,BASE['HYP-0020'])
 
-def test_streak_exhaustion_satisfiable():
+def test_streak_exhaustion_uses_previous_completed_returns():
     t=datetime(2021,1,1,tzinfo=timezone.utc)
-    b=[bar(t+timedelta(hours=i),100+i,101+i,99+i,100+i+0.4) for i in range(4)]
-    assert condition('HYP-0021',3,b,BASE['HYP-0021'])
+    b=[bar(t+timedelta(hours=i),100+i,101+i,99+i,100+i+0.4) for i in range(5)]
+    assert condition('HYP-0021',4,b,BASE['HYP-0021'])
 
 def test_body_dominance_uses_body_return_threshold():
     t=datetime(2021,1,1,tzinfo=timezone.utc)
