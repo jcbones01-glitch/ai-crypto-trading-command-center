@@ -20,7 +20,7 @@ jobs:
       - name: Run tests
         run: pytest
       - name: Verify causal timing contract
-        run: python tests/test_execution_timing_contract.py
+        run: python -m pytest tests/test_backtesting_execution_delay.py -q
       - name: Run preregistered Cycle 4 Development experiments
         run: CHECKED_OUT_SHA=$(git rev-parse HEAD) GITHUB_SHA=$(git rev-parse HEAD) python tests/gate2_cycle4_experiments.py
       - name: Upload Cycle 4 evidence
