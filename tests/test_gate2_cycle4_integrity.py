@@ -23,14 +23,12 @@ def test_volume_confirmation_uses_completed_history():
     assert volume_ratio(b,24,24) == Decimal('3')
 
 def test_weekend_predicate_satisfiable():
-    t=datetime(2021,9,4,8,tzinfo=timezone.utc)  # Saturday
-    b=[bar(t+timedelta(hours=i),100,101,99,100) for i in range(8)]
+    t=datetime(2021,9,4,0,tzinfo=timezone.utc)  # Saturday
+    b=[bar(t+timedelta(hours=i),100,101,99,100) for i in range(9)]
     b[4]=bar(t+timedelta(hours=4),100,101,99,101)
-    b[5]=bar(t+timedelta(hours=5),101,102,100,102)
-    b[6]=bar(t+timedelta(hours=6),102,103,101,103)
-    b[7]=bar(t+timedelta(hours=7),103,105,102,104.5)
-    assert b[7].timestamp.weekday()==5
-    assert condition('HYP-0016',7,b,BASE['HYP-0016'])
+    b[8]=bar(t+timedelta(hours=8),103,105,102,104.5)
+    assert b[8].timestamp.weekday()==5
+    assert condition('HYP-0016',8,b,BASE['HYP-0016'])
 
 def test_close_location_bounded():
     t=datetime(2021,1,1,tzinfo=timezone.utc); b=bar(t,100,110,90,105)
