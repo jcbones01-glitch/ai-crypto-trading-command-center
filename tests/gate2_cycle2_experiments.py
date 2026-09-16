@@ -2,10 +2,17 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from decimal import Decimal
 from pathlib import Path
 
-from tests.gate2_next_cycle_experiments import (
+# When this file is executed directly by GitHub Actions, Python places the
+# tests directory (not the repository root) on sys.path. Import the shared
+# experiment helpers as a sibling module so the runner is executable both
+# directly and under pytest.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from gate2_next_cycle_experiments import (  # noqa: E402
     START, END, FEE_GRID, DELAYS, months, fetch, parse_valid_bars,
     continuous_segments, event_return, concentration_and_dd, sha256_file,
 )
