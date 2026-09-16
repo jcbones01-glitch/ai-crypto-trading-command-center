@@ -1,0 +1,29 @@
+name: Gate 2 Cycle 4
+
+on:
+  push:
+    branches: [gate2-research-foundation]
+  workflow_dispatch:
+
+jobs:
+  gate2-cycle4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -e '.[dev]'
+      - name: Run tests
+        run: pytest
+      - name: Verify causal timing contract
+        run: python tests/test_execution_timing_contract.py
+      - name: Run preregistered Cycle 4 Development experiments
+        run: CHECKED_OUT_SHA=$(git rev-parse HEAD) GITHUB_SHA=$(git rev-parse HEAD) python tests/gate2_cycle4_experiments.py
+      - name: Upload Cycle 4 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate2-cycle4-results
+          path: gate2_cycle4_results/cycle4_results.json
+          if-no-files-found: error
+          retention-days: 30
