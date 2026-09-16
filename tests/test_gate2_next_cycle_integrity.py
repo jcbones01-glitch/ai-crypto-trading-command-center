@@ -37,10 +37,10 @@ def test_volume_baseline_uses_only_previous_completed_bars():
     assert median_previous(values, 3, 3) == Decimal("100")
 
 
-def test_hyp0006_requires_exact_timestamp_alignment():
+def test_hyp0006_requires_exact_timestamp_alignment_at_signal_bar():
     ts = datetime(2021, 1, 1, tzinfo=timezone.utc)
     eth = [bar(ts, 100), bar(ts + timedelta(hours=1), 101)]
-    btc = [bar(ts + timedelta(minutes=1), 100), bar(ts + timedelta(hours=1), 103)]
+    btc = [bar(ts, 100), bar(ts + timedelta(hours=1, minutes=1), 103)]
     params = BASE["HYP-0006"]
     try:
         event_condition("HYP-0006", 1, eth, params, btc)
