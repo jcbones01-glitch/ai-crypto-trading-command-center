@@ -211,14 +211,14 @@ def concentration_and_dd(details):
     seg_returns = [Decimal(d["aggregate"]["compound_return"]) for d in details if d["aggregate"] and d["aggregate"]["events"]]
     positive_log_total = sum((Decimal(1 + r).ln() for r in seg_returns if r > 0 and r > -1), Decimal("0"))
     contributions, events = [], []
-    worst, maxdd, recovery, total_events = Decimal("0"), Decimal("0"), 0, 0
+    worst, maxdd, recovery, total_events = None, Decimal("0"), 0, 0
     for d in details:
         if not d["aggregate"] or not d["aggregate"]["events"]: continue
         r = Decimal(d["aggregate"]["compound_return"])
         contribution = Decimal("0") if r <= 0 or positive_log_total <= 0 else Decimal(1 + r).ln() / positive_log_total
         contributions.append({"segment": d["segment"], "positive_log_contribution": str(contribution), "return": str(r)})
         events.extend(Decimal(e["return"]) for e in d["events"])
-        worst = min(worst, r)
+        worst = r if worst is None else min(worst, r)
         eq = [Decimal("1")]
         for e in d["events"]:
             event_r = Decimal(e["return"])
@@ -227,7 +227,8 @@ def concentration_and_dd(details):
     positive = sorted((x for x in events if x > 0), reverse=True)
     top_n = max(1, math.ceil(len(positive) * 0.10)) if positive else 0
     top_fraction = sum(positive[:top_n], Decimal("0")) / sum(positive, Decimal("0")) if positive else None
-    return {"segments": contributions, "top_10_positive_event_pnl_fraction": str(top_fraction) if top_fraction is not None else None, "max_drawdown": str(maxdd), "worst_segment_return": str(worst), "longest_recovery_events": recovery, "eligible_events": total_events}
+    worst_value = worst if worst is not None else Decimal("0")
+    return {"segments": contributions, "top_10_positive_event_pnl_fraction": str(top_fraction) if top_fraction is not None else None, "max_drawdown": str(maxdd), "worst_segment_return": str(worst_value), "longest_recovery_events": recovery, "eligible_events": total_events}
 
 
 def main():
