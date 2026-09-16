@@ -18,14 +18,14 @@ def test_gap_continuation_predicate_satisfiable():
 
 def test_three_bar_persistence_predicate_satisfiable():
     t=datetime(2021,1,1,tzinfo=timezone.utc)
-    b=[bar(t,100,101,99,100),bar(t+timedelta(hours=1),100,101.5,99.9,100.4),bar(t+timedelta(hours=2),100.4,102,100.3,101),bar(t+timedelta(hours=3),101,103,100.8,102.2)]
+    b=[bar(t,100,101,99,100),bar(t+timedelta(hours=1),100,101.5,99.9,100.4),bar(t+timedelta(hours=2),100.4,102,100.3,101),bar(t+timedelta(hours=3),101,103,100.8,102.8)]
     assert condition('HYP-0018',3,b,BASE['HYP-0018'])
 
 def test_low_volume_breakout_predicate_satisfiable():
     t=datetime(2021,1,1,tzinfo=timezone.utc)
     b=[bar(t+timedelta(hours=i),100,101,99,100,100) for i in range(24)]
     b[23]=bar(t+timedelta(hours=23),100,101.5,99.5,101,100)
-    b.append(bar(t+timedelta(hours=24),101,103,100.5,101.4,50))
+    b.append(bar(t+timedelta(hours=24),101,103,100.5,102.8,50))
     assert condition('HYP-0019',24,b,BASE['HYP-0019'])
 
 def test_close_location_bounded():
