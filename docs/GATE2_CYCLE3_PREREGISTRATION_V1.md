@@ -35,10 +35,10 @@ Entry: next eligible open; exit: close of that same eligible bar.
 
 ## HYP-0012 — Range-Expansion Continuation
 
-Mechanism: an unusually large current range with a strong upside close may indicate directional information not captured by close-to-close momentum alone.
+Mechanism: an unusually large current high-low range with a strong upside close may indicate directional information not captured by close-to-close momentum alone.
 
 At signal t:
-- current true range `(high-low)/close[t-1]` >= K times the median of the previous N completed hourly ranges;
+- normalized current high-low range `(high[t]-low[t])/close[t-1]` >= K times the median of the previous N completed hourly normalized high-low ranges;
 - close location >= L;
 - no lookahead.
 
@@ -49,11 +49,11 @@ Baseline: N=24, K=3, L=0.85.
 
 Mechanism: a positive medium-horizon trend followed by a downside pullback bar and recovery close may contain short-horizon continuation information.
 
-At signal t:
-- close[t-24] < close[t-1] (positive 24-hour trend);
+At signal t, where n is the registered trend-lookback value for the parameter cell:
+- close[t-n] < close[t-1] (positive n-hour trend into the completed pullback);
 - return[t-1] <= -P (the completed pullback is the prior bar);
 - close[t] > open[t];
-- close[t] remains above close[t-24];
+- close[t] remains above close[t-n];
 - current close location `(close[t]-low[t])/(high[t]-low[t]) >= L`.
 
 Grid: P = 0.5%, 1%, 1.5% × trend lookback = 24, 48 × recovery close-location L = 0.5, 0.7 = 12 cells, where the trend anchor is the selected lookback before the pullback.
