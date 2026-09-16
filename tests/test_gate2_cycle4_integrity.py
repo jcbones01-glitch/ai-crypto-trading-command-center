@@ -26,7 +26,7 @@ def test_weekend_predicate_satisfiable():
     t=datetime(2021,9,4,0,tzinfo=timezone.utc)  # Saturday
     b=[bar(t+timedelta(hours=i),100,101,99,100) for i in range(9)]
     b[4]=bar(t+timedelta(hours=4),100,101,99,101)
-    b[8]=bar(t+timedelta(hours=8),103,105,102,104.5)
+    b[8]=bar(t+timedelta(hours=8),103,105,102,104.8)
     assert b[8].timestamp.weekday()==5
     assert condition('HYP-0016',8,b,BASE['HYP-0016'])
 
