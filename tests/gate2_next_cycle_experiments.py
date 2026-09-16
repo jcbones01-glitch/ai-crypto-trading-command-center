@@ -17,7 +17,7 @@ from zipfile import ZipFile
 from research_core.data_ingestion import archive_url, checksum_url, parse_timestamp, verify_sha256_bytes
 from research_core.data_interfaces import MarketBar
 from research_core.data_quality import scan_archive
-from research_core.data_quality_treatment_v2 import build_manifest
+from research_core.data_quality_treatment_v2 import build_manifest, common_certified_intervals
 
 START = datetime(2017, 8, 17, tzinfo=timezone.utc)
 END = datetime(2022, 1, 1, tzinfo=timezone.utc)
@@ -103,6 +103,22 @@ def continuous_segments(bars: list[MarketBar], breaks) -> list[list[MarketBar]]:
     return [s for s in out if s]
 
 
+def synchronized_segments(btc_bars: list[MarketBar], eth_bars: list[MarketBar], btc_breaks, eth_breaks) -> list[tuple[list[MarketBar], list[MarketBar]]]:
+    """Build HYP-0006 samples from exact canonical timestamp intersections."""
+    btc_by_ts = {bar.timestamp: bar for bar in btc_bars if not in_break(bar.timestamp, btc_breaks)}
+    eth_by_ts = {bar.timestamp: bar for bar in eth_bars if not in_break(bar.timestamp, eth_breaks)}
+    common = sorted(set(btc_by_ts) & set(eth_by_ts))
+    pairs: list[tuple[list[MarketBar], list[MarketBar]]] = []
+    btc_segment, eth_segment = [], []
+    for ts in common:
+        if btc_segment and ts != btc_segment[-1].timestamp + timedelta(hours=1):
+            pairs.append((btc_segment, eth_segment)); btc_segment, eth_segment = [], []
+        btc_segment.append(btc_by_ts[ts]); eth_segment.append(eth_by_ts[ts])
+    if btc_segment:
+        pairs.append((btc_segment, eth_segment))
+    return [(btc, eth) for btc, eth in pairs if btc and eth]
+
+
 def median_previous(values: list[Decimal], i: int, n: int) -> Decimal | None:
     if i < n:
         return None
@@ -111,10 +127,9 @@ def median_previous(values: list[Decimal], i: int, n: int) -> Decimal | None:
 
 
 def event_condition(hyp: str, i: int, bars, params: dict, btc_bars=None) -> bool:
-    closes = [b.close for b in bars]
     if i < 1:
         return False
-    ret = closes[i] / closes[i - 1] - 1
+    ret = bars[i].close / bars[i - 1].close - 1
     if hyp in {"HYP-0005", "HYP-0007"}:
         n = params["volume_lookback"]
         baseline = median_previous([b.volume for b in bars], i, n)
@@ -123,8 +138,9 @@ def event_condition(hyp: str, i: int, bars, params: dict, btc_bars=None) -> bool
         shock = bars[i].volume >= Decimal(params["shock"]) * baseline
         threshold = Decimal(params["return_threshold"])
         return shock and (ret >= threshold if hyp == "HYP-0005" else ret <= threshold)
-    btc = btc_bars[i]
-    btc_ret = btc.close / btc_bars[i - 1].close - 1
+    if btc_bars is None or len(btc_bars) != len(bars) or btc_bars[i].timestamp != bars[i].timestamp:
+        raise ValueError("HYP-0006 requires exact BTC/ETH timestamp synchronization")
+    btc_ret = btc_bars[i].close / btc_bars[i - 1].close - 1
     return btc_ret >= Decimal(params["btc_threshold"]) and btc_ret - ret >= Decimal(params["gap"])
 
 
@@ -145,8 +161,6 @@ def simulate_events(bars: list[MarketBar], hyp: str, params: dict, fee: Decimal,
             i += 1
             continue
         entry_i = i + delay
-        if entry_i >= len(bars):
-            break
         r = event_return(bars[entry_i], bars[entry_i], fee, slip)
         returns.append(r)
         event_records.append({"signal_index": i, "entry_index": entry_i, "exit_index": entry_i, "signal_timestamp": bars[i].timestamp.isoformat(), "entry_timestamp": bars[entry_i].timestamp.isoformat(), "return": str(r)})
@@ -170,15 +184,18 @@ def max_drawdown(equity: list[Decimal]) -> Decimal:
     peak, out = equity[0], Decimal("0")
     for value in equity:
         peak = max(peak, value)
-        if peak > 0: out = max(out, (peak - value) / peak)
+        if peak > 0:
+            out = max(out, (peak - value) / peak)
     return out
 
 
 def longest_recovery(equity: list[Decimal]) -> int:
     peak, peak_i, longest = equity[0], 0, 0
     for i, value in enumerate(equity):
-        if value >= peak: peak, peak_i = value, i
-        else: longest = max(longest, i - peak_i)
+        if value >= peak:
+            peak, peak_i = value, i
+        else:
+            longest = max(longest, i - peak_i)
     return longest
 
 
@@ -197,6 +214,8 @@ def summarize_segments(segments, hyp, params, fee, slip, delay, btc_segments=Non
     for idx, seg in enumerate(segments):
         try:
             btc = btc_segments[idx] if btc_segments is not None else None
+            if btc is not None and [b.timestamp for b in btc] != [b.timestamp for b in seg]:
+                raise ValueError("HYP-0006 segment timestamps are not exactly synchronized")
             sim = simulate_events(seg, hyp, params, fee, slip, delay, btc)
             details.append({"segment": idx, "aggregate": aggregate(sim["returns"]), "events": sim["events"], "error": None})
         except Exception as exc:
@@ -213,7 +232,8 @@ def concentration_and_dd(details):
     contributions, events = [], []
     worst, maxdd, recovery, total_events = None, Decimal("0"), 0, 0
     for d in details:
-        if not d["aggregate"] or not d["aggregate"]["events"]: continue
+        if not d["aggregate"] or not d["aggregate"]["events"]:
+            continue
         r = Decimal(d["aggregate"]["compound_return"])
         contribution = Decimal("0") if r <= 0 or positive_log_total <= 0 else Decimal(1 + r).ln() / positive_log_total
         contributions.append({"segment": d["segment"], "positive_log_contribution": str(contribution), "return": str(r)})
@@ -242,36 +262,45 @@ def main():
             for year, month in months(START, END):
                 url = archive_url(symbol, year, month)
                 payload = fetch(url); checksum = fetch(checksum_url(url)).decode("utf-8")
-                if not verify_sha256_bytes(payload, checksum): raise RuntimeError(f"checksum mismatch: {url}")
+                if not verify_sha256_bytes(payload, checksum):
+                    raise RuntimeError(f"checksum mismatch: {url}")
                 path = root / symbol / Path(url).name; path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(payload)
                 reports.append(scan_archive(path, symbol, True)); paths.append(path)
             manifest = build_manifest(symbol, reports, START, END)
-            valid_ts = {datetime.fromisoformat(s.timestamp) for s in manifest.certified_segments for _ in [0] for s in []}
-            # Reconstruct certified timestamps directly from the raw scans; no repair or synthesis is permitted.
-            timestamps = set()
-            for report_item in reports:
-                for row in report_item.valid_rows:
-                    timestamps.add(row.timestamp)
-            bars = parse_valid_bars(paths[0], symbol, timestamps)
+            bars = []
+            for path, report_item in zip(paths, reports):
+                bars.extend(parse_valid_bars(path, symbol, set(report_item.valid_timestamps)))
             bars.sort(key=lambda b: b.timestamp)
             segments = continuous_segments(bars, manifest.continuity_breaks)
             loaded[symbol] = {"manifest": manifest, "bars": bars, "segments": segments}
-        btc_segments = loaded["BTCUSDT"]["segments"]
-        eth_segments = loaded["ETHUSDT"]["segments"]
-        for symbol, segments in (("BTCUSDT", btc_segments), ("ETHUSDT", eth_segments)):
-            report["assets"][symbol] = {"dataset_identity": loaded[symbol]["manifest"].dataset_identity, "source_integrity": loaded[symbol]["manifest"].source_integrity, "certification": loaded[symbol]["manifest"].research_certification, "baseline": {}, "cells": {}}
-            for hyp in GRIDS:
+        btc = loaded["BTCUSDT"]; eth = loaded["ETHUSDT"]
+        common_pairs = synchronized_segments(btc["bars"], eth["bars"], btc["manifest"].continuity_breaks, eth["manifest"].continuity_breaks)
+        report["synchronized_common_segments"] = len(common_pairs)
+        for symbol, data in (("BTCUSDT", btc), ("ETHUSDT", eth)):
+            report["assets"][symbol] = {"dataset_identity": data["manifest"].dataset_identity, "source_integrity": data["manifest"].source_integrity, "certification": data["manifest"].research_certification, "baseline": {}, "cells": {}}
+        for symbol, segments in (("BTCUSDT", btc["segments"]), ("ETHUSDT", eth["segments"])):
+            for hyp in ("HYP-0005", "HYP-0007"):
                 report["assets"][symbol]["cells"][hyp] = []
                 for params in parameter_cells(hyp):
                     for fee_name, fee, slip in FEE_GRID:
                         for delay in DELAYS:
-                            btc = btc_segments if hyp == "HYP-0006" and symbol == "ETHUSDT" else None
-                            summary = summarize_segments(segments, hyp, params, fee, slip, delay, btc)
+                            summary = summarize_segments(segments, hyp, params, fee, slip, delay)
                             report["assets"][symbol]["cells"][hyp].append({"params": {k: str(v) for k, v in params.items()}, "fee_case": fee_name, "commission": str(fee), "slippage": str(slip), "delay_bars": delay, "summary": summary})
                 base = next(x for x in report["assets"][symbol]["cells"][hyp] if x["params"] == {k: str(v) for k, v in BASE[hyp].items()} and x["fee_case"] == "baseline" and x["delay_bars"] == 1)
                 report["assets"][symbol]["baseline"][hyp] = base
                 report["assets"][symbol].setdefault("concentration_drawdown", {})[hyp] = concentration_and_dd(base["summary"]["segments"])
-        report["decisions"] = {"overall": "UNASSESSED", "note": "Robustness evidence generated; final preregistered dimension assessment requires explicit audit of all cells."}
+        report["assets"]["ETHUSDT"]["cells"]["HYP-0006"] = []
+        for params in parameter_cells("HYP-0006"):
+            for fee_name, fee, slip in FEE_GRID:
+                for delay in DELAYS:
+                    eth_segments = [pair[1] for pair in common_pairs]
+                    btc_segments = [pair[0] for pair in common_pairs]
+                    summary = summarize_segments(eth_segments, "HYP-0006", params, fee, slip, delay, btc_segments)
+                    report["assets"]["ETHUSDT"]["cells"]["HYP-0006"].append({"params": {k: str(v) for k, v in params.items()}, "fee_case": fee_name, "commission": str(fee), "slippage": str(slip), "delay_bars": delay, "summary": summary})
+        base = next(x for x in report["assets"]["ETHUSDT"]["cells"]["HYP-0006"] if x["params"] == {k: str(v) for k, v in BASE["HYP-0006"].items()} and x["fee_case"] == "baseline" and x["delay_bars"] == 1)
+        report["assets"]["ETHUSDT"]["baseline"]["HYP-0006"] = base
+        report["assets"]["ETHUSDT"].setdefault("concentration_drawdown", {})["HYP-0006"] = concentration_and_dd(base["summary"]["segments"])
+        report["decisions"] = {"overall": "UNASSESSED", "note": "Development evidence generated; final preregistered dimension assessment requires explicit audit of all cells."}
     with open(output / "next_cycle_results.json", "w", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2, sort_keys=True)
 
