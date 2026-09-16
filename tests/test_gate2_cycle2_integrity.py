@@ -30,7 +30,9 @@ def test_volume_median_uses_only_previous_completed_bars():
 def test_hyp0010_volume_filter_is_registered_semantics():
     ts=datetime(2021,1,1,tzinfo=timezone.utc)
     bars=[bar(ts+timedelta(hours=i),100,volume=100) for i in range(24)]
-    bars += [bar(ts+timedelta(hours=24),98,open_=99,volume=200),bar(ts+timedelta(hours=25),96,open_=95,volume=200)]
+    # At signal t=25 the volume baseline must be the previous 24 completed
+    # bars (all 100); signal volume 140 passes 1x but fails 1.5x.
+    bars += [bar(ts+timedelta(hours=24),98,open_=99,volume=140),bar(ts+timedelta(hours=25),96,open_=95,volume=140)]
     assert event_condition('HYP-0010',25,bars,{'selloff':Decimal('0.01'),'volume_multiplier':Decimal('1')})
     assert not event_condition('HYP-0010',25,bars,{'selloff':Decimal('0.01'),'volume_multiplier':Decimal('1.5')})
 
