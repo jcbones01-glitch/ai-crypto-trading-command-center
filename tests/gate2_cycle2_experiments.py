@@ -33,6 +33,7 @@ BASE = {
  'HYP-0010': {'selloff':Decimal('0.01'),'volume_multiplier':Decimal('0')},
 }
 
+
 def cartesian(grid):
  keys=list(grid)
  def rec(i,cur):
@@ -41,22 +42,27 @@ def cartesian(grid):
    cur[keys[i]]=v; yield from rec(i+1,cur)
  yield from rec(0,{})
 
+
 def ret(bars,i): return bars[i].close/bars[i-1].close-1
+
 
 def abs_median_previous(bars,i,n):
  if i<n+1: return None
  vals=sorted(abs(ret(bars,j)) for j in range(i-n,i)); m=len(vals)//2
  return vals[m] if len(vals)%2 else (vals[m-1]+vals[m])/2
 
+
 def volume_median_previous(bars,i,n):
  if i<n: return None
  vals=sorted(b.volume for b in bars[i-n:i]); m=len(vals)//2
  return vals[m] if len(vals)%2 else (vals[m-1]+vals[m])/2
 
+
 def realized_previous(bars,i,n):
  if i<n+1: return None
  vals=[abs(ret(bars,j)) for j in range(i-n,i)]
  return sum(vals,Decimal('0'))/Decimal(len(vals))
+
 
 def event_condition(hyp,i,bars,p):
  if hyp=='HYP-0008':
@@ -84,6 +90,7 @@ def event_condition(hyp,i,bars,p):
   return base is not None and bars[i].volume>=v*base
  raise ValueError(hyp)
 
+
 def simulate(bars,hyp,p,fee,slip,delay):
  if delay not in DELAYS: raise ValueError('delay must be 1 or 2')
  events=[]; i=1
@@ -96,16 +103,19 @@ def simulate(bars,hyp,p,fee,slip,delay):
   else: i+=1
  return events
 
+
 def compound(rs):
  g=Decimal('1')
  for r in rs: g*=Decimal('1')+r
  return g-1
+
 
 def summary(details):
  valid=[d for d in details if d['aggregate'] and d['aggregate']['events']]
  ev=[Decimal(e['return']) for d in valid for e in d['events']]
  seg=[Decimal(d['aggregate']['compound_return']) for d in valid]
  return {'events':len(ev),'compound_return':str(compound(ev)),'mean_event_return':str(sum(ev,Decimal('0'))/Decimal(len(ev))) if ev else '0','positive_event_fraction':str(Decimal(sum(x>0 for x in ev))/Decimal(len(ev))) if ev else '0','mean_segment_return':str(sum(seg,Decimal('0'))/Decimal(len(seg))) if seg else '0','eligible_segments':len(valid)}
+
 
 def detail_segments(segments,hyp,p,fee,slip,delay):
  out=[]
@@ -116,6 +126,7 @@ def detail_segments(segments,hyp,p,fee,slip,delay):
   except Exception as exc:
    out.append({'segment':idx,'aggregate':None,'events':[],'error':f'{type(exc).__name__}: {exc}'})
  return out
+
 
 def regime(detail,segments):
  out={'bull':[],'neutral':[],'bear':[]}
@@ -128,9 +139,11 @@ def regime(detail,segments):
    out[k].append(Decimal(e['return']))
  return {k:{'events':len(v),'compound_return':str(compound(v)) if v else '0','mean_return':str(sum(v,Decimal('0'))/Decimal(len(v))) if v else '0'} for k,v in out.items()}
 
+
 def loo(detail):
  vals=[Decimal(d['aggregate']['compound_return']) for d in detail if d['aggregate'] and d['aggregate']['events']]
  return {'segments_used':len(vals),'leave_one_out_min_compound':str(min((compound([x for j,x in enumerate(vals) if j!=i]) for i in range(len(vals)) if len(vals)>1),default=Decimal('0')))}
+
 
 def benchmark(segments,fee,slip):
  bh=[]
@@ -140,8 +153,15 @@ def benchmark(segments,fee,slip):
   bh.append((sell/buy-1+Decimal('1'))*(Decimal('1')-fee)*(Decimal('1')-fee)-1)
  return {'cash_compound_return':'0','buy_hold_compound_return':str(compound(bh)) if bh else '0','eligible_segments':len(bh)}
 
+
 def main():
- report={'experiment_version':'gate2-cycle2-v1','code_commit':os.environ.get('GITHUB_SHA','UNKNOWN'),'preregistration':{'path':str(PREREG),'sha256':sha256_file(ROOT/PREREG)},'development_window':[START.isoformat(),END.isoformat()],'validation_or_oos_accessed':False,'registered_parameter_cell_count':54,'assets':{},'decision':'UNASSESSED'}
+ # The frozen preregistration actually defines 18 + 18 + 9 = 45 cells;
+ # the prose's "27" for HYP-0009 is an arithmetic inconsistency.
+ # The runner follows the explicitly enumerated parameter values.
+ registered_cells=sum(len(list(cartesian(GRID[h]))) for h in GRID)
+ if registered_cells != 45:
+  raise RuntimeError(f'unexpected registered cell count: {registered_cells}')
+ report={'experiment_version':'gate2-cycle2-v1','code_commit':os.environ.get('GITHUB_SHA','UNKNOWN'),'preregistration':{'path':str(PREREG),'sha256':sha256_file(ROOT/PREREG)},'development_window':[START.isoformat(),END.isoformat()],'validation_or_oos_accessed':False,'registered_parameter_cell_count':registered_cells,'assets':{},'decision':'UNASSESSED'}
  import tempfile
  with tempfile.TemporaryDirectory(prefix='gate2-cycle2-') as td:
   root=Path(td); loaded={}
