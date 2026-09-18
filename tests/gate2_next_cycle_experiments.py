@@ -33,10 +33,8 @@ GRIDS = {
 }
 BASE = {"HYP-0005": {"volume_lookback": 24, "shock": Decimal("3"), "return_threshold": Decimal("0.01")}, "HYP-0006": {"btc_threshold": Decimal("0.015"), "gap": Decimal("0.005")}, "HYP-0007": {"volume_lookback": 24, "shock": Decimal("3"), "return_threshold": Decimal("-0.015")}}
 
-
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
-
 
 def months(start: datetime, end: datetime):
     y, m = start.year, start.month
@@ -45,7 +43,6 @@ def months(start: datetime, end: datetime):
         m += 1
         if m == 13:
             y, m = y + 1, 1
-
 
 def fetch(url: str) -> bytes:
     last = None
@@ -58,7 +55,6 @@ def fetch(url: str) -> bytes:
             if attempt < 2:
                 time.sleep(2 ** attempt)
     raise last
-
 
 def parse_valid_bars(path: Path, symbol: str, valid_timestamps: set[datetime]) -> list[MarketBar]:
     out = []
@@ -81,10 +77,8 @@ def parse_valid_bars(path: Path, symbol: str, valid_timestamps: set[datetime]) -
             continue
     return out
 
-
 def in_break(ts: datetime, breaks) -> bool:
     return any(datetime.fromisoformat(b.start) <= ts < datetime.fromisoformat(b.end) for b in breaks)
-
 
 def continuous_segments(bars: list[MarketBar], breaks) -> list[list[MarketBar]]:
     out, current = [], []
@@ -102,7 +96,6 @@ def continuous_segments(bars: list[MarketBar], breaks) -> list[list[MarketBar]]:
         out.append(current)
     return [s for s in out if s]
 
-
 def synchronized_segments(btc_bars: list[MarketBar], eth_bars: list[MarketBar], btc_breaks, eth_breaks) -> list[tuple[list[MarketBar], list[MarketBar]]]:
     """Build HYP-0006 samples from exact canonical timestamp intersections."""
     btc_by_ts = {bar.timestamp: bar for bar in btc_bars if not in_break(bar.timestamp, btc_breaks)}
@@ -118,13 +111,11 @@ def synchronized_segments(btc_bars: list[MarketBar], eth_bars: list[MarketBar], 
         pairs.append((btc_segment, eth_segment))
     return [(btc, eth) for btc, eth in pairs if btc and eth]
 
-
 def median_previous(values: list[Decimal], i: int, n: int) -> Decimal | None:
     if i < n:
         return None
     window = values[i - n:i]
     return Decimal(str(median([float(x) for x in window]))) if window else None
-
 
 def event_condition(hyp: str, i: int, bars, params: dict, btc_bars=None) -> bool:
     if i < 1:
@@ -143,13 +134,11 @@ def event_condition(hyp: str, i: int, bars, params: dict, btc_bars=None) -> bool
     btc_ret = btc_bars[i].close / btc_bars[i - 1].close - 1
     return btc_ret >= Decimal(params["btc_threshold"]) and btc_ret - ret >= Decimal(params["gap"])
 
-
 def event_return(entry: MarketBar, exit_bar: MarketBar, fee: Decimal, slip: Decimal) -> Decimal:
     buy = entry.open * (Decimal("1") + slip)
     sell = exit_bar.close * (Decimal("1") - slip)
     gross = sell / buy - 1
     return (Decimal("1") + gross) * (Decimal("1") - fee) * (Decimal("1") - fee) - 1
-
 
 def simulate_events(bars: list[MarketBar], hyp: str, params: dict, fee: Decimal, slip: Decimal, delay: int, btc_bars=None) -> dict:
     if delay not in (1, 2):
@@ -170,7 +159,6 @@ def simulate_events(bars: list[MarketBar], hyp: str, params: dict, fee: Decimal,
         equity.append(equity[-1] * (Decimal("1") + r))
     return {"returns": returns, "events": event_records, "equity": equity}
 
-
 def aggregate(returns: list[Decimal]) -> dict:
     if not returns:
         return {"events": 0, "compound_return": "0", "mean_event_return": "0", "positive_event_fraction": "0"}
@@ -179,7 +167,6 @@ def aggregate(returns: list[Decimal]) -> dict:
         growth *= 1 + r
     return {"events": len(returns), "compound_return": str(growth - 1), "mean_event_return": str(sum(returns, Decimal("0")) / Decimal(len(returns))), "positive_event_fraction": str(Decimal(sum(r > 0 for r in returns)) / Decimal(len(returns)))}
 
-
 def max_drawdown(equity: list[Decimal]) -> Decimal:
     peak, out = equity[0], Decimal("0")
     for value in equity:
@@ -187,7 +174,6 @@ def max_drawdown(equity: list[Decimal]) -> Decimal:
         if peak > 0:
             out = max(out, (peak - value) / peak)
     return out
-
 
 def longest_recovery(equity: list[Decimal]) -> int:
     peak, peak_i, longest = equity[0], 0, 0
@@ -198,7 +184,6 @@ def longest_recovery(equity: list[Decimal]) -> int:
             longest = max(longest, i - peak_i)
     return longest
 
-
 def parameter_cells(hyp):
     keys = list(GRIDS[hyp]); out = []
     def rec(k, current):
@@ -207,7 +192,6 @@ def parameter_cells(hyp):
             current[keys[k]] = value; rec(k + 1, current)
     rec(0, {})
     return out
-
 
 def summarize_segments(segments, hyp, params, fee, slip, delay, btc_segments=None):
     details = []
@@ -224,7 +208,6 @@ def summarize_segments(segments, hyp, params, fee, slip, delay, btc_segments=Non
     event_returns = [Decimal(e["return"]) for d in valid for e in d["events"]]
     seg_returns = [Decimal(d["aggregate"]["compound_return"]) for d in valid]
     return {"segments": details, "aggregate": {**aggregate(event_returns), "mean_segment_return": str(sum(seg_returns, Decimal("0")) / Decimal(len(seg_returns))) if seg_returns else "0", "eligible_segments": len(valid)}}
-
 
 def concentration_and_dd(details):
     seg_returns = [Decimal(d["aggregate"]["compound_return"]) for d in details if d["aggregate"] and d["aggregate"]["events"]]
@@ -249,7 +232,6 @@ def concentration_and_dd(details):
     top_fraction = sum(positive[:top_n], Decimal("0")) / sum(positive, Decimal("0")) if positive else None
     worst_value = worst if worst is not None else Decimal("0")
     return {"segments": contributions, "top_10_positive_event_pnl_fraction": str(top_fraction) if top_fraction is not None else None, "max_drawdown": str(maxdd), "worst_segment_return": str(worst_value), "longest_recovery_events": recovery, "eligible_events": total_events}
-
 
 def main():
     prereg_sha = sha256_file(ROOT / PREREG)
@@ -303,7 +285,6 @@ def main():
         report["decisions"] = {"overall": "UNASSESSED", "note": "Development evidence generated; final preregistered dimension assessment requires explicit audit of all cells."}
     with open(output / "next_cycle_results.json", "w", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2, sort_keys=True)
-
 
 if __name__ == "__main__":
     main()
