@@ -14,7 +14,26 @@ Keep these categories separate:
 
 ## Research loop
 
-`Observation → Hypothesis → Research → Strategy Specification → Backtest → Validation → Robustness → Paper Trading → Deployment`
+`Market Theory → Observation → Hypothesis → Pre-registration → Research → Strategy Specification → Backtest → Validation → Robustness / Locked OOS → Paper Trading → Controlled Deployment → Edge Monitoring → Continue / Quarantine / Retire → New Hypothesis`
+
+Progression through the loop is not automatic. A failed hypothesis is an acceptable research outcome.
+
+## Adaptive-markets discipline
+
+The project treats market efficiency and exploitable behavior as potentially conditional and time-varying. A historical edge is not assumed to be permanent.
+
+Any claim that a strategy depends on a market regime must define the relevant market-state variables before protected validation or OOS evaluation. Regime definitions must use only information available at the decision timestamp.
+
+Protected results must not be used to rescue a failed strategy by:
+- retuning parameters,
+- redefining regimes,
+- adding filters,
+- deleting unfavorable periods without objective data-quality justification, or
+- repeatedly searching variants without accounting for multiple testing.
+
+A materially modified strategy becomes a new research object and must re-enter the research process.
+
+See `docs/ADAPTIVE_MARKETS_FRAMEWORK.md`.
 
 ## Gate 1 data protocol
 
@@ -32,7 +51,7 @@ The OOS partition is protocol metadata only in Gate 1. No strategy work, perform
 
 ## Required controls
 
-Research must explicitly consider look-ahead bias, data leakage, survivorship bias, overfitting, curve fitting, unrealistic fills, transaction costs, slippage, sample size, and multiple testing.
+Research must explicitly consider look-ahead bias, data leakage, survivorship bias, overfitting, curve fitting, unrealistic fills, transaction costs, slippage, sample size, multiple testing, regime-selection bias, and repeated reuse of protected samples.
 
 V0 does not claim to solve every validation problem; it establishes explicit inputs and boundaries so those controls can be added without changing the research record format.
 
@@ -42,7 +61,13 @@ Transaction costs and slippage are explicit inputs. A profitability evaluation m
 
 ## Reproducibility
 
-Every experiment should record its hypothesis, strategy/version, dataset identity and date range, timeframe, parameters, cost/slippage assumptions, code/version identifier, metrics, conclusion, and research decision.
+Every experiment should record its hypothesis, proposed mechanism, strategy/version, dataset identity and date range, timeframe, parameters, market-state definitions if used, cost/slippage assumptions, code/version identifier, metrics, conclusion, research decision, and the history of protected-sample exposure.
+
+## Strategy degradation
+
+Any strategy that advances toward paper or live operation must define its expected validated behavior and prospective degradation criteria before deployment.
+
+A degradation alert is evidence for review, not permission to automatically retune the strategy. Permitted default actions are continuation unchanged, quarantine from new exposure, retirement, or initiation of a separately versioned research hypothesis.
 
 ## Scope boundary
 
