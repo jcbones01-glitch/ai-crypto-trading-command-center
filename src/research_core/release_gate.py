@@ -33,8 +33,13 @@ def load_ams_dep_release_gate(path: Path | str = DEFAULT_GATE) -> dict:
 
 def assert_ams_dep_v2_synthetic_execution_allowed(path: Path | str = DEFAULT_GATE) -> dict:
     gate = load_ams_dep_release_gate(path)
-    required = ("independent_v2_design_approved", "v2_specification_frozen",
-                "v2_engineering_oracles_passed", "v2_synthetic_execution_authorized")
+    required = (
+        "independent_v2_design_approved",
+        "v2_specification_frozen",
+        "v2_engineering_oracles_passed",
+        "v2_sharding_plan_verified",
+        "v2_synthetic_execution_authorized",
+    )
     if any(gate.get(field) is not True for field in required):
         raise ResearchGateError(
             f"AMS-DEP V2 synthetic execution blocked: {gate.get('status', 'UNKNOWN')}"
@@ -48,6 +53,7 @@ def assert_ams_dep_empirical_release_allowed(path: Path | str = DEFAULT_GATE) ->
         "independent_v2_design_approved",
         "v2_specification_frozen",
         "v2_synthetic_calibration_passed",
+        "v2_synthetic_holdout_passed",
         "full_pipeline_synthetic_integrity_passed",
         "separate_empirical_release_approved",
         "development_market_data_execution_authorized",
