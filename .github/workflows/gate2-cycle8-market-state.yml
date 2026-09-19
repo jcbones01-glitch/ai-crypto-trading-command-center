@@ -1,0 +1,52 @@
+name: Gate 2 Cycle 8 Market State
+
+on:
+  pull_request:
+    branches: [gate2-research-foundation]
+    paths:
+      - 'docs/GATE2_CYCLE8_MARKET_STATE_PREREGISTRATION_V1.md'
+      - 'src/research_core/market_state.py'
+      - 'tests/gate2_cycle8_market_state_experiments.py'
+      - 'tests/test_market_state.py'
+      - 'tests/test_gate2_cycle8_market_state.py'
+      - '.github/workflows/gate2-cycle8-market-state.yml'
+  push:
+    branches: [gate2-research-foundation]
+    paths:
+      - 'docs/GATE2_CYCLE8_MARKET_STATE_PREREGISTRATION_V1.md'
+      - 'src/research_core/market_state.py'
+      - 'tests/gate2_cycle8_market_state_experiments.py'
+      - 'tests/test_market_state.py'
+      - 'tests/test_gate2_cycle8_market_state.py'
+      - '.github/workflows/gate2-cycle8-market-state.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: gate2-cycle8-market-state-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate2-cycle8-market-state:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -e '.[dev]'
+      - name: Run full test suite
+        run: pytest
+      - name: Verify AMS-V1 integrity tests
+        run: python -m pytest tests/test_market_state.py tests/test_gate2_cycle8_market_state.py -q
+      - name: Generate preregistered Cycle 8 state evidence
+        if: github.event_name != 'pull_request'
+        run: CHECKED_OUT_SHA=$(git rev-parse HEAD) GITHUB_SHA=$(git rev-parse HEAD) python tests/gate2_cycle8_market_state_experiments.py
+      - name: Upload Cycle 8 state evidence
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate2-cycle8-market-state-results
+          path: gate2_cycle8_market_state_results/cycle8_market_state.json
+          if-no-files-found: error
+          retention-days: 30
