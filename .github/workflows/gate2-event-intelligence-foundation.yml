@@ -4,38 +4,30 @@ on:
   push:
     branches: [gate2-event-intelligence-foundation]
     paths:
-      - 'docs/GATE2_EVENT_INTELLIGENCE_FOUNDATION_V1.md'
-      - 'docs/SOURCE_REVIEW_FEDERAL_RESERVE_FOMC_V1.md'
-      - 'docs/GATE2_FOMC_EVENT_STUDY_PREREGISTRATION_V1.md'
-      - 'research/experiments/GATE2_CYCLE7_CLOSEOUT.md'
-      - 'research/experiments/FOMC_DEVELOPMENT_MANIFEST_CERTIFICATION.md'
-      - 'research/experiments/fomc_development_manifest_v1.json'
+      - 'docs/**'
+      - 'research/experiments/**'
+      - 'research/observations/**'
       - 'research/scripts/**'
       - 'src/intelligence/**'
       - 'tests/test_event_intelligence_foundation.py'
       - 'tests/test_federal_reserve_fomc_source.py'
       - 'tests/test_fomc_development_manifest.py'
       - 'tests/test_fomc_event_study_v1.py'
-      - '.github/workflows/gate2-event-intelligence-foundation.yml'
-      - '.github/workflows/gate2-fomc-development-manifest.yml'
-      - '.github/workflows/gate2-fomc-event-study.yml'
+      - 'tests/test_bls_cpi_source.py'
+      - '.github/workflows/gate2-*.yml'
   pull_request:
     paths:
-      - 'docs/GATE2_EVENT_INTELLIGENCE_FOUNDATION_V1.md'
-      - 'docs/SOURCE_REVIEW_FEDERAL_RESERVE_FOMC_V1.md'
-      - 'docs/GATE2_FOMC_EVENT_STUDY_PREREGISTRATION_V1.md'
-      - 'research/experiments/GATE2_CYCLE7_CLOSEOUT.md'
-      - 'research/experiments/FOMC_DEVELOPMENT_MANIFEST_CERTIFICATION.md'
-      - 'research/experiments/fomc_development_manifest_v1.json'
+      - 'docs/**'
+      - 'research/experiments/**'
+      - 'research/observations/**'
       - 'research/scripts/**'
       - 'src/intelligence/**'
       - 'tests/test_event_intelligence_foundation.py'
       - 'tests/test_federal_reserve_fomc_source.py'
       - 'tests/test_fomc_development_manifest.py'
       - 'tests/test_fomc_event_study_v1.py'
-      - '.github/workflows/gate2-event-intelligence-foundation.yml'
-      - '.github/workflows/gate2-fomc-development-manifest.yml'
-      - '.github/workflows/gate2-fomc-event-study.yml'
+      - 'tests/test_bls_cpi_source.py'
+      - '.github/workflows/gate2-*.yml'
   workflow_dispatch:
 
 concurrency:
@@ -55,4 +47,4 @@ jobs:
       - name: Run full test suite
         run: pytest
       - name: Verify event intelligence foundation
-        run: python -m pytest tests/test_event_intelligence_foundation.py tests/test_federal_reserve_fomc_source.py tests/test_fomc_development_manifest.py tests/test_fomc_event_study_v1.py -q
+        run: python -m pytest tests/test_event_intelligence_foundation.py tests/test_federal_reserve_fomc_source.py tests/test_fomc_development_manifest.py tests/test_fomc_event_study_v1.py tests/test_bls_cpi_source.py -q
