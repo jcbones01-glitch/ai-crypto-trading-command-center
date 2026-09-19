@@ -1,7 +1,7 @@
 {
   "gate_id": "AMS-DEP-EMPIRICAL-RELEASE",
   "version": 1,
-  "status": "BLOCKED_CONDITIONAL_REVIEW_RATIFICATION",
+  "status": "V2_CALIBRATION_FROZEN_AUTHORIZED",
   "design_review_issue": 44,
   "parent_failure_issue": 43,
   "v1_calibration_failed": true,
@@ -9,8 +9,8 @@
   "conditional_v2_design_review_received": true,
   "conditional_review_decision": "APPROVE_V2_DESIGN_AFTER_SPECIFIED_CHANGES",
   "conditional_review_artifact": "docs/AMS_DEP_V2_CONDITIONAL_REVIEW_RESPONSE.md",
-  "independent_v2_design_approved": false,
-  "v2_specification_frozen": false,
+  "independent_v2_design_approved": true,
+  "v2_specification_frozen": true,
   "v2_engineering_oracles_passed": true,
   "v2_sharding_plan_verified": true,
   "v2_engineering_run_id": 35456767371,
@@ -50,5 +50,16 @@
     "passing full-pipeline synthetic/integrity gate including AMS-V1 state construction, timing, continuity, row selection and protected-partition firewall",
     "separate empirical-release approval after the above gates"
   ],
-  "notes": "The external/user-supplied review returned APPROVE_V2_DESIGN_AFTER_SPECIFIED_CHANGES for synthetic-only DWB. Engineering/oracle and deterministic sharding work is green, but the implementer has not self-ratified the exact follow-up specification. All synthetic and empirical execution authorizations remain false."
+  "notes": "Independent ratification authorizes frozen V2 synthetic calibration only. Holdout and empirical release remain blocked.",
+  "independent_ratification_received": true,
+  "independent_ratification_decision": "RATIFY_V2_FREEZE_FOR_SYNTHETIC_CALIBRATION",
+  "independent_ratification_artifact": "docs/AMS_DEP_V2_INDEPENDENT_RATIFICATION_RESULT.md",
+  "v2_freeze_manifest": "research/governance/ams_dep_v2_freeze_manifest.json",
+  "v2_frozen_source_commit": "dcea20adcb0a33d20d192c3ed03fe7863bbbf2b3",
+  "ratified_engineering_head": "ee82f1625fce48900d00e4b61ad0e922aeb65451",
+  "ratified_engineering_run_id": 35456903336,
+  "ratified_engineering_artifact_id": 10587774686,
+  "ratified_engineering_artifact_digest": "sha256:af6dc7622da0f313d37071766ce8fa29fa99accb25cbae7d5d56440bc4a4ff3e",
+  "v2_calibration_execution_authorized": true,
+  "v2_holdout_execution_authorized": false
 }
