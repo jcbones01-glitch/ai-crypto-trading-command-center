@@ -61,9 +61,14 @@ def _verify_freeze() -> tuple[dict, dict, dict]:
     manifest = json.loads(MANIFEST.read_text())
     if manifest.get("status") != "FROZEN_FOR_SYNTHETIC_CALIBRATION":
         raise RuntimeError("unexpected V2 freeze-manifest status")
-    for relative, expected in manifest["file_sha256"].items():
+    for relative, expected in manifest["file_git_blob_sha1"].items():
         path = ROOT / relative
-        if not path.exists() or _digest(path.read_bytes()) != expected:
+        if not path.exists():
+            raise RuntimeError(f"missing frozen file: {relative}")
+        actual = subprocess.check_output(
+            ["git", "hash-object", "--", relative], cwd=ROOT, text=True
+        ).strip()
+        if actual != expected:
             raise RuntimeError(f"frozen file hash mismatch: {relative}")
 
     config = json.loads(CONFIG.read_text())
