@@ -176,3 +176,19 @@ If OOS data is accessed accidentally, the event must be recorded and the affecte
 ## Autonomy boundary
 
 Gate 2 authorizes historical research only. It does not authorize exchange credentials, order placement, paper execution, live execution, leverage, or autonomous capital deployment.
+
+## Certified Adaptive Markets state layer
+
+Cycle 8 certified `AMS-V1` as a causal research-infrastructure layer. See `docs/GATE2_CYCLE8_MARKET_STATE_CERTIFICATION_V1.md`.
+
+For any future hypothesis that makes a regime- or state-dependent claim:
+
+- the hypothesis must reference `AMS-V1` or preregister a separately versioned state definition before evidence generation;
+- the exact state condition must be fixed before the strategy's Development backtest is treated as evidence;
+- state assignment must use only information available at the signal timestamp;
+- no state definition may be changed after protected results are observed to rescue a candidate;
+- a materially changed state definition or state-conditioned rule creates a new hypothesis/version;
+- Cycle 8 state occupancy, persistence, transition, and cross-asset agreement statistics are descriptive observations only and are not trading-edge evidence.
+
+`AMS-V1` does not authorize Validation/OOS access, paper trading, live trading, or autonomous strategy modification.
+
