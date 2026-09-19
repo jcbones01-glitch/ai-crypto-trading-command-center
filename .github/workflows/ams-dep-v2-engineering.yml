@@ -10,6 +10,7 @@ on:
       - 'tests/test_dependent_wild_bootstrap_v2.py'
       - 'tests/test_ams_dep_v2_synthetic.py'
       - 'tests/test_ams_dep_v2_aggregation.py'
+      - 'tests/test_ams_dep_v2_calibration_runner.py'
       - 'tests/test_ams_dep_release_gate.py'
       - 'tests/test_ams_dep_v2_shard_planner.py'
       - 'research/scripts/check_ams_dep_v2_engineering.py'
@@ -22,6 +23,7 @@ on:
       - 'research/experiments/ams_dep_synthetic_core_v2.json'
       - 'docs/AMS_DEP_V2*'
       - '.github/workflows/ams-dep-v2-engineering.yml'
+      - '.github/workflows/ams-dep-v2-frozen-calibration.yml'
   workflow_dispatch:
 permissions:
   contents: read
