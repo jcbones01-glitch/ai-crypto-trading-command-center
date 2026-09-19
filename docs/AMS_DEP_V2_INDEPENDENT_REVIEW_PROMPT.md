@@ -24,6 +24,7 @@ Inspect the current `adaptive-markets-research` branch and at minimum read:
 
 - `docs/AMS_DEP_V2_INFERENCE_DESIGN_REVIEW.md`
 - `docs/AMS_DEP_V2_METHOD_LITERATURE_AUDIT.md`
+- `docs/AMS_DEP_V2_FORMULA_SOURCE_RECOVERY.md`
 - `docs/AMS_DEP_V2_INDEPENDENT_REVIEWER_HANDOFF.md`
 - `docs/AMS_DEP_NUMERICAL_CONTRACT_V1.md`
 - `docs/AMS_DEP_SYNTHETIC_CALIBRATION_V1.md`
@@ -31,10 +32,13 @@ Inspect the current `adaptive-markets-research` branch and at minimum read:
 - `research/experiments/AMS_DEP_SYNTHETIC_CORE_V1_RESULT.md`
 - `research/experiments/AMS_DEP_V1_FAILURE_DIAGNOSTIC_RESULT.md`
 - `research/experiments/AMS_DEP_V1_FALSE_REJECTION_DIAGNOSIS.md`
+- `research/governance/ams_dep_release_gate_v1.json`
 - `src/research_core/dependence_statistics.py`
+- `src/research_core/release_gate.py`
 - `research/scripts/run_ams_dep_synthetic_core_v1.py`
 - `research/scripts/diagnose_ams_dep_v1_failure.py`
 - `tests/test_dependence_statistics.py`
+- `tests/test_ams_dep_release_gate.py`
 - GitHub Issue #43
 - GitHub Issue #44
 - PR #42
@@ -136,11 +140,19 @@ Use primary or authoritative methodological sources where possible.
 At minimum evaluate the relevance/limits of:
 - Shao (2010), Dependent Wild Bootstrap;
 - Kiefer & Vogelsang fixed-b HAC work;
+- Sun, Phillips & Jin fixed-b bandwidth/testing work;
 - bootstrap HAC methods for OLS such as Bravo & Godfrey;
 - Lo/Lo-MacKinlay finite-sample size/power methodology.
 
+The repository now records legitimate open formula-level sources for Shao's
+full DWB article and supplement, the author-hosted Kiefer–Vogelsang working
+paper, the UC eScholarship Sun–Phillips–Jin working paper, and adjacent
+regression papers by Zhou–Shao / Rho–Shao. Use those sources where relevant.
+
 Do not infer algorithmic details from abstracts if the full method is needed.
-State explicitly when a source was not fully inspected.
+State explicitly when a source was not fully inspected. Do not treat a method
+as suitable merely because its original paper proves validity in a simpler
+mean, smooth-function, stationary or unsegmented setting.
 
 ## Required decision
 
