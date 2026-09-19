@@ -104,7 +104,40 @@ def compression_rank(bars, signal_i):
     return Decimal(sum(x <= latest for x in refs)) / Decimal(len(refs))
 
 
-def condition(hyp, i, bars, params):
+def build_cycle7_feature_cache(bars):
+    """Precompute causal HYP-0024 features once for a continuous segment.
+
+    This is an implementation optimization only. Each cached value uses the
+    exact same historical windows as compression_rank() and condition().
+    """
+    range_ratios = [None] * len(bars)
+    for end_i in range(23, len(bars)):
+        window = bars[end_i - 23:end_i + 1]
+        hi = max(x.high for x in window)
+        lo = min(x.low for x in window)
+        range_ratios[end_i] = (hi - lo) / bars[end_i].close if bars[end_i].close > 0 else None
+
+    prior_high_24 = [None] * len(bars)
+    for signal_i in range(24, len(bars)):
+        prior_high_24[signal_i] = max(x.high for x in bars[signal_i - 24:signal_i])
+
+    compression_ranks = [None] * len(bars)
+    for signal_i in range(744, len(bars)):
+        latest = range_ratios[signal_i - 1]
+        if latest is None:
+            continue
+        refs = range_ratios[signal_i - 721:signal_i - 1]
+        if len(refs) != 720 or any(value is None for value in refs):
+            continue
+        compression_ranks[signal_i] = Decimal(sum(value <= latest for value in refs)) / Decimal(720)
+
+    return {
+        "compression_rank": compression_ranks,
+        "prior_high_24": prior_high_24,
+    }
+
+
+def condition(hyp, i, bars, params, features=None):
     if hyp == "HYP-0023":
         if i < 24:
             return False
@@ -114,10 +147,14 @@ def condition(hyp, i, bars, params):
     if hyp == "HYP-0024":
         if i < 744:
             return False
-        rank = compression_rank(bars, i)
+        if features is None:
+            rank = compression_rank(bars, i)
+            prior_high = max(x.high for x in bars[i - 24:i])
+        else:
+            rank = features["compression_rank"][i]
+            prior_high = features["prior_high_24"][i]
         if rank is None or rank > params["compression_quantile"]:
             return False
-        prior_high = max(x.high for x in bars[i - 24:i])
         return bars[i].close >= prior_high * (Decimal("1") + params["breakout_buffer"])
 
     if hyp == "HYP-0025":
@@ -136,7 +173,7 @@ def condition(hyp, i, bars, params):
     raise ValueError(hyp)
 
 
-def simulate(segment, hyp, params, fee, slip, delay):
+def simulate(segment, hyp, params, fee, slip, delay, features=None):
     if delay not in (1, 2):
         raise ValueError("delay must be 1 or 2")
     hold = int(params["hold_bars"])
@@ -145,7 +182,7 @@ def simulate(segment, hyp, params, fee, slip, delay):
     events = []
     i = 1
     while i < len(segment):
-        if not condition(hyp, i, segment, params):
+        if not condition(hyp, i, segment, params, features):
             i += 1
             continue
         entry_i = i + delay
@@ -167,11 +204,12 @@ def simulate(segment, hyp, params, fee, slip, delay):
     return events
 
 
-def details(segments, hyp, params, fee, slip, delay):
+def details(segments, hyp, params, fee, slip, delay, features_by_segment=None):
     out = []
     for idx, segment in enumerate(segments):
         try:
-            events = simulate(segment, hyp, params, fee, slip, delay)
+            features = features_by_segment[idx] if features_by_segment is not None else None
+            events = simulate(segment, hyp, params, fee, slip, delay, features)
             returns = [Decimal(e["return"]) for e in events]
             out.append({
                 "segment": idx,
@@ -473,6 +511,7 @@ def main():
 
         for symbol, asset in loaded.items():
             segments = asset["segments"]
+            features_by_segment = [build_cycle7_feature_cache(segment) for segment in segments]
             out = {
                 "dataset_identity": asset["manifest"].dataset_identity,
                 "source_integrity": asset["manifest"].source_integrity,
@@ -483,7 +522,7 @@ def main():
             for hyp, grid in GRID.items():
                 out["parameter_cells"][hyp] = []
                 for n, params in enumerate(cartesian(grid)):
-                    base_ds = details(segments, hyp, params, Decimal("0.001"), Decimal("0.0005"), 1)
+                    base_ds = details(segments, hyp, params, Decimal("0.001"), Decimal("0.0005"), 1, features_by_segment)
                     cell = {
                         "cell": f"parameter_{n:03d}",
                         "params": serial_params(params),
@@ -497,7 +536,7 @@ def main():
                         "drawdown_recovery": drawdown_recovery(base_ds, segments),
                     }
                     for label, fee, slip in FEE_GRID:
-                        ds = details(segments, hyp, params, fee, slip, 1)
+                        ds = details(segments, hyp, params, fee, slip, 1, features_by_segment)
                         cell["fee_slippage"].append({
                             "fee_case": label,
                             "commission": str(fee),
@@ -505,7 +544,7 @@ def main():
                             "summary": summarize(ds),
                         })
                     for delay in DELAYS:
-                        ds = details(segments, hyp, params, Decimal("0.001"), Decimal("0.0005"), delay)
+                        ds = details(segments, hyp, params, Decimal("0.001"), Decimal("0.0005"), delay, features_by_segment)
                         cell["timing"].append({"delay_bars": delay, "summary": summarize(ds)})
                     out["parameter_cells"][hyp].append(cell)
             report["assets"][symbol] = out
