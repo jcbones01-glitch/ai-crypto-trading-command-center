@@ -173,3 +173,8 @@ The AI layer should become better at proposing, testing, rejecting, monitoring, 
 ## Primary source basis
 
 This framework is inspired by Andrew W. Lo's Adaptive Markets Hypothesis and MIT course material on adaptive markets. It is an engineering interpretation for this repository, not a claim that Professor Lo endorses this project or these exact controls.
+
+Primary references:
+- Andrew W. Lo (2004), "The Adaptive Markets Hypothesis: Market Efficiency from an Evolutionary Perspective," Journal of Portfolio Management. MIT-hosted copy: https://web.mit.edu/Alo/www/Papers/JPM2004_Pub.pdf
+- Andrew W. Lo, "Reconciling Efficient Markets with Behavioral Finance: The Adaptive Markets Hypothesis." MIT-hosted copy: https://web.mit.edu/Alo/www/Papers/JIC2005_Final.pdf
+- MIT OpenCourseWare, 15.481x Adaptive Markets: Financial Market Dynamics and Human Behavior: https://ocw.mit.edu/courses/15-481x-adaptive-markets-financial-market-dynamics-and-human-behavior-fall-2022/
