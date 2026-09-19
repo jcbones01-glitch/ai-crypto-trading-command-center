@@ -79,3 +79,68 @@ def test_compression_rank_is_causal_to_signal_time():
     )
     after = mod.compression_rank(bars, signal_i)
     assert before == after
+
+
+def test_feature_cache_matches_reference_hyp0024_logic():
+    bars = []
+    for i in range(900):
+        base = Decimal("100") + Decimal(i) / Decimal("50")
+        wiggle = Decimal((i % 11) + 1) / Decimal("10")
+        bars.append(
+            SimpleNamespace(
+                timestamp=datetime(2020, 1, 1, tzinfo=timezone.utc) + timedelta(hours=i),
+                open=base,
+                high=base + wiggle,
+                low=base - wiggle,
+                close=base + (Decimal("0.2") if i % 17 == 0 else Decimal("0")),
+                volume=Decimal("1"),
+            )
+        )
+
+    features = mod.build_cycle7_feature_cache(bars)
+
+    for signal_i in (744, 760, 800, 899):
+        assert features["compression_rank"][signal_i] == mod.compression_rank(bars, signal_i)
+        assert features["prior_high_24"][signal_i] == max(x.high for x in bars[signal_i - 24:signal_i])
+
+    params = {
+        "compression_quantile": Decimal("0.30"),
+        "breakout_buffer": Decimal("0"),
+        "hold_bars": 12,
+    }
+    for signal_i in range(744, len(bars)):
+        assert mod.condition("HYP-0024", signal_i, bars, params, features) == mod.condition(
+            "HYP-0024", signal_i, bars, params
+        )
+
+    uncached = mod.simulate(bars, "HYP-0024", params, Decimal("0.001"), Decimal("0.0005"), 1)
+    cached = mod.simulate(bars, "HYP-0024", params, Decimal("0.001"), Decimal("0.0005"), 1, features)
+    assert cached == uncached
+
+
+def test_feature_cache_remains_causal_to_signal_time():
+    bars = []
+    for i in range(800):
+        base = Decimal("100") + Decimal(i) / Decimal("100")
+        bars.append(
+            SimpleNamespace(
+                timestamp=datetime(2020, 1, 1, tzinfo=timezone.utc) + timedelta(hours=i),
+                open=base,
+                high=base + Decimal("1"),
+                low=base - Decimal("1"),
+                close=base,
+                volume=Decimal("1"),
+            )
+        )
+    signal_i = 760
+    before = mod.build_cycle7_feature_cache(bars)["compression_rank"][signal_i]
+    bars[799] = SimpleNamespace(
+        timestamp=bars[799].timestamp,
+        open=Decimal("1000"),
+        high=Decimal("2000"),
+        low=Decimal("1"),
+        close=Decimal("1500"),
+        volume=Decimal("999"),
+    )
+    after = mod.build_cycle7_feature_cache(bars)["compression_rank"][signal_i]
+    assert before == after
