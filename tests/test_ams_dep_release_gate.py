@@ -15,19 +15,20 @@ from research_core.release_gate import (
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_current_ams_dep_gate_is_explicitly_blocked():
+def test_current_ams_dep_gate_authorizes_calibration_only():
     gate = load_ams_dep_release_gate()
-    assert gate["status"] == "BLOCKED_CONDITIONAL_REVIEW_RATIFICATION"
+    assert gate["status"] == "V2_SYNTHETIC_CALIBRATION_AUTHORIZED"
     assert gate["design_review_issue"] == 44
     assert gate["v1_calibration_failed"] is True
     assert gate["conditional_v2_design_review_received"] is True
-    assert gate["conditional_review_decision"] == "APPROVE_V2_DESIGN_AFTER_SPECIFIED_CHANGES"
-    assert gate["independent_v2_design_approved"] is False
-    assert gate["v2_specification_frozen"] is False
+    assert gate["independent_ratification_decision"] == "RATIFY_V2_FREEZE_FOR_SYNTHETIC_CALIBRATION"
+    assert gate["independent_v2_design_approved"] is True
+    assert gate["v2_specification_frozen"] is True
     assert gate["v2_engineering_oracles_passed"] is True
     assert gate["v2_sharding_plan_verified"] is True
-    assert gate.get("v2_calibration_execution_authorized", False) is False
-    assert gate.get("v2_holdout_execution_authorized", False) is False
+    assert gate["v2_calibration_execution_authorized"] is True
+    assert gate["v2_holdout_execution_authorized"] is False
+    assert gate["v2_synthetic_calibration_passed"] is False
     assert gate["development_market_data_execution_authorized"] is False
     assert gate["validation_or_oos_access_authorized"] is False
     assert gate["strategy_pnl_authorized"] is False
@@ -35,11 +36,9 @@ def test_current_ams_dep_gate_is_explicitly_blocked():
     assert gate["live_trading_authorized"] is False
 
 
-def test_current_gate_blocks_calibration_holdout_and_empirical_execution():
-    with pytest.raises(ResearchGateError, match="V2 calibration execution blocked"):
-        assert_ams_dep_v2_calibration_execution_allowed()
-    with pytest.raises(ResearchGateError, match="V2 calibration execution blocked"):
-        assert_ams_dep_v2_synthetic_execution_allowed()
+def test_current_gate_allows_calibration_but_blocks_holdout_and_empirical():
+    assert assert_ams_dep_v2_calibration_execution_allowed()["v2_calibration_execution_authorized"] is True
+    assert assert_ams_dep_v2_synthetic_execution_allowed()["v2_calibration_execution_authorized"] is True
     with pytest.raises(ResearchGateError, match="V2 holdout execution blocked"):
         assert_ams_dep_v2_holdout_execution_allowed()
     with pytest.raises(ResearchGateError, match="empirical execution blocked"):
