@@ -7,7 +7,9 @@ on:
       - 'src/research_core/release_gate.py'
       - 'tests/test_dependent_wild_bootstrap_v2.py'
       - 'tests/test_ams_dep_release_gate.py'
+      - 'tests/test_ams_dep_v2_shard_planner.py'
       - 'research/scripts/check_ams_dep_v2_engineering.py'
+      - 'research/scripts/plan_ams_dep_v2_shards.py'
       - 'research/governance/ams_dep_release_gate_v1.json'
       - 'research/experiments/ams_dep_synthetic_core_v2_proposed.json'
       - 'docs/AMS_DEP_V2*'
@@ -33,10 +35,14 @@ jobs:
         run: python -m pytest
       - name: Bounded deterministic engineering resource check
         run: python research/scripts/check_ams_dep_v2_engineering.py
+      - name: Build deterministic RNG-free shard plan
+        run: python research/scripts/plan_ams_dep_v2_shards.py
       - name: Verify calibration and empirical gates remain blocked
         run: python -m pytest tests/test_ams_dep_release_gate.py
       - uses: actions/upload-artifact@v4
         with:
           name: ams-dep-v2-engineering-only
-          path: research/experiments/ams_dep_v2_engineering_resource_check.json
+          path: |
+            research/experiments/ams_dep_v2_engineering_resource_check.json
+            research/experiments/ams_dep_v2_shard_plan.json
           if-no-files-found: error
