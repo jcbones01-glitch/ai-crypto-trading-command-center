@@ -2,12 +2,13 @@
 
 Every strategy must be specified before it is evaluated.
 
-## Required fields
+## Current required fields
+
+The current Python `StrategySpecification` contract requires:
 
 - strategy_id
 - version
 - hypothesis_id
-- hypothesis_mechanism
 - market
 - asset_universe
 - timeframe
@@ -19,24 +20,27 @@ Every strategy must be specified before it is evaluated.
 - transaction_cost_assumptions
 - slippage_assumptions
 - applicable_market_regimes
-- market_state_variables
-- state_definition_version
-- state_assignment_timing
 - assumptions
 - invalidation_criteria
 - research_status
 
-## Regime-aware strategies
+These fields remain authoritative for the current Gate 2 implementation.
 
-If a strategy claims different behavior across market regimes, the specification must also define the regime construction before protected evaluation, including:
+## Adaptive research extensions
 
+Adaptive-market fields are additional research requirements when a candidate makes a regime-dependent claim or advances toward later paper/live gates. They are not silently added to the current Python dataclass.
+
+For a regime-dependent candidate, the research record must define before protected evaluation:
+
+- hypothesis_mechanism
+- market_state_variables
+- state_definition_version
+- state_definition_source
+- state_lookback
+- state_thresholds or classification rules
+- state_assignment_timing
 - regime_hypothesis
-- state lookback windows
-- thresholds or classification rules
-- data sources
-- timestamp/availability rules
-- minimum sample requirements
-- regime-specific invalidation criteria
+- regime_invalidation_criteria
 
 State assignment must be causal: no variable may use information that was unavailable at the strategy decision timestamp.
 
@@ -44,7 +48,7 @@ A regime definition may not be retrofitted after protected validation or OOS res
 
 ## Degradation contract
 
-Before paper trading, the strategy specification must be extended with:
+Before paper trading, the strategy research record must be extended with:
 
 - expected validated behavior
 - monitoring horizon
