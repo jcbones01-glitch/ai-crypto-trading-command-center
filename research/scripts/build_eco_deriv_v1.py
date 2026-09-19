@@ -124,21 +124,30 @@ def parse_certified_spot(
             continue
         try:
             ts, _ = parse_timestamp(row[0])
-            if ts not in valid_timestamps or not (START <= ts < END) or in_break(ts, breaks):
-                continue
+        except (ValueError, InvalidOperation):
+            # Mirror the already-certified Gate 1A treatment: source rows that
+            # cannot produce a valid canonical timestamp are not certified bars.
+            continue
+        if ts not in valid_timestamps or not (START <= ts < END) or in_break(ts, breaks):
+            continue
+        try:
             close = Decimal(row[4])
-            if not close.is_finite() or close <= 0:
-                raise RuntimeError("invalid certified spot close")
-            epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
-            delta = ts - epoch
-            epoch_us = (
-                delta.days * 86_400_000_000
-                + delta.seconds * 1_000_000
-                + delta.microseconds
+        except (InvalidOperation, ValueError) as exc:
+            raise RuntimeError(
+                f"certified-valid timestamp has an unparsable close: {archive_path} {ts.isoformat()}"
+            ) from exc
+        if not close.is_finite() or close <= 0:
+            raise RuntimeError(
+                f"certified-valid timestamp has invalid close: {archive_path} {ts.isoformat()}"
             )
-            points.append(SpotPoint(epoch_us, close))
-        except (ValueError, InvalidOperation) as exc:
-            raise RuntimeError(f"unexpected invalid row inside certified spot archive: {archive_path}") from exc
+        epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
+        delta = ts - epoch
+        epoch_us = (
+            delta.days * 86_400_000_000
+            + delta.seconds * 1_000_000
+            + delta.microseconds
+        )
+        points.append(SpotPoint(epoch_us, close))
     return points
 
 
