@@ -9,7 +9,8 @@ def test_fomc_manifest_scope_is_development_only():
     assert all("2017-press.htm" not in url or url.startswith("https://www.federalreserve.gov/") for url in mod.INDEX_URLS)
     assert len(mod.INDEX_URLS) == 5
     assert mod.INDEX_URLS[0].endswith("/2017-press.htm")
-    assert mod.INDEX_URLS[-1].endswith("/2021-press.htm")
+    assert mod.INDEX_URLS[3].endswith("/2020-press-fomc.htm")
+    assert mod.INDEX_URLS[-1].endswith("/2021-press-fomc.htm")
 
 
 def test_fomc_manifest_expected_count_is_frozen():
