@@ -1,0 +1,868 @@
+{
+  "development_window": [
+    "2017-08-17T00:00:00Z",
+    "2022-01-01T00:00:00Z"
+  ],
+  "discovery": {
+    "all_discovered_html_cpi_release_count": 223,
+    "archive_index_raw_sha256": "d29e5dc8df9af21ab900b1296ff9230003a8557d87f462024c5e749f8fc36c17",
+    "archive_index_url": "https://www.bls.gov/bls/news-release/cpi.htm",
+    "calendar_2017_2021_candidate_count": 60,
+    "development_release_count": 52,
+    "expected_calendar_2017_2021_candidate_count": 60,
+    "expected_development_release_count": 52
+  },
+  "event_dataset": {
+    "dataset_id": "7773afbb02bbfff60031e3a8455ce119308b1d1b86c0b45adc43d54a6c1dc119",
+    "first_market_available_at": "2017-09-14T12:30:00Z",
+    "last_market_available_at": "2021-12-10T13:30:00Z",
+    "protocol_version": "event-dataset-v1",
+    "record_count": 52,
+    "source_ids": [
+      "bls/cpi-news-release"
+    ]
+  },
+  "events": [
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "58c5b3f2b4a74919791c33e1f5680c05242a54e09acae6db806def71988504c7",
+      "event_time": "2017-09-14T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2017-09-14T12:30:00Z",
+      "published_at": "2017-09-14T12:30:00Z",
+      "raw_event_hash": "4e638cdcc2c25f65f2098a81604bb10f3c93f9f247c2c316e7ac1f6c2a3d9c98",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_09142017.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "ce1907c8557a09b85b34d51bba05d440d2bdf51a84afbfb5b5933d3c875cb565",
+      "event_time": "2017-10-13T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2017-10-13T12:30:00Z",
+      "published_at": "2017-10-13T12:30:00Z",
+      "raw_event_hash": "3b122366adcc97d257789418440732accba3b4dcca1347f78e2b21321a5cb7ff",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_10132017.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "8eaeab6046e916855af9191ed6c2c4dbf3b222d2b1686d3a73093be04f7f0580",
+      "event_time": "2017-11-15T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2017-11-15T13:30:00Z",
+      "published_at": "2017-11-15T13:30:00Z",
+      "raw_event_hash": "b5ec829175001609ba2c0915b9a1c283c788fa6563040e3a3ec822a67a7da755",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_11152017.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "2f823861523403907b7ec802c8da16f85e3d20cfa5a1f424b80fe698ffa74d0d",
+      "event_time": "2017-12-13T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2017-12-13T13:30:00Z",
+      "published_at": "2017-12-13T13:30:00Z",
+      "raw_event_hash": "2c16b999310ff32b3da03d5beb6f13faff29bf60946e2e4cddf9aa048c48ef52",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_12132017.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "5e17c5bf01b625d743e585c7c752f99d14789230c316faceb5957a8533184d99",
+      "event_time": "2018-01-12T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-01-12T13:30:00Z",
+      "published_at": "2018-01-12T13:30:00Z",
+      "raw_event_hash": "9ca2e210e56d845931791fd4f95cb77f8dd044a78df4fc79d2f073cd05318eed",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_01122018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "eaca2b9c8fac6e25b9d523edd40fdecc7912f8d05fd0a253c439c9f8d149db1f",
+      "event_time": "2018-02-14T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-02-14T13:30:00Z",
+      "published_at": "2018-02-14T13:30:00Z",
+      "raw_event_hash": "e523128a2c8f4da7964cf78cc95f6735d1851808eae93e29d189c7583725b951",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_02142018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "5e2fda39b8b3e0ca371d64b0c09a5e7de2cbe1c27aecb1f5e224512e4f16d2ec",
+      "event_time": "2018-03-13T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-03-13T12:30:00Z",
+      "published_at": "2018-03-13T12:30:00Z",
+      "raw_event_hash": "54900c5655286ed399e93d514634ab714a07fe1fc9b97d5d500556926e88c7f4",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_03132018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "e78c58f1fd245b81ba72b6368ddd9f82a4c28417bbcc0fcd604f3c4ec53ff402",
+      "event_time": "2018-04-11T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-04-11T12:30:00Z",
+      "published_at": "2018-04-11T12:30:00Z",
+      "raw_event_hash": "b1f6ddf424048213d3b404bc3a60a5ac988d41a9ed24d18afa633d121e9774b0",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_04112018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "a166fd392fe54138b3b4c4865d79369576c363cf528f3302b51d5645a8529f4b",
+      "event_time": "2018-05-10T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-05-10T12:30:00Z",
+      "published_at": "2018-05-10T12:30:00Z",
+      "raw_event_hash": "7acba904f4d69356588745ac16ed8eabb54009a3880472d6b42c9235ee25e106",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_05102018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "e123e74a7a423f69b5033d953e7b9fcfeb2fa13eb8d285ddfc5fa91bfeaea6ba",
+      "event_time": "2018-06-12T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-06-12T12:30:00Z",
+      "published_at": "2018-06-12T12:30:00Z",
+      "raw_event_hash": "fba6617641e3bb448103d1af92ab48c70f3278ed40b3d4bd83c99d66fa8be333",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_06122018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "664aff559ecf2f1058a4106b1dd8d6882c321293b2d969514b72fb2dfa076128",
+      "event_time": "2018-07-12T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-07-12T12:30:00Z",
+      "published_at": "2018-07-12T12:30:00Z",
+      "raw_event_hash": "af835cfb69dba05310a0dbff5fb2440fced35a5fb3a5fb400600b975396fec94",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_07122018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "15d5e192907a9b53a48aecefd78247c6994dea6c647a4e7b709386c110bda1c7",
+      "event_time": "2018-08-10T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-08-10T12:30:00Z",
+      "published_at": "2018-08-10T12:30:00Z",
+      "raw_event_hash": "c330c5fb429e54e21ec130cc6eb9d6e8c2547d724430459b152decb996993638",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_08102018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "89e6d14325398d22ba6f26ab7576da64284d11e9add33ce347cec5b2990fc37a",
+      "event_time": "2018-09-13T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-09-13T12:30:00Z",
+      "published_at": "2018-09-13T12:30:00Z",
+      "raw_event_hash": "004eff266c5d41b582ad48e50468b64dde98a44a8355dc6cd211e9156bef9c9d",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_09132018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "9a5edb02503ee65247a6c8c349aae4d3fb186218ed4b8ac4a207c3d96cf8074f",
+      "event_time": "2018-10-11T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-10-11T12:30:00Z",
+      "published_at": "2018-10-11T12:30:00Z",
+      "raw_event_hash": "ddb13b08d7de3591ab7addc48dac7e34797c957ab785da07f5deecb4ec33133c",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_10112018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "64ecdf3783b24c9634d62617ad58d7494112020366ad08c801ab843a91a01cc2",
+      "event_time": "2018-11-14T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-11-14T13:30:00Z",
+      "published_at": "2018-11-14T13:30:00Z",
+      "raw_event_hash": "54895f58b507f321d1d478d92fb26a69e9fc7b1022614614728131455f3934ec",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_11142018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "5e89ace0a73304e03860589b4b2cb6d0534b487053627e9b21eba58a72c7cc83",
+      "event_time": "2018-12-12T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2018-12-12T13:30:00Z",
+      "published_at": "2018-12-12T13:30:00Z",
+      "raw_event_hash": "5811dc8731c8449e307aa9ce98834b42d0ab4bb1086e56afd70911682b819ba3",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_12122018.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "767d11533487c75f66e1652a2e6448f68df00b477c71bfaf661d0005ae4f7a22",
+      "event_time": "2019-01-11T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-01-11T13:30:00Z",
+      "published_at": "2019-01-11T13:30:00Z",
+      "raw_event_hash": "5e41943db4a5e5cc8ccde7ec3bc6fe027e11498a2e5e61ce8277d56eb6c4bff4",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_01112019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "0ae2e17e03b2e9a7f7b2f4be944d1d08b8ba5f3dc5e2368cd26b8d8e35ebc5dc",
+      "event_time": "2019-02-13T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-02-13T13:30:00Z",
+      "published_at": "2019-02-13T13:30:00Z",
+      "raw_event_hash": "f36ffbe24f82667f797efe0fdbcace17ef4d0245ee52789e63ff2299397fb345",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_02132019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "a102fc48bcbfabd7ce79995b8c5cd57311e2f3c782491cc4f577e6049acee9dd",
+      "event_time": "2019-03-12T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-03-12T12:30:00Z",
+      "published_at": "2019-03-12T12:30:00Z",
+      "raw_event_hash": "cf5d302b8fe9b5063cec76ee15dc30658fdcd3657d040ee56f85812cfc641bb8",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_03122019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "b2ee1407fb26a50687782906a0310b158fd18e40ad7c30ceeb7254f2fe38015b",
+      "event_time": "2019-04-10T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-04-10T12:30:00Z",
+      "published_at": "2019-04-10T12:30:00Z",
+      "raw_event_hash": "2edf9e9ffe8d54c2dd251486634b79f11d5455cf7c2a9de2337c62204cccf80f",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_04102019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "3cb369244991acb1283125ada6f3a353a4999c2837c03b22842bc778744ac7f3",
+      "event_time": "2019-05-10T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-05-10T12:30:00Z",
+      "published_at": "2019-05-10T12:30:00Z",
+      "raw_event_hash": "eeeb9ff961f67ccfa5a30a4ae3859a60968ba0653749d10b9d0e579e179723dc",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_05102019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "a11212ad53d3a3a363c2f0f1f5c34997d7fc8a0cc434f2461c6a78c71ff82d87",
+      "event_time": "2019-06-12T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-06-12T12:30:00Z",
+      "published_at": "2019-06-12T12:30:00Z",
+      "raw_event_hash": "8307680a14d395e01dc464f15567661cd1c742856f4b3f9147dcdbb7dbc0beb2",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_06122019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "caedc87cbe9a767b7dc6d529368313d6114ec9712e945e29df35842385c8aeac",
+      "event_time": "2019-07-11T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-07-11T12:30:00Z",
+      "published_at": "2019-07-11T12:30:00Z",
+      "raw_event_hash": "aeab5c9d9869458570273be9c130a6d5b3ad673b832069ff54712b4a3618bdd5",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_07112019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "2ab6d178fe0e25814670aad90f63795fd82b076808b28374f891792f1d1e8994",
+      "event_time": "2019-08-13T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-08-13T12:30:00Z",
+      "published_at": "2019-08-13T12:30:00Z",
+      "raw_event_hash": "5687ed69cbc6747e43d3d211991762c75ef1be976bd7d6163089f5ad59eeb368",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_08132019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "ff2bae39e5763f67bd68a5b7064d65dfd9cb40ba4dd953eb5dd78f547351be7c",
+      "event_time": "2019-09-12T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-09-12T12:30:00Z",
+      "published_at": "2019-09-12T12:30:00Z",
+      "raw_event_hash": "47566e65f86a892349a11f25ed26a1a144570a630584b624d3677369ffa186c4",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_09122019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "f86f8ea02e6d56d77c05e579c77a77b711ac655245a18cea40f3dfd2e13a27cd",
+      "event_time": "2019-10-10T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-10-10T12:30:00Z",
+      "published_at": "2019-10-10T12:30:00Z",
+      "raw_event_hash": "a12be1f5f3d1c6984f3f3120407a1d2be49b0bf53f22622cf845fea7fe690a8a",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_10102019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "3441953afe21f834931f14876b44a11a7a2137aefcfdbb69d6765f2b9ebf9c75",
+      "event_time": "2019-11-13T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-11-13T13:30:00Z",
+      "published_at": "2019-11-13T13:30:00Z",
+      "raw_event_hash": "fcdeaead86863d08c4395f9bc5bb702f8f8700b1fe1173ec4284edb2801db1af",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_11132019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "7dfa1398b237ad4c6d2d17c57a78c813f8ab562970432b8952d9532312fadb23",
+      "event_time": "2019-12-11T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2019-12-11T13:30:00Z",
+      "published_at": "2019-12-11T13:30:00Z",
+      "raw_event_hash": "7d801b2d30f450f7726d4d0358395537b170ecfa7bd785b885b4a63992997a9a",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_12112019.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "092c67d2333a30c9022e07b1ca82190494ddf46356a1f7b05df06721bcf7f02b",
+      "event_time": "2020-01-14T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-01-14T13:30:00Z",
+      "published_at": "2020-01-14T13:30:00Z",
+      "raw_event_hash": "589d8dd116198e0821ec2a1cec0f2c40e77ed7182313e2b1d7ecd51292f283b9",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_01142020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "4d3ea194bf88d4dc56f705051d7e5682d11fbc35017b1daa1f5c47bc64fe56a3",
+      "event_time": "2020-02-13T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-02-13T13:30:00Z",
+      "published_at": "2020-02-13T13:30:00Z",
+      "raw_event_hash": "778a28254c78e58588d4d2f32fe81cd601fdf05fed6254175b4e6c0919a8d593",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_02132020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "7b7aff770668e285d93009d1d63d1a31bd2dd4cb4f23e464b863b248b44fb899",
+      "event_time": "2020-03-11T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-03-11T12:30:00Z",
+      "published_at": "2020-03-11T12:30:00Z",
+      "raw_event_hash": "0753dacd4b9a6d707428cf302199d880cd80b0b3bfcf9af2a3b9fc6267431796",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_03112020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "78452a342fdabce59926f4f2d4b67da7635d0f8919d8aeca3386821500e52b64",
+      "event_time": "2020-04-10T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-04-10T12:30:00Z",
+      "published_at": "2020-04-10T12:30:00Z",
+      "raw_event_hash": "13c74d571d56d9a47611fb8261ee62b74ec7147769dd45a03c641b4a32151b1b",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_04102020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "e9d475813b24fa16ec739d9defe6e1f8b09ffe125ff4b557a365b14a367cec42",
+      "event_time": "2020-05-12T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-05-12T12:30:00Z",
+      "published_at": "2020-05-12T12:30:00Z",
+      "raw_event_hash": "ca9c979615fb2b98883c8b94d5fbe28cdf887db826c00cb0f34f330bda43a12a",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_05122020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "68095aaabcc35e359651b02c658f4b7cc8001a973b359c4e71393177672be759",
+      "event_time": "2020-06-10T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-06-10T12:30:00Z",
+      "published_at": "2020-06-10T12:30:00Z",
+      "raw_event_hash": "2e5a3695a3907a886c78c52a8344d72febd0b240e0d5df19020a5df475c45e33",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_06102020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "00d963080f58bb1bd44a541385f117ba81841f6858dc6c6c7d46570a969b77dc",
+      "event_time": "2020-07-14T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-07-14T12:30:00Z",
+      "published_at": "2020-07-14T12:30:00Z",
+      "raw_event_hash": "958bf1883153f0f487ec6aac50e4ad5dfdb398317757bb2b3eb4f5eb2372e111",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_07142020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "a43ea67ab6b41d22886e3dbf5dd72b988852c78a5da4f7d7aa59233c77e91fae",
+      "event_time": "2020-08-12T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-08-12T12:30:00Z",
+      "published_at": "2020-08-12T12:30:00Z",
+      "raw_event_hash": "0b5c58e4499d472f7dcb8f89dac1386d86fd2c843366791dee544a59e313edaa",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_08122020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "89f54d3168227cfbd10848d55fe104a5a74a0de4e778711ba229e18842f639b2",
+      "event_time": "2020-09-11T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-09-11T12:30:00Z",
+      "published_at": "2020-09-11T12:30:00Z",
+      "raw_event_hash": "058a05be842b729d025d8ccb56e6e8442c9fd049260e67b5645a90f03411af19",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_09112020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "1e2e4ab5305f4a1add29b3798819eb9f03db66eaba629c9155e8430525250456",
+      "event_time": "2020-10-13T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-10-13T12:30:00Z",
+      "published_at": "2020-10-13T12:30:00Z",
+      "raw_event_hash": "81fbbf01ba6c7cc4dae7880a9093dcbd76679198cce2163fcab18b3a98104412",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_10132020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "3293afeb8bd21b582e73d42c679ac78ba00f1889df2a4b917d24a05a861c4cd2",
+      "event_time": "2020-11-12T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-11-12T13:30:00Z",
+      "published_at": "2020-11-12T13:30:00Z",
+      "raw_event_hash": "0e865e6d3a9b46dd5d98a563bca50e42b0b29f99e0284c4846da15ca1e060057",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_11122020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "cd16d84c6e8b06ac57d726911f9c2ed9914572f9ede812c62f37e761232acd7e",
+      "event_time": "2020-12-10T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2020-12-10T13:30:00Z",
+      "published_at": "2020-12-10T13:30:00Z",
+      "raw_event_hash": "c91c19d721dcca6b1dd759e588afc47939e56c0ca99ff94cb894c53c47f6cd82",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_12102020.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "7cb7f8dc8d01740f1770f701cbd60a3ec7a33b82d2477878cced1a2950d7370d",
+      "event_time": "2021-01-13T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-01-13T13:30:00Z",
+      "published_at": "2021-01-13T13:30:00Z",
+      "raw_event_hash": "e7aeb58a6fb76573b078f2365e991cec69c8d3b3b17b4c3991cec12b3e253c7b",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_01132021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "7ab69d93d9622a8a10e6d2ff5dbd5011b91a541eebc00bcc1e9daf43fdf52cc6",
+      "event_time": "2021-02-10T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-02-10T13:30:00Z",
+      "published_at": "2021-02-10T13:30:00Z",
+      "raw_event_hash": "6a8d8c9558ce5332e23a5d64f7da7a43597601af9708bd007531a048c8ffbfa1",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_02102021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "37bff84def3b21a2f598935786128d6c8675879aeb7a09f777d126422656fd06",
+      "event_time": "2021-03-10T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-03-10T13:30:00Z",
+      "published_at": "2021-03-10T13:30:00Z",
+      "raw_event_hash": "4e0562739e24d7886dda48ca36f5f044af280f8582217ad58695ca21ddf860a0",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_03102021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "acd8e590c4c2013d95c5bd6622f97869dfd2a9e3b32f7c873ff851fbfb7b6c33",
+      "event_time": "2021-04-13T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-04-13T12:30:00Z",
+      "published_at": "2021-04-13T12:30:00Z",
+      "raw_event_hash": "02a1e2f29dd1b1e8178ed1e02c4e5e8a2e8b4050a76ac28c7a02c06a9d17618e",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_04132021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "1ae3c95c43ad55f3fc54c5ebaa1eb6dd24504c74fbd97c2aa5140385f4240146",
+      "event_time": "2021-05-12T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-05-12T12:30:00Z",
+      "published_at": "2021-05-12T12:30:00Z",
+      "raw_event_hash": "0f9b423e4dd8a5060373eabb87093b2d78899a3ce0e2025782a78627d301774f",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_05122021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "78c72e0cb52095a8058023ab5b2319dbe327ff487087eecfaf7004fa0034e430",
+      "event_time": "2021-06-10T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-06-10T12:30:00Z",
+      "published_at": "2021-06-10T12:30:00Z",
+      "raw_event_hash": "1aeaf9bce2031cb77323b1fe3b9bed5633103dcf9433984d05dcda84af1c67a5",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_06102021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "c361e6a54b03040dff6faac948c0f32a2758dc54241f492bfcf01097409414e4",
+      "event_time": "2021-07-13T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-07-13T12:30:00Z",
+      "published_at": "2021-07-13T12:30:00Z",
+      "raw_event_hash": "c994c534098440d6436f9321e55e683c76cc5b8c4a84cf2f3b58ab560c133876",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_07132021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "37e2fa923065af3e062ae7dde6fe7ff385f2bf69376857ee8bdafbbf7aa0e8f4",
+      "event_time": "2021-08-11T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-08-11T12:30:00Z",
+      "published_at": "2021-08-11T12:30:00Z",
+      "raw_event_hash": "69e94d086c84bedffbbb90d34e6cf5af98ab992db7165870021f57d93ce0e3d1",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_08112021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "259f5d6f5ccd7ca5777dc8a72541b0426f4b8dc649fcfe438a41ed2ccaf58acf",
+      "event_time": "2021-09-14T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-09-14T12:30:00Z",
+      "published_at": "2021-09-14T12:30:00Z",
+      "raw_event_hash": "7a58487544859b8465f6e6ff3e75997468d454b5b1714a872f56e6e9d76c069c",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_09142021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "725a4e9d0428650aa5abb960bc7451251d8d351160706448061f28a4d95c7ae9",
+      "event_time": "2021-10-13T12:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-10-13T12:30:00Z",
+      "published_at": "2021-10-13T12:30:00Z",
+      "raw_event_hash": "0d45b2e92659ce179bd2cb1c1d81d7b6f6643cecee1356c63912eedbec70a7d6",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_10132021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "b0cb57a8dca6924c0ba34bac39c71b69c5334813e557e68ffc450f3d4ae20943",
+      "event_time": "2021-11-10T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-11-10T13:30:00Z",
+      "published_at": "2021-11-10T13:30:00Z",
+      "raw_event_hash": "ba39ef938ef36cc9a055d2564715dec9bc708d7518feed599ea5000840d66a4f",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_11102021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    },
+    {
+      "assets": [
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "event_id": "abaf51976447348180627f94fdd8e35b492ef8464608bb1aec5960d202bb950f",
+      "event_time": "2021-12-10T13:30:00Z",
+      "event_type": "us_cpi_release",
+      "first_market_available_at": "2021-12-10T13:30:00Z",
+      "published_at": "2021-12-10T13:30:00Z",
+      "raw_event_hash": "e67435d5787e83af225e481f0b0c7b2f73da0f1f812a05d759be0c27d8e21344",
+      "region": "US",
+      "source_id": "bls/cpi-news-release",
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_12102021.htm",
+      "source_version": "bls-cpi-rendered-text-v1"
+    }
+  ],
+  "github_sha": "7b5e69865b1d8536de45ce29345982f2469a65e8",
+  "manifest_version": "cpi-development-manifest-v1",
+  "snapshot_inventory_sha256": "4697ae393059f958691f310aa39ad6bbc90ef06ff571d8fcd79b2c248daea1ef",
+  "snapshot_version": "bls-cpi-dom-snapshot-v1",
+  "source_manifest_artifact_digest": "sha256:481b858c2ba12090c3ca6bb455077e008973d25300e83b854e1978c1491b501d",
+  "source_manifest_artifact_id": 10579345372,
+  "source_manifest_artifact_run_id": 35426105066,
+  "source_mode": "dom-snapshot",
+  "validation_or_oos_accessed": false
+}
