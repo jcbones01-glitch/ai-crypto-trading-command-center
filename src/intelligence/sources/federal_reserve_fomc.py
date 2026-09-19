@@ -11,6 +11,7 @@ from intelligence.event_schema import EventRecord, hash_raw_payload
 
 SOURCE_ID = "federal-reserve-board/fomc-statement"
 SOURCE_VERSION = "federal-reserve-fomc-html-v1"
+_REQUIRED_TITLE = "Federal Reserve issues FOMC statement"
 
 _DATE_RE = re.compile(
     r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+"
@@ -40,6 +41,11 @@ def _validate_source_url(source_url: str) -> None:
     hostname = (parsed.hostname or "").lower()
     if parsed.scheme != "https" or hostname not in {"federalreserve.gov", "www.federalreserve.gov"}:
         raise ValueError("source_url must be an HTTPS Federal Reserve Board URL")
+
+
+def _validate_statement_identity(text: str) -> None:
+    if _REQUIRED_TITLE.lower() not in text.lower():
+        raise ValueError("page is not identified as 'Federal Reserve issues FOMC statement'")
 
 
 def _parse_release_timestamp(text: str) -> datetime:
@@ -82,14 +88,16 @@ def parse_fomc_statement(
     source_url: str,
     assets: tuple[str, ...],
 ) -> EventRecord:
-    """Parse one Federal Reserve FOMC statement page into a point-in-time event.
+    """Parse one official Federal Reserve FOMC statement page.
 
-    The official page's explicit "For release at" timestamp is treated as both
-    publication time and first market availability. Pages without an explicit
-    EST/EDT release timestamp are rejected rather than inferred.
+    Accepted pages must explicitly identify themselves as an FOMC statement and
+    expose an EST/EDT "For release at" timestamp. The official release timestamp
+    controls publication and first market availability. Ambiguous pages fail
+    closed instead of being inferred from URL dates or crawl metadata.
     """
     _validate_source_url(source_url)
     text = _plain_text(raw_payload)
+    _validate_statement_identity(text)
     released_at = _parse_release_timestamp(text)
 
     stable_key = f"{SOURCE_ID}|{source_url}|{released_at.isoformat()}".encode("utf-8")
