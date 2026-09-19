@@ -24,5 +24,8 @@
     "passing full-pipeline synthetic/integrity gate including AMS-V1 state construction, timing, continuity, row selection and protected-partition firewall",
     "separate empirical-release approval after the above gates"
   ],
-  "notes": "This lock does not select an inference method. It records the current authorization state only. Design approval alone does not authorize market-data execution."
+  "notes": "User supplied APPROVE_V2_DESIGN_AFTER_SPECIFIED_CHANGES for synthetic-only DWB. Exact follow-up specification and resource/review conditions remain pending; the implementer has not signed independent approval. All execution authorizations remain false.",
+  "conditional_v2_design_review_received": true,
+  "conditional_review_artifact": "docs/AMS_DEP_V2_CONDITIONAL_REVIEW_RESPONSE.md",
+  "v2_engineering_oracles_passed": false
 }

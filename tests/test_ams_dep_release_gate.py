@@ -67,3 +67,17 @@ def test_any_future_ams_dep_empirical_runner_must_call_release_guard():
             f"{path} is an AMS-DEP empirical runner but does not call the "
             "machine-enforced release gate"
         )
+
+
+def test_synthetic_flag_alone_cannot_bypass_review_freeze_or_oracles(tmp_path):
+    import json
+    gate = load_ams_dep_release_gate().copy()
+    gate['v2_synthetic_execution_authorized'] = True
+    path = tmp_path/'gate.json'
+    for field in ('independent_v2_design_approved','v2_specification_frozen','v2_engineering_oracles_passed'):
+        path.write_text(json.dumps(gate))
+        with pytest.raises(ResearchGateError):
+            assert_ams_dep_v2_synthetic_execution_allowed(path)
+        gate[field] = True
+    path.write_text(json.dumps(gate))
+    assert assert_ams_dep_v2_synthetic_execution_allowed(path)['v2_synthetic_execution_authorized']

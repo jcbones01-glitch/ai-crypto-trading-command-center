@@ -1,0 +1,23 @@
+{
+  "classification": "DETERMINISTIC_ENGINEERING_RESOURCE_CHECK_NOT_CALIBRATION",
+  "python": "3.12.14",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "blas_threads": 1,
+  "rows": 10000,
+  "fixture_draws": 8,
+  "wall_seconds_including_setup": 0.026973353000130373,
+  "calibration_draws_if_11_cases_all_six_slots": 659868000,
+  "linear_serial_hours_including_repeated_setup": 618.0157117184038,
+  "estimate_caveat": "Rough upper workload estimate, not measured calibration runtime; includes setup, ignores batching/sharding and machine variation.",
+  "engineering": {
+    "classification": "ENGINEERING_ONLY_NOT_CALIBRATION",
+    "p_value": null,
+    "draws": 8,
+    "invalid_draws": 0,
+    "exceedances": 0
+  },
+  "calibration_run": false,
+  "market_data_accessed": false,
+  "validation_or_oos_accessed": false
+}
