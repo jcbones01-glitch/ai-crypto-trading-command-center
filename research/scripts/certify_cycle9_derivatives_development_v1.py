@@ -522,13 +522,11 @@ def certify_stream(kind: str, symbol: str) -> dict:
         "accepted_archive_count": sum(x["status"] == "PASS" for x in ledger),
         "normalized_row_count": len(accepted_rows) if stream_ok else 0,
         "first_timestamp": (
-            next((({k:v for k,v in accepted_rows[0].items() if not k.startswith("_")}).get("open_time") or
-                  ({k:v for k,v in accepted_rows[0].items() if not k.startswith("_")}).get("calc_time")), None)
+            (accepted_rows[0].get("open_time") or accepted_rows[0].get("calc_time"))
             if accepted_rows else None
         ),
         "last_timestamp": (
-            next((({k:v for k,v in accepted_rows[-1].items() if not k.startswith("_")}).get("open_time") or
-                  ({k:v for k,v in accepted_rows[-1].items() if not k.startswith("_")}).get("calc_time")), None)
+            (accepted_rows[-1].get("open_time") or accepted_rows[-1].get("calc_time"))
             if accepted_rows else None
         ),
         "failures": stream_failures,
