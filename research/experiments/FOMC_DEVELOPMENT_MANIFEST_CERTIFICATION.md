@@ -16,7 +16,8 @@ This certification freezes the Federal Reserve FOMC statement event set before a
 - Artifact name: `gate2-fomc-development-manifest`
 - Artifact digest: `sha256:7785634aed70e42840f32ee46acb387c72a1bb181345c104c6d9494e5d182e61`
 - Full manifest JSON SHA-256: `e0fd8e03e420c9b170ce48265e08157ff22c0fb0fbd9e16019bd69bb902ad62f`
-- Frozen compact manifest SHA-256 at construction: `e829ac54700bdd46a8faf4de631684aaa0b126c25910a34c203f4ef2645be2eb`
+- Frozen compact manifest path: `research/experiments/fomc_development_manifest_v1.json`
+- Frozen compact manifest Git blob SHA: `520cd97093e8bd808184c6811b7d82a6d905714a`
 
 ## Frozen event dataset
 
