@@ -9,6 +9,7 @@ import re
 import time
 import urllib.request
 from collections import Counter
+from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from zipfile import ZipFile
@@ -92,6 +93,19 @@ def _normalized_header(value: str) -> str:
     return re.sub(r"[^a-z0-9]", "", value.strip().lower())
 
 
+def parse_epoch_timestamp(value: str):
+    integer = int(value)
+    if 10**11 <= integer < 10**14:
+        unit, divisor = "milliseconds", 1_000
+    elif 10**14 <= integer < 10**17:
+        unit, divisor = "microseconds", 1_000_000
+    else:
+        raise ValueError("unsupported timestamp precision")
+    seconds, remainder = divmod(integer, divisor)
+    microseconds = remainder * 1_000 if unit == "milliseconds" else remainder
+    return datetime.fromtimestamp(seconds, tz=timezone.utc).replace(microsecond=microseconds), unit
+
+
 def probe_kline(payload: bytes) -> dict:
     member, rows = _rows_from_zip(payload)
     if not rows:
@@ -110,7 +124,7 @@ def probe_kline(payload: bytes) -> dict:
             if len(row) != 12:
                 raise ValueError("unexpected kline column count")
             open_ts, open_unit = parse_timestamp(row[0])
-            close_ts, close_unit = parse_timestamp(row[6])
+            close_ts, close_unit = parse_epoch_timestamp(row[6])
             values = [Decimal(row[i]) for i in (1, 2, 3, 4, 5)]
             open_, high, low, close, volume = values
             if min(open_, high, low, close) <= 0:
@@ -241,7 +255,7 @@ def probe_funding(payload: bytes) -> dict:
         try:
             if len(row) != len(header):
                 raise ValueError("funding row/header column mismatch")
-            ts, unit = parse_timestamp(row[ts_idx])
+            ts, unit = parse_epoch_timestamp(row[ts_idx])
             rate = Decimal(row[rate_idx])
             if not rate.is_finite():
                 raise ValueError("non-finite funding rate")
