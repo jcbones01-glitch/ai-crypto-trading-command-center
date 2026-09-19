@@ -5,16 +5,20 @@ on:
     branches: [gate2-event-intelligence-foundation]
     paths:
       - 'docs/GATE2_EVENT_INTELLIGENCE_FOUNDATION_V1.md'
+      - 'docs/SOURCE_REVIEW_FEDERAL_RESERVE_FOMC_V1.md'
       - 'research/experiments/GATE2_CYCLE7_CLOSEOUT.md'
       - 'src/intelligence/**'
       - 'tests/test_event_intelligence_foundation.py'
+      - 'tests/test_federal_reserve_fomc_source.py'
       - '.github/workflows/gate2-event-intelligence-foundation.yml'
   pull_request:
     paths:
       - 'docs/GATE2_EVENT_INTELLIGENCE_FOUNDATION_V1.md'
+      - 'docs/SOURCE_REVIEW_FEDERAL_RESERVE_FOMC_V1.md'
       - 'research/experiments/GATE2_CYCLE7_CLOSEOUT.md'
       - 'src/intelligence/**'
       - 'tests/test_event_intelligence_foundation.py'
+      - 'tests/test_federal_reserve_fomc_source.py'
       - '.github/workflows/gate2-event-intelligence-foundation.yml'
   workflow_dispatch:
 
@@ -35,4 +39,4 @@ jobs:
       - name: Run full test suite
         run: pytest
       - name: Verify event intelligence foundation
-        run: python -m pytest tests/test_event_intelligence_foundation.py -q
+        run: python -m pytest tests/test_event_intelligence_foundation.py tests/test_federal_reserve_fomc_source.py -q
