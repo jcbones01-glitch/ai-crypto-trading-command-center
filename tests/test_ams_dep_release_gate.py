@@ -15,10 +15,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_current_ams_dep_gate_is_explicitly_blocked():
     gate = load_ams_dep_release_gate()
-    assert gate["status"] == "BLOCKED_INDEPENDENT_REVIEW"
+    assert gate["status"] == "BLOCKED_CONDITIONAL_REVIEW_RATIFICATION"
     assert gate["design_review_issue"] == 44
     assert gate["v1_calibration_failed"] is True
+    assert gate["conditional_v2_design_review_received"] is True
+    assert gate["conditional_review_decision"] == "APPROVE_V2_DESIGN_AFTER_SPECIFIED_CHANGES"
     assert gate["independent_v2_design_approved"] is False
+    assert gate["v2_specification_frozen"] is False
+    assert gate["v2_engineering_oracles_passed"] is True
+    assert gate["v2_sharding_plan_verified"] is True
     assert gate["v2_synthetic_execution_authorized"] is False
     assert gate["development_market_data_execution_authorized"] is False
     assert gate["validation_or_oos_access_authorized"] is False
@@ -40,6 +45,7 @@ def test_empirical_gate_requires_all_release_conditions_and_never_oos(tmp_path):
         "independent_v2_design_approved",
         "v2_specification_frozen",
         "v2_synthetic_calibration_passed",
+        "v2_synthetic_holdout_passed",
         "full_pipeline_synthetic_integrity_passed",
         "separate_empirical_release_approved",
         "development_market_data_execution_authorized",
@@ -72,12 +78,37 @@ def test_any_future_ams_dep_empirical_runner_must_call_release_guard():
 def test_synthetic_flag_alone_cannot_bypass_review_freeze_or_oracles(tmp_path):
     import json
     gate = load_ams_dep_release_gate().copy()
-    gate['v2_synthetic_execution_authorized'] = True
-    path = tmp_path/'gate.json'
-    for field in ('independent_v2_design_approved','v2_specification_frozen','v2_engineering_oracles_passed'):
+    gate["v2_synthetic_execution_authorized"] = True
+    path = tmp_path / "gate.json"
+    for field in (
+        "independent_v2_design_approved",
+        "v2_specification_frozen",
+        "v2_engineering_oracles_passed",
+        "v2_sharding_plan_verified",
+    ):
+        gate[field] = False
         path.write_text(json.dumps(gate))
         with pytest.raises(ResearchGateError):
             assert_ams_dep_v2_synthetic_execution_allowed(path)
         gate[field] = True
     path.write_text(json.dumps(gate))
-    assert assert_ams_dep_v2_synthetic_execution_allowed(path)['v2_synthetic_execution_authorized']
+    assert assert_ams_dep_v2_synthetic_execution_allowed(path)["v2_synthetic_execution_authorized"]
+
+
+def test_empirical_release_requires_successful_unopened_holdout(tmp_path):
+    import json
+    gate = load_ams_dep_release_gate().copy()
+    for key in (
+        "independent_v2_design_approved",
+        "v2_specification_frozen",
+        "v2_synthetic_calibration_passed",
+        "full_pipeline_synthetic_integrity_passed",
+        "separate_empirical_release_approved",
+        "development_market_data_execution_authorized",
+    ):
+        gate[key] = True
+    gate["v2_synthetic_holdout_passed"] = False
+    path = tmp_path / "gate.json"
+    path.write_text(json.dumps(gate))
+    with pytest.raises(ResearchGateError, match="v2_synthetic_holdout_passed"):
+        assert_ams_dep_empirical_release_allowed(path)
