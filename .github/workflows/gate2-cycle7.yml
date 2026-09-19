@@ -10,6 +10,10 @@ on:
       - '.github/workflows/gate2-cycle7.yml'
   workflow_dispatch:
 
+concurrency:
+  group: gate2-cycle7-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   gate2-cycle7:
     runs-on: ubuntu-latest
