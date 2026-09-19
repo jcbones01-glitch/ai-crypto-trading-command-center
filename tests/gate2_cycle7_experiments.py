@@ -261,21 +261,57 @@ def concentration(ds):
     }
 
 
-def drawdown_recovery(ds):
+def drawdown_recovery(ds, segments):
     active = [d for d in ds if d["aggregate"] and d["aggregate"]["events"]]
-    all_returns = [Decimal(e["return"]) for d in active for e in d["events"]]
-    equity = [Decimal("1")]
-    for r in all_returns:
-        equity.append(equity[-1] * (Decimal("1") + r))
-    max_dd = max_drawdown(equity) if equity else Decimal("0")
-    recovery = longest_recovery(equity) if equity else 0
-    worst_segment = min((Decimal(d["aggregate"]["compound_return"]) for d in active), default=Decimal("0"))
+    max_dd = Decimal("0")
+    worst_segment = Decimal("0")
+    longest_recovery_hours = Decimal("0")
+    eligible_events = 0
+    eligible_duration_hours = sum(len(segment) for segment in segments)
+
+    for d in active:
+        segment = segments[d["segment"]]
+        equity = [Decimal("1")]
+        peak = Decimal("1")
+        peak_time = None
+        local_max_dd = Decimal("0")
+        local_recovery_hours = Decimal("0")
+
+        for event in d["events"]:
+            r = Decimal(event["return"])
+            equity.append(equity[-1] * (Decimal("1") + r))
+            ts = datetime.fromisoformat(event["exit_timestamp"])
+            if equity[-1] >= peak:
+                peak = equity[-1]
+                peak_time = ts
+            else:
+                local_max_dd = max(local_max_dd, (peak - equity[-1]) / peak if peak > 0 else Decimal("0"))
+                if peak_time is not None:
+                    local_recovery_hours = max(
+                        local_recovery_hours,
+                        Decimal((ts - peak_time).total_seconds()) / Decimal("3600"),
+                    )
+
+        if peak_time is not None and equity[-1] < peak:
+            unresolved = Decimal((segment[-1].timestamp - peak_time).total_seconds()) / Decimal("3600")
+            local_recovery_hours = max(local_recovery_hours, unresolved)
+
+        seg_return = Decimal(d["aggregate"]["compound_return"])
+        worst_segment = min(worst_segment, seg_return)
+        max_dd = max(max_dd, local_max_dd)
+        longest_recovery_hours = max(longest_recovery_hours, local_recovery_hours)
+        eligible_events += len(d["events"])
+
     return {
         "max_drawdown": str(max_dd),
         "worst_segment_return": str(worst_segment),
-        "longest_recovery_events": recovery,
-        "eligible_events": len(all_returns),
-        "pass": bool(all_returns) and max_dd < Decimal("0.70") and worst_segment >= Decimal("-0.50") and recovery <= max(1, len(all_returns)) * 0.50,
+        "longest_recovery_hours": str(longest_recovery_hours),
+        "eligible_duration_hours": eligible_duration_hours,
+        "eligible_events": eligible_events,
+        "pass": bool(eligible_events)
+            and max_dd < Decimal("0.70")
+            and worst_segment >= Decimal("-0.50")
+            and longest_recovery_hours <= Decimal("0.50") * Decimal(max(1, eligible_duration_hours)),
     }
 
 
@@ -458,7 +494,7 @@ def main():
                         "regime": regime(base_ds, segments),
                         "leave_one_segment_out": leave_one_out(base_ds),
                         "concentration": concentration(base_ds),
-                        "drawdown_recovery": drawdown_recovery(base_ds),
+                        "drawdown_recovery": drawdown_recovery(base_ds, segments),
                     }
                     for label, fee, slip in FEE_GRID:
                         ds = details(segments, hyp, params, fee, slip, 1)
