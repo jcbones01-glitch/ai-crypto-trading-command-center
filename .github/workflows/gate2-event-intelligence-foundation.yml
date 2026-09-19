@@ -48,4 +48,4 @@ jobs:
       - name: Run full test suite
         run: pytest
       - name: Verify event intelligence foundation
-        run: python -m pytest tests/test_event_intelligence_foundation.py tests/test_federal_reserve_fomc_source.py tests/test_fomc_development_manifest.py tests/test_fomc_event_study_v1.py tests/test_bls_cpi_source.py tests/test_cpi_development_manifest.py tests/test_bls_employment_situation_source.py -q
+        run: python -m pytest tests/test_event_intelligence_foundation.py tests/test_federal_reserve_fomc_source.py tests/test_fomc_development_manifest.py tests/test_fomc_event_study_v1.py tests/test_bls_cpi_source.py tests/test_cpi_development_manifest.py tests/test_bls_employment_situation_source.py tests/test_employment_situation_development_manifest.py -q
