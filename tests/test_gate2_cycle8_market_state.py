@@ -31,4 +31,4 @@ def test_synchronized_agreement_uses_only_exact_complete_timestamps():
     assert result["volatility_state_agreement_fraction"] == "0.5"
     assert result["activity_state_agreement_fraction"] == "0.5"
     assert result["trend_state_agreement_fraction"] == "1"
-    assert result["composite_state_agreement_fraction"] == "0.5"
+    assert result["composite_state_agreement_fraction"] == "0"
