@@ -49,6 +49,17 @@ def test_shifted_sequence_requires_two_clean_bars_to_restore():
     assert regions[0].end == ts(13)
 
 
+def test_restoration_uses_manifest_research_end_not_global_end():
+    e = event(ts(10))
+    reports = [report([e], [ts(8), ts(9), ts(11), ts(12), ts(13), ts(14)])]
+    end = datetime.fromisoformat(ts(12))
+    manifest = build_manifest("BTCUSDT", reports, datetime.fromisoformat(ts(8)), end)
+    assert manifest.research_end == ts(12)
+    assert manifest.affected_regions[0].start == ts(10)
+    assert manifest.affected_regions[0].end == ts(11)
+    assert manifest.certified_segments == (CertifiedSegment(ts(8), ts(10)), CertifiedSegment(ts(11), ts(12)))
+
+
 def test_missing_interval_is_a_continuity_break_not_a_return():
     br = ContinuityBreak(ts(10), ts(11), ("a",), "missing hourly interval")
     assert not return_eligible(datetime.fromisoformat(ts(9)), datetime.fromisoformat(ts(11)), (br,))

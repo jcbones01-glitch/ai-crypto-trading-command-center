@@ -1,0 +1,40 @@
+name: Gate 2 Foundation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  gate2-foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -e '.[dev]'
+      - name: Run test suite
+        run: pytest
+      - name: Verify causal execution contract
+        run: |
+          python - <<'PY'
+          from decimal import Decimal
+          from research_core.backtesting import BacktestConfig
+          config = BacktestConfig(Decimal("1000"), Decimal("0.001"), Decimal("0.001"))
+          assert config.execution_delay_bars == 1
+          try:
+              BacktestConfig(Decimal("1000"), Decimal("0"), Decimal("0"), execution_delay_bars=0)
+          except ValueError:
+              pass
+          else:
+              raise AssertionError("non-causal same-bar execution must be rejected")
+          print("CAUSAL EXECUTION CONTRACT: PASS")
+          PY
+      - name: Run preregistered Development experiments
+        run: python tests/gate2_development_experiments.py
+      - name: Publish Development experiment evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate2-development-experiment-results
+          path: gate2_results/development_experiments.json
+          if-no-files-found: error
+          retention-days: 30

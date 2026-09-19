@@ -87,13 +87,21 @@ class ResearchTreatmentManifest:
         return value
 
 
-def _regions(reports: list[ArchiveQualityReport]) -> tuple[AffectedRegion, ...]:
+def _regions(reports: list[ArchiveQualityReport], research_end: datetime = RESEARCH_END) -> tuple[AffectedRegion, ...]:
+    """Build affected regions using the caller's research boundary.
+
+    The boundary is an explicit input so a manifest for a historical partition
+    cannot accidentally use the module-wide Gate 1 research end date while
+    applying the two-clean-bar restoration rule.
+    """
+    research_end = research_end.astimezone(timezone.utc)
     by_hour: dict[datetime, set[str]] = {}
     for report in reports:
         for anomaly in report.events:
             if anomaly.parsed_timestamp:
-                key = hour(datetime.fromisoformat(anomaly.parsed_timestamp))
-                by_hour.setdefault(key, set()).add(event_id(anomaly))
+                timestamp = hour(datetime.fromisoformat(anomaly.parsed_timestamp))
+                if timestamp < research_end:
+                    by_hour.setdefault(timestamp, set()).add(event_id(anomaly))
     if not by_hour:
         return ()
     ordered = sorted(by_hour)
@@ -110,12 +118,17 @@ def _regions(reports: list[ArchiveQualityReport]) -> tuple[AffectedRegion, ...]:
             ids = set(by_hour[current])
     raw.append(AffectedRegion(start.isoformat(), (previous + timedelta(hours=1)).isoformat(), tuple(sorted(ids)), "contiguous affected canonical hourly intervals"))
 
-    clean = {hour(ts) for report in reports for ts in report.valid_timestamps}
+    clean = {
+        hour(ts)
+        for report in reports
+        for ts in report.valid_timestamps
+        if hour(ts) < research_end
+    }
     event_hours = set(by_hour)
     restored: list[AffectedRegion] = []
     for region in raw:
         cursor = datetime.fromisoformat(region.end)
-        while cursor < RESEARCH_END:
+        while cursor < research_end:
             if cursor in clean and cursor not in event_hours and cursor + timedelta(hours=1) in clean and cursor + timedelta(hours=1) not in event_hours:
                 restored.append(AffectedRegion(region.start, cursor.isoformat(), region.anomaly_ids, region.reason))
                 break
@@ -147,7 +160,7 @@ def _exclusions(regions: tuple[AffectedRegion, ...], start: datetime, end: datet
 
 
 def build_manifest(symbol: str, reports: list[ArchiveQualityReport], research_start: datetime = RESEARCH_START, research_end: datetime = RESEARCH_END) -> ResearchTreatmentManifest:
-    regions = _regions(reports)
+    regions = _regions(reports, research_end)
     anomalies = tuple(sorted(event_id(e) for report in reports for e in report.events))
     source_integrity = "SOURCE VERIFIED" if reports and all(r.checksum_verified for r in reports) else "SOURCE UNVERIFIED"
     unlocalized = any(e.parsed_timestamp is None and e.anomaly_type != "CHECKSUM_FAILURE" for r in reports for e in r.events)
