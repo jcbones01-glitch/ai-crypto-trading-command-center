@@ -115,3 +115,47 @@ empirical-release review.
 - Strategy signals generated: **NO**
 - Empirical release authorized: **NO**
 - Paper/live trading authorized: **NO**
+
+## Retained local execution and reconciliation (2026-09-19)
+
+A separately completed local execution at the original implementation commit
+`7bd395d53a6cb456949049e3c1ddbcd7b26bc5e2` reproduced every case-level
+false-rejection count, registered power outcome and screen decision reported
+above for CI run `35434647946`. It used the same frozen specification, code,
+DGPs and seed schedule. This is reproducibility evidence from the same
+researcher, **not an independent statistical approval or an additional
+independent Monte Carlo sample**. No inferential claim is strengthened by
+counting these executions twice.
+
+The local machine-readable outputs are retained in Git to supplement the
+expiring CI artifact:
+
+- [Summary and provenance](ams_dep_synthetic_core_v1_results/summary.json)
+- [All 7,000 replicate records](ams_dep_synthetic_core_v1_results/replicates.jsonl.gz)
+- Compressed ledger SHA-256:
+  `4b0f03574641add65089494dd41ee8195aae03e160759bcb8e2889320908fb0b`
+- Uncompressed ledger SHA-256:
+  `08ebef6ea76866fc8214132e45077b80a59266e8be625e642a89451e728467c4`
+
+Both ledger hashes and the 7,000-record count were verified. The local
+summary records Python 3.12.14, NumPy 2.2.6, SciPy 1.15.3 and one BLAS
+thread, plus SHA-256 hashes for the executing sources and frozen documents.
+The ledger's Holm decisions and aggregate counts were also recomputed by
+separate bookkeeping code; this is an author check, not independent review.
+
+Before adding these outputs, the remote branch was reconciled at
+`8989ede4611615283c29bc0344567bdd8cb2bac1`. Its completed failure diagnostic,
+V2 literature/review packet, Issue #44, and machine-readable release lock
+remain authoritative and unchanged. The current full suite passed all 169
+tests with `PYTHONPATH=src python -m pytest -q`. An initial worktree test
+invocation failed collection because an editable environment pointed to the
+older checkout; selecting the reconciled source tree resolved this without
+code changes. GitHub release-gate run `35437149230` also passed at that
+reconciled commit; it verifies that execution remains blocked, not that a
+method is approved.
+
+**V1 remains failed. V2 synthetic execution and empirical execution remain
+blocked pending the review and release sequence in Issue #44 and
+`research/governance/ams_dep_release_gate_v1.json`.** No market data,
+Validation/OOS, P&L or trading was accessed by this local execution. The
+closed OHLCV program remains closed with no promoted candidate.
