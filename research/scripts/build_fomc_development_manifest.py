@@ -14,9 +14,12 @@ from intelligence.sources import discover_fomc_statement_urls, parse_fomc_statem
 DEVELOPMENT_START = datetime(2017, 8, 17, tzinfo=timezone.utc)
 DEVELOPMENT_END = datetime(2022, 1, 1, tzinfo=timezone.utc)
 EXPECTED_DEVELOPMENT_STATEMENT_COUNT = 37
-INDEX_URLS = tuple(
-    f"https://www.federalreserve.gov/newsevents/pressreleases/{year}-press.htm"
-    for year in range(2017, 2022)
+INDEX_URLS = (
+    "https://www.federalreserve.gov/newsevents/pressreleases/2017-press.htm",
+    "https://www.federalreserve.gov/newsevents/pressreleases/2018-press.htm",
+    "https://www.federalreserve.gov/newsevents/pressreleases/2019-press.htm",
+    "https://www.federalreserve.gov/newsevents/pressreleases/2020-press-fomc.htm",
+    "https://www.federalreserve.gov/newsevents/pressreleases/2021-press-fomc.htm",
 )
 ASSETS = ("BTCUSDT", "ETHUSDT")
 USER_AGENT = "ai-crypto-trading-command-center research/1.0 (public GitHub research project)"
@@ -46,7 +49,9 @@ def main() -> None:
         payload = fetch(index_url)
         from intelligence import hash_raw_payload
         index_hashes.append({"url": index_url, "raw_sha256": hash_raw_payload(payload)})
-        discovered.update(discover_fomc_statement_urls(payload, index_url=index_url))
+        index_urls = discover_fomc_statement_urls(payload, index_url=index_url)
+        print(f"{index_url}: discovered {len(index_urls)} FOMC statement links")
+        discovered.update(index_urls)
 
     records: list[tuple[str, object]] = []
     for url in sorted(discovered):
