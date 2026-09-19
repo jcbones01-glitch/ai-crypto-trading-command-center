@@ -50,20 +50,36 @@ Large historical archives are external to Git and local data directories are ign
 
 Binance data represents Binance market data and should not automatically be generalized to the entire crypto market. Gate 1 does not establish strategy profitability or market edge.
 
-## Backtest accounting model
+## Current causal backtest accounting model
 
-V0 uses a deterministic close-to-close **spot** model. A target position is a fraction of portfolio equity between 0 and 1. Position changes occur at bar closes.
+Gate 2 uses a deterministic **spot** model. A target position is a fraction of portfolio equity between 0 and 1. A signal generated from bar `t` is executed at the **open** of bar `t + execution_delay_bars`; same-bar execution is prohibited. The supported research delays are one or two bars.
 
-- Buy fills use `close * (1 + slippage_rate)`.
-- Sell fills use `close * (1 - slippage_rate)`.
+- Buy fills use `open * (1 + slippage_rate)`.
+- Sell fills use `open * (1 - slippage_rate)`.
 - Commission is proportional to gross fill value.
 - Position changes change exposure; they are not themselves trade P&L.
 - Realized trade P&L is recorded only for quantities sold, matched FIFO to entry lots, including allocated entry and exit fees.
 - Open quantities remain unrealized and are marked to the final close.
 - Equity includes cash plus marked-to-market asset value after transaction costs.
 
-This is a research accounting model, not an exchange simulator. It does not model bid/ask spread, market impact, liquidity limits, partial fills, latency, exchange-specific fee schedules, or order-book execution. Those limitations must be addressed before any real execution research.
+This is a research accounting model, not an exchange simulator. It does not model full order-book state, market impact, liquidity limits, partial fills, latency, or every exchange-specific fee rule. Those limitations must be addressed before any execution authorization.
+
+## Gate 2 event-intelligence foundation
+
+After the OHLCV-only Development family ended with `NO_DEVELOPMENT_PROMOTION`, the next research foundation broadens the information set without weakening evidence standards.
+
+`Raw External Event -> Source Provenance -> Point-in-Time Availability -> Event Dataset Identity -> Descriptive Event Study -> New Preregistered Hypothesis`
+
+The first foundation layer is deterministic and agent-free. Every historical event must preserve publication and first-market-availability semantics, raw payload identity, source version, and a deterministic dataset identity. A historical run may not consume an event before `first_market_available_at`.
+
+LLM or agent analysis is a later transformation over already certified point-in-time data. It cannot convert an event directly into an authorized trade and it cannot bypass preregistration, Validation/OOS locks, risk gates, or execution controls.
+
+## Long-term separation of responsibilities
+
+`Certified Data -> Research/Agents -> Hypothesis -> Evidence Gates -> Model Registry -> Strategy Intent -> Risk Governor -> Execution Adapter -> Exchange`
+
+Research components may propose. Evidence gates determine eligibility. A future risk governor may constrain approved intent. A deterministic execution adapter may eventually translate approved intent into orders. No layer is allowed to silently inherit authority from the layer above it.
 
 ## Design rule
 
-Keep analysis, quantitative calculation, validation, and later operational components separated so each can be tested independently.
+Keep analysis, quantitative calculation, validation, risk, and later operational components separated so each can be tested independently.

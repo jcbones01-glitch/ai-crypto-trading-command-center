@@ -1,0 +1,38 @@
+name: Gate 2 Event Intelligence Foundation
+
+on:
+  push:
+    branches: [gate2-event-intelligence-foundation]
+    paths:
+      - 'docs/GATE2_EVENT_INTELLIGENCE_FOUNDATION_V1.md'
+      - 'research/experiments/GATE2_CYCLE7_CLOSEOUT.md'
+      - 'src/intelligence/**'
+      - 'tests/test_event_intelligence_foundation.py'
+      - '.github/workflows/gate2-event-intelligence-foundation.yml'
+  pull_request:
+    paths:
+      - 'docs/GATE2_EVENT_INTELLIGENCE_FOUNDATION_V1.md'
+      - 'research/experiments/GATE2_CYCLE7_CLOSEOUT.md'
+      - 'src/intelligence/**'
+      - 'tests/test_event_intelligence_foundation.py'
+      - '.github/workflows/gate2-event-intelligence-foundation.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: gate2-event-intelligence-foundation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  event-intelligence-foundation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -e '.[dev]'
+      - name: Run full test suite
+        run: pytest
+      - name: Verify event intelligence foundation
+        run: python -m pytest tests/test_event_intelligence_foundation.py -q

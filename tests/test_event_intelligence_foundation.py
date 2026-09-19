@@ -2,7 +2,12 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from intelligence import EventRecord, events_available_as_of, hash_raw_payload
+from intelligence import (
+    EventRecord,
+    build_event_dataset_manifest,
+    events_available_as_of,
+    hash_raw_payload,
+)
 
 
 UTC = timezone.utc
@@ -15,7 +20,10 @@ def make_event(
     published_at: datetime = T0,
     available_at: datetime = T0,
     event_time: datetime = T0,
+    source_version: str = "v1",
+    raw_payload: bytes | None = None,
 ) -> EventRecord:
+    payload = raw_payload if raw_payload is not None else event_id.encode("utf-8")
     return EventRecord(
         event_id=event_id,
         event_type="macro_release",
@@ -25,8 +33,8 @@ def make_event(
         published_at=published_at,
         first_market_available_at=available_at,
         source_id="fixture-source",
-        source_version="v1",
-        raw_event_hash=hash_raw_payload(event_id.encode("utf-8")),
+        source_version=source_version,
+        raw_event_hash=hash_raw_payload(payload),
     )
 
 
@@ -103,3 +111,42 @@ def test_classification_information_cutoff_cannot_precede_availability():
             classification_timestamp=T0 + timedelta(days=1),
             information_cutoff=T0 - timedelta(seconds=1),
         )
+
+
+def test_event_dataset_identity_is_order_independent():
+    first = make_event("a", available_at=T0)
+    second = make_event("b", available_at=T0 + timedelta(hours=1))
+    left = build_event_dataset_manifest((first, second))
+    right = build_event_dataset_manifest((second, first))
+    assert left.dataset_id == right.dataset_id
+    assert left.record_count == 2
+    assert left.source_ids == ("fixture-source",)
+
+
+def test_event_dataset_identity_normalizes_equivalent_timezones():
+    offset = timezone(timedelta(hours=-5))
+    utc_event = make_event("same", published_at=T0, available_at=T0, event_time=T0)
+    local_time = T0.astimezone(offset)
+    offset_event = make_event(
+        "same",
+        published_at=local_time,
+        available_at=local_time,
+        event_time=local_time,
+    )
+    assert build_event_dataset_manifest((utc_event,)).dataset_id == build_event_dataset_manifest((offset_event,)).dataset_id
+
+
+def test_event_dataset_identity_changes_when_source_content_changes():
+    left = build_event_dataset_manifest((make_event("evt", raw_payload=b"version-a"),))
+    right = build_event_dataset_manifest((make_event("evt", raw_payload=b"version-b"),))
+    assert left.dataset_id != right.dataset_id
+
+
+def test_event_dataset_rejects_duplicate_ids():
+    with pytest.raises(ValueError, match="duplicate event_id"):
+        build_event_dataset_manifest((make_event("dup"), make_event("dup")))
+
+
+def test_event_dataset_rejects_empty_input():
+    with pytest.raises(ValueError, match="at least one record"):
+        build_event_dataset_manifest(())
