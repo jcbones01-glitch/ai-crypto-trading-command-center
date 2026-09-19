@@ -4,6 +4,7 @@ on:
   push:
     branches: [gate2-event-intelligence-foundation]
     paths:
+      - 'research/sources/bls_cpi_v1/**'
       - 'src/intelligence/sources/bls_cpi.py'
       - 'research/scripts/build_cpi_development_manifest.py'
       - 'tests/test_cpi_development_manifest.py'

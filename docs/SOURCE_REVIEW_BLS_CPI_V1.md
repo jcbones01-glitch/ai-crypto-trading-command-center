@@ -98,3 +98,57 @@ are authoritative for this adapter.
 ## Next permitted step
 
 After adapter tests pass, build and certify a Development-only CPI event manifest from the complete official archive index. Do not calculate crypto returns until that event set is frozen.
+
+## Accessibility audit and offline replay — 2026-09-19
+
+Verified branch before this change: `e74444dbbd9b63af3b8677967c2ea70243611ab5`.
+Main: `06b10145688cd8baca470e4bf0dc5bff8f40702d`.
+Run `35424851836`, job `105848909233`: all 13 parser/scope tests passed;
+initial archive-index acquisition failed with HTTP 403 before count checks.
+Foundation run `35424851842` succeeded at the same commit.
+
+Official historical calendar pages are available to the web reading service:
+
+- https://www.bls.gov/schedule/2017/home.htm
+- https://www.bls.gov/schedule/2018/home.htm
+- https://www.bls.gov/schedule/2019/home.htm
+- https://www.bls.gov/schedule/2020/home.htm
+- https://www.bls.gov/schedule/2021/home.htm
+
+The 2018 calendar explicitly specifies Eastern Time and CPI times of 08:30 AM.
+These are useful discovery/cross-check resources. A schedule entry is not by
+itself proof of actual publication or of when that schedule was first known.
+No calendar-derived event is certified by this audit. A direct ordinary HTTPS
+request for the 2018 calendar from this environment also returned HTTP 403.
+No access-control evasion was attempted.
+
+### Implemented reproducibility path
+
+The manifest builder now defaults to offline replay from
+`research/sources/bls_cpi_v1/inventory.json`. Each inventory response records
+`url`, relative `path`, exact raw-byte `sha256`, timezone-aware `retrieved_at`,
+and `acquisition_method`; the inventory version is `bls-cpi-raw-snapshot-v1`.
+The bundle must preserve the official archive index and every discovered
+2017–2021 CPI release HTML response. The same existing parser, 60 candidate
+count, 52 Development count and boundaries remain in force. Source hashes
+are checked before parsing; missing/tampered sources fail with no network
+fallback. Inventory SHA-256 is included in output provenance. Explicit
+`--live-audit` preserves the optional original live acquisition route.
+
+Hashes verify byte integrity, not first-party authenticity: acquisition must
+be independently reviewed before freezing/certifying a real bundle. Synthetic
+fixtures and web-service-extracted text must never be labeled raw BLS HTML.
+Current status: **BLOCKED_SOURCE_ACQUISITION**. No raw bundle, certified CPI
+manifest, dataset ID, or CPI return results have been produced. The engineering
+path is implemented; first-party source acquisition remains unresolved.
+
+### Pre-return methodology issue
+
+CPI at 08:30 Eastern occurs at 12:30 or 13:30 UTC, off the hourly market grid.
+Do not floor to the containing hourly candle and call it a post-release return.
+Before any CPI returns are viewed, preregister either a separately certified
+finer-grained data method or a next-hour-open study explicitly excluding the
+first 30 minutes. The latter cannot test immediate release volatility and is
+not directly comparable to the FOMC release-aligned first-hour statistic.
+This audit does not preregister either alternative. Source certification must
+come first. Validation/OOS, paper and live trading remain locked.

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
@@ -48,8 +49,66 @@ def archive_calendar_year(url: str) -> int:
     return int(match.group(3))
 
 
+def snapshot_fetcher(snapshot_dir: Path):
+    """Replay reviewed raw BLS responses; never fall back to network.
+
+    Hashes detect changes, not authenticity. Acquisition provenance must be
+    reviewed independently before a snapshot is eligible for certification.
+    """
+    root = snapshot_dir.resolve()
+    inventory_path = root / "inventory.json"
+    if not inventory_path.is_file():
+        raise RuntimeError("CPI source snapshot unavailable; certification remains blocked")
+    inventory_bytes = inventory_path.read_bytes()
+    inventory = json.loads(inventory_bytes)
+    if inventory.get("snapshot_version") != "bls-cpi-raw-snapshot-v1":
+        raise ValueError("unsupported CPI snapshot version")
+    entries = {}
+    for entry in inventory["responses"]:
+        url = entry["url"]
+        parsed = urlparse(url)
+        if (parsed.scheme != "https" or parsed.netloc != "www.bls.gov"
+                or parsed.query or parsed.fragment):
+            raise ValueError("snapshot requires canonical official BLS URLs")
+        if url != ARCHIVE_INDEX_URL:
+            if parsed.path != "/news.release/archives/" + Path(parsed.path).name:
+                raise ValueError("unexpected CPI snapshot path")
+            if not 2017 <= archive_calendar_year(url) <= 2021:
+                raise ValueError("snapshot release outside allowed calendar years")
+        if url in entries:
+            raise ValueError("duplicate snapshot URL")
+        captured = datetime.fromisoformat(entry["retrieved_at"].replace("Z", "+00:00"))
+        if captured.tzinfo is None or not entry.get("acquisition_method"):
+            raise ValueError("snapshot acquisition provenance missing")
+        relative = Path(entry["path"])
+        path = (root / relative).resolve()
+        if relative.is_absolute() or not path.is_relative_to(root):
+            raise ValueError("snapshot path escapes root")
+        payload = path.read_bytes()
+        if hash_raw_payload(payload) != entry["sha256"]:
+            raise ValueError("snapshot raw SHA-256 mismatch")
+        entries[url] = payload
+
+    def read(url: str) -> bytes:
+        if url not in entries:
+            raise RuntimeError(f"missing official source snapshot: {url}")
+        return entries[url]
+
+    return read, hash_raw_payload(inventory_bytes)
+
+
 def main() -> None:
-    index_payload = fetch(ARCHIVE_INDEX_URL)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--snapshot-dir", type=Path,
+                        default=Path("research/sources/bls_cpi_v1"))
+    parser.add_argument("--live-audit", action="store_true",
+                        help="Explicit optional live retrieval; never an offline fallback")
+    args = parser.parse_args()
+    if args.live_audit:
+        read_source, inventory_hash = fetch, None
+    else:
+        read_source, inventory_hash = snapshot_fetcher(args.snapshot_dir)
+    index_payload = read_source(ARCHIVE_INDEX_URL)
     discovered = discover_cpi_release_urls(index_payload, index_url=ARCHIVE_INDEX_URL)
 
     calendar_candidates = tuple(
@@ -64,7 +123,7 @@ def main() -> None:
 
     records: list[tuple[str, object]] = []
     for url in calendar_candidates:
-        payload = fetch(url)
+        payload = read_source(url)
         event = parse_cpi_release(payload, source_url=url, assets=ASSETS)
         if DEVELOPMENT_START <= event.first_market_available_at < DEVELOPMENT_END:
             records.append((url, event))
@@ -80,6 +139,8 @@ def main() -> None:
 
     output = {
         "manifest_version": "cpi-development-manifest-v1",
+        "source_mode": "live-audit" if args.live_audit else "raw-snapshot",
+        "snapshot_inventory_sha256": inventory_hash,
         "github_sha": os.environ.get("GITHUB_SHA", "UNKNOWN"),
         "development_window": [
             DEVELOPMENT_START.isoformat().replace("+00:00", "Z"),
