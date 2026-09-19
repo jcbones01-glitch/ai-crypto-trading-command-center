@@ -5,6 +5,8 @@ import pytest
 from research_core.release_gate import (
     ResearchGateError,
     assert_ams_dep_empirical_release_allowed,
+    assert_ams_dep_v2_calibration_execution_allowed,
+    assert_ams_dep_v2_holdout_execution_allowed,
     assert_ams_dep_v2_synthetic_execution_allowed,
     load_ams_dep_release_gate,
 )
@@ -24,7 +26,8 @@ def test_current_ams_dep_gate_is_explicitly_blocked():
     assert gate["v2_specification_frozen"] is False
     assert gate["v2_engineering_oracles_passed"] is True
     assert gate["v2_sharding_plan_verified"] is True
-    assert gate["v2_synthetic_execution_authorized"] is False
+    assert gate.get("v2_calibration_execution_authorized", False) is False
+    assert gate.get("v2_holdout_execution_authorized", False) is False
     assert gate["development_market_data_execution_authorized"] is False
     assert gate["validation_or_oos_access_authorized"] is False
     assert gate["strategy_pnl_authorized"] is False
@@ -32,9 +35,13 @@ def test_current_ams_dep_gate_is_explicitly_blocked():
     assert gate["live_trading_authorized"] is False
 
 
-def test_current_gate_blocks_v2_synthetic_and_empirical_execution():
-    with pytest.raises(ResearchGateError, match="V2 synthetic execution blocked"):
+def test_current_gate_blocks_calibration_holdout_and_empirical_execution():
+    with pytest.raises(ResearchGateError, match="V2 calibration execution blocked"):
+        assert_ams_dep_v2_calibration_execution_allowed()
+    with pytest.raises(ResearchGateError, match="V2 calibration execution blocked"):
         assert_ams_dep_v2_synthetic_execution_allowed()
+    with pytest.raises(ResearchGateError, match="V2 holdout execution blocked"):
+        assert_ams_dep_v2_holdout_execution_allowed()
     with pytest.raises(ResearchGateError, match="empirical execution blocked"):
         assert_ams_dep_empirical_release_allowed()
 
@@ -75,10 +82,10 @@ def test_any_future_ams_dep_empirical_runner_must_call_release_guard():
         )
 
 
-def test_synthetic_flag_alone_cannot_bypass_review_freeze_or_oracles(tmp_path):
+def test_calibration_flag_alone_cannot_bypass_review_freeze_or_oracles(tmp_path):
     import json
     gate = load_ams_dep_release_gate().copy()
-    gate["v2_synthetic_execution_authorized"] = True
+    gate["v2_calibration_execution_authorized"] = True
     path = tmp_path / "gate.json"
     for field in (
         "independent_v2_design_approved",
@@ -89,10 +96,28 @@ def test_synthetic_flag_alone_cannot_bypass_review_freeze_or_oracles(tmp_path):
         gate[field] = False
         path.write_text(json.dumps(gate))
         with pytest.raises(ResearchGateError):
-            assert_ams_dep_v2_synthetic_execution_allowed(path)
+            assert_ams_dep_v2_calibration_execution_allowed(path)
         gate[field] = True
     path.write_text(json.dumps(gate))
-    assert assert_ams_dep_v2_synthetic_execution_allowed(path)["v2_synthetic_execution_authorized"]
+    assert assert_ams_dep_v2_calibration_execution_allowed(path)["v2_calibration_execution_authorized"]
+
+
+def test_holdout_cannot_unlock_before_calibration_passes(tmp_path):
+    import json
+    gate = load_ams_dep_release_gate().copy()
+    for key in (
+        "independent_v2_design_approved",
+        "v2_specification_frozen",
+        "v2_engineering_oracles_passed",
+        "v2_sharding_plan_verified",
+        "v2_holdout_execution_authorized",
+    ):
+        gate[key] = True
+    gate["v2_synthetic_calibration_passed"] = False
+    path = tmp_path / "gate.json"
+    path.write_text(json.dumps(gate))
+    with pytest.raises(ResearchGateError, match="v2_synthetic_calibration_passed"):
+        assert_ams_dep_v2_holdout_execution_allowed(path)
 
 
 def test_empirical_release_requires_successful_unopened_holdout(tmp_path):
