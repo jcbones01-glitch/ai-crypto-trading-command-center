@@ -233,6 +233,182 @@ def concentration_and_dd(details):
     worst_value = worst if worst is not None else Decimal("0")
     return {"segments": contributions, "top_10_positive_event_pnl_fraction": str(top_fraction) if top_fraction is not None else None, "max_drawdown": str(maxdd), "worst_segment_return": str(worst_value), "longest_recovery_events": recovery, "eligible_events": total_events}
 
+def compound_return(returns):
+    growth = Decimal("1")
+    for r in returns:
+        growth *= Decimal("1") + Decimal(r)
+    return growth - Decimal("1")
+
+def regime_for_signal(bars, i):
+    if i < 168:
+        return None
+    trailing = bars[i].close / bars[i - 168].close - Decimal("1")
+    if trailing > Decimal("0.10"):
+        return "bull"
+    if trailing < Decimal("-0.10"):
+        return "bear"
+    return "neutral"
+
+def regime_summary(segments, hyp, params, fee, slip, delay, btc_segments=None):
+    by_regime = {k: [] for k in ("bull", "bear", "neutral")}
+    eligible_bars = {k: 0 for k in by_regime}
+    for idx, seg in enumerate(segments):
+        btc = btc_segments[idx] if btc_segments is not None else None
+        for i in range(len(seg)):
+            regime = regime_for_signal(seg, i)
+            if regime is not None:
+                eligible_bars[regime] += 1
+        sim = simulate_events(seg, hyp, params, fee, slip, delay, btc)
+        for event in sim["events"]:
+            regime = regime_for_signal(seg, event["signal_index"])
+            if regime is not None:
+                by_regime[regime].append(Decimal(event["return"]))
+    results = {}
+    for regime, values in by_regime.items():
+        comp = compound_return(values)
+        results[regime] = {"eligible_bars": eligible_bars[regime], "events": len(values), "compound_return": str(comp), "mean_event_return": str(sum(values, Decimal("0")) / Decimal(len(values))) if values else "0", "positive": bool(values and comp > 0)}
+    qualifying = [r for r in results.values() if r["eligible_bars"] >= 100]
+    positive_qualifying = [r for r in qualifying if r["positive"]]
+    return {"regimes": results, "qualifying_regimes": len(qualifying), "positive_qualifying_regimes": len(positive_qualifying), "pass": len(qualifying) < 2 or len(positive_qualifying) >= 2}
+
+def leave_one_out(segments, hyp, params, fee, slip, delay, btc_segments=None):
+    variants = []
+    for excluded in range(len(segments)):
+        returns = []
+        for idx, seg in enumerate(segments):
+            if idx == excluded:
+                continue
+            btc = btc_segments[idx] if btc_segments is not None else None
+            returns.extend(simulate_events(seg, hyp, params, fee, slip, delay, btc)["returns"])
+        comp = compound_return(returns)
+        variants.append({"excluded_segment": excluded, "events": len(returns), "compound_return": str(comp), "above_cash": comp > 0})
+    passing = sum(v["above_cash"] for v in variants)
+    return {"variants": variants, "passing_variants": passing, "total_variants": len(variants), "pass_fraction": str(Decimal(passing) / Decimal(len(variants))) if variants else "0"}
+
+def concentration_metrics(segments, hyp, params, fee, slip, delay, btc_segments=None):
+    segment_returns, event_records = [], []
+    for idx, seg in enumerate(segments):
+        btc = btc_segments[idx] if btc_segments is not None else None
+        sim = simulate_events(seg, hyp, params, fee, slip, delay, btc)
+        if sim["events"]:
+            segment_returns.append((idx, compound_return(sim["returns"])))
+            event_records.extend(sim["events"])
+    positive_logs = [(idx, (Decimal("1") + r).ln()) for idx, r in segment_returns if r > 0 and r > -1]
+    total_positive_log = sum(v for _, v in positive_logs)
+    contributions = [{"segment": idx, "positive_log_contribution": str(v / total_positive_log if total_positive_log > 0 else Decimal("0")), "return": str(dict(segment_returns)[idx])} for idx, v in positive_logs]
+    positive_events = sorted((Decimal(e["return"]) for e in event_records if Decimal(e["return"]) > 0), reverse=True)
+    positive_event_pnl = sum(positive_events, Decimal("0"))
+    top_n = max(1, math.ceil(len(positive_events) * 0.10)) if positive_events else 0
+    top_fraction = sum(positive_events[:top_n], Decimal("0")) / positive_event_pnl if positive_event_pnl > 0 else None
+    max_single_segment_contribution = max((Decimal(x["positive_log_contribution"]) for x in contributions), default=Decimal("0"))
+    return {"segments": contributions, "max_single_segment_positive_log_contribution": str(max_single_segment_contribution), "top_10_positive_event_pnl_fraction": str(top_fraction) if top_fraction is not None else None, "positive_event_count": len(positive_events), "positive_event_pnl": str(positive_event_pnl), "pass": bool(contributions) and max_single_segment_contribution <= Decimal("0.50") and top_fraction is not None and top_fraction <= Decimal("0.50")}
+
+def drawdown_recovery_metrics(segments, hyp, params, fee, slip, delay, btc_segments=None):
+    max_dd = Decimal("0")
+    worst_segment = Decimal("0")
+    longest_recovery_hours = Decimal("0")
+    total_events = 0
+    segment_metrics = []
+    for idx, seg in enumerate(segments):
+        btc = btc_segments[idx] if btc_segments is not None else None
+        sim = simulate_events(seg, hyp, params, fee, slip, delay, btc)
+        if not sim["events"]:
+            continue
+        eq, peak, peak_time, local_max_dd, local_recovery = [Decimal("1")], Decimal("1"), None, Decimal("0"), Decimal("0")
+        for r, event in zip(sim["returns"], sim["events"]):
+            eq.append(eq[-1] * (Decimal("1") + r))
+            ts = datetime.fromisoformat(event["entry_timestamp"])
+            if eq[-1] >= peak:
+                peak, peak_time = eq[-1], ts
+            else:
+                local_max_dd = max(local_max_dd, (peak - eq[-1]) / peak if peak > 0 else Decimal("0"))
+                if peak_time is not None:
+                    local_recovery = max(local_recovery, Decimal((ts - peak_time).total_seconds()) / Decimal("3600"))
+        seg_return = eq[-1] - Decimal("1")
+        worst_segment = min(worst_segment, seg_return)
+        max_dd = max(max_dd, local_max_dd)
+        longest_recovery_hours = max(longest_recovery_hours, local_recovery)
+        segment_metrics.append({"segment": idx, "compound_return": str(seg_return), "max_drawdown": str(local_max_dd), "longest_recovery_hours": str(local_recovery), "events": len(sim["events"])})
+        total_events += len(sim["events"])
+    eligible_duration_hours = sum(max(0, int((seg[-1].timestamp - seg[0].timestamp).total_seconds() // 3600) + 1) for seg in segments if seg)
+    return {"max_drawdown": str(max_dd), "worst_segment_return": str(worst_segment), "longest_recovery_hours": str(longest_recovery_hours), "eligible_duration_hours": eligible_duration_hours, "segment_metrics": segment_metrics, "eligible_events": total_events, "pass": bool(total_events) and max_dd < Decimal("0.70") and worst_segment >= Decimal("-0.50") and longest_recovery_hours <= Decimal("0.50") * Decimal(eligible_duration_hours)}
+
+def control_difference(eth_segments, btc_segments, params, delay):
+    conditional, control = [], []
+    for btc_seg, eth_seg in zip(btc_segments, eth_segments):
+        for i in range(1, len(eth_seg)):
+            if i + delay >= len(eth_seg):
+                continue
+            btc_ret = btc_seg[i].close / btc_seg[i - 1].close - Decimal("1")
+            eth_ret = eth_seg[i].close / eth_seg[i - 1].close - Decimal("1")
+            if btc_ret >= Decimal(params["btc_threshold"]) and btc_ret - eth_ret >= Decimal(params["gap"]):
+                conditional.append(eth_seg[i + delay].close / eth_seg[i + delay - 1].close - Decimal("1"))
+            control.append(eth_seg[i + delay].close / eth_seg[i + delay - 1].close - Decimal("1"))
+    cond_mean = sum(conditional, Decimal("0")) / Decimal(len(conditional)) if conditional else Decimal("0")
+    ctrl_mean = sum(control, Decimal("0")) / Decimal(len(control)) if control else Decimal("0")
+    return {"conditional_events": len(conditional), "control_events": len(control), "conditional_mean": str(cond_mean), "control_mean": str(ctrl_mean), "difference": str(cond_mean - ctrl_mean)}
+
+def assess_hypothesis(hyp, report, loaded, common_pairs):
+    required = ["BTCUSDT", "ETHUSDT"] if hyp in {"HYP-0005", "HYP-0007"} else ["ETHUSDT"]
+    fee0, slip0 = FEE_GRID[0][1], FEE_GRID[0][2]
+    fee2, slip2 = FEE_GRID[-1][1], FEE_GRID[-1][2]
+    params = BASE[hyp]
+    cells_by_asset = {asset: report["assets"][asset]["cells"][hyp] for asset in required}
+    def match(asset, fee_name, delay):
+        target = {k: str(v) for k, v in params.items()}
+        return next(x for x in cells_by_asset[asset] if x["params"] == target and x["fee_case"] == fee_name and x["delay_bars"] == delay)
+    dimensions, param_checks = {}, []
+    for asset in required:
+        perturb = [x for x in cells_by_asset[asset] if x["fee_case"] == "baseline" and x["delay_bars"] == 1]
+        valid = [x for x in perturb if x["summary"]["aggregate"]["eligible_segments"] > 0]
+        positive = [x for x in valid if Decimal(x["summary"]["aggregate"]["mean_segment_return"]) > 0]
+        compounds = sorted(Decimal(x["summary"]["aggregate"]["compound_return"]) for x in valid)
+        median_comp = (compounds[len(compounds)//2] if len(compounds)%2 else (compounds[len(compounds)//2-1] + compounds[len(compounds)//2]) / Decimal("2")) if compounds else Decimal("0")
+        fraction = Decimal(len(positive)) / Decimal(len(valid)) if valid else Decimal("0")
+        param_checks.append({"asset": asset, "valid_cells": len(valid), "positive_mean_segment_cells": len(positive), "positive_fraction": str(fraction), "median_compound_return": str(median_comp), "pass": fraction >= Decimal("0.60") and median_comp > 0})
+    dimensions["parameter_neighborhood"] = {"checks": param_checks, "pass": all(x["pass"] for x in param_checks)}
+    fee_checks, timing_checks, regime_checks, sample_checks, concentration_checks, dd_checks = [], [], [], [], [], []
+    for asset in required:
+        fee_cell, timing_cell = match(asset, "stress_2", 1), match(asset, "baseline", 2)
+        fee_pass = Decimal(fee_cell["summary"]["aggregate"]["mean_segment_return"]) > 0 and Decimal(fee_cell["summary"]["aggregate"]["compound_return"]) > 0
+        timing_pass = Decimal(timing_cell["summary"]["aggregate"]["mean_segment_return"]) > 0 and Decimal(timing_cell["summary"]["aggregate"]["compound_return"]) > 0
+        fee_checks.append({"asset": asset, "cell": fee_cell, "pass": fee_pass})
+        timing_checks.append({"asset": asset, "cell": timing_cell, "pass": timing_pass})
+        segments = [p[1] for p in common_pairs] if hyp == "HYP-0006" else loaded[asset]["segments"]
+        btc_segments = [p[0] for p in common_pairs] if hyp == "HYP-0006" else None
+        reg = regime_summary(segments, hyp, params, fee0, slip0, 1, btc_segments)
+        loo = leave_one_out(segments, hyp, params, fee0, slip0, 1, btc_segments)
+        conc = concentration_metrics(segments, hyp, params, fee0, slip0, 1, btc_segments)
+        dd = drawdown_recovery_metrics(segments, hyp, params, fee0, slip0, 1, btc_segments)
+        base_comp = Decimal(match(asset, "baseline", 1)["summary"]["aggregate"]["compound_return"])
+        sample_pass = base_comp > 0 and Decimal(loo["pass_fraction"]) >= Decimal("0.75")
+        sample_checks.append({"asset": asset, "baseline_compound_return": str(base_comp), "loo": loo, "pass": sample_pass})
+        concentration_checks.append({"asset": asset, "metrics": conc, "pass": conc["pass"]})
+        dd_checks.append({"asset": asset, "metrics": dd, "pass": dd["pass"]})
+        regime_checks.append({"asset": asset, "result": reg, "pass": reg["pass"]})
+    dimensions["fee_slippage"] = {"checks": fee_checks, "pass": all(x["pass"] for x in fee_checks)}
+    dimensions["timing"] = {"checks": timing_checks, "pass": all(x["pass"] for x in timing_checks)}
+    dimensions["regime_stability"] = {"checks": regime_checks, "pass": all(x["pass"] for x in regime_checks)}
+    dimensions["sample_size_stability"] = {"checks": sample_checks, "pass": all(x["pass"] for x in sample_checks)}
+    dimensions["concentration"] = {"checks": concentration_checks, "pass": all(x["pass"] for x in concentration_checks)}
+    dimensions["drawdown_recovery"] = {"checks": dd_checks, "pass": all(x["pass"] for x in dd_checks)}
+    if hyp in {"HYP-0005", "HYP-0007"}:
+        transfer = []
+        for asset in required:
+            base_cell = match(asset, "baseline", 1)
+            transfer.append({"asset": asset, "mean_segment_return": base_cell["summary"]["aggregate"]["mean_segment_return"], "compound_return": base_cell["summary"]["aggregate"]["compound_return"], "pass": Decimal(base_cell["summary"]["aggregate"]["mean_segment_return"]) > 0 and Decimal(base_cell["summary"]["aggregate"]["compound_return"]) > 0})
+        dimensions["asset_transferability"] = {"checks": transfer, "pass": all(x["pass"] for x in transfer)}
+    else:
+        eth_segments = [p[1] for p in common_pairs]
+        btc_segments = [p[0] for p in common_pairs]
+        control = control_difference(eth_segments, btc_segments, params, 1)
+        base_cell = match("ETHUSDT", "baseline", 1)
+        transfer_pass = Decimal(base_cell["summary"]["aggregate"]["mean_segment_return"]) > 0 and Decimal(base_cell["summary"]["aggregate"]["compound_return"]) > 0 and Decimal(control["difference"]) > 0
+        dimensions["asset_transferability"] = {"checks": [{"asset": "ETHUSDT", "control": control, "mean_segment_return": base_cell["summary"]["aggregate"]["mean_segment_return"], "compound_return": base_cell["summary"]["aggregate"]["compound_return"], "pass": transfer_pass}], "pass": transfer_pass}
+    passed = [name for name, value in dimensions.items() if value["pass"]]
+    dimensions["overall"] = {"pass": len(passed) == 8, "passed_dimensions": passed, "required_dimensions": 8}
+    return dimensions
+
 def main():
     prereg_sha = sha256_file(ROOT / PREREG)
     output = Path("gate2_next_cycle_results"); output.mkdir(exist_ok=True)
@@ -282,7 +458,14 @@ def main():
         base = next(x for x in report["assets"]["ETHUSDT"]["cells"]["HYP-0006"] if x["params"] == {k: str(v) for k, v in BASE["HYP-0006"].items()} and x["fee_case"] == "baseline" and x["delay_bars"] == 1)
         report["assets"]["ETHUSDT"]["baseline"]["HYP-0006"] = base
         report["assets"]["ETHUSDT"].setdefault("concentration_drawdown", {})["HYP-0006"] = concentration_and_dd(base["summary"]["segments"])
-        report["decisions"] = {"overall": "UNASSESSED", "note": "Development evidence generated; final preregistered dimension assessment requires explicit audit of all cells."}
+        for hyp in ("HYP-0005", "HYP-0006", "HYP-0007"):
+            report["assets"].setdefault("robustness", {})
+            report["assets"]["robustness"][hyp] = assess_hypothesis(hyp, report, loaded, common_pairs)
+        report["decisions"] = {}
+        for hyp in ("HYP-0005", "HYP-0006", "HYP-0007"):
+            result = report["assets"]["robustness"][hyp]
+            report["decisions"][hyp] = "ROBUSTNESS_PASS" if result["overall"]["pass"] else "ROBUSTNESS_FAIL"
+        report["decisions"]["overall"] = "ROBUSTNESS_PASS" if all(v == "ROBUSTNESS_PASS" for k, v in report["decisions"].items() if k != "overall") else "ROBUSTNESS_FAIL"
     with open(output / "next_cycle_results.json", "w", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2, sort_keys=True)
 
