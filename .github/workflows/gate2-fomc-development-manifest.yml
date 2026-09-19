@@ -1,0 +1,37 @@
+name: Gate 2 FOMC Development Manifest
+
+on:
+  push:
+    branches: [gate2-event-intelligence-foundation]
+    paths:
+      - 'src/intelligence/sources/federal_reserve_fomc.py'
+      - 'research/scripts/build_fomc_development_manifest.py'
+      - 'tests/test_fomc_development_manifest.py'
+      - '.github/workflows/gate2-fomc-development-manifest.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: gate2-fomc-development-manifest-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fomc-development-manifest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -e '.[dev]'
+      - name: Verify manifest scope and source parser
+        run: python -m pytest tests/test_federal_reserve_fomc_source.py tests/test_fomc_development_manifest.py -q
+      - name: Generate Development-only FOMC manifest
+        run: python research/scripts/build_fomc_development_manifest.py
+      - name: Upload FOMC manifest evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate2-fomc-development-manifest
+          path: event_intelligence_results/fomc_development_manifest.json
+          if-no-files-found: error
+          retention-days: 90

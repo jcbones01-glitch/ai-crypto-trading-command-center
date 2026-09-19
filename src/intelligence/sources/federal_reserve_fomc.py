@@ -4,7 +4,8 @@ import html
 import re
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
-from urllib.parse import urlparse
+from html.parser import HTMLParser
+from urllib.parse import urljoin, urlparse
 
 from intelligence.event_schema import EventRecord, hash_raw_payload
 
@@ -28,6 +29,33 @@ _FIXED_EASTERN = {
 }
 
 
+class _StatementLinkParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self._href: str | None = None
+        self._parts: list[str] = []
+        self.matches: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() != "a":
+            return
+        self._href = dict(attrs).get("href")
+        self._parts = []
+
+    def handle_data(self, data: str) -> None:
+        if self._href is not None:
+            self._parts.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() != "a" or self._href is None:
+            return
+        label = re.sub(r"\s+", " ", " ".join(self._parts)).strip()
+        if label.lower() == _REQUIRED_TITLE.lower():
+            self.matches.append(self._href)
+        self._href = None
+        self._parts = []
+
+
 def _plain_text(raw_payload: bytes) -> str:
     if not isinstance(raw_payload, bytes):
         raise TypeError("raw_payload must be bytes")
@@ -41,6 +69,22 @@ def _validate_source_url(source_url: str) -> None:
     hostname = (parsed.hostname or "").lower()
     if parsed.scheme != "https" or hostname not in {"federalreserve.gov", "www.federalreserve.gov"}:
         raise ValueError("source_url must be an HTTPS Federal Reserve Board URL")
+
+
+def discover_fomc_statement_urls(raw_index_payload: bytes, *, index_url: str) -> tuple[str, ...]:
+    """Discover only links explicitly titled as Federal Reserve FOMC statements."""
+    _validate_source_url(index_url)
+    if not isinstance(raw_index_payload, bytes):
+        raise TypeError("raw_index_payload must be bytes")
+    parser = _StatementLinkParser()
+    parser.feed(raw_index_payload.decode("utf-8", errors="strict"))
+
+    urls: set[str] = set()
+    for href in parser.matches:
+        url = urljoin(index_url, href)
+        _validate_source_url(url)
+        urls.add(url)
+    return tuple(sorted(urls))
 
 
 def _validate_statement_identity(text: str) -> None:

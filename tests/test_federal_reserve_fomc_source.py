@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import pytest
 
 from intelligence import hash_raw_payload
-from intelligence.sources import parse_fomc_statement
+from intelligence.sources import discover_fomc_statement_urls, parse_fomc_statement
 
 
 EST_FIXTURE = b"""
@@ -29,6 +29,41 @@ EMERGENCY_FIXTURE = b"""
 <p>For release at 10:00 a.m. EST</p>
 </body></html>
 """
+
+
+def test_fomc_index_discovery_selects_statement_title_only():
+    payload = b"""
+    <html><body>
+      <a href="/newsevents/pressreleases/monetary20200303a.htm">
+        Federal Reserve issues FOMC statement
+      </a>
+      <a href="/newsevents/pressreleases/monetary20200303b.htm">
+        Federal Reserve Board announces discount rate action
+      </a>
+      <a href="/newsevents/pressreleases/monetary20200315a.htm">
+        Federal Reserve issues FOMC statement
+      </a>
+    </body></html>
+    """
+    assert discover_fomc_statement_urls(
+        payload,
+        index_url="https://www.federalreserve.gov/newsevents/pressreleases/2020-press.htm",
+    ) == (
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20200303a.htm",
+        "https://www.federalreserve.gov/newsevents/pressreleases/monetary20200315a.htm",
+    )
+
+
+def test_fomc_index_discovery_deduplicates_links():
+    payload = b"""
+    <a href="/newsevents/pressreleases/monetary20200303a.htm">Federal Reserve issues FOMC statement</a>
+    <a href="/newsevents/pressreleases/monetary20200303a.htm">Federal Reserve issues FOMC statement</a>
+    """
+    urls = discover_fomc_statement_urls(
+        payload,
+        index_url="https://www.federalreserve.gov/newsevents/pressreleases/2020-press.htm",
+    )
+    assert len(urls) == 1
 
 
 def test_fomc_est_release_converts_to_utc():
