@@ -1,0 +1,62 @@
+{
+  "development_window": [
+    "2017-08-17T00:00:00Z",
+    "2022-01-01T00:00:00Z"
+  ],
+  "event_dataset": {
+    "dataset_id": "fd5021aa2ff2f01ceaa2f5e060d08db8e0825cc27e1bde147e8eb5948ee14e11",
+    "first_market_available_at": "2017-09-20T18:00:00Z",
+    "last_market_available_at": "2021-12-15T19:00:00Z",
+    "protocol_version": "event-dataset-v1",
+    "record_count": 37,
+    "source_ids": [
+      "federal-reserve-board/fomc-statement"
+    ]
+  },
+  "events": [
+    {"event_id":"538880dea8f6ecd94f2738636229a21fa268082b6c36d005d1c55303b47c9913","first_market_available_at":"2017-09-20T18:00:00Z","raw_event_hash":"994c123ce7f15f48f1e6c8bc73361cde57ba9e5a888319f055f367060a89f82c","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20170920a.htm"},
+    {"event_id":"6de5a03ebc8faa464a44aa686cb65cd8d347282262f0698d7585871d591c934b","first_market_available_at":"2017-11-01T18:00:00Z","raw_event_hash":"889e30c8b1f0cce14e9c5898bed4ff04c5854712a1a8d8c0f3c3b55aa030a1fb","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20171101a.htm"},
+    {"event_id":"830b5b92be3eebc045754b72c0840d58b6c486abed66bd390b673a669abe7c01","first_market_available_at":"2017-12-13T19:00:00Z","raw_event_hash":"fedf4ae6eecb4337cb93a629a5c78c773ba67ec48262869b4b777d49036a0329","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20171213a.htm"},
+    {"event_id":"42cb15101310473e9f44923222ac5427cae064a3a905182df495cf3c16f9f6e5","first_market_available_at":"2018-01-31T19:00:00Z","raw_event_hash":"ec5d590cc7ad57bd2525026ae7582c0f5873fd89f732df40ba71da73b07ef209","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20180131a.htm"},
+    {"event_id":"0d94f237447d7000db1b7bd1e7c977752e4a4faf4ae4714dd93e8ac32f9d1775","first_market_available_at":"2018-03-21T18:00:00Z","raw_event_hash":"200c6fba6790affc3dd72eb65e181d912ca71581caebd1d14826450de8d5f2c2","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20180321a.htm"},
+    {"event_id":"f9c5253e9cca077a211dab6755585c3261efa521b3a4cef5004cd00122e39b8f","first_market_available_at":"2018-05-02T18:00:00Z","raw_event_hash":"25e971084cd45793fc027e5d338206f26e158ea76bebd13196f358900499f116","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20180502a.htm"},
+    {"event_id":"ebcb935266e9a04161209feab8a15dd9b2626bd81a97ed564dcfb2c3c4250c6d","first_market_available_at":"2018-06-13T18:00:00Z","raw_event_hash":"69a834abd3db915cb2accb5f09ff4bf7810fdec2c91f2493f1d6618e83024b6b","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20180613a.htm"},
+    {"event_id":"8565c0d8093a1a2e3e216b4aec664d59de520cd43105b2eba03ed9ae9798fe83","first_market_available_at":"2018-08-01T18:00:00Z","raw_event_hash":"182c06a75f09f197a17013cfeeb3fee5f5e6aee3d9875bf5eae4487ba0068099","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20180801a.htm"},
+    {"event_id":"2c1fe2e3e21c73450739201ddaee01e3ed115a80c5ec8a0f0f86b6a560472b5e","first_market_available_at":"2018-09-26T18:00:00Z","raw_event_hash":"cd5b4371c7f2c20fa8997c0ae87344f87e33457e999ab84bba09539479f80a89","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20180926a.htm"},
+    {"event_id":"0dce8749e5da0177f18790a4f628980b9470d7b579dd470bee388c951efc4d69","first_market_available_at":"2018-11-08T19:00:00Z","raw_event_hash":"95614b68ac474b8d832c1fe3238012e45a7173ed993f8e5c51580b41d736678d","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20181108a.htm"},
+    {"event_id":"e8d5b8e05496703ed2c95b62b2932cb1fece1e877c488a96aae83065553fc4e3","first_market_available_at":"2018-12-19T19:00:00Z","raw_event_hash":"d980f9138080d08706e143dabc6c02dcd6c610089b3c2df279f28d481ee2e72c","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20181219a.htm"},
+    {"event_id":"c1894fe63557c45d711ca1b7f37b904b9165aab7d1bbf3206dba042e25090e05","first_market_available_at":"2019-01-30T19:00:00Z","raw_event_hash":"b0b02192dc40842aabfa0fa5ce292a531ee60027d0f7194e5bc637253d513dfe","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20190130a.htm"},
+    {"event_id":"a2fb82cf4226c0df70566207e6f03e3fd0fbbc91d8b1d0da9ab668bb0c0ee28a","first_market_available_at":"2019-03-20T18:00:00Z","raw_event_hash":"a876d0edc7ad30955c12f66927a0f10ca7b6f0022724f1a446ee3ef1ba2f1281","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20190320a.htm"},
+    {"event_id":"74eb2ad4a3f60c21950d0c5397914605f93f5ca70baa09aac1979e16cca252d2","first_market_available_at":"2019-05-01T18:00:00Z","raw_event_hash":"37b40920286962300c4d8d38a1d38c9248cf971c0f26db4ecfc53faaed15ec1b","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20190501a.htm"},
+    {"event_id":"4f907cf0bbde084c790f9eb6eea2d1d2abf9d8d71b2a414fc05c6cfa08a897ab","first_market_available_at":"2019-06-19T18:00:00Z","raw_event_hash":"d7d55b66bd6c13bbf1bd8f70d22b2e42867a91a7d58e02974d2120fe699c9d29","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20190619a.htm"},
+    {"event_id":"9dc955616ebd905c557c389a59f4af09510e642542daad5d73cd3828497e9b5f","first_market_available_at":"2019-07-31T18:00:00Z","raw_event_hash":"cb3a47cab5665a473af12834bf5c674b4886a69e79848b5e916ea880567d1dd9","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20190731a.htm"},
+    {"event_id":"beba6d04ad445acdc65995cfc5a0e22b7ddf129582fc44379feface8669bb00d","first_market_available_at":"2019-09-18T18:00:00Z","raw_event_hash":"f11482169a1668b985f3be2e0d207968a57ce44fbbb96eb6fb299472cf468923","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20190918a.htm"},
+    {"event_id":"d14533411326b61600798e49984873becbef85e7c7176476b98928e17bedb46a","first_market_available_at":"2019-10-30T18:00:00Z","raw_event_hash":"19226642ee35fa00e798a81ee43ff34813ddf0db1f68df4508cfa2ba390d590a","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20191030a.htm"},
+    {"event_id":"8ee249b154c03eba957caaf80e49ba6f0d8c8d40b2e5a5ed95e0c247b3041161","first_market_available_at":"2019-12-11T19:00:00Z","raw_event_hash":"0456fe02f4916e33b4e754c075265b5a38c06b9bd80b3ecee6af455de2b85355","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20191211a.htm"},
+    {"event_id":"76dd8a1af3aab589b04fa4f507425591558bc1736ab21a8b55686ecdfe545a62","first_market_available_at":"2020-01-29T19:00:00Z","raw_event_hash":"99cce66b8baa17d736a0431a9c26e5467a6ba5f93f1e3234264cdfc8c2b24498","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20200129a.htm"},
+    {"event_id":"ab56b161ceb372f9f7e6f0c3ab0783a30070a1551bd6028f6ac3f2ac5ef82a96","first_market_available_at":"2020-03-03T15:00:00Z","raw_event_hash":"d43a33d00d6f7714b4f55437daa7619d8b19b4804a66d490ebaec61fd923b58b","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20200303a.htm"},
+    {"event_id":"391039f35f76224e29cc85fbdc9f3fff2835354314f24cd8647e43aa1b3c90ec","first_market_available_at":"2020-03-15T21:00:00Z","raw_event_hash":"19be17e2d5c980ed11c7db07f756c6597fddd0f9c9ab25d1b580a9a8bd27565c","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20200315a.htm"},
+    {"event_id":"1264355a3f424831896e05a97ccf0dcee0c536fbde6d30f3d63586e05507b8eb","first_market_available_at":"2020-03-23T12:00:00Z","raw_event_hash":"ee1556b3ed3668415f724f75cec2b75dd985a316cd360e583dd851b4720855da","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20200323a.htm"},
+    {"event_id":"0538dace21a579864f731331553e795b97e8b1ec5dd6072d941f243fd9c80c59","first_market_available_at":"2020-04-29T18:00:00Z","raw_event_hash":"dd0d29cb101f323c42953aec5bdc28ec96933388762e49edfcc82b92373c3692","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20200429a.htm"},
+    {"event_id":"d557a220c01b3de7537e9791809a932f7ef6043383c822fa780698356c1c8eb6","first_market_available_at":"2020-06-10T18:00:00Z","raw_event_hash":"bf90f2d835fb96b6432e34477aa3bf195f9b14f7da1af5f071465170878bba82","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20200610a.htm"},
+    {"event_id":"32995b43920930581cf75489b990adbc100de81dcf4e1216cc79056ee0fd2a76","first_market_available_at":"2020-07-29T18:00:00Z","raw_event_hash":"c0fac19a09d3d566066c5850f9ad521571135cced9f6b5abab8d82dfe8804a95","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20200729a.htm"},
+    {"event_id":"04e1d06dfc86cbef6cf2ad4ae306555c580be66077880aaf255ca5a6b244adc2","first_market_available_at":"2020-09-16T18:00:00Z","raw_event_hash":"1499662d7a7086c5ce3a60dc06cf2b29d56bb172a8fa99ac532f132a18f5f6a6","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20200916a.htm"},
+    {"event_id":"74a0ac2f5bd9455809f56909dd94c208635729b49b6f338abc131c315fa91b17","first_market_available_at":"2020-11-05T19:00:00Z","raw_event_hash":"7f3f123099faa01024ed568cf95e4750c8d4670bb331ea9ec1b63ab89bfa5ea6","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20201105a.htm"},
+    {"event_id":"4411c91b13a24358a51eff8d1c4f4d7f489f835fca34b4566c4012271dfb9b3a","first_market_available_at":"2020-12-16T19:00:00Z","raw_event_hash":"3f87a6b3135c789ffaf726b3c33ab404eae549e52f5628155e94c4c9b1467a2f","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20201216a.htm"},
+    {"event_id":"51b0cbbcd43879ff2ef450a54a63bd44fb137c48ed781f9a5661da1854cbd48c","first_market_available_at":"2021-01-27T19:00:00Z","raw_event_hash":"a03551ac0b58068f29da187ffe78c52b609a1dde01bfab176ab3ec7ee114220f","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20210127a.htm"},
+    {"event_id":"0df1b7321f75608582e23a02bddb4efbf8607f1d4799e58eb31055eed98dce69","first_market_available_at":"2021-03-17T18:00:00Z","raw_event_hash":"899ea3966511c267e0fde8a8d1f9fcac37059627efb71bd2d1fd5a9bce9fa029","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20210317a.htm"},
+    {"event_id":"7ab026a51f7b9111950a9c89a77ef0da016a960c3185f9a5e153f3d402c93414","first_market_available_at":"2021-04-28T18:00:00Z","raw_event_hash":"8d31d571d51c76a6fe2540ddd3226433d19519392db331d6f18aff05cf043ba7","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20210428a.htm"},
+    {"event_id":"bcec8967287c348f8c9408eec24825c2316133c9210ced3e973fbf0471d86f70","first_market_available_at":"2021-06-16T18:00:00Z","raw_event_hash":"f223142993511f4f7d2e5d654b9482c2028dd994e567fb7bf02571ee499c24ef","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20210616a.htm"},
+    {"event_id":"41bf3a9dfdcfccade854cb718fff80d29bb7a32bfa879635bbf8f008f9e3fcc2","first_market_available_at":"2021-07-28T18:00:00Z","raw_event_hash":"3d3d7122f12d33c8d13c6228be4bfaa4a4287fd3fb0f9c9b81ef55c29cb943b2","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20210728a.htm"},
+    {"event_id":"aebce6953e7d56f6f48f1b71ed5b2ac6ea3abbf492264b4b24b1e6eaca4f24f2","first_market_available_at":"2021-09-22T18:00:00Z","raw_event_hash":"896d92c3d836df43c759e3e6e3afbebcf9ac4a2c51319b814b08922525f2efa3","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20210922a.htm"},
+    {"event_id":"c38997293be4a10632e0481f8d37f0595fde365616a3055e2f59803e9bf5b662","first_market_available_at":"2021-11-03T18:00:00Z","raw_event_hash":"ae44558ede99761ffb38c4df376e9b1dfe627d9775d31b270c054c8541ddebdd","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20211103a.htm"},
+    {"event_id":"3c205689206112fb7fd78f8d9b924af9c95e96353fc1731b31e4123a9e4be072","first_market_available_at":"2021-12-15T19:00:00Z","raw_event_hash":"c28a277044dcb6cdba1d51cdaae7c3d784cbb464c6bb5508e05007ad51fc4c6b","source_url":"https://www.federalreserve.gov/newsevents/pressreleases/monetary20211215a.htm"}
+  ],
+  "manifest_version": "fomc-development-manifest-v1",
+  "source_commit": "74e3c390ff384858a62b21ae27ea354026033e9f",
+  "source_manifest_artifact_digest": "sha256:7785634aed70e42840f32ee46acb387c72a1bb181345c104c6d9494e5d182e61",
+  "source_manifest_artifact_id": 10577972982,
+  "source_manifest_artifact_run_id": 35424288287,
+  "source_manifest_json_sha256": "e0fd8e03e420c9b170ce48265e08157ff22c0fb0fbd9e16019bd69bb902ad62f",
+  "validation_or_oos_accessed": false
+}
