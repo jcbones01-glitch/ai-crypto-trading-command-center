@@ -1,0 +1,25 @@
+{
+  "gate_id": "AMS-DEP-V2-FREEZE",
+  "version": 1,
+  "status": "FROZEN_FOR_SYNTHETIC_CALIBRATION",
+  "ratification_decision": "RATIFY_V2_FREEZE_FOR_SYNTHETIC_CALIBRATION",
+  "ratification_artifact": "docs/AMS_DEP_V2_INDEPENDENT_RATIFICATION_RESULT.md",
+  "ratified_scientific_head": "ee82f1625fce48900d00e4b61ad0e922aeb65451",
+  "frozen_source_commit": "dcea20adcb0a33d20d192c3ed03fe7863bbbf2b3",
+  "scientific_change_policy": "Any calibration-driven change to a result-affecting frozen file creates V3; V2 holdout may not rescue changed or failed V2.",
+  "calibration_suite_authorized_by_review": true,
+  "holdout_authorized": false,
+  "market_data_authorized": false,
+  "validation_or_oos_authorized": false,
+  "git_blob_sha": {
+    "docs/AMS_DEP_V2_NUMERICAL_CONTRACT.md": "95e0129e4fc38a5125a945514f43e2a8e670ea1c",
+    "research/experiments/ams_dep_synthetic_core_v2.json": "5cd19af8ffc59fe15e050b739a79245500c925f5",
+    "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+    "src/research_core/dependent_wild_bootstrap_v2.py": "4e77f4576b85a4a35c3738d71e9b49315dd4f248",
+    "src/research_core/ams_dep_v2_synthetic.py": "25ab0db005d8a41f3478f9ec78d3a158f6045483",
+    "src/research_core/ams_dep_v2_aggregation.py": "1023f1e1d52b1e95a6b2e245271a0fb0cf466b39",
+    "research/scripts/run_ams_dep_v2_calibration_shard.py": "b269092f044abf60de7187b5c8974941daa4288b",
+    "research/scripts/aggregate_ams_dep_v2_calibration.py": "8d8a211b7cda4f5926c4162d9bac0790512895de",
+    "pyproject.toml": "c285596629c88e741cadd90064361258a9f820c2"
+  }
+}
