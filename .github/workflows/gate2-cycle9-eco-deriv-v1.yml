@@ -1,0 +1,73 @@
+name: Gate 2 Cycle 9 ECO-DERIV-V1 Certification
+
+on:
+  push:
+    branches:
+      - gate2-cycle9-market-ecology-data
+    paths:
+      - ".github/workflows/gate2-cycle9-eco-deriv-v1.yml"
+      - "docs/GATE2_CYCLE9_ECO_DERIV_V1_FEATURE_SPEC.md"
+      - "docs/GATE2_CYCLE9_ECO_DERIV_V1_NUMERICAL_CONTRACT.md"
+      - "src/research_core/market_ecology.py"
+      - "research/scripts/build_eco_deriv_v1.py"
+      - "tests/test_market_ecology.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  certify-feature-layer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout exact commit with provenance history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install project
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[dev]'
+
+      - name: Run full software regression suite
+        run: pytest -q
+
+      - name: Build and certify ECO-DERIV-V1
+        run: python research/scripts/build_eco_deriv_v1.py
+
+      - name: Verify feature firewall
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("gate2_cycle9_eco_deriv_v1_results/eco_deriv_v1_certification.json")
+          d = json.loads(p.read_text())
+          assert d["feature_version"] == "ECO-DERIV-V1"
+          assert d["status"] == "ECO_DERIV_V1_READY"
+          assert d["validation_or_oos_accessed"] is False
+          assert d["forward_returns_calculated"] is False
+          assert d["strategy_pnl_calculated"] is False
+          assert d["strategy_signals_generated"] is False
+          assert d["strategy_thresholds_searched"] is False
+          assert d["input_identities"]["derivatives_combined"] == "061c7b85e1fef9fcff1bc761f8c1198db9ae2a9e49277b8b0e80ab7ea2c56e11"
+          for symbol in ("BTCUSDT", "ETHUSDT"):
+              assert d["assets"][symbol]["diagnostics"]["complete_feature_row_count"] > 0
+          print("ECO_DERIV_V1_FIREWALL_PASS")
+          print("COMBINED_FEATURE_IDENTITY", d["combined_feature_identity"])
+          PY
+
+      - name: Upload ECO-DERIV-V1 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate2-cycle9-eco-deriv-v1
+          path: gate2_cycle9_eco_deriv_v1_results/
+          if-no-files-found: error
+          retention-days: 90
