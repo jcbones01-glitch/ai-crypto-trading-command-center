@@ -1,0 +1,35 @@
+name: Gate 2 Cycle 7
+
+on:
+  push:
+    branches: [gate2-research-foundation]
+    paths:
+      - 'docs/GATE2_CYCLE7_PREREGISTRATION_V1.md'
+      - 'tests/gate2_cycle7_experiments.py'
+      - 'tests/test_gate2_cycle7.py'
+      - '.github/workflows/gate2-cycle7.yml'
+  workflow_dispatch:
+
+jobs:
+  gate2-cycle7:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -e '.[dev]'
+      - name: Run tests
+        run: pytest
+      - name: Verify causal timing contract
+        run: python -m pytest tests/test_backtesting_execution_delay.py tests/test_gate2_cycle7.py -q
+      - name: Run preregistered Cycle 7 Development experiments
+        run: CHECKED_OUT_SHA=$(git rev-parse HEAD) GITHUB_SHA=$(git rev-parse HEAD) python tests/gate2_cycle7_experiments.py
+      - name: Upload Cycle 7 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate2-cycle7-results
+          path: gate2_cycle7_results/cycle7_results.json
+          if-no-files-found: error
+          retention-days: 30
