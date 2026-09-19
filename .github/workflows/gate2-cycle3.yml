@@ -2,10 +2,6 @@ name: Gate 2 Cycle 3
 
 on:
   workflow_dispatch:
-  push:
-    branches: [gate2-research-foundation]
-  pull_request:
-    branches: [main]
 
 jobs:
   gate2-cycle3:

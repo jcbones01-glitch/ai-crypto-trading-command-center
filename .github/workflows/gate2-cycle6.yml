@@ -1,12 +1,8 @@
 # Cycle 6 research execution workflow
 name: Gate 2 Cycle 6
 on:
-  push:
-    branches: [gate2-research-foundation]
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened]
   workflow_dispatch:
+
 jobs:
   gate2-cycle6:
     runs-on: ubuntu-latest
