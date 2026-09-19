@@ -1,0 +1,432 @@
+{
+  "responses": [
+    {
+      "acquisition_method": "Chrome rendered main.outerHTML via browser DOM; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "index.htm",
+      "retrieved_at": "2026-09-19T06:07:08.925Z",
+      "sha256": "d29e5dc8df9af21ab900b1296ff9230003a8557d87f462024c5e749f8fc36c17",
+      "url": "https://www.bls.gov/bls/news-release/cpi.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_12102021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:05.531Z",
+      "sha256": "e67435d5787e83af225e481f0b0c7b2f73da0f1f812a05d759be0c27d8e21344",
+      "url": "https://www.bls.gov/news.release/archives/cpi_12102021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_11102021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:07.130Z",
+      "sha256": "ba39ef938ef36cc9a055d2564715dec9bc708d7518feed599ea5000840d66a4f",
+      "url": "https://www.bls.gov/news.release/archives/cpi_11102021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_10132021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:07.660Z",
+      "sha256": "0d45b2e92659ce179bd2cb1c1d81d7b6f6643cecee1356c63912eedbec70a7d6",
+      "url": "https://www.bls.gov/news.release/archives/cpi_10132021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_09142021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:09.787Z",
+      "sha256": "7a58487544859b8465f6e6ff3e75997468d454b5b1714a872f56e6e9d76c069c",
+      "url": "https://www.bls.gov/news.release/archives/cpi_09142021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_08112021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:10.335Z",
+      "sha256": "69e94d086c84bedffbbb90d34e6cf5af98ab992db7165870021f57d93ce0e3d1",
+      "url": "https://www.bls.gov/news.release/archives/cpi_08112021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_07132021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:11.457Z",
+      "sha256": "c994c534098440d6436f9321e55e683c76cc5b8c4a84cf2f3b58ab560c133876",
+      "url": "https://www.bls.gov/news.release/archives/cpi_07132021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_06102021.htm.txt",
+      "retrieved_at": "2026-09-19T06:10:54.026Z",
+      "sha256": "1aeaf9bce2031cb77323b1fe3b9bed5633103dcf9433984d05dcda84af1c67a5",
+      "url": "https://www.bls.gov/news.release/archives/cpi_06102021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_05122021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:14.141Z",
+      "sha256": "0f9b423e4dd8a5060373eabb87093b2d78899a3ce0e2025782a78627d301774f",
+      "url": "https://www.bls.gov/news.release/archives/cpi_05122021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_04132021.htm.txt",
+      "retrieved_at": "2026-09-19T06:10:54.430Z",
+      "sha256": "02a1e2f29dd1b1e8178ed1e02c4e5e8a2e8b4050a76ac28c7a02c06a9d17618e",
+      "url": "https://www.bls.gov/news.release/archives/cpi_04132021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_03102021.htm.txt",
+      "retrieved_at": "2026-09-19T06:10:55.485Z",
+      "sha256": "4e0562739e24d7886dda48ca36f5f044af280f8582217ad58695ca21ddf860a0",
+      "url": "https://www.bls.gov/news.release/archives/cpi_03102021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_02102021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:24.770Z",
+      "sha256": "6a8d8c9558ce5332e23a5d64f7da7a43597601af9708bd007531a048c8ffbfa1",
+      "url": "https://www.bls.gov/news.release/archives/cpi_02102021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_01132021.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:25.259Z",
+      "sha256": "e7aeb58a6fb76573b078f2365e991cec69c8d3b3b17b4c3991cec12b3e253c7b",
+      "url": "https://www.bls.gov/news.release/archives/cpi_01132021.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_12102020.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:26.343Z",
+      "sha256": "c91c19d721dcca6b1dd759e588afc47939e56c0ca99ff94cb894c53c47f6cd82",
+      "url": "https://www.bls.gov/news.release/archives/cpi_12102020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_11122020.htm.txt",
+      "retrieved_at": "2026-09-19T06:10:56.364Z",
+      "sha256": "0e865e6d3a9b46dd5d98a563bca50e42b0b29f99e0284c4846da15ca1e060057",
+      "url": "https://www.bls.gov/news.release/archives/cpi_11122020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_10132020.htm.txt",
+      "retrieved_at": "2026-09-19T06:10:58.319Z",
+      "sha256": "81fbbf01ba6c7cc4dae7880a9093dcbd76679198cce2163fcab18b3a98104412",
+      "url": "https://www.bls.gov/news.release/archives/cpi_10132020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_09112020.htm.txt",
+      "retrieved_at": "2026-09-19T06:10:58.875Z",
+      "sha256": "058a05be842b729d025d8ccb56e6e8442c9fd049260e67b5645a90f03411af19",
+      "url": "https://www.bls.gov/news.release/archives/cpi_09112020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_08122020.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:00.982Z",
+      "sha256": "0b5c58e4499d472f7dcb8f89dac1386d86fd2c843366791dee544a59e313edaa",
+      "url": "https://www.bls.gov/news.release/archives/cpi_08122020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_07142020.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:02.418Z",
+      "sha256": "958bf1883153f0f487ec6aac50e4ad5dfdb398317757bb2b3eb4f5eb2372e111",
+      "url": "https://www.bls.gov/news.release/archives/cpi_07142020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_06102020.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:03.446Z",
+      "sha256": "2e5a3695a3907a886c78c52a8344d72febd0b240e0d5df19020a5df475c45e33",
+      "url": "https://www.bls.gov/news.release/archives/cpi_06102020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_05122020.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:34.119Z",
+      "sha256": "ca9c979615fb2b98883c8b94d5fbe28cdf887db826c00cb0f34f330bda43a12a",
+      "url": "https://www.bls.gov/news.release/archives/cpi_05122020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_04102020.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:04.885Z",
+      "sha256": "13c74d571d56d9a47611fb8261ee62b74ec7147769dd45a03c641b4a32151b1b",
+      "url": "https://www.bls.gov/news.release/archives/cpi_04102020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_03112020.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:36.515Z",
+      "sha256": "0753dacd4b9a6d707428cf302199d880cd80b0b3bfcf9af2a3b9fc6267431796",
+      "url": "https://www.bls.gov/news.release/archives/cpi_03112020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_02132020.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:05.933Z",
+      "sha256": "778a28254c78e58588d4d2f32fe81cd601fdf05fed6254175b4e6c0919a8d593",
+      "url": "https://www.bls.gov/news.release/archives/cpi_02132020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_01142020.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:07.377Z",
+      "sha256": "589d8dd116198e0821ec2a1cec0f2c40e77ed7182313e2b1d7ecd51292f283b9",
+      "url": "https://www.bls.gov/news.release/archives/cpi_01142020.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_12112019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:08.519Z",
+      "sha256": "7d801b2d30f450f7726d4d0358395537b170ecfa7bd785b885b4a63992997a9a",
+      "url": "https://www.bls.gov/news.release/archives/cpi_12112019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_11132019.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:50.956Z",
+      "sha256": "fcdeaead86863d08c4395f9bc5bb702f8f8700b1fe1173ec4284edb2801db1af",
+      "url": "https://www.bls.gov/news.release/archives/cpi_11132019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_10102019.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:52.381Z",
+      "sha256": "a12be1f5f3d1c6984f3f3120407a1d2be49b0bf53f22622cf845fea7fe690a8a",
+      "url": "https://www.bls.gov/news.release/archives/cpi_10102019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_09122019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:09.929Z",
+      "sha256": "47566e65f86a892349a11f25ed26a1a144570a630584b624d3677369ffa186c4",
+      "url": "https://www.bls.gov/news.release/archives/cpi_09122019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_08132019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:10.961Z",
+      "sha256": "5687ed69cbc6747e43d3d211991762c75ef1be976bd7d6163089f5ad59eeb368",
+      "url": "https://www.bls.gov/news.release/archives/cpi_08132019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_07112019.htm.txt",
+      "retrieved_at": "2026-09-19T06:08:55.308Z",
+      "sha256": "aeab5c9d9869458570273be9c130a6d5b3ad673b832069ff54712b4a3618bdd5",
+      "url": "https://www.bls.gov/news.release/archives/cpi_07112019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_06122019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:12.394Z",
+      "sha256": "8307680a14d395e01dc464f15567661cd1c742856f4b3f9147dcdbb7dbc0beb2",
+      "url": "https://www.bls.gov/news.release/archives/cpi_06122019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_05102019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:13.396Z",
+      "sha256": "eeeb9ff961f67ccfa5a30a4ae3859a60968ba0653749d10b9d0e579e179723dc",
+      "url": "https://www.bls.gov/news.release/archives/cpi_05102019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_04102019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:14.878Z",
+      "sha256": "2edf9e9ffe8d54c2dd251486634b79f11d5455cf7c2a9de2337c62204cccf80f",
+      "url": "https://www.bls.gov/news.release/archives/cpi_04102019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_03122019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:15.924Z",
+      "sha256": "cf5d302b8fe9b5063cec76ee15dc30658fdcd3657d040ee56f85812cfc641bb8",
+      "url": "https://www.bls.gov/news.release/archives/cpi_03122019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_02132019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:24.610Z",
+      "sha256": "f36ffbe24f82667f797efe0fdbcace17ef4d0245ee52789e63ff2299397fb345",
+      "url": "https://www.bls.gov/news.release/archives/cpi_02132019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_01112019.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:26.147Z",
+      "sha256": "5e41943db4a5e5cc8ccde7ec3bc6fe027e11498a2e5e61ce8277d56eb6c4bff4",
+      "url": "https://www.bls.gov/news.release/archives/cpi_01112019.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_12122018.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:27.226Z",
+      "sha256": "5811dc8731c8449e307aa9ce98834b42d0ab4bb1086e56afd70911682b819ba3",
+      "url": "https://www.bls.gov/news.release/archives/cpi_12122018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_11142018.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:28.719Z",
+      "sha256": "54895f58b507f321d1d478d92fb26a69e9fc7b1022614614728131455f3934ec",
+      "url": "https://www.bls.gov/news.release/archives/cpi_11142018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_10112018.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:29.796Z",
+      "sha256": "ddb13b08d7de3591ab7addc48dac7e34797c957ab785da07f5deecb4ec33133c",
+      "url": "https://www.bls.gov/news.release/archives/cpi_10112018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_09132018.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:31.323Z",
+      "sha256": "004eff266c5d41b582ad48e50468b64dde98a44a8355dc6cd211e9156bef9c9d",
+      "url": "https://www.bls.gov/news.release/archives/cpi_09132018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_08102018.htm.txt",
+      "retrieved_at": "2026-09-19T06:09:19.712Z",
+      "sha256": "c330c5fb429e54e21ec130cc6eb9d6e8c2547d724430459b152decb996993638",
+      "url": "https://www.bls.gov/news.release/archives/cpi_08102018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_07122018.htm.txt",
+      "retrieved_at": "2026-09-19T06:09:20.478Z",
+      "sha256": "af835cfb69dba05310a0dbff5fb2440fced35a5fb3a5fb400600b975396fec94",
+      "url": "https://www.bls.gov/news.release/archives/cpi_07122018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_06122018.htm.txt",
+      "retrieved_at": "2026-09-19T06:09:21.633Z",
+      "sha256": "fba6617641e3bb448103d1af92ab48c70f3278ed40b3d4bd83c99d66fa8be333",
+      "url": "https://www.bls.gov/news.release/archives/cpi_06122018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_05102018.htm.txt",
+      "retrieved_at": "2026-09-19T06:09:37.954Z",
+      "sha256": "7acba904f4d69356588745ac16ed8eabb54009a3880472d6b42c9235ee25e106",
+      "url": "https://www.bls.gov/news.release/archives/cpi_05102018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_04112018.htm.txt",
+      "retrieved_at": "2026-09-19T06:09:39.136Z",
+      "sha256": "b1f6ddf424048213d3b404bc3a60a5ac988d41a9ed24d18afa633d121e9774b0",
+      "url": "https://www.bls.gov/news.release/archives/cpi_04112018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_03132018.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:32.295Z",
+      "sha256": "54900c5655286ed399e93d514634ab714a07fe1fc9b97d5d500556926e88c7f4",
+      "url": "https://www.bls.gov/news.release/archives/cpi_03132018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_02142018.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:33.850Z",
+      "sha256": "e523128a2c8f4da7964cf78cc95f6735d1851808eae93e29d189c7583725b951",
+      "url": "https://www.bls.gov/news.release/archives/cpi_02142018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_01122018.htm.txt",
+      "retrieved_at": "2026-09-19T06:09:42.329Z",
+      "sha256": "9ca2e210e56d845931791fd4f95cb77f8dd044a78df4fc79d2f073cd05318eed",
+      "url": "https://www.bls.gov/news.release/archives/cpi_01122018.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_12132017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:34.968Z",
+      "sha256": "2c16b999310ff32b3da03d5beb6f13faff29bf60946e2e4cddf9aa048c48ef52",
+      "url": "https://www.bls.gov/news.release/archives/cpi_12132017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_11152017.htm.txt",
+      "retrieved_at": "2026-09-19T06:09:44.781Z",
+      "sha256": "b5ec829175001609ba2c0915b9a1c283c788fa6563040e3a3ec822a67a7da755",
+      "url": "https://www.bls.gov/news.release/archives/cpi_11152017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_10132017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:35.688Z",
+      "sha256": "3b122366adcc97d257789418440732accba3b4dcca1347f78e2b21321a5cb7ff",
+      "url": "https://www.bls.gov/news.release/archives/cpi_10132017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_09142017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:36.967Z",
+      "sha256": "4e638cdcc2c25f65f2098a81604bb10f3c93f9f247c2c316e7ac1f6c2a3d9c98",
+      "url": "https://www.bls.gov/news.release/archives/cpi_09142017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_08112017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:38.526Z",
+      "sha256": "c49634d9c2e4e2e67ccb7e8ff974249a950f7b32e46508694c05e0a5f6bebc87",
+      "url": "https://www.bls.gov/news.release/archives/cpi_08112017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_07142017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:38.919Z",
+      "sha256": "466623eedf49044169821c2f8856e9ad31c191ddc9e236103ac79fa6e06b2d95",
+      "url": "https://www.bls.gov/news.release/archives/cpi_07142017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_06142017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:40.057Z",
+      "sha256": "794b9b3d3f0c1201e16dc590cde6934995b30eb007c0c63f4defbccdd260e6c0",
+      "url": "https://www.bls.gov/news.release/archives/cpi_06142017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_05122017.htm.txt",
+      "retrieved_at": "2026-09-19T06:09:52.799Z",
+      "sha256": "750c973674e0f0d7a1d197d32a43f6f5a68dd7b0f6f9ae2eeac97172be349621",
+      "url": "https://www.bls.gov/news.release/archives/cpi_05122017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_04142017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:42.067Z",
+      "sha256": "0f097d39f70cc0f8e05d4db36332d6fef2dc2d33bfce0dec5920da2efc745be1",
+      "url": "https://www.bls.gov/news.release/archives/cpi_04142017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_03152017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:43.593Z",
+      "sha256": "3e93afee5b3ebb4f9ce5b5b2d271b43a646773059090494c52886b8cfdfc06ca",
+      "url": "https://www.bls.gov/news.release/archives/cpi_03152017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_02152017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:44.694Z",
+      "sha256": "8ebe499122ca3f59d1f0edace196cb2932d296123467c5713e214ab277bafa23",
+      "url": "https://www.bls.gov/news.release/archives/cpi_02152017.htm"
+    },
+    {
+      "acquisition_method": "Chrome rendered main.innerText; UTF-8 serialization, NOT HTTP response bytes",
+      "path": "cpi_01182017.htm.txt",
+      "retrieved_at": "2026-09-19T06:11:46.357Z",
+      "sha256": "b9515530c799000615485633c7b70ea02b63d13f3a5360d273baac0a9e455d46",
+      "url": "https://www.bls.gov/news.release/archives/cpi_01182017.htm"
+    }
+  ],
+  "snapshot_version": "bls-cpi-dom-snapshot-v1"
+}

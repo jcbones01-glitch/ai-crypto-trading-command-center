@@ -61,7 +61,7 @@ def snapshot_fetcher(snapshot_dir: Path):
         raise RuntimeError("CPI source snapshot unavailable; certification remains blocked")
     inventory_bytes = inventory_path.read_bytes()
     inventory = json.loads(inventory_bytes)
-    if inventory.get("snapshot_version") != "bls-cpi-raw-snapshot-v1":
+    if inventory.get("snapshot_version") not in {"bls-cpi-raw-snapshot-v1", "bls-cpi-dom-snapshot-v1"}:
         raise ValueError("unsupported CPI snapshot version")
     entries = {}
     for entry in inventory["responses"]:
@@ -94,6 +94,7 @@ def snapshot_fetcher(snapshot_dir: Path):
             raise RuntimeError(f"missing official source snapshot: {url}")
         return entries[url]
 
+    read.snapshot_version = inventory["snapshot_version"]
     return read, hash_raw_payload(inventory_bytes)
 
 
@@ -124,7 +125,11 @@ def main() -> None:
     records: list[tuple[str, object]] = []
     for url in calendar_candidates:
         payload = read_source(url)
-        event = parse_cpi_release(payload, source_url=url, assets=ASSETS)
+        event = parse_cpi_release(
+            payload, source_url=url, assets=ASSETS,
+            payload_format=("rendered-text" if getattr(read_source, "snapshot_version", None)
+                            == "bls-cpi-dom-snapshot-v1" else "html"),
+        )
         if DEVELOPMENT_START <= event.first_market_available_at < DEVELOPMENT_END:
             records.append((url, event))
 
@@ -139,7 +144,8 @@ def main() -> None:
 
     output = {
         "manifest_version": "cpi-development-manifest-v1",
-        "source_mode": "live-audit" if args.live_audit else "raw-snapshot",
+        "source_mode": "live-audit" if args.live_audit else ("dom-snapshot" if read_source.snapshot_version == "bls-cpi-dom-snapshot-v1" else "raw-snapshot"),
+        "snapshot_version": getattr(read_source, "snapshot_version", None),
         "snapshot_inventory_sha256": inventory_hash,
         "github_sha": os.environ.get("GITHUB_SHA", "UNKNOWN"),
         "development_window": [

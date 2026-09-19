@@ -136,3 +136,21 @@ def test_complete_synthetic_snapshot_builds_52_events_offline(tmp_path, monkeypa
     assert len({event['event_id'] for event in output['events']}) == 52
     mod.main()
     assert output_path.read_bytes() == first
+
+
+def test_real_dom_snapshot_certifies_frozen_development_scope(monkeypatch, tmp_path):
+    import json
+    import sys
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1] / 'research/sources/bls_cpi_v1'
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, 'argv', ['builder', '--snapshot-dir', str(root)])
+    mod.main()
+    data = json.loads((tmp_path/'event_intelligence_results/cpi_development_manifest.json').read_text())
+    assert data['event_dataset']['dataset_id'] == '7773afbb02bbfff60031e3a8455ce119308b1d1b86c0b45adc43d54a6c1dc119'
+    assert data['source_mode'] == 'dom-snapshot'
+    assert data['event_dataset']['record_count'] == 52
+    years = [int(e['event_time'][:4]) for e in data['events']]
+    assert {y:years.count(y) for y in set(years)} == {2017:4,2018:12,2019:12,2020:12,2021:12}
+    assert all(e['event_time'][14:19] == '30:00' for e in data['events'])
+    assert all(e['source_version'] == 'bls-cpi-rendered-text-v1' for e in data['events'])

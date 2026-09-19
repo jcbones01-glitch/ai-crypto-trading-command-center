@@ -1,0 +1,7345 @@
+Bureau of Labor Statistics
+Economic News Release
+Economic News Release
+CPI PRINT:
+Consumer Price Index News Release
+
+
+Transmission of material in this release is embargoed until                                        
+8:30 a.m. (EDT) July 14, 2020                  USDL-20-1376
+
+Technical information: (202) 691-7000  •  cpi_info@bls.gov  •  www.bls.gov/cpi
+Media Contact:         (202) 691-5902  •  PressOffice@bls.gov 
+
+CONSUMER PRICE INDEX – JUNE 2020
+
+The Consumer Price Index for All Urban Consumers (CPI-U) increased 0.6 percent in
+June on a seasonally adjusted basis after falling 0.1 percent in May, the U.S.
+Bureau of Labor Statistics reported today. Over the last 12 months, the all items
+index increased 0.6 percent before seasonal adjustment.
+
+The gasoline index rose sharply in June after recent declines and accounted for
+over half of the monthly increase in the seasonally adjusted all items index. The
+energy index increased 5.1 percent in June as the gasoline index rose 12.3 percent.
+The food index also rose in June, increasing 0.6 percent as the index for food at
+home continued to rise. 
+
+The index for all items less food and energy rose 0.2 percent in June, its first
+monthly increase since February. The index for motor vehicle insurance increased
+sharply in June after recent declines. The indexes for apparel, shelter, and medical
+care also increased in June, while the indexes for used cars and trucks, recreation,
+and communication all declined. 
+
+The all items index increased 0.6 percent for the 12 months ending June; this
+compares to a 0.1-percent increase for the 12 months ending May. The index for all
+items less food and energy increased 1.2 percent over the last 12 months. The food
+index increased 4.5 percent over the last 12 months, with the index for food at home
+rising 5.6 percent. Despite increasing in June, the energy index fell 12.6 percent
+over the last 12 months. 
+
+
+ Table A. Percent changes in CPI for All Urban Consumers (CPI-U): U.S. city
+ average
+                                                                               
+                                                                               
+                                  Seasonally adjusted changes from             
+                                          preceding month                      
+                                                                          Un-  
+                                                                       adjusted
+                                                                        12-mos.
+                              Dec.  Jan.  Feb.  Mar.  Apr.  May   June   ended 
+                              2019  2020  2020  2020  2020  2020  2020   June  
+                                                                         2020  
+                                                                               
+                                                                               
+ All items..................    .2    .1    .1   -.4   -.8   -.1    .6       .6
+  Food......................    .2    .2    .4    .3   1.5    .7    .6      4.5
+   Food at home.............    .0    .1    .5    .5   2.6   1.0    .7      5.6
+   Food away from home (1)..    .3    .4    .2    .2    .1    .4    .5      3.1
+  Energy....................   1.6   -.7  -2.0  -5.8 -10.1  -1.8   5.1    -12.6
+   Energy commodities.......   3.0  -1.6  -3.5 -10.4 -20.0  -3.5  11.7    -23.2
+    Gasoline (all types)....   3.1  -1.6  -3.4 -10.5 -20.6  -3.5  12.3    -23.4
+    Fuel oil................   1.1   -.4  -8.5 -13.7 -15.6  -6.3  10.2    -29.9
+   Energy services..........   -.2    .6   -.3   -.5    .1   -.5   -.2       .1
+    Electricity.............   -.2    .4   -.1   -.2    .1   -.8   -.3       .1
+    Utility (piped) gas                                                        
+       service..............   -.5   1.0   -.9  -1.4    .2    .8    .0      -.2
+  All items less food and                                                      
+     energy.................    .1    .2    .2   -.1   -.4   -.1    .2      1.2
+   Commodities less food and                                                   
+      energy commodities....    .0    .0    .2   -.3   -.7   -.2    .2     -1.1
+    New vehicles............    .1    .0    .1   -.4    .0    .3    .0      -.2
+    Used cars and trucks....   -.4  -1.2    .4    .8   -.4   -.4  -1.2     -2.8
+    Apparel.................    .1    .7    .4  -2.0  -4.7  -2.3   1.7     -7.3
+    Medical care commodities   1.0   -.6   -.6    .0   -.1    .1    .2      1.3
+   Services less energy                                                        
+      services..............    .2    .3    .2    .0   -.4    .0    .3      1.9
+    Shelter.................    .2    .4    .3    .0    .0    .2    .1      2.4
+    Transportation services    -.1    .3    .3  -1.9  -4.7  -3.6   2.1     -7.0
+    Medical care services...    .3    .3    .3    .5    .5    .6    .5      6.0
+
+   1 Not seasonally adjusted.
+
+
+Food
+
+The food index increased 0.6 percent in June following a 0.7-percent increase in May.
+The food at home index rose 0.7 percent in June after increasing 1.0 percent in May.
+Five of the six major grocery store food group indexes rose in June. The index for
+meat, poultry, fish, and eggs increased 2.0 percent in June. This reflected another
+increase in the beef index which rose 4.8 percent in June and increased 20.4 percent
+over the last 3 months.
+
+The index for nonalcoholic beverages increased in June, rising 0.7 percent. The
+indexes for cereals and bakery products and for fruits and vegetables both rose
+0.4 percent. The index for other food at home rose 0.2 percent in June. The only
+major grocery store food group index to decline was dairy and related products,
+which fell 0.4 percent in June, its first decline since July 2019.
+
+The index for food away from home rose 0.5 percent in June following a 0.4-percent
+increase in May. The index for full service meals increased 0.9 percent, its largest
+ever monthly increase. The index for limited service meals advanced 0.5 percent in
+June after rising 0.6 percent in May.   
+
+The food at home index increased 5.6 percent over the last 12 months, its largest
+12-month increase since the period ending December 2011. All six major grocery store
+food group indexes rose over that span. The beef index increased 25.1 percent over
+the last 12 months, leading to a 12.8-percent increase in the index for meats,
+poultry, fish, and eggs. The remaining groups rose more modestly, with increases
+ranging from 2.3 percent (fruits and vegetables) to 5.3 percent (nonalcoholic
+beverages). The index for food away from home rose 3.1 percent over the last year.
+The index for limited service meals increased 4.1 percent and the index for full
+service meals rose 2.7 percent over the last 12 months.
+
+Energy
+
+The energy index rose 5.1 percent in June after falling in each of the previous 5 months.
+The increase was a result of the gasoline index, which rose 12.3 percent in June after
+falling in the first 5 months of the year. (Before seasonal adjustment, gasoline prices
+rose 10.0 percent in June.) The electricity index, in contrast, declined in June, falling
+0.3 percent. The index for natural gas was unchanged in June.
+
+The energy index fell 12.6 percent over the past 12 months. The gasoline index decreased
+23.4 percent, while the fuel oil index fell 29.9 percent. The index for natural gas
+declined 0.2 percent, while the index for electricity increased slightly over the year,
+rising 0.1 percent.
+
+All items less food and energy
+
+The index for all items less food and energy increased 0.2 percent in June. The index
+for motor vehicle insurance rose 5.1 percent in June after falling sharply in April and
+May. The apparel index rose 1.7 percent in June following recent declines. The shelter
+index rose 0.1 percent in June, with the indexes for rent and owners’ equivalent rent
+both increasing 0.1 percent. 
+
+The medical care index rose 0.4 percent in June after increasing 0.5 percent in May.
+The index for physicians’ services increased 0.5 percent, the index for hospital
+services rose 0.4 percent, and the index for prescription drugs increased 0.1 percent.
+Other indexes that increased in June include household furnishings and operations
+(0.4 percent), airline fares (2.6 percent), and tobacco (1.1 percent).
+
+The index for used cars and trucks declined in June, falling 1.2 percent, its third
+consecutive monthly decline. The recreation index declined 0.6 percent in June after
+rising 0.9 percent in May. The index for communication fell 0.3 percent in June. The
+new vehicles index was unchanged in June after increasing 0.3 percent in May.   
+
+The index for all items less food and energy rose 1.2 percent over the past 12 months.
+The shelter index rose 2.4 percent over the 12-month span. The index for rent increased
+3.2 percent and the index for owners’ equivalent rent rose 2.8 percent, while the index
+for lodging away from home fell 14.0 percent. The medical care index increased 5.1 percent
+over the last 12 months. The indexes for airline fares, apparel, motor vehicle insurance,
+used cars and trucks, and new vehicles all declined over the past 12 months. 
+
+Not seasonally adjusted CPI measures
+
+The Consumer Price Index for All Urban Consumers (CPI-U) increased 0.6 percent over the
+last 12 months to an index level of 257.797 (1982-84=100). For the month, the index rose
+0.5 percent prior to seasonal adjustment.  
+
+The Consumer Price Index for Urban Wage Earners and Clerical Workers (CPI-W) increased
+0.5 percent over the last 12 months to an index level of 251.054 (1982-84=100). For the
+month, the index rose 0.6 percent prior to seasonal adjustment.  
+
+The Chained Consumer Price Index for All Urban Consumers (C-CPI-U) increased 0.4 percent
+over the last 12 months. For the month, the index increased 0.6 percent on a not
+seasonally adjusted basis. Please note that the indexes for the past 10 to 12 months are
+subject to revision. 
+
+_______________
+The Consumer Price Index for July 2020 is scheduled to be released on Wednesday,
+August 12, 2020 at 8:30 a.m. (EDT). 
+
+---------------------------------------------------------------------------------------------------
+Coronavirus (COVID-19) Pandemic Impact on June 2020 Consumer Price Index Data
+
+Data collection by personal visit for the Consumer Price Index (CPI) program has been suspended 
+since March 16, 2020. When possible, data normally collected by personal visit were collected either
+online or by phone. Additionally, data collection in June was affected by the temporary closing or
+limited operations of certain types of establishments. These factors resulted in an increase in the
+number of prices considered temporarily unavailable and imputed. While the CPI program attempted to
+collect as much data as possible, many indexes are based on smaller amounts of collected prices than
+usual, and a small number of indexes that are normally published were not published this month. 
+Additional information is available at
+www.bls.gov/covid19/effects-of-covid-19-pandemic-on-consumer-price-index.htm
+
+---------------------------------------------------------------------------------------------------
+
+
+
+Technical Note
+
+Brief Explanation of the CPI
+
+The Consumer Price Index (CPI) measures the change in prices paid by consumers
+for goods and services. The CPI reflects spending patterns for each of two
+population groups: all urban consumers and urban wage earners and clerical
+workers. The all urban consumer group represents about 93 percent of the total
+U.S. population. It is based on the expenditures of almost all residents of
+urban or metropolitan areas, including professionals, the self-employed, the poor,
+the unemployed, and retired people, as well as urban wage earners and clerical
+workers. Not included in the CPI are the spending patterns of people living in
+rural nonmetropolitan areas, farming families, people in the Armed Forces, and
+those in institutions, such as prisons and mental hospitals. Consumer inflation
+for all urban consumers is measured by two indexes, namely, the Consumer Price
+Index for All Urban Consumers (CPI-U) and the Chained Consumer Price Index for
+All Urban Consumers (C-CPI-U).
+
+The Consumer Price Index for Urban Wage Earners and Clerical Workers (CPI-W) is
+based on the expenditures of households included in the CPI-U definition that
+meet two requirements: more than one-half of the household's income must come
+from clerical or wage occupations, and at least one of the household's earners
+must have been employed for at least 37 weeks during the previous 12 months.
+The CPI-W population represents about 29 percent of the total U.S. population
+and is a subset of the CPI-U population.
+
+The CPIs are based on prices of food, clothing, shelter, fuels, transportation,
+doctors’ and dentists’ services, drugs, and other goods and services that people
+buy for day-to-day living. Prices are collected each month in 75 urban areas
+across the country from about 6,000 housing units and approximately 22,000 retail
+establishments (department stores, supermarkets, hospitals, filling stations, and
+other types of stores and service establishments). All taxes directly associated
+with the purchase and use of items are included in the index. Prices of fuels and
+a few other items are obtained every month in all 75 locations. Prices of most
+other commodities and services are collected every month in the three largest
+geographic areas and every other month in other areas. Prices of most goods and
+services are obtained by personal visits or telephone calls by the Bureau’s
+trained representatives.
+
+In calculating the index, price changes for the various items in each location
+are aggregated using weights, which represent their importance in the spending
+of the appropriate population group. Local data are then combined to obtain a
+U.S. city average. For the CPI-U and CPI-W, separate indexes are also published
+by size of city, by region of the country, for cross-classifications of regions
+and population-size classes, and for 23 selected local areas. Area indexes do not
+measure differences in the level of prices among cities; they only measure the
+average change in prices for each area since the base period. For the C-CPI-U,
+data are issued only at the national level. The CPI-U and CPI-W are considered
+final when released, but the C-CPI-U is issued in preliminary form and subject to
+three subsequent quarterly revisions.
+
+The index measures price change from a designed reference date. For most of the
+CPI-U and the CPI-W, the reference base is 1982-84 equals 100. The reference base
+for the C-CPI-U is December 1999 equals 100.  An increase of 7 percent from the
+reference base, for example, is shown as 107.000. Alternatively, that relationship
+can also be expressed as the price of a base period market basket of goods and
+services rising from $100 to $107.
+
+Sampling Error in the CPI
+
+The CPI is a statistical estimate that is subject to sampling error because it is
+based upon a sample of retail prices and not the complete universe of all prices.
+BLS calculates and publishes estimates of the 1-month, 2-month, 6-month, and 12-
+month percent change standard errors annually for the CPI-U. These standard error
+estimates can be used to construct confidence intervals for hypothesis testing.
+For example, the estimated standard error of the 1-month percent change is 0.03
+percent for the U.S. all items CPI. This means that if we repeatedly sample from
+the universe of all retail prices using the same methodology, and estimate a
+percentage change for each sample, then 95 percent of these estimates will be
+within 0.06 percent of the 1-month percentage change based on all retail prices.
+For example, for a 1-month change of 0.2 percent in the all items CPI-U, we are
+95 percent confident that the actual percent change based on all retail prices
+would fall between 0.14 and 0.26 percent. For the latest data, including
+information on how to use the estimates of standard error, see
+https://www.bls.gov/cpi/tables/variance-estimates/home.htm.
+
+Calculating Index Changes
+
+Movements of the indexes from 1 month to another are usually expressed as percent
+changes rather than changes in index points, because index point changes are
+affected by the level of the index in relation to its base period, while percent
+changes are not.
+
+The following table shows an example of using index values to calculate percent
+changes:
+ 
+                               Item A                  Item B                      Item C
+Year I                         112.500                 225.000                     110.000
+Year II                        121.500                 243.000                     128.000
+Change in index points         9.000                   18.000                      18.000
+Percent change                 9.0/112.500 x 100 = 8.0  18.0/225.000 x 100 = 8.0   18.0/110.000 x 100 = 16.4
+Use of Seasonally Adjusted and Unadjusted Data
+
+The Consumer Price Index (CPI) produces both unadjusted and seasonally adjusted data.
+Seasonally adjusted data are computed using seasonal factors derived by the X-13ARIMA-
+SEATS seasonal adjustment method. These factors are updated each February, and the new
+factors are used to revise the previous 5 years of seasonally adjusted data. The factors
+are available at www.bls.gov/cpi/tables/seasonal-adjustment/seasonal-factors-2020.pdf.
+For more information on data revision scheduling, please see the Factsheet on Seasonal
+Adjustment at www.bls.gov/cpi/seasonal-adjustment/questions-and-answers.htm and the
+Timeline of Seasonal Adjustment Methodological Changes at
+www.bls.gov/cpi/seasonal-adjustment/timeline-seasonal-adjustment-methodology-changes.htm.
+
+For analyzing short-term price trends in the economy, seasonally adjusted changes are
+usually preferred since they eliminate the effect of changes that normally occur at the
+same time and in about the same magnitude every year—such as price movements resulting
+from weather events, production cycles, model changeovers, holidays, and sales. This
+allows data users to focus on changes that are not typical for the time of year. The
+unadjusted data are of primary interest to consumers concerned about the prices they
+actually pay. Unadjusted data are also used extensively for escalation purposes. Many
+collective bargaining contract agreements and pension plans, for example, tie compensation
+changes to the Consumer Price Index before adjustment for seasonal variation. BLS advises
+against the use of seasonally adjusted data in escalation agreements because seasonally
+adjusted series are revised annually.
+
+Intervention Analysis
+
+The Bureau of Labor Statistics uses intervention analysis seasonal adjustment for some
+CPI series. Sometimes extreme values or sharp movements can distort the underlying seasonal
+pattern of price change. Intervention analysis seasonal adjustment is a process by which
+the distortions caused by such unusual events are estimated and removed from the data prior
+to calculation of seasonal factors. The resulting seasonal factors, which more accurately 
+represent the seasonal pattern, are then applied to the unadjusted data.
+
+For example, this procedure was used for the motor fuel series to offset the effects of the
+2009 return to normal pricing after the worldwide economic downturn in 2008. Retaining this
+outlier data during seasonal factor calculation would distort the computation of the seasonal
+portion of the time series data for motor fuel, so it was estimated and removed from the data
+prior to seasonal adjustment. Following that, seasonal factors were calculated based on this
+“prior adjusted” data. These seasonal factors represent a clearer picture of the seasonal
+pattern in the data. The last step is for motor fuel seasonal factors to be applied to the
+unadjusted data.
+
+For the seasonal factors introduced for January 2020, BLS adjusted 53 series using intervention
+analysis seasonal adjustment, including selected food and beverage items, motor fuels,
+electricity, and vehicles.
+
+Revision of Seasonally Adjusted Indexes
+
+Seasonally adjusted data, including the U.S. city average all items index levels, are subject
+to revision for up to 5 years after their original release. Every year, economists in the CPI
+calculate new seasonal factors for seasonally adjusted series and apply them to the last 5 years
+of data. Seasonally adjusted indexes beyond the last 5 years of data are considered to be final
+and not subject to revision. For January 2020, revised seasonal factors and seasonally adjusted
+indexes for 2015 to 2019 were calculated and published. For series which are directly adjusted
+using the Census X-13ARIMA-SEATS seasonal adjustment software, the seasonal factors for 2019
+will be applied to data for 2020 to produce the seasonally adjusted 2020 indexes. Series which
+are indirectly seasonally adjusted by summing seasonally adjusted component series have seasonal
+factors which are derived and are therefore not available in advance.
+
+Determining Seasonal Status
+
+Each year the seasonal status of every series is reevaluated based upon certain statistical
+criteria. Using these criteria, BLS economists determine whether a series should change its
+status from "not seasonally adjusted" to "seasonally adjusted", or vice versa. If any of the
+81 components of the U.S. city average all items index change their seasonal adjustment status
+from seasonally adjusted to not seasonally adjusted, not seasonally adjusted data will be used
+in the aggregation of the dependent series for the last 5 years, but the seasonally adjusted
+indexes before that period will not be changed. Twenty-eight of the 81 components of the U.S.
+city average all items index are not seasonally adjusted for 2020.
+
+Contact Information
+
+For additional information about the CPI visit www.bls.gov/cpi or contact the CPI Information
+and Analysis Section at 202-691-7000 or cpi_info@bls.gov.
+
+For additional information on seasonal adjustment in the CPI visit
+www.bls.gov/cpi/seasonal-adjustment/home.htm or contact the CPI seasonal adjustment section at
+202-691-6968 or cpiseas@bls.gov.
+
+Information from this release will be made available to sensory impaired individuals upon
+request. Voice phone: 202-691-5200; Federal Relay Service: 1-800-877-8339.  
+
+
+
+
+
+
+
+
+
+Table 1. Consumer Price Index for All Urban Consumers (CPI-U): U.S. city average, by expenditure category, June 2020
+[1982-84=100, unless otherwise noted]
+Expenditure category	Relative
+importance
+May
+2020	Unadjusted indexes	Unadjusted percent change	Seasonally adjusted percent change
+Jun.
+2019	May
+2020	Jun.
+2020	Jun.
+2019-
+Jun.
+2020	May
+2020-
+Jun.
+2020	Mar.
+2020-
+Apr.
+2020	Apr.
+2020-
+May
+2020	May
+2020-
+Jun.
+2020
+
+
+All items
+
+	100.000	256.143	256.394	257.797	0.6	0.5	-0.8	-0.1	0.6
+
+
+Food
+
+	14.259	258.064	268.439	269.770	4.5	0.5	1.5	0.7	0.6
+
+
+Food at home
+
+	7.976	241.407	253.827	255.042	5.6	0.5	2.6	1.0	0.7
+
+
+Cereals and bakery products
+
+	1.021	276.891	284.937	286.092	3.3	0.4	2.9	-0.2	0.4
+
+
+Meats, poultry, fish, and eggs
+
+	1.836	249.231	275.405	281.139	12.8	2.1	4.3	3.7	2.0
+
+
+Dairy and related products
+
+	0.799	217.433	230.166	228.437	5.1	-0.8	1.5	1.0	-0.4
+
+
+Fruits and vegetables
+
+	1.363	298.611	306.798	305.393	2.3	-0.5	1.5	0.5	0.4
+
+
+Nonalcoholic beverages and beverage materials
+
+	0.949	170.230	178.234	179.190	5.3	0.5	2.9	0.0	0.7
+
+
+Other food at home
+
+	2.007	212.056	218.988	219.311	3.4	0.1	1.9	0.0	0.2
+
+
+Food away from home(1)
+
+	6.283	284.316	291.709	293.219	3.1	0.5	0.1	0.4	0.5
+
+
+
+Energy
+
+	5.777	221.373	183.076	193.379	-12.6	5.6	-10.1	-1.8	5.1
+
+
+Energy commodities
+
+	2.670	246.818	173.138	189.613	-23.2	9.5	-20.0	-3.5	11.7
+
+
+Fuel oil
+
+	0.067	277.244	180.999	194.267	-29.9	7.3	-15.6	-6.3	10.2
+
+
+Motor fuel
+
+	2.545	243.163	169.882	186.494	-23.3	9.8	-20.4	-3.5	12.0
+
+
+Gasoline (all types)
+
+	2.481	242.043	168.528	185.422	-23.4	10.0	-20.6	-3.5	12.3
+
+
+Energy services
+
+	3.108	206.219	201.752	206.368	0.1	2.3	0.1	-0.5	-0.2
+
+
+Electricity
+
+	2.436	217.947	211.988	218.191	0.1	2.9	0.1	-0.8	-0.3
+
+
+Utility (piped) gas service
+
+	0.672	168.628	168.316	168.267	-0.2	0.0	0.2	0.8	0.0
+
+
+
+All items less food and energy
+
+	79.963	263.177	265.799	266.302	1.2	0.2	-0.4	-0.1	0.2
+
+
+Commodities less food and energy commodities
+
+	20.189	144.461	142.964	142.908	-1.1	0.0	-0.7	-0.2	0.2
+
+
+Apparel
+
+	2.709	123.749	114.582	114.734	-7.3	0.1	-4.7	-2.3	1.7
+
+
+New vehicles
+
+	3.768	147.417	147.222	147.108	-0.2	-0.1	0.0	0.3	0.0
+
+
+Used cars and trucks
+
+	2.562	140.823	138.383	136.915	-2.8	-1.1	-0.4	-0.4	-1.2
+
+
+Medical care commodities
+
+	1.633	379.462	384.304	384.259	1.3	0.0	-0.1	0.1	0.2
+
+
+Alcoholic beverages
+
+	1.047	252.538	257.713	258.033	2.2	0.1	0.3	0.8	0.2
+
+
+Tobacco and smoking products
+
+	0.595	1,109.099	1,156.179	1,165.761	5.1	0.8	-0.4	-0.2	1.1
+
+
+Services less energy services
+
+	59.774	337.197	342.801	343.713	1.9	0.3	-0.4	0.0	0.3
+
+
+Shelter
+
+	33.594	318.300	325.265	325.814	2.4	0.2	0.0	0.2	0.1
+
+
+Rent of primary residence
+
+	7.903	330.648	340.811	341.294	3.2	0.1	0.2	0.3	0.1
+
+
+Owners' equivalent rent of residences(2)
+
+	24.383	325.189	334.052	334.424	2.8	0.1	0.2	0.3	0.1
+
+
+Medical care services
+
+	7.385	532.956	562.701	564.754	6.0	0.4	0.5	0.6	0.5
+
+
+Physicians' services
+
+	1.835	382.702	389.329	390.718	2.1	0.4	-0.1	0.7	0.5
+
+
+Hospital services(3)
+
+	2.238	335.078	352.287	352.794	5.3	0.1	0.5	0.1	0.4
+
+
+Transportation services
+
+	4.972	326.667	297.882	303.942	-7.0	2.0	-4.7	-3.6	2.1
+
+
+Motor vehicle maintenance and repair(1)
+
+	1.101	295.670	305.574	305.736	3.4	0.1	0.1	0.4	0.1
+
+
+Motor vehicle insurance
+
+	1.449	569.079	486.761	511.639	-10.1	5.1	-7.2	-8.9	5.1
+
+
+Airline fares
+
+	0.629	283.001	201.649	206.066	-27.2	2.2	-15.2	-4.9	2.6
+
+
+Footnotes
+(1) Not seasonally adjusted.
+(2) Indexes on a December 1982=100 base.
+(3) Indexes on a December 1996=100 base.
+
+
+
+
+Table 2. Consumer Price Index for All Urban Consumers (CPI-U): U.S. city average, by detailed expenditure category, June 2020
+[1982-84=100, unless otherwise noted]
+Expenditure category	Relative
+importance
+May
+2020	Unadjusted percent change	Seasonally adjusted percent change
+Jun.
+2019-
+Jun.
+2020	May
+2020-
+Jun.
+2020	Mar.
+2020-
+Apr.
+2020	Apr.
+2020-
+May
+2020	May
+2020-
+Jun.
+2020
+
+
+All items
+
+	100.000	0.6	0.5	-0.8	-0.1	0.6
+
+
+Food
+
+	14.259	4.5	0.5	1.5	0.7	0.6
+
+
+Food at home
+
+	7.976	5.6	0.5	2.6	1.0	0.7
+
+
+Cereals and bakery products
+
+	1.021	3.3	0.4	2.9	-0.2	0.4
+
+
+Cereals and cereal products
+
+	0.316	3.0	0.5	1.6	1.5	0.2
+
+
+Flour and prepared flour mixes
+
+	0.043	2.6	1.6	1.3	-0.4	2.1
+
+
+Breakfast cereal(1)
+
+	0.145	2.9	1.1	1.5	1.4	1.1
+
+
+Rice, pasta, cornmeal(1)
+
+	0.129	3.1	-0.5	2.5	1.8	-0.5
+
+
+Rice(1)(2)(3)
+
+	 	1.2	-0.2	3.6	1.0	-0.2
+
+
+Bakery products(1)
+
+	0.705	3.5	0.4	3.1	-0.8	0.4
+
+
+Bread(1)(2)
+
+	0.201	4.1	-0.5	3.7	-1.8	-0.5
+
+
+White bread(1)(3)
+
+	 	4.7	-0.6	3.5	-2.2	-0.6
+
+
+Bread other than white(1)(3)
+
+	 	3.6	-0.4	3.5	-1.3	-0.4
+
+
+Fresh biscuits, rolls, muffins(2)
+
+	0.102	3.6	0.1	4.7	-0.7	0.2
+
+
+Cakes, cupcakes, and cookies
+
+	0.180	2.7	1.5	1.8	-0.9	1.8
+
+
+Cookies(1)(3)
+
+	 	3.2	0.7	5.1	-3.1	0.7
+
+
+Fresh cakes and cupcakes(1)(3)
+
+	 	2.1	3.5	-2.3	1.8	3.5
+
+
+Other bakery products
+
+	0.222	3.5	0.3	3.2	0.2	0.1
+
+
+Fresh sweetrolls, coffeecakes, doughnuts(1)(3)
+
+	 	6.1	1.8	5.0	0.3	1.8
+
+
+Crackers, bread, and cracker products(3)
+
+	 	3.6	-0.7	4.0	-0.3	-1.0
+
+
+Frozen and refrigerated bakery products, pies, tarts, turnovers(3)
+
+	 	1.5	-0.3	1.4	0.9	0.0
+
+
+Meats, poultry, fish, and eggs
+
+	1.836	12.8	2.1	4.3	3.7	2.0
+
+
+Meats, poultry, and fish
+
+	1.729	12.9	2.5	3.6	4.3	2.3
+
+
+Meats
+
+	1.097	16.7	4.1	3.3	5.9	3.7
+
+
+Beef and veal
+
+	0.530	25.1	5.5	3.7	10.8	4.8
+
+
+Uncooked ground beef(1)
+
+	0.191	26.4	6.8	4.8	7.2	6.8
+
+
+Uncooked beef roasts(1)(2)
+
+	0.088	25.4	1.3	5.0	19.5	1.3
+
+
+Uncooked beef steaks(2)
+
+	0.204	24.4	6.1	2.1	11.6	5.1
+
+
+Uncooked other beef and veal(1)(2)
+
+	0.047	20.9	5.1	3.8	8.6	5.1
+
+
+Pork
+
+	0.334	11.8	4.0	3.0	2.7	3.3
+
+
+Bacon, breakfast sausage, and related products(2)
+
+	0.130	4.9	5.8	0.7	-0.3	6.2
+
+
+Bacon and related products(3)
+
+	 	3.6	7.2	1.0	-0.1	8.1
+
+
+Breakfast sausage and related products(2)(3)
+
+	 	6.9	3.8	-0.3	-1.1	3.2
+
+
+Ham
+
+	0.069	12.4	2.6	-1.7	3.4	1.0
+
+
+Ham, excluding canned(3)
+
+	 	13.1	2.8	-1.4	4.2	0.4
+
+
+Pork chops(1)
+
+	0.056	23.9	4.3	7.4	8.4	4.3
+
+
+Other pork including roasts, steaks, and ribs(2)
+
+	0.080	16.3	1.9	10.1	2.0	1.8
+
+
+Other meats
+
+	0.233	6.7	1.3	3.1	0.5	1.9
+
+
+Frankfurters(3)
+
+	 	12.4	3.8	5.7	1.6	4.9
+
+
+Lunchmeats(2)(3)
+
+	 	5.5	0.0	3.0	1.4	0.5
+
+
+Lamb and organ meats(1)(3)
+
+	 	 	 	 	 	 
+
+
+Lamb and mutton(1)(2)(3)
+
+	 	 	 	 	 	 
+
+
+Poultry(1)
+
+	0.349	8.7	0.1	4.7	2.2	0.1
+
+
+Chicken(1)(2)
+
+	0.286	8.7	0.2	5.8	1.9	0.2
+
+
+Fresh whole chicken(1)(3)
+
+	 	7.2	-0.3	7.1	2.0	-0.3
+
+
+Fresh and frozen chicken parts(1)(3)
+
+	 	9.3	0.4	5.2	1.8	0.4
+
+
+Other uncooked poultry including turkey(2)
+
+	0.063	8.9	-0.3	0.4	3.0	-0.7
+
+
+Fish and seafood
+
+	0.283	4.0	-0.9	3.3	0.9	-0.7
+
+
+Fresh fish and seafood(2)
+
+	0.143	4.4	-1.4	4.2	-0.1	-1.7
+
+
+Processed fish and seafood(2)
+
+	0.140	3.6	-0.3	3.4	0.8	0.2
+
+
+Shelf stable fish and seafood(1)(3)
+
+	 	2.1	-0.5	4.0	1.7	-0.5
+
+
+Frozen fish and seafood(3)
+
+	 	5.0	-0.1	5.8	-0.4	1.0
+
+
+Eggs
+
+	0.108	12.1	-4.9	16.1	-4.8	-2.7
+
+
+Dairy and related products
+
+	0.799	5.1	-0.8	1.5	1.0	-0.4
+
+
+Milk(2)
+
+	0.212	4.3	-1.0	1.5	-0.4	-0.6
+
+
+Fresh whole milk(3)
+
+	 	3.9	-0.4	1.0	-0.2	-0.4
+
+
+Fresh milk other than whole(2)(3)
+
+	 	4.4	-1.2	2.3	-0.4	-0.8
+
+
+Cheese and related products(1)
+
+	0.270	6.1	-0.2	1.8	0.8	-0.2
+
+
+Ice cream and related products
+
+	0.113	8.1	-0.7	1.8	2.5	0.4
+
+
+Other dairy and related products(1)(2)
+
+	0.204	2.8	-1.3	1.0	1.9	-1.3
+
+
+Fruits and vegetables
+
+	1.363	2.3	-0.5	1.5	0.5	0.4
+
+
+Fresh fruits and vegetables
+
+	1.068	1.7	-0.7	1.2	0.6	0.4
+
+
+Fresh fruits
+
+	0.551	-1.1	-2.2	1.3	0.0	-0.4
+
+
+Apples
+
+	0.078	-6.1	-1.1	4.9	-0.4	-2.1
+
+
+Bananas(1)
+
+	0.078	-0.8	-0.5	0.2	0.3	-0.5
+
+
+Citrus fruits(2)
+
+	0.139	-0.6	2.6	4.3	-1.2	0.3
+
+
+Oranges, including tangerines(3)
+
+	 	-1.5	4.0	5.6	-2.2	-0.4
+
+
+Other fresh fruits(2)
+
+	0.255	0.8	-5.6	-1.9	0.9	1.2
+
+
+Fresh vegetables
+
+	0.518	4.9	0.8	1.1	1.3	1.3
+
+
+Potatoes
+
+	0.086	13.3	1.7	2.1	1.1	1.3
+
+
+Lettuce(1)
+
+	0.061	7.0	-0.5	0.2	0.1	-0.5
+
+
+Tomatoes
+
+	0.082	8.4	1.0	-1.4	1.9	-0.7
+
+
+Other fresh vegetables
+
+	0.289	0.9	0.8	2.0	1.0	1.8
+
+
+Processed fruits and vegetables(2)
+
+	0.295	4.2	0.5	2.7	0.1	0.4
+
+
+Canned fruits and vegetables(2)
+
+	0.153	3.5	0.8	2.9	-0.8	1.2
+
+
+Canned fruits(2)(3)
+
+	 	2.7	-0.6	2.3	-0.1	-0.4
+
+
+Canned vegetables(2)(3)
+
+	 	3.8	1.6	3.6	-1.2	1.8
+
+
+Frozen fruits and vegetables(2)
+
+	0.089	4.8	0.5	2.6	1.8	-0.7
+
+
+Frozen vegetables(3)
+
+	 	3.6	0.5	2.7	1.0	-0.8
+
+
+Other processed fruits and vegetables including dried(2)
+
+	0.053	5.5	-0.4	0.4	2.7	-0.8
+
+
+Dried beans, peas, and lentils(1)(2)(3)
+
+	 	8.3	0.2	1.1	4.9	0.2
+
+
+Nonalcoholic beverages and beverage materials
+
+	0.949	5.3	0.5	2.9	0.0	0.7
+
+
+Juices and nonalcoholic drinks(2)
+
+	0.679	6.8	0.5	3.8	0.0	0.7
+
+
+Carbonated drinks
+
+	0.284	8.7	1.7	4.5	-0.9	2.2
+
+
+Frozen noncarbonated juices and drinks(1)(2)
+
+	0.006	-0.4	-1.1	2.9	0.0	-1.1
+
+
+Nonfrozen noncarbonated juices and drinks(2)
+
+	0.388	5.6	-0.3	3.6	0.4	0.0
+
+
+Beverage materials including coffee and tea(2)
+
+	0.270	1.6	0.5	0.8	-0.5	1.2
+
+
+Coffee
+
+	0.173	0.9	1.5	0.8	-1.2	1.8
+
+
+Roasted coffee(3)
+
+	 	0.9	1.4	1.2	-1.7	1.7
+
+
+Instant coffee(1)(3)
+
+	 	-0.6	1.8	2.5	0.3	1.8
+
+
+Other beverage materials including tea(1)(2)
+
+	0.097	2.8	-1.1	1.5	0.3	-1.1
+
+
+Other food at home
+
+	2.007	3.4	0.1	1.9	0.0	0.2
+
+
+Sugar and sweets(1)
+
+	0.272	2.9	-0.7	0.4	0.5	-0.7
+
+
+Sugar and sugar substitutes
+
+	0.038	7.9	-1.4	1.9	1.2	-1.3
+
+
+Candy and chewing gum(1)(2)
+
+	0.179	2.1	-0.8	0.2	-0.1	-0.8
+
+
+Other sweets(2)
+
+	0.054	2.5	0.4	-0.2	2.4	-0.1
+
+
+Fats and oils
+
+	0.219	1.5	-0.3	1.3	-0.3	0.1
+
+
+Butter and margarine(2)
+
+	0.065	-0.6	-1.6	-1.0	-0.1	-1.4
+
+
+Butter(3)
+
+	 	0.5	-2.4	-1.3	0.1	-1.7
+
+
+Margarine(3)
+
+	 	0.4	-1.5	-0.7	0.6	-1.5
+
+
+Salad dressing(2)
+
+	0.052	1.9	-1.1	0.9	-0.2	0.1
+
+
+Other fats and oils including peanut butter(2)
+
+	0.101	2.6	1.1	2.6	-0.3	1.2
+
+
+Peanut butter(1)(2)(3)
+
+	 	4.5	 	 	 	 
+
+
+Other foods
+
+	1.517	3.8	0.4	2.2	0.0	0.4
+
+
+Soups
+
+	0.092	2.4	0.7	2.6	-3.3	0.6
+
+
+Frozen and freeze dried prepared foods
+
+	0.264	3.5	-0.7	1.5	1.3	-0.7
+
+
+Snacks(1)
+
+	0.345	4.6	2.1	3.8	-1.2	2.1
+
+
+Spices, seasonings, condiments, sauces
+
+	0.298	2.8	-0.1	1.1	0.0	-0.3
+
+
+Salt and other seasonings and spices(2)(3)
+
+	 	1.2	-0.2	0.0	1.0	-1.0
+
+
+Olives, pickles, relishes(1)(2)(3)
+
+	 	3.3	0.2	1.1	-2.4	0.2
+
+
+Sauces and gravies(2)(3)
+
+	 	3.8	0.1	1.6	0.3	-0.2
+
+
+Other condiments(3)
+
+	 	0.5	1.6	0.9	-2.2	1.3
+
+
+Baby food(1)(2)
+
+	0.044	4.2	-0.2	2.7	-0.3	-0.2
+
+
+Other miscellaneous foods(2)
+
+	0.474	4.4	0.0	2.4	0.5	-0.3
+
+
+Prepared salads(1)(3)(4)
+
+	 	3.2	0.3	-3.6	-0.4	0.3
+
+
+Food away from home(1)
+
+	6.283	3.1	0.5	0.1	0.4	0.5
+
+
+Full service meals and snacks(1)(2)
+
+	3.147	2.7	0.9	-0.3	0.2	0.9
+
+
+Limited service meals and snacks(1)(2)
+
+	2.735	4.1	0.5	0.7	0.6	0.5
+
+
+Food at employee sites and schools(2)
+
+	0.146	-4.2	-6.2	0.1	0.2	-5.6
+
+
+Food at elementary and secondary schools(1)(3)(5)
+
+	 	 	 	 	 	 
+
+
+Food from vending machines and mobile vendors(1)(2)
+
+	0.081	2.5	0.2	0.0	0.2	0.2
+
+
+Other food away from home(1)(2)
+
+	0.175	2.8	1.0	0.3	0.2	1.0
+
+
+
+Energy
+
+	5.777	-12.6	5.6	-10.1	-1.8	5.1
+
+
+Energy commodities
+
+	2.670	-23.2	9.5	-20.0	-3.5	11.7
+
+
+Fuel oil and other fuels
+
+	0.125	-19.9	4.2	-10.2	-3.1	6.6
+
+
+Fuel oil
+
+	0.067	-29.9	7.3	-15.6	-6.3	10.2
+
+
+Propane, kerosene, and firewood(6)
+
+	0.058	-2.8	0.5	-2.9	1.0	2.4
+
+
+Motor fuel
+
+	2.545	-23.3	9.8	-20.4	-3.5	12.0
+
+
+Gasoline (all types)
+
+	2.481	-23.4	10.0	-20.6	-3.5	12.3
+
+
+Gasoline, unleaded regular(3)
+
+	 	-24.0	10.4	-21.2	-3.3	12.8
+
+
+Gasoline, unleaded midgrade(3)(7)
+
+	 	-20.6	8.4	-17.5	-4.9	10.3
+
+
+Gasoline, unleaded premium(3)
+
+	 	-19.6	7.4	-16.3	-5.2	9.3
+
+
+Other motor fuels(2)
+
+	0.064	-19.2	0.2	-9.2	-4.9	0.8
+
+
+Energy services
+
+	3.108	0.1	2.3	0.1	-0.5	-0.2
+
+
+Electricity
+
+	2.436	0.1	2.9	0.1	-0.8	-0.3
+
+
+Utility (piped) gas service
+
+	0.672	-0.2	0.0	0.2	0.8	0.0
+
+
+
+All items less food and energy
+
+	79.963	1.2	0.2	-0.4	-0.1	0.2
+
+
+Commodities less food and energy commodities
+
+	20.189	-1.1	0.0	-0.7	-0.2	0.2
+
+
+Household furnishings and supplies(8)
+
+	3.797	1.3	0.6	0.6	0.6	0.6
+
+
+Window and floor coverings and other linens(1)(2)
+
+	0.288	3.9	2.1	-0.7	-1.4	2.1
+
+
+Floor coverings(1)(2)
+
+	0.064	-4.2	-0.3	-0.3	-0.8	-0.3
+
+
+Window coverings(1)(2)
+
+	0.061	9.2	-0.7	0.8	-2.4	-0.7
+
+
+Other linens(1)(2)
+
+	0.163	5.8	4.1	-1.5	-1.2	4.1
+
+
+Furniture and bedding(1)
+
+	0.931	-1.4	0.7	-1.9	1.2	0.7
+
+
+Bedroom furniture(1)
+
+	0.325	-1.4	1.6	-2.4	0.8	1.6
+
+
+Living room, kitchen, and dining room furniture(1)(2)
+
+	0.452	-2.0	-0.6	-1.9	1.3	-0.6
+
+
+Other furniture(1)(2)
+
+	0.145	0.0	2.8	-0.9	1.5	2.8
+
+
+Infants' furniture(1)(3)(5)
+
+	 	8.9	-0.6	0.5	9.4	-0.6
+
+
+Appliances(2)
+
+	0.217	2.6	1.6	1.1	0.0	1.7
+
+
+Major appliances(2)
+
+	0.074	1.2	0.6	1.2	-0.2	1.7
+
+
+Laundry equipment(3)
+
+	 	-6.0	1.2	-0.8	-5.2	1.2
+
+
+Other appliances(2)
+
+	0.140	3.7	2.1	1.0	0.1	1.6
+
+
+Other household equipment and furnishings(2)
+
+	0.546	-1.5	-0.1	2.5	-0.7	0.4
+
+
+Clocks, lamps, and decorator items(1)
+
+	0.319	0.0	-0.5	3.1	-0.3	-0.5
+
+
+Indoor plants and flowers(9)
+
+	0.092	0.3	0.4	2.2	-0.6	0.2
+
+
+Dishes and flatware(1)(2)
+
+	0.055	-5.4	1.2	-2.2	-0.5	1.2
+
+
+Nonelectric cookware and tableware(2)
+
+	0.079	-5.7	0.0	-0.7	0.1	0.1
+
+
+Tools, hardware, outdoor equipment and supplies(2)
+
+	0.892	2.9	0.8	0.8	0.4	0.9
+
+
+Tools, hardware and supplies(1)(2)
+
+	0.245	-0.2	0.3	0.4	-0.3	0.3
+
+
+Outdoor equipment and supplies(2)
+
+	0.458	4.8	0.9	0.7	0.8	1.3
+
+
+Housekeeping supplies(1)
+
+	0.924	3.3	0.0	2.6	0.8	0.0
+
+
+Household cleaning products(1)(2)
+
+	0.359	2.7	0.7	0.9	0.7	0.7
+
+
+Household paper products(1)(2)
+
+	0.231	5.5	0.2	4.5	0.2	0.2
+
+
+Miscellaneous household products(1)(2)
+
+	0.333	2.2	-0.8	3.0	1.3	-0.8
+
+
+Apparel
+
+	2.709	-7.3	0.1	-4.7	-2.3	1.7
+
+
+Men's and boys' apparel
+
+	0.684	-5.4	0.5	-4.6	-2.8	2.4
+
+
+Men's apparel
+
+	0.553	-4.8	0.2	-4.7	-2.5	1.5
+
+
+Men's suits, sport coats, and outerwear
+
+	0.094	-11.0	2.5	-11.3	-4.1	4.7
+
+
+Men's underwear, nightwear, swimwear, and accessories(1)
+
+	0.162	2.4	1.4	-2.0	-1.0	1.4
+
+
+Men's shirts and sweaters(2)
+
+	0.156	-8.4	-1.0	-4.6	-1.9	0.7
+
+
+Men's pants and shorts
+
+	0.136	-3.8	-1.6	-4.7	-2.2	-0.7
+
+
+Boys' apparel
+
+	0.131	-8.0	2.0	-5.5	-2.7	3.6
+
+
+Women's and girls' apparel
+
+	1.104	-10.1	-0.7	-5.4	-2.9	0.9
+
+
+Women's apparel
+
+	0.911	-11.2	-0.9	-6.3	-3.0	0.8
+
+
+Women's outerwear
+
+	0.060	-17.6	0.1	-8.3	-1.8	0.4
+
+
+Women's dresses
+
+	0.088	-25.8	-4.3	-9.6	-9.7	-0.5
+
+
+Women's suits and separates(2)
+
+	0.482	-9.4	-0.9	-5.1	-1.7	0.8
+
+
+Women's underwear, nightwear, swimwear, and accessories(2)
+
+	0.272	-7.1	0.0	-5.8	-5.3	2.2
+
+
+Girls' apparel
+
+	0.193	-4.4	0.1	-1.3	-2.5	1.7
+
+
+Footwear
+
+	0.639	-4.4	0.2	-3.9	-1.5	1.4
+
+
+Men's footwear(1)
+
+	0.225	-2.0	1.2	-1.1	-2.0	1.2
+
+
+Boys' and girls' footwear
+
+	0.134	-2.5	-0.1	-4.0	-1.8	1.7
+
+
+Women's footwear
+
+	0.280	-7.2	-0.4	-5.2	-2.1	0.0
+
+
+Infants' and toddlers' apparel
+
+	0.125	-5.0	4.0	-3.7	-0.5	6.5
+
+
+Jewelry and watches(6)
+
+	0.157	-5.8	1.0	-3.6	-0.4	1.0
+
+
+Watches(1)(6)
+
+	0.040	0.9	-0.5	-1.1	1.2	-0.5
+
+
+Jewelry(6)
+
+	0.117	-9.7	1.5	-2.1	-1.3	0.8
+
+
+Transportation commodities less motor fuel(8)
+
+	6.966	-1.1	-0.5	-0.2	0.1	-0.5
+
+
+New vehicles
+
+	3.768	-0.2	-0.1	0.0	0.3	0.0
+
+
+New cars and trucks(2)(3)
+
+	 	-0.2	-0.1	0.0	0.3	0.1
+
+
+New cars(3)
+
+	 	0.1	0.2	-0.2	0.2	0.4
+
+
+New trucks(3)(10)
+
+	 	-0.1	-0.2	0.0	0.3	0.0
+
+
+Used cars and trucks
+
+	2.562	-2.8	-1.1	-0.4	-0.4	-1.2
+
+
+Motor vehicle parts and equipment(1)
+
+	0.400	0.7	-0.7	-0.5	0.8	-0.7
+
+
+Tires(1)
+
+	0.252	-0.9	-1.1	-0.6	0.7	-1.1
+
+
+Vehicle accessories other than tires(1)(2)
+
+	0.148	3.5	0.1	-0.4	1.2	0.1
+
+
+Vehicle parts and equipment other than tires(1)(3)
+
+	 	4.4	0.4	-0.4	1.5	0.4
+
+
+Motor oil, coolant, and fluids(1)(3)
+
+	 	1.5	-0.6	0.7	-1.0	-0.6
+
+
+Medical care commodities
+
+	1.633	1.3	0.0	-0.1	0.1	0.2
+
+
+Medicinal drugs(8)
+
+	1.559	1.4	0.0	0.3	-0.2	0.1
+
+
+Prescription drugs
+
+	1.177	2.0	0.0	0.6	-0.2	0.1
+
+
+Nonprescription drugs(1)(8)
+
+	0.382	-1.0	-0.1	-0.5	0.4	-0.1
+
+
+Medical equipment and supplies(1)(8)
+
+	0.074	-2.1	-0.1	-0.6	1.5	-0.1
+
+
+Recreation commodities(8)
+
+	2.015	-2.1	-0.1	-0.9	0.0	-0.1
+
+
+Video and audio products(8)
+
+	0.274	-7.9	-0.6	-0.5	-0.6	-0.8
+
+
+Televisions
+
+	0.095	-15.1	-0.7	-0.2	-0.9	-1.9
+
+
+Other video equipment(2)
+
+	0.043	0.7	-2.4	0.1	1.0	-1.1
+
+
+Audio equipment(1)
+
+	0.079	-3.1	-0.5	-0.8	-0.8	-0.5
+
+
+Recorded music and music subscriptions(1)(2)
+
+	0.045	-6.5	1.6	-1.4	-1.2	1.6
+
+
+Pets and pet products(1)
+
+	0.644	-1.7	-1.0	-1.2	-0.2	-1.0
+
+
+Pet food(1)(2)(3)
+
+	 	-0.7	-0.8	-0.3	-0.3	-0.8
+
+
+Purchase of pets, pet supplies, accessories(1)(2)(3)
+
+	 	-3.4	-1.2	-2.7	0.1	-1.2
+
+
+Sporting goods
+
+	0.583	0.5	1.4	-1.0	0.6	1.2
+
+
+Sports vehicles including bicycles(1)
+
+	0.350	3.2	2.3	-0.8	0.1	2.3
+
+
+Sports equipment
+
+	0.223	-3.3	0.0	-1.3	-0.6	0.1
+
+
+Photographic equipment and supplies
+
+	0.027	5.6	-0.4	-0.6	-1.4	0.3
+
+
+Film and photographic supplies(1)(2)(3)
+
+	 	 	 	 	 	 
+
+
+Photographic equipment(2)(3)
+
+	 	4.6	-0.8	-0.7	-1.9	-0.1
+
+
+Recreational reading materials(1)
+
+	0.119	5.9	1.7	-0.8	1.0	1.7
+
+
+Newspapers and magazines(1)(2)
+
+	0.068	5.6	1.5	-0.5	0.6	1.5
+
+
+Recreational books(1)(2)
+
+	0.050	6.3	2.0	-1.3	1.6	2.0
+
+
+Other recreational goods(2)
+
+	0.368	-6.6	-1.1	-0.6	-0.5	-1.0
+
+
+Toys
+
+	0.283	-7.7	-1.0	-0.9	-0.5	-0.9
+
+
+Toys, games, hobbies and playground equipment(2)(3)
+
+	 	-7.2	-0.6	-0.2	0.6	-0.9
+
+
+Sewing machines, fabric and supplies(1)(2)
+
+	0.021	-11.3	-4.6	-1.3	2.0	-4.6
+
+
+Music instruments and accessories(1)(2)
+
+	0.048	2.6	-0.5	1.2	-1.5	-0.5
+
+
+Education and communication commodities(8)
+
+	0.523	-3.0	-0.4	0.2	-0.1	-0.6
+
+
+Educational books and supplies
+
+	0.110	-1.7	-0.4	1.0	0.3	-0.7
+
+
+College textbooks(1)(3)(11)
+
+	 	-2.3	-0.3	1.0	-0.1	-0.3
+
+
+Information technology commodities(8)
+
+	0.413	-3.4	-0.5	-0.1	-0.3	-0.6
+
+
+Computers, peripherals, and smart home assistants(4)
+
+	0.304	0.5	0.4	0.7	-0.8	0.3
+
+
+Computer software and accessories(1)(2)
+
+	0.018	-14.9	-2.3	-3.8	0.4	-2.3
+
+
+Telephone hardware, calculators, and other consumer information items(2)
+
+	0.091	-14.4	-2.9	-1.8	1.5	-3.2
+
+
+Alcoholic beverages
+
+	1.047	2.2	0.1	0.3	0.8	0.2
+
+
+Alcoholic beverages at home
+
+	0.587	1.8	-0.1	0.5	0.5	0.0
+
+
+Beer, ale, and other malt beverages at home
+
+	0.228	3.8	-0.8	1.4	0.2	-0.6
+
+
+Distilled spirits at home
+
+	0.095	0.6	0.6	0.8	0.2	0.8
+
+
+Whiskey at home(1)(3)
+
+	 	0.7	1.3	-0.5	-0.8	1.3
+
+
+Distilled spirits, excluding whiskey, at home(1)(3)
+
+	 	1.7	0.0	0.9	0.7	0.0
+
+
+Wine at home
+
+	0.265	0.1	0.4	0.0	0.5	0.4
+
+
+Alcoholic beverages away from home(1)
+
+	0.460	2.9	0.4	0.0	1.0	0.4
+
+
+Beer, ale, and other malt beverages away from home(1)(2)(3)
+
+	 	2.3	0.6	-0.2	1.1	0.6
+
+
+Wine away from home(1)(2)(3)
+
+	 	3.2	0.6	0.6	0.8	0.6
+
+
+Distilled spirits away from home(1)(2)(3)
+
+	 	4.2	 	 	 	 
+
+
+Other goods(8)
+
+	1.498	2.7	0.1	-0.1	-0.3	0.3
+
+
+Tobacco and smoking products
+
+	0.595	5.1	0.8	-0.4	-0.2	1.1
+
+
+Cigarettes(2)
+
+	0.517	5.6	1.0	-0.5	-0.2	1.2
+
+
+Tobacco products other than cigarettes(1)(2)
+
+	0.060	0.9	-0.6	0.1	0.3	-0.6
+
+
+Personal care products(1)
+
+	0.695	-0.5	-0.5	-0.1	-0.4	-0.5
+
+
+Hair, dental, shaving, and miscellaneous personal care products(1)(2)
+
+	0.374	0.7	-0.5	0.1	0.0	-0.5
+
+
+Cosmetics, perfume, bath, nail preparations and implements(1)
+
+	0.313	-2.0	-0.6	-0.4	-0.8	-0.6
+
+
+Miscellaneous personal goods(2)
+
+	0.208	5.8	0.3	0.9	-0.7	0.9
+
+
+Stationery, stationery supplies, gift wrap(3)
+
+	 	7.7	-0.7	2.2	0.7	-0.5
+
+
+Infants' equipment(1)(3)(5)
+
+	 	11.3	3.6	0.7	-2.3	3.6
+
+
+Services less energy services
+
+	59.774	1.9	0.3	-0.4	0.0	0.3
+
+
+Shelter
+
+	33.594	2.4	0.2	0.0	0.2	0.1
+
+
+Rent of shelter(12)
+
+	33.225	2.4	0.2	0.0	0.2	0.1
+
+
+Rent of primary residence
+
+	7.903	3.2	0.1	0.2	0.3	0.1
+
+
+Lodging away from home(2)
+
+	0.940	-14.0	1.9	-7.1	-1.5	1.2
+
+
+Housing at school, excluding board(12)
+
+	0.118	2.3	0.0	0.2	0.2	0.1
+
+
+Other lodging away from home including hotels and motels
+
+	0.822	-16.0	2.2	-8.1	-1.8	1.4
+
+
+Owners' equivalent rent of residences(12)
+
+	24.383	2.8	0.1	0.2	0.3	0.1
+
+
+Owners' equivalent rent of primary residence(12)
+
+	23.159	2.8	0.1	0.2	0.3	0.1
+
+
+Tenants' and household insurance(1)(2)
+
+	0.369	-1.1	0.0	0.3	-0.5	0.0
+
+
+Water and sewer and trash collection services(2)
+
+	1.100	2.9	0.2	0.1	0.2	0.2
+
+
+Water and sewerage maintenance
+
+	0.807	2.8	0.2	0.2	0.2	0.2
+
+
+Garbage and trash collection(1)(10)
+
+	0.294	3.3	0.4	-0.2	0.1	0.4
+
+
+Household operations(1)(2)
+
+	0.885	1.8	0.1	0.0	-0.1	0.1
+
+
+Domestic services(1)(2)
+
+	0.294	3.8	-0.1	0.4	0.3	-0.1
+
+
+Gardening and lawncare services(1)(2)
+
+	0.309	3.4	0.0	 	0.8	0.0
+
+
+Moving, storage, freight expense(1)(2)
+
+	0.086	-2.5	1.1	-0.1	-2.4	1.1
+
+
+Repair of household items(1)(2)
+
+	0.116	-3.8	0.0	0.2	-1.3	0.0
+
+
+Medical care services
+
+	7.385	6.0	0.4	0.5	0.6	0.5
+
+
+Professional services
+
+	3.701	2.2	0.3	0.0	0.7	0.3
+
+
+Physicians' services
+
+	1.835	2.1	0.4	-0.1	0.7	0.5
+
+
+Dental services
+
+	1.017	3.2	0.2	0.4	1.1	0.2
+
+
+Eyeglasses and eye care(1)(6)
+
+	0.371	0.9	0.3	0.0	0.5	0.3
+
+
+Services by other medical professionals(1)(6)
+
+	0.478	1.3	0.3	0.2	0.1	0.3
+
+
+Hospital and related services
+
+	2.433	5.0	0.1	0.5	0.1	0.3
+
+
+Hospital services(13)
+
+	2.238	5.3	0.1	0.5	0.1	0.4
+
+
+Inpatient hospital services(13)(3)
+
+	 	4.7	0.1	0.5	0.3	0.2
+
+
+Outpatient hospital services(3)(6)
+
+	 	4.0	0.2	0.0	-0.4	0.4
+
+
+Nursing homes and adult day services(13)
+
+	0.125	2.5	0.1	0.5	0.0	0.2
+
+
+Care of invalids and elderly at home(1)(5)
+
+	 	 	 	-0.1	0.1	 
+
+
+Health insurance(1)(5)
+
+	1.251	19.4	1.0	1.1	1.1	1.0
+
+
+Transportation services
+
+	4.972	-7.0	2.0	-4.7	-3.6	2.1
+
+
+Leased cars and trucks(1)(11)
+
+	 	 	 	 	 	 
+
+
+Car and truck rental(2)
+
+	0.093	-6.3	25.1	-16.6	-3.5	17.5
+
+
+Motor vehicle maintenance and repair(1)
+
+	1.101	3.4	0.1	0.1	0.4	0.1
+
+
+Motor vehicle body work(1)
+
+	0.059	3.7	0.0	1.4	0.4	0.0
+
+
+Motor vehicle maintenance and servicing(1)
+
+	0.636	2.9	0.1	-0.1	0.1	0.1
+
+
+Motor vehicle repair(1)(2)
+
+	0.346	4.4	0.1	0.2	0.9	0.1
+
+
+Motor vehicle insurance
+
+	1.449	-10.1	5.1	-7.2	-8.9	5.1
+
+
+Motor vehicle fees(1)(2)
+
+	0.571	0.7	-0.4	-1.1	-0.1	-0.4
+
+
+State motor vehicle registration and license fees(1)(2)
+
+	0.300	3.0	0.0	0.0	0.2	0.0
+
+
+Parking and other fees(1)(2)
+
+	0.256	-1.7	-0.9	-2.2	-0.5	-0.9
+
+
+Parking fees and tolls(2)(3)
+
+	 	-1.9	-1.6	-1.7	-0.2	-1.5
+
+
+Automobile service clubs(1)(2)(3)
+
+	 	 	3.7	-4.3	-0.5	3.7
+
+
+Public transportation
+
+	1.108	-18.6	0.9	-9.4	-3.8	1.5
+
+
+Airline fares
+
+	0.629	-27.2	2.2	-15.2	-4.9	2.6
+
+
+Other intercity transportation
+
+	0.173	-7.7	-1.4	-0.5	0.3	-1.5
+
+
+Intercity bus fare(1)(3)(4)
+
+	 	 	 	1.5	 	 
+
+
+Intercity train fare(1)(3)(4)
+
+	 	 	 	 	 	 
+
+
+Ship fare(1)(2)(3)
+
+	 	-8.7	-1.7	-0.6	-0.6	-1.7
+
+
+Intracity transportation(1)
+
+	0.302	-1.1	-0.5	0.0	-1.7	-0.5
+
+
+Intracity mass transit(1)(3)(8)
+
+	 	-1.6	-0.3	0.0	-1.8	-0.3
+
+
+Recreation services(8)
+
+	3.878	3.4	-0.9	0.2	1.3	-0.9
+
+
+Video and audio services(8)
+
+	1.263	3.5	-0.2	0.6	0.4	0.0
+
+
+Cable and satellite television service(10)
+
+	1.182	4.3	-0.3	0.6	0.5	-0.1
+
+
+Video discs and other media, including rental of video(1)(2)
+
+	0.081	-9.5	1.1	0.3	-1.6	1.1
+
+
+Video discs and other media(1)(2)(3)
+
+	 	-14.3	1.9	0.9	-2.3	1.9
+
+
+Rental of video discs and other media(1)(2)(3)
+
+	 	0.5	0.3	0.1	0.1	0.3
+
+
+Pet services including veterinary(2)
+
+	0.559	3.3	0.1	0.3	0.4	0.2
+
+
+Pet services(1)(2)(3)
+
+	 	2.8	0.0	-0.1	0.4	0.0
+
+
+Veterinarian services(2)(3)
+
+	 	3.4	0.3	0.3	0.4	0.3
+
+
+Photographers and photo processing(1)(2)
+
+	0.044	2.0	2.5	-1.9	-0.6	2.5
+
+
+Photographer fees(1)(2)(3)
+
+	 	 	 	 	 	 
+
+
+Photo processing(1)(2)(3)
+
+	 	 	 	0.0	-0.5	 
+
+
+Other recreation services(2)
+
+	2.011	3.4	-1.7	-0.1	2.3	-1.8
+
+
+Club membership for shopping clubs, fraternal, or other organizations, or participant sports fees(1)(2)
+
+	0.730	3.8	-3.5	0.3	2.5	-3.5
+
+
+Admissions
+
+	0.727	4.1	0.4	-0.6	2.3	0.1
+
+
+Admission to movies, theaters, and concerts(1)(2)(3)
+
+	 	4.1	0.7	-1.0	2.2	0.7
+
+
+Admission to sporting events(1)(2)(3)
+
+	 	7.1	-0.3	2.6	1.2	-0.3
+
+
+Fees for lessons or instructions(1)(6)
+
+	0.214	0.8	0.6	 	 	0.6
+
+
+Education and communication services(8)
+
+	6.287	1.8	0.0	0.1	0.1	-0.1
+
+
+Tuition, other school fees, and childcare
+
+	2.941	2.2	0.1	0.2	0.2	0.1
+
+
+College tuition and fees
+
+	1.582	1.7	0.1	0.2	0.2	0.1
+
+
+Elementary and high school tuition and fees
+
+	0.430	2.8	-0.2	0.5	0.5	-0.2
+
+
+Day care and preschool(9)
+
+	0.772	2.9	0.4	0.1	0.0	0.3
+
+
+Technical and business school tuition and fees(2)
+
+	0.037	2.0	0.6	0.7	0.1	0.6
+
+
+Postage and delivery services(2)
+
+	0.113	3.9	0.1	0.2	0.2	0.3
+
+
+Postage
+
+	0.103	4.3	0.0	0.4	0.3	0.3
+
+
+Delivery services(2)
+
+	0.010	-0.9	0.6	-1.1	-1.1	0.9
+
+
+Telephone services(1)(2)
+
+	2.319	1.4	-0.1	0.2	0.0	-0.1
+
+
+Wireless telephone services(1)(2)
+
+	1.911	-0.3	-0.1	0.1	0.1	-0.1
+
+
+Land-line telephone services(1)(8)
+
+	0.408	7.1	-0.3	0.8	-0.4	-0.3
+
+
+Internet services and electronic information providers(2)
+
+	0.903	1.1	-0.2	-0.3	0.2	-0.5
+
+
+Other personal services(1)(8)
+
+	1.672	3.0	0.5	-0.1	0.1	0.5
+
+
+Personal care services(1)
+
+	0.676	4.5	1.1	0.0	0.2	1.1
+
+
+Haircuts and other personal care services(1)(2)
+
+	0.676	4.5	1.1	0.0	0.2	1.1
+
+
+Miscellaneous personal services
+
+	0.996	2.1	0.0	-0.3	0.0	0.0
+
+
+Legal services(1)(6)
+
+	0.253	1.6	0.3	-0.4	0.1	0.3
+
+
+Funeral expenses(1)(6)
+
+	0.142	1.5	0.0	0.3	0.2	0.0
+
+
+Laundry and dry cleaning services(1)(2)
+
+	0.221	2.2	0.1	-0.1	-0.2	0.1
+
+
+Apparel services other than laundry and dry cleaning(1)(2)
+
+	0.031	5.5	0.1	0.6	-0.5	0.1
+
+
+Financial services(6)
+
+	0.237	2.4	-0.2	-0.5	-0.1	-0.2
+
+
+Checking account and other bank services(1)(2)(3)
+
+	 	2.1	0.0	0.0	-0.1	0.0
+
+
+Tax return preparation and other accounting fees(1)(2)(3)
+
+	 	2.7	-0.5	-1.0	0.3	-0.5
+
+
+Footnotes
+(1) Not seasonally adjusted.
+(2) Indexes on a December 1997=100 base.
+(3) Special index based on a substantially smaller sample.
+(4) Indexes on a December 2007=100 base.
+(5) Indexes on a December 2005=100 base.
+(6) Indexes on a December 1986=100 base.
+(7) Indexes on a December 1993=100 base.
+(8) Indexes on a December 2009=100 base.
+(9) Indexes on a December 1990=100 base.
+(10) Indexes on a December 1983=100 base.
+(11) Indexes on a December 2001=100 base.
+(12) Indexes on a December 1982=100 base.
+(13) Indexes on a December 1996=100 base.
+
+
+
+
+Table 3. Consumer Price Index for All Urban Consumers (CPI-U): U.S. city average, special aggregate indexes, June 2020
+[1982-84=100, unless otherwise noted]
+Special aggregate indexes	Relative
+importance
+May
+2020	Unadjusted indexes	Unadjusted percent change	Seasonally adjusted percent change
+Jun.
+2019	May
+2020	Jun.
+2020	Jun.
+2019-
+Jun.
+2020	May
+2020-
+Jun.
+2020	Mar.
+2020-
+Apr.
+2020	Apr.
+2020-
+May
+2020	May
+2020-
+Jun.
+2020
+
+
+
+All items less food
+
+	85.741	255.825	254.486	255.900	0.0	0.6	-1.2	-0.2	0.6
+
+
+All items less shelter
+
+	66.406	234.791	232.598	234.316	-0.2	0.7	-1.2	-0.2	0.8
+
+
+All items less food and shelter
+
+	52.146	228.659	223.627	225.426	-1.4	0.8	-1.9	-0.4	0.8
+
+
+All items less food, shelter, and energy
+
+	46.369	232.585	232.916	233.390	0.3	0.2	-0.7	-0.3	0.3
+
+
+All items less food, shelter, energy, and used cars and trucks
+
+	43.807	238.200	238.773	239.436	0.5	0.3	-0.8	-0.2	0.4
+
+
+All items less medical care
+
+	90.982	244.653	243.812	245.207	0.2	0.6	-0.9	-0.1	0.6
+
+
+All items less energy
+
+	94.223	261.696	265.471	266.097	1.7	0.2	-0.2	0.1	0.3
+
+
+Commodities
+
+	37.118	186.112	182.064	183.619	-1.3	0.9	-1.6	-0.1	1.2
+
+
+Commodities less food, energy, and used cars and trucks
+
+	17.627	145.462	144.091	144.249	-0.8	0.1	-0.7	-0.2	0.4
+
+
+Commodities less food
+
+	22.858	154.073	145.341	146.906	-4.7	1.1	-3.4	-0.6	1.5
+
+
+Commodities less food and beverages
+
+	21.811	150.688	141.639	143.229	-4.9	1.1	-3.5	-0.6	1.6
+
+
+Services
+
+	62.882	325.218	329.958	331.166	1.8	0.4	-0.3	0.0	0.2
+
+
+Services less rent of shelter(1)
+
+	29.657	342.741	344.834	346.852	1.2	0.6	-0.6	-0.3	0.3
+
+
+Services less medical care services
+
+	55.497	309.446	312.350	313.494	1.3	0.4	-0.4	-0.2	0.2
+
+
+Durables
+
+	10.767	105.167	104.309	104.188	-0.9	-0.1	-0.2	0.2	-0.2
+
+
+Nondurables
+
+	26.351	227.749	221.514	224.283	-1.5	1.3	-2.5	-0.3	1.8
+
+
+Nondurables less food
+
+	12.092	201.854	182.539	186.445	-7.6	2.1	-6.7	-1.3	3.0
+
+
+Nondurables less food and beverages
+
+	11.044	198.687	177.787	181.931	-8.4	2.3	-7.3	-1.5	3.3
+
+
+Nondurables less food, beverages, and apparel
+
+	8.335	249.683	220.969	227.698	-8.8	3.0	-8.1	-1.2	3.8
+
+
+Nondurables less food and apparel
+
+	9.383	248.754	223.420	229.496	-7.7	2.7	-7.3	-1.0	3.4
+
+
+Housing
+
+	42.609	266.461	270.823	271.831	2.0	0.4	0.0	0.2	0.2
+
+
+Education and communication(2)
+
+	6.810	137.344	139.340	139.258	1.4	-0.1	0.1	0.1	-0.1
+
+
+Education(2)
+
+	3.050	264.612	269.725	269.993	2.0	0.1	0.2	0.2	0.1
+
+
+Communication(2)
+
+	3.760	73.034	73.793	73.655	0.9	-0.2	0.1	0.0	-0.3
+
+
+Information and information processing(2)
+
+	3.647	69.038	69.699	69.564	0.8	-0.2	0.1	0.0	-0.3
+
+
+Information technology, hardware and services(3)
+
+	1.328	7.358	7.350	7.328	-0.4	-0.3	-0.2	0.0	-0.5
+
+
+Recreation(2)
+
+	5.893	120.145	122.779	122.015	1.6	-0.6	-0.2	0.9	-0.6
+
+
+Video and audio(2)
+
+	1.537	104.162	106.530	106.214	2.0	-0.3	0.4	0.2	-0.1
+
+
+Pets, pet products and services(2)
+
+	1.202	178.059	179.788	178.984	0.5	-0.4	-0.5	0.1	-0.4
+
+
+Photography(2)
+
+	0.072	73.024	74.506	75.566	3.5	1.4	-1.4	-0.9	1.7
+
+
+Food and beverages
+
+	15.307	257.778	267.792	269.051	4.4	0.5	1.4	0.7	0.6
+
+
+Domestically produced farm food
+
+	6.666	249.146	262.316	263.731	5.9	0.5	2.4	1.1	0.7
+
+
+Other services
+
+	11.838	357.493	367.263	366.375	2.5	-0.2	0.1	0.5	-0.3
+
+
+Apparel less footwear
+
+	2.070	116.544	107.006	107.117	-8.1	0.1	-4.9	-2.5	1.7
+
+
+Fuels and utilities
+
+	4.333	244.703	240.361	244.717	0.0	1.8	-0.2	-0.4	0.1
+
+
+Household energy
+
+	3.233	202.402	195.974	200.599	-0.9	2.4	-0.4	-0.6	0.1
+
+
+Medical care
+
+	9.018	495.563	519.194	520.734	5.1	0.3	0.4	0.5	0.4
+
+
+Transportation
+
+	14.483	213.073	191.419	195.609	-8.2	2.2	-5.9	-1.8	2.5
+
+
+Private transportation
+
+	13.375	208.319	188.771	193.105	-7.3	2.3	-5.6	-1.7	2.6
+
+
+New and used motor vehicles(2)
+
+	7.310	99.874	98.717	98.565	-1.3	-0.2	-0.3	0.0	-0.2
+
+
+Utilities and public transportation
+
+	8.817	219.709	214.913	216.770	-1.3	0.9	-1.1	-0.7	-0.1
+
+
+Household furnishings and operations
+
+	4.682	124.237	125.373	125.997	1.4	0.5	0.5	0.4	0.4
+
+
+Other goods and services
+
+	3.171	449.345	460.730	462.149	2.8	0.3	-0.1	-0.1	0.4
+
+
+Personal care
+
+	2.575	233.136	237.997	238.444	2.3	0.2	0.0	-0.1	0.2
+
+
+Footnotes
+(1) Indexes on a December 1982=100 base.
+(2) Indexes on a December 1997=100 base.
+(3) Indexes on a December 1988=100 base.
+
+
+
+
+Table 4. Consumer Price Index for All Urban Consumers (CPI-U): Selected areas, all items index, June 2020
+[1982-84=100, unless otherwise noted]
+Area	Pricing
+Schedule(1)	Percent change to Jun. 2020 from:	Percent change to May 2020 from:
+Jun.
+2019	Apr.
+2020	May
+2020	May
+2019	Mar.
+2020	Apr.
+2020
+
+
+U.S. city average
+
+	
+
+M
+
+	0.6	0.5	0.5	0.1	-0.7	0.0
+
+
+
+Region and area size(2)
+
+	
+
+
+
+Northeast
+
+	
+
+M
+
+	0.8	0.4	0.3	0.6	-0.4	0.0
+
+
+Northeast - Size Class A
+
+	
+
+M
+
+	1.0	0.4	0.3	1.0	-0.4	0.1
+
+
+Northeast - Size Class B/C(3)
+
+	
+
+M
+
+	0.5	0.3	0.5	0.1	-0.4	-0.2
+
+
+New England(4)
+
+	
+
+M
+
+	0.4	-0.1	0.5	-0.1	-0.9	-0.6
+
+
+Middle Atlantic(4)
+
+	
+
+M
+
+	0.9	0.5	0.3	0.9	-0.3	0.2
+
+
+
+Midwest
+
+	
+
+M
+
+	0.4	1.2	0.8	-0.4	-0.8	0.3
+
+
+Midwest - Size Class A
+
+	
+
+M
+
+	0.7	1.4	0.8	-0.1	-0.7	0.6
+
+
+Midwest - Size Class B/C(3)
+
+	
+
+M
+
+	0.2	1.1	0.8	-0.6	-0.8	0.2
+
+
+East North Central(4)
+
+	
+
+M
+
+	0.5	1.3	0.8	-0.3	-0.8	0.5
+
+
+West North Central(4)
+
+	
+
+M
+
+	0.2	1.0	0.9	-0.5	-0.8	0.1
+
+
+
+South
+
+	
+
+M
+
+	0.3	0.4	0.6	-0.4	-1.0	-0.2
+
+
+South - Size Class A
+
+	
+
+M
+
+	0.3	0.4	0.5	-0.5	-0.8	-0.1
+
+
+South - Size Class B/C(3)
+
+	
+
+M
+
+	0.3	0.4	0.7	-0.3	-1.1	-0.3
+
+
+South Atlantic(4)
+
+	
+
+M
+
+	0.8	0.4	0.6	0.0	-0.8	-0.2
+
+
+East South Central(4)
+
+	
+
+M
+
+	-0.1	0.5	0.7	-0.7	-1.0	-0.2
+
+
+West South Central(4)
+
+	
+
+M
+
+	-0.4	0.4	0.6	-1.0	-1.3	-0.2
+
+
+
+West
+
+	
+
+M
+
+	1.2	0.5	0.4	0.8	-0.3	0.1
+
+
+West - Size Class A
+
+	
+
+M
+
+	1.5	0.8	0.4	1.1	-0.2	0.4
+
+
+West - Size Class B/C(3)
+
+	
+
+M
+
+	0.8	0.0	0.4	0.5	-0.5	-0.3
+
+
+Mountain(4)
+
+	
+
+M
+
+	2.0	0.9	0.8	1.3	-0.2	0.1
+
+
+Pacific(4)
+
+	
+
+M
+
+	0.9	0.3	0.3	0.6	-0.4	0.0
+
+
+
+Size classes
+
+	
+
+
+
+Size Class A(5)
+
+	
+
+M
+
+	0.9	0.7	0.5	0.4	-0.5	0.2
+
+
+Size Class B/C(3)
+
+	
+
+M
+
+	0.4	0.4	0.6	-0.1	-0.8	-0.2
+
+
+
+Selected local areas
+
+	
+
+
+
+Chicago-Naperville-Elgin, IL-IN-WI
+
+	
+
+M
+
+	1.1	1.3	0.3	0.4	0.0	1.0
+
+
+Los Angeles-Long Beach-Anaheim, CA
+
+	
+
+M
+
+	1.4	0.8	0.5	0.9	0.1	0.4
+
+
+New York-Newark-Jersey City, NY-NJ-PA
+
+	
+
+M
+
+	1.3	0.6	0.1	1.4	0.0	0.5
+
+
+
+Atlanta-Sandy Springs-Roswell, GA
+
+	
+
+2
+
+	0.9	1.1	 	 	 	 
+
+
+Baltimore-Columbia-Towson, MD(6)
+
+	
+
+2
+
+	0.4	-0.4	 	 	 	 
+
+
+Detroit-Warren-Dearborn, MI
+
+	
+
+2
+
+	0.5	1.7	 	 	 	 
+
+
+Houston-The Woodlands-Sugar Land, TX
+
+	
+
+2
+
+	-0.2	1.1	 	 	 	 
+
+
+Miami-Fort Lauderdale-West Palm Beach, FL
+
+	
+
+2
+
+	0.7	0.7	 	 	 	 
+
+
+Philadelphia-Camden-Wilmington, PA-NJ-DE-MD
+
+	
+
+2
+
+	0.1	0.6	 	 	 	 
+
+
+Phoenix-Mesa-Scottsdale, AZ(7)
+
+	
+
+2
+
+	2.0	1.5	 	 	 	 
+
+
+San Francisco-Oakland-Hayward, CA
+
+	
+
+2
+
+	1.6	0.7	 	 	 	 
+
+
+Seattle-Tacoma-Bellevue, WA
+
+	
+
+2
+
+	0.9	0.2	 	 	 	 
+
+
+St. Louis, MO-IL
+
+	
+
+2
+
+	0.2	1.7	 	 	 	 
+
+
+Urban Alaska
+
+	
+
+2
+
+	-3.8	1.0	 	 	 	 
+
+
+
+Boston-Cambridge-Newton, MA-NH
+
+	
+
+1
+
+	 	 	 	0.6	-1.0	 
+
+
+Dallas-Fort Worth-Arlington, TX
+
+	
+
+1
+
+	 	 	 	-0.5	-1.1	 
+
+
+Denver-Aurora-Lakewood, CO
+
+	
+
+1
+
+	 	 	 	1.9	0.5	 
+
+
+Minneapolis-St.Paul-Bloomington, MN-WI
+
+	
+
+1
+
+	 	 	 	0.0	-0.1	 
+
+
+Riverside-San Bernardino-Ontario, CA(4)
+
+	
+
+1
+
+	 	 	 	0.9	-0.2	 
+
+
+San Diego-Carlsbad, CA
+
+	
+
+1
+
+	 	 	 	0.3	-0.4	 
+
+
+Tampa-St. Petersburg-Clearwater, FL(8)
+
+	
+
+1
+
+	 	 	 	0.9	-0.3	 
+
+
+Urban Hawaii
+
+	
+
+1
+
+	 	 	 	1.3	0.2	 
+
+
+Washington-Arlington-Alexandria, DC-VA-MD-WV(6)
+
+	
+
+1
+
+	 	 	 	-0.1	0.1	 
+
+
+Footnotes
+(1) Foods, fuels, and several other items are priced every month in all areas. Most other goods and services are priced as indicated: M - Every month. 1 - January, March, May, July, September, and November. 2 - February, April, June, August, October, and December.
+(2) Regions defined as the four Census regions.
+(3) Indexes on a December 1996=100 base.
+(4) Indexes on a December 2017=100 base.
+(5) Indexes on a December 1986=100 base.
+(6) 1998 - 2017 indexes based on substantially smaller sample.
+(7) Indexes on a December 2001=100 base.
+(8) Indexes on a 1987=100 base.
+
+
+
+
+
+NOTE: Local area indexes are byproducts of the national CPI program. Each local index has a smaller sample size than the national index and is, therefore, subject to substantially more sampling and other measurement error. As a result, local area indexes show greater volatility than the national index, although their long-term trends are similar. Therefore, the Bureau of Labor Statistics strongly urges users to consider adopting the national average CPI for use in their escalator clauses.
+
+
+
+
+Table 5. Chained Consumer Price Index for All Urban Consumers (C-CPI-U) and the Consumer Price Index for All Urban Consumers (CPI-U): U.S. city average, all items index, June 2020
+[Percent changes]
+Month Year	Unadjusted 1-month percent change	Unadjusted 12-month percent change
+C-CPI-U(1)	CPI-U	C-CPI-U(1)	CPI-U
+
+
+December 2007
+
+	 	 	3.7	4.1
+
+
+December 2008
+
+	 	 	0.2	0.1
+
+
+December 2009
+
+	 	 	2.5	2.7
+
+
+December 2010
+
+	 	 	1.3	1.5
+
+
+December 2011
+
+	 	 	2.9	3.0
+
+
+December 2012
+
+	 	 	1.5	1.7
+
+
+December 2013
+
+	 	 	1.3	1.5
+
+
+December 2014
+
+	 	 	0.5	0.8
+
+
+December 2015
+
+	 	 	0.4	0.7
+
+
+December 2016
+
+	 	 	1.8	2.1
+
+
+December 2017
+
+	 	 	1.7	2.1
+
+
+
+January 2018
+
+	0.5	0.5	1.6	2.1
+
+
+February 2018
+
+	0.4	0.5	1.7	2.2
+
+
+March 2018
+
+	0.2	0.2	1.9	2.4
+
+
+April 2018
+
+	0.4	0.4	2.1	2.5
+
+
+May 2018
+
+	0.3	0.4	2.3	2.8
+
+
+June 2018
+
+	0.1	0.2	2.4	2.9
+
+
+July 2018
+
+	0.0	0.0	2.6	2.9
+
+
+August 2018
+
+	0.0	0.1	2.3	2.7
+
+
+September 2018
+
+	0.1	0.1	1.9	2.3
+
+
+October 2018
+
+	0.1	0.2	2.1	2.5
+
+
+November 2018
+
+	-0.3	-0.3	1.8	2.2
+
+
+December 2018
+
+	-0.4	-0.3	1.5	1.9
+
+
+January 2019
+
+	0.2	0.2	1.3	1.6
+
+
+February 2019
+
+	0.4	0.4	1.3	1.5
+
+
+March 2019
+
+	0.5	0.6	1.5	1.9
+
+
+April 2019
+
+	0.4	0.5	1.6	2.0
+
+
+May 2019
+
+	0.2	0.2	1.4	1.8
+
+
+June 2019
+
+	0.0	0.0	1.3	1.6
+
+
+July 2019
+
+	0.2	0.2	1.5	1.8
+
+
+August 2019
+
+	0.0	0.0	1.5	1.7
+
+
+September 2019
+
+	0.1	0.1	1.5	1.7
+
+
+October 2019
+
+	0.2	0.2	1.5	1.8
+
+
+November 2019
+
+	-0.1	-0.1	1.8	2.1
+
+
+December 2019
+
+	-0.1	-0.1	2.0	2.3
+
+
+January 2020
+
+	0.4	0.4	2.2	2.5
+
+
+February 2020
+
+	0.3	0.3	2.1	2.3
+
+
+March 2020
+
+	-0.3	-0.2	1.3	1.5
+
+
+April 2020
+
+	-0.8	-0.7	0.0	0.3
+
+
+May 2020
+
+	0.0	0.0	-0.2	0.1
+
+
+June 2020
+
+	0.6	0.5	0.4	0.6
+
+
+Footnotes
+(1) The C-CPI-U is designed to be a closer approximation to a cost-of-living index in that it, in its final form, accounts for any substitution that consumers make across item categories in response to changes in relative prices. Since the expenditure data required for the calculation of the C-CPI-U are available only with a time lag, the C-CPI-U is issued first in preliminary form using the latest available expenditure data at that time and is subject to four revisions.
+
+
+
+
+
+Indexes are issued as initial estimates. Indexes are revised each quarter with the publication of January, April, July, and October data as updated expenditure estimates become available. The C-CPI-U indexes are updated quarterly until they become final. January-March indexes are final in January of the following year; April-June indexes are final in April of the following year; July-September indexes are final in July of the following year; October-December indexes are final in October of the following year.
+
+
+
+
+Table 6. Consumer Price Index for All Urban Consumers (CPI-U): U.S. city average, by expenditure category, June 2020, 1-month analysis table
+[1982-84=100, unless otherwise noted]
+Expenditure category	Relative
+importance
+May
+2020	One Month
+Seasonally adjusted percent change
+May 2020-
+Jun. 2020	Seasonally adjusted effect on All Items
+May 2020-
+Jun. 2020(1)	Standard error, median price change(2)	Largest (L) or Smallest (S) seasonally adjusted change since:(3)
+Date	Percent change
+
+
+All items
+
+	100.000	0.6	 	0.04	L-Aug. 2012	0.6
+
+
+Food
+
+	14.259	0.6	0.087	0.07	S-Mar. 2020	0.3
+
+
+Food at home
+
+	7.976	0.7	0.054	0.12	S-Mar. 2020	0.5
+
+
+Cereals and bakery products
+
+	1.021	0.4	0.004	0.30	L-Apr. 2020	2.9
+
+
+Cereals and cereal products
+
+	0.316	0.2	0.001	0.54	S-Feb. 2020	-0.2
+
+
+Flour and prepared flour mixes
+
+	0.043	2.1	0.001	0.83	L-Apr. 2016	2.1
+
+
+Breakfast cereal(4)
+
+	0.145	1.1	0.002	0.74	S-Feb. 2020	-0.8
+
+
+Rice, pasta, cornmeal(4)
+
+	0.129	-0.5	-0.001	0.98	S-Dec. 2019	-1.8
+
+
+Rice(4)(5)(6)
+
+	 	-0.2	 	1.14	S-Mar. 2020	-0.2
+
+
+Bakery products(4)
+
+	0.705	0.4	0.003	0.36	L-Apr. 2020	3.1
+
+
+Bread(4)(5)
+
+	0.201	-0.5	-0.001	0.74	L-Apr. 2020	3.7
+
+
+White bread(4)(6)
+
+	 	-0.6	 	1.01	L-Apr. 2020	3.5
+
+
+Bread other than white(4)(6)
+
+	 	-0.4	 	0.77	L-Apr. 2020	3.5
+
+
+Fresh biscuits, rolls, muffins(5)
+
+	0.102	0.2	0.000	0.96	L-Apr. 2020	4.7
+
+
+Cakes, cupcakes, and cookies
+
+	0.180	1.8	0.003	0.71	L-Apr. 2020	1.8
+
+
+Cookies(4)(6)
+
+	 	0.7	 	1.07	L-Apr. 2020	5.1
+
+
+Fresh cakes and cupcakes(4)(6)
+
+	 	3.5	 	0.78	L-Nov. 2019	4.3
+
+
+Other bakery products
+
+	0.222	0.1	0.000	0.52	S-Mar. 2020	-1.0
+
+
+Fresh sweetrolls, coffeecakes, doughnuts(4)(6)
+
+	 	1.8	 	0.83	L-Apr. 2020	5.0
+
+
+Crackers, bread, and cracker products(6)
+
+	 	-1.0	 	0.94	S-Jan. 2020	-3.1
+
+
+Frozen and refrigerated bakery products, pies, tarts, turnovers(6)
+
+	 	0.0	 	0.75	S-Mar. 2020	-1.7
+
+
+Meats, poultry, fish, and eggs
+
+	1.836	2.0	0.036	0.23	S-Mar. 2020	0.1
+
+
+Meats, poultry, and fish
+
+	1.729	2.3	0.039	0.24	S-Mar. 2020	0.0
+
+
+Meats
+
+	1.097	3.7	0.041	0.29	S-Apr. 2020	3.3
+
+
+Beef and veal
+
+	0.530	4.8	0.025	0.45	S-Apr. 2020	3.7
+
+
+Uncooked ground beef(4)
+
+	0.191	6.8	0.013	0.75	S-Apr. 2020	4.8
+
+
+Uncooked beef roasts(4)(5)
+
+	0.088	1.3	0.001	1.31	S-Mar. 2020	0.0
+
+
+Uncooked beef steaks(5)
+
+	0.204	5.1	0.010	0.70	S-Apr. 2020	2.1
+
+
+Uncooked other beef and veal(4)(5)
+
+	0.047	5.1	0.002	0.75	S-Apr. 2020	3.8
+
+
+Pork
+
+	0.334	3.3	0.011	0.61	L-Apr. 2014	3.6
+
+
+Bacon, breakfast sausage, and related products(5)
+
+	0.130	6.2	0.008	0.83	L-EVER	-
+
+
+Bacon and related products(6)
+
+	 	8.1	 	0.99	L-Aug. 1986	9.9
+
+
+Breakfast sausage and related products(5)(6)
+
+	 	3.2	 	1.20	L-Dec. 2013	4.6
+
+
+Ham
+
+	0.069	1.0	0.001	1.81	S-Apr. 2020	-1.7
+
+
+Ham, excluding canned(6)
+
+	 	0.4	 	1.73	S-Apr. 2020	-1.4
+
+
+Pork chops(4)
+
+	0.056	4.3	0.002	1.57	S-Mar. 2020	-1.3
+
+
+Other pork including roasts, steaks, and ribs(5)
+
+	0.080	1.8	0.001	1.30	S-Mar. 2020	-1.9
+
+
+Other meats
+
+	0.233	1.9	0.005	0.54	L-Apr. 2020	3.1
+
+
+Frankfurters(6)
+
+	 	4.9	 	1.31	L-Apr. 2020	5.7
+
+
+Lunchmeats(5)(6)
+
+	 	0.5	 	0.59	S-Mar. 2020	-0.3
+
+
+Lamb and organ meats(4)(6)
+
+	 	 	 	 	 	 
+
+
+Lamb and mutton(4)(5)(6)
+
+	 	 	 	 	 	 
+
+
+Poultry(4)
+
+	0.349	0.1	0.000	0.63	S-Jan. 2020	-1.2
+
+
+Chicken(4)(5)
+
+	0.286	0.2	0.001	0.70	S-Feb. 2020	0.0
+
+
+Fresh whole chicken(4)(6)
+
+	 	-0.3	 	1.43	S-Feb. 2020	-0.9
+
+
+Fresh and frozen chicken parts(4)(6)
+
+	 	0.4	 	0.77	S-Jan. 2020	-1.6
+
+
+Other uncooked poultry including turkey(5)
+
+	0.063	-0.7	0.000	1.43	S-Oct. 2019	-1.0
+
+
+Fish and seafood
+
+	0.283	-0.7	-0.002	0.47	S-Apr. 2019	-1.1
+
+
+Fresh fish and seafood(5)
+
+	0.143	-1.7	-0.002	0.71	S-Feb. 2010	-1.8
+
+
+Processed fish and seafood(5)
+
+	0.140	0.2	0.000	0.65	S-Mar. 2020	-0.5
+
+
+Shelf stable fish and seafood(4)(6)
+
+	 	-0.5	 	0.97	S-Mar. 2020	-0.6
+
+
+Frozen fish and seafood(6)
+
+	 	1.0	 	0.84	L-Apr. 2020	5.8
+
+
+Eggs
+
+	0.108	-2.7	-0.003	0.98	L-Apr. 2020	16.1
+
+
+Dairy and related products
+
+	0.799	-0.4	-0.003	0.31	S-Jul. 2018	-0.5
+
+
+Milk(5)
+
+	0.212	-0.6	-0.001	0.48	S-Dec. 2018	-1.1
+
+
+Fresh whole milk(6)
+
+	 	-0.4	 	0.70	S-May 2019	-0.6
+
+
+Fresh milk other than whole(5)(6)
+
+	 	-0.8	 	0.52	S-Jul. 2018	-1.4
+
+
+Cheese and related products(4)
+
+	0.270	-0.2	-0.001	0.55	S-Jan. 2020	-0.2
+
+
+Ice cream and related products
+
+	0.113	0.4	0.000	0.86	S-Feb. 2020	-0.6
+
+
+Other dairy and related products(4)(5)
+
+	0.204	-1.3	-0.003	0.56	S-Oct. 2019	-1.5
+
+
+Fruits and vegetables
+
+	1.363	0.4	0.006	0.35	S-Feb. 2020	0.0
+
+
+Fresh fruits and vegetables
+
+	1.068	0.4	0.005	0.41	S-Feb. 2020	0.0
+
+
+Fresh fruits
+
+	0.551	-0.4	-0.002	0.56	S-Jan. 2020	-1.4
+
+
+Apples
+
+	0.078	-2.1	-0.002	1.21	S-Nov. 2019	-2.1
+
+
+Bananas(4)
+
+	0.078	-0.5	0.000	0.80	S-Jan. 2020	-0.8
+
+
+Citrus fruits(5)
+
+	0.139	0.3	0.000	0.97	L-Apr. 2020	4.3
+
+
+Oranges, including tangerines(6)
+
+	 	-0.4	 	1.35	L-Apr. 2020	5.6
+
+
+Other fresh fruits(5)
+
+	0.255	1.2	0.003	0.97	L-Mar. 2020	4.6
+
+
+Fresh vegetables
+
+	0.518	1.3	0.007	0.59	-	-
+
+
+Potatoes
+
+	0.086	1.3	0.001	1.57	L-Apr. 2020	2.1
+
+
+Lettuce(4)
+
+	0.061	-0.5	0.000	2.16	S-Mar. 2020	-0.5
+
+
+Tomatoes
+
+	0.082	-0.7	-0.001	1.38	S-Apr. 2020	-1.4
+
+
+Other fresh vegetables
+
+	0.289	1.8	0.005	0.74	L-Apr. 2020	2.0
+
+
+Processed fruits and vegetables(5)
+
+	0.295	0.4	0.001	0.49	L-Apr. 2020	2.7
+
+
+Canned fruits and vegetables(5)
+
+	0.153	1.2	0.002	0.69	L-Apr. 2020	2.9
+
+
+Canned fruits(5)(6)
+
+	 	-0.4	 	0.88	S-Mar. 2020	-0.4
+
+
+Canned vegetables(5)(6)
+
+	 	1.8	 	0.98	L-Apr. 2020	3.6
+
+
+Frozen fruits and vegetables(5)
+
+	0.089	-0.7	-0.001	0.94	S-Feb. 2020	-1.0
+
+
+Frozen vegetables(6)
+
+	 	-0.8	 	1.21	S-Dec. 2019	-1.3
+
+
+Other processed fruits and vegetables including dried(5)
+
+	0.053	-0.8	0.000	0.79	S-Aug. 2019	-0.8
+
+
+Dried beans, peas, and lentils(4)(5)(6)
+
+	 	0.2	 	1.47	S-Feb. 2020	-0.5
+
+
+Nonalcoholic beverages and beverage materials
+
+	0.949	0.7	0.007	0.38	L-Apr. 2020	2.9
+
+
+Juices and nonalcoholic drinks(5)
+
+	0.679	0.7	0.005	0.45	L-Apr. 2020	3.8
+
+
+Carbonated drinks
+
+	0.284	2.2	0.006	0.83	L-Apr. 2020	4.5
+
+
+Frozen noncarbonated juices and drinks(4)(5)
+
+	0.006	-1.1	0.000	0.65	S-Feb. 2020	-1.1
+
+
+Nonfrozen noncarbonated juices and drinks(5)
+
+	0.388	0.0	0.000	0.54	S-Feb. 2020	-0.2
+
+
+Beverage materials including coffee and tea(5)
+
+	0.270	1.2	0.003	0.63	L-Dec. 2017	1.4
+
+
+Coffee
+
+	0.173	1.8	0.003	0.90	L-Dec. 2017	2.0
+
+
+Roasted coffee(6)
+
+	 	1.7	 	0.99	L-Jun. 2019	1.9
+
+
+Instant coffee(4)(6)
+
+	 	1.8	 	1.15	L-Apr. 2020	2.5
+
+
+Other beverage materials including tea(4)(5)
+
+	0.097	-1.1	-0.001	0.74	S-Aug. 2019	-1.1
+
+
+Other food at home
+
+	2.007	0.2	0.004	0.24	L-Apr. 2020	1.9
+
+
+Sugar and sweets(4)
+
+	0.272	-0.7	-0.002	0.64	S-Dec. 2019	-1.3
+
+
+Sugar and sugar substitutes
+
+	0.038	-1.3	-0.001	0.84	S-May 2016	-1.4
+
+
+Candy and chewing gum(4)(5)
+
+	0.179	-0.8	-0.001	0.90	S-Dec. 2019	-1.7
+
+
+Other sweets(5)
+
+	0.054	-0.1	0.000	0.79	S-Apr. 2020	-0.2
+
+
+Fats and oils
+
+	0.219	0.1	0.000	0.51	L-Apr. 2020	1.3
+
+
+Butter and margarine(5)
+
+	0.065	-1.4	-0.001	0.97	S-Apr. 2019	-2.7
+
+
+Butter(6)
+
+	 	-1.7	 	1.57	S-Apr. 2019	-3.8
+
+
+Margarine(6)
+
+	 	-1.5	 	0.92	S-Dec. 2019	-1.8
+
+
+Salad dressing(5)
+
+	0.052	0.1	0.000	0.93	L-Apr. 2020	0.9
+
+
+Other fats and oils including peanut butter(5)
+
+	0.101	1.2	0.001	0.87	L-Apr. 2020	2.6
+
+
+Peanut butter(4)(5)(6)
+
+	 	 	 	1.28	-	-
+
+
+Other foods
+
+	1.517	0.4	0.006	0.25	L-Apr. 2020	2.2
+
+
+Soups
+
+	0.092	0.6	0.000	1.06	L-Apr. 2020	2.6
+
+
+Frozen and freeze dried prepared foods
+
+	0.264	-0.7	-0.002	0.69	S-Dec. 2019	-1.1
+
+
+Snacks(4)
+
+	0.345	2.1	0.007	0.66	L-Apr. 2020	3.8
+
+
+Spices, seasonings, condiments, sauces
+
+	0.298	-0.3	-0.001	0.51	S-Jan. 2020	-0.7
+
+
+Salt and other seasonings and spices(5)(6)
+
+	 	-1.0	 	1.05	S-Apr. 2018	-1.3
+
+
+Olives, pickles, relishes(4)(5)(6)
+
+	 	0.2	 	0.63	L-Apr. 2020	1.1
+
+
+Sauces and gravies(5)(6)
+
+	 	-0.2	 	0.87	S-Jan. 2020	-0.9
+
+
+Other condiments(6)
+
+	 	1.3	 	1.12	L-Mar. 2020	1.8
+
+
+Baby food(4)(5)
+
+	0.044	-0.2	0.000	0.78	L-Apr. 2020	2.7
+
+
+Other miscellaneous foods(5)
+
+	0.474	-0.3	-0.002	0.58	S-Jan. 2020	-1.0
+
+
+Prepared salads(4)(7)(6)
+
+	 	0.3	 	0.87	L-Feb. 2020	0.3
+
+
+Food away from home(4)
+
+	6.283	0.5	0.033	0.05	L-Sep. 2015	0.5
+
+
+Full service meals and snacks(4)(5)
+
+	3.147	0.9	0.027	0.06	L-EVER	-
+
+
+Limited service meals and snacks(4)(5)
+
+	2.735	0.5	0.012	0.10	S-Mar. 2020	0.4
+
+
+Food at employee sites and schools(5)
+
+	0.146	-5.6	-0.008	0.11	S-EVER	-
+
+
+Food at elementary and secondary schools(4)(8)(6)
+
+	 	 	 	 	 	 
+
+
+Food from vending machines and mobile vendors(4)(5)
+
+	0.081	0.2	0.000	0.25	-	-
+
+
+Other food away from home(4)(5)
+
+	0.175	1.0	0.002	0.09	L-Apr. 2018	2.3
+
+
+
+Energy
+
+	5.777	5.1	0.290	0.16	L-Jun. 2009	9.6
+
+
+Energy commodities
+
+	2.670	11.7	0.297	0.20	L-Jun. 2009	19.1
+
+
+Fuel oil and other fuels
+
+	0.125	6.6	0.008	0.43	L-Jan. 2010	6.9
+
+
+Fuel oil
+
+	0.067	10.2	0.007	0.52	L-Mar. 2008	10.6
+
+
+Propane, kerosene, and firewood(9)
+
+	0.058	2.4	0.001	0.60	L-Dec. 2019	3.0
+
+
+Motor fuel
+
+	2.545	12.0	0.289	0.21	L-Jun. 2009	20.2
+
+
+Gasoline (all types)
+
+	2.481	12.3	0.288	0.21	L-Jun. 2009	20.3
+
+
+Gasoline, unleaded regular(6)
+
+	 	12.8	 	0.68	L-Jun. 2009	20.9
+
+
+Gasoline, unleaded midgrade(10)(6)
+
+	 	10.3	 	0.73	L-Jun. 2009	19.3
+
+
+Gasoline, unleaded premium(6)
+
+	 	9.3	 	0.76	L-Jun. 2009	18.7
+
+
+Other motor fuels(5)
+
+	0.064	0.8	0.000	0.24	L-Dec. 2019	1.7
+
+
+Energy services
+
+	3.108	-0.2	-0.007	0.19	L-Apr. 2020	0.1
+
+
+Electricity
+
+	2.436	-0.3	-0.006	0.20	L-Apr. 2020	0.1
+
+
+Utility (piped) gas service
+
+	0.672	0.0	0.000	0.31	S-Mar. 2020	-1.4
+
+
+
+All items less food and energy
+
+	79.963	0.2	0.188	0.04	L-Feb. 2020	0.2
+
+
+Commodities less food and energy commodities
+
+	20.189	0.2	0.043	0.11	L-Feb. 2020	0.2
+
+
+Household furnishings and supplies(11)
+
+	3.797	0.6	0.023	0.22	-	-
+
+
+Window and floor coverings and other linens(4)(5)
+
+	0.288	2.1	0.006	1.10	L-Jan. 2020	4.4
+
+
+Floor coverings(4)(5)
+
+	0.064	-0.3	0.000	0.91	L-Apr. 2020	-0.3
+
+
+Window coverings(4)(5)
+
+	0.061	-0.7	0.000	1.47	L-Apr. 2020	0.8
+
+
+Other linens(4)(5)
+
+	0.163	4.1	0.007	1.72	L-Jan. 2020	6.6
+
+
+Furniture and bedding(4)
+
+	0.931	0.7	0.007	0.49	S-Apr. 2020	-1.9
+
+
+Bedroom furniture(4)
+
+	0.325	1.6	0.005	0.62	L-Aug. 2017	2.6
+
+
+Living room, kitchen, and dining room furniture(4)(5)
+
+	0.452	-0.6	-0.003	0.86	S-Apr. 2020	-1.9
+
+
+Other furniture(4)(5)
+
+	0.145	2.8	0.004	0.99	L-Mar. 2019	3.5
+
+
+Infants' furniture(4)(8)(6)
+
+	 	-0.6	 	0.37	S-Mar. 2020	-6.6
+
+
+Appliances(5)
+
+	0.217	1.7	0.004	0.58	L-Apr. 2018	1.7
+
+
+Major appliances(5)
+
+	0.074	1.7	0.001	0.98	L-Feb. 2020	4.3
+
+
+Laundry equipment(6)
+
+	 	1.2	 	1.42	L-Mar. 2020	4.1
+
+
+Other appliances(5)
+
+	0.140	1.6	0.002	0.70	L-Sep. 2019	1.7
+
+
+Other household equipment and furnishings(5)
+
+	0.546	0.4	0.002	0.59	L-Apr. 2020	2.5
+
+
+Clocks, lamps, and decorator items(4)
+
+	0.319	-0.5	-0.002	0.93	S-Mar. 2020	-0.6
+
+
+Indoor plants and flowers(12)
+
+	0.092	0.2	0.000	0.64	L-Apr. 2020	2.2
+
+
+Dishes and flatware(4)(5)
+
+	0.055	1.2	0.001	1.39	L-Jan. 2020	5.1
+
+
+Nonelectric cookware and tableware(5)
+
+	0.079	0.1	0.000	0.96	-	-
+
+
+Tools, hardware, outdoor equipment and supplies(5)
+
+	0.892	0.9	0.008	0.43	L-Dec. 2018	0.9
+
+
+Tools, hardware and supplies(4)(5)
+
+	0.245	0.3	0.001	0.60	L-Apr. 2020	0.4
+
+
+Outdoor equipment and supplies(5)
+
+	0.458	1.3	0.006	0.52	L-Mar. 2011	1.8
+
+
+Housekeeping supplies(4)
+
+	0.924	0.0	0.000	0.31	S-Feb. 2020	-0.2
+
+
+Household cleaning products(4)(5)
+
+	0.359	0.7	0.003	0.34	-	-
+
+
+Household paper products(4)(5)
+
+	0.231	0.2	0.000	0.59	-	-
+
+
+Miscellaneous household products(4)(5)
+
+	0.333	-0.8	-0.003	0.66	S-Aug. 2019	-1.1
+
+
+Apparel
+
+	2.709	1.7	0.045	0.52	L-Feb. 1990	1.8
+
+
+Men's and boys' apparel
+
+	0.684	2.4	0.016	0.66	L-Feb. 2009	2.4
+
+
+Men's apparel
+
+	0.553	1.5	0.008	0.74	L-Jan. 2020	2.3
+
+
+Men's suits, sport coats, and outerwear
+
+	0.094	4.7	0.004	2.12	L-Apr. 2016	5.3
+
+
+Men's underwear, nightwear, swimwear, and accessories(4)
+
+	0.162	1.4	0.002	1.11	L-Feb. 2020	3.4
+
+
+Men's shirts and sweaters(5)
+
+	0.156	0.7	0.001	1.15	L-Mar. 2020	1.0
+
+
+Men's pants and shorts
+
+	0.136	-0.7	-0.001	1.22	L-Mar. 2020	0.5
+
+
+Boys' apparel
+
+	0.131	3.6	0.005	1.46	L-Aug. 2017	7.3
+
+
+Women's and girls' apparel
+
+	1.104	0.9	0.010	0.93	L-Feb. 2020	1.4
+
+
+Women's apparel
+
+	0.911	0.8	0.007	1.09	L-Feb. 2020	1.2
+
+
+Women's outerwear
+
+	0.060	0.4	0.000	1.87	L-Feb. 2020	4.2
+
+
+Women's dresses
+
+	0.088	-0.5	0.000	1.58	L-Feb. 2020	0.9
+
+
+Women's suits and separates(5)
+
+	0.482	0.8	0.004	1.54	L-Dec. 2019	0.8
+
+
+Women's underwear, nightwear, swimwear, and accessories(5)
+
+	0.272	2.2	0.006	1.38	L-Feb. 2020	2.4
+
+
+Girls' apparel
+
+	0.193	1.7	0.003	1.95	L-Feb. 2020	2.6
+
+
+Footwear
+
+	0.639	1.4	0.009	0.71	L-Jan. 2019	2.2
+
+
+Men's footwear(4)
+
+	0.225	1.2	0.003	0.99	L-Jan. 2020	1.3
+
+
+Boys' and girls' footwear
+
+	0.134	1.7	0.002	1.31	L-Feb. 2020	2.9
+
+
+Women's footwear
+
+	0.280	0.0	0.000	0.91	L-Jan. 2020	1.7
+
+
+Infants' and toddlers' apparel
+
+	0.125	6.5	0.008	1.21	L-Feb. 1990	9.6
+
+
+Jewelry and watches(9)
+
+	0.157	1.0	0.002	2.07	L-Jan. 2020	2.0
+
+
+Watches(4)(9)
+
+	0.040	-0.5	0.000	1.91	S-Apr. 2020	-1.1
+
+
+Jewelry(9)
+
+	0.117	0.8	0.001	2.46	L-Jan. 2020	2.7
+
+
+Transportation commodities less motor fuel(11)
+
+	6.966	-0.5	-0.031	0.11	S-Oct. 2019	-0.5
+
+
+New vehicles
+
+	3.768	0.0	0.002	0.19	S-Apr. 2020	0.0
+
+
+New cars and trucks(5)(6)
+
+	 	0.1	 	0.17	S-Apr. 2020	0.0
+
+
+New cars(6)
+
+	 	0.4	 	0.17	L-Feb. 2020	0.4
+
+
+New trucks(13)(6)
+
+	 	0.0	 	0.20	S-Apr. 2020	0.0
+
+
+Used cars and trucks
+
+	2.562	-1.2	-0.030	0.02	S-Jan. 2020	-1.2
+
+
+Motor vehicle parts and equipment(4)
+
+	0.400	-0.7	-0.003	0.36	S-Oct. 2017	-0.7
+
+
+Tires(4)
+
+	0.252	-1.1	-0.003	0.35	S-Oct. 2017	-1.1
+
+
+Vehicle accessories other than tires(4)(5)
+
+	0.148	0.1	0.000	0.62	S-Apr. 2020	-0.4
+
+
+Vehicle parts and equipment other than tires(4)(6)
+
+	 	0.4	 	0.47	S-Apr. 2020	-0.4
+
+
+Motor oil, coolant, and fluids(4)(6)
+
+	 	-0.6	 	1.56	L-Apr. 2020	0.7
+
+
+Medical care commodities
+
+	1.633	0.2	0.003	0.30	L-Dec. 2019	1.0
+
+
+Medicinal drugs(11)
+
+	1.559	0.1	0.001	0.31	L-Apr. 2020	0.3
+
+
+Prescription drugs
+
+	1.177	0.1	0.001	0.32	L-Apr. 2020	0.6
+
+
+Nonprescription drugs(4)(11)
+
+	0.382	-0.1	0.000	0.53	S-Apr. 2020	-0.5
+
+
+Medical equipment and supplies(4)(11)
+
+	0.074	-0.1	0.000	0.59	S-Apr. 2020	-0.6
+
+
+Recreation commodities(11)
+
+	2.015	-0.1	-0.003	0.22	S-Apr. 2020	-0.9
+
+
+Video and audio products(11)
+
+	0.274	-0.8	-0.002	0.38	S-Jan. 2020	-0.9
+
+
+Televisions
+
+	0.095	-1.9	-0.002	0.68	S-Nov. 2019	-2.2
+
+
+Other video equipment(5)
+
+	0.043	-1.1	0.000	0.88	S-Jan. 2020	-1.4
+
+
+Audio equipment(4)
+
+	0.079	-0.5	0.000	0.84	L-Mar. 2020	1.3
+
+
+Recorded music and music subscriptions(4)(5)
+
+	0.045	1.6	0.001	0.67	L-Mar. 2017	5.7
+
+
+Pets and pet products(4)
+
+	0.644	-1.0	-0.006	0.24	S-Apr. 2020	-1.2
+
+
+Pet food(4)(5)(6)
+
+	 	-0.8	 	0.26	S-Nov. 2017	-1.0
+
+
+Purchase of pets, pet supplies, accessories(4)(5)(6)
+
+	 	-1.2	 	0.45	S-Apr. 2020	-2.7
+
+
+Sporting goods
+
+	0.583	1.2	0.007	0.56	L-Sep. 2019	1.5
+
+
+Sports vehicles including bicycles(4)
+
+	0.350	2.3	0.008	0.79	L-Sep. 2019	3.0
+
+
+Sports equipment
+
+	0.223	0.1	0.000	0.53	L-Feb. 2020	1.4
+
+
+Photographic equipment and supplies
+
+	0.027	0.3	0.000	0.88	L-Feb. 2020	4.9
+
+
+Film and photographic supplies(4)(5)(6)
+
+	 	 	 	 	 	 
+
+
+Photographic equipment(5)(6)
+
+	 	-0.1	 	1.01	L-Mar. 2020	-0.1
+
+
+Recreational reading materials(4)
+
+	0.119	1.7	0.002	1.00	L-Oct. 2019	3.0
+
+
+Newspapers and magazines(4)(5)
+
+	0.068	1.5	0.001	1.26	L-Jan. 2020	2.4
+
+
+Recreational books(4)(5)
+
+	0.050	2.0	0.001	1.25	L-Feb. 2020	3.0
+
+
+Other recreational goods(5)
+
+	0.368	-1.0	-0.004	0.48	S-Dec. 2019	-1.1
+
+
+Toys
+
+	0.283	-0.9	-0.003	0.50	S-Apr. 2020	-0.9
+
+
+Toys, games, hobbies and playground equipment(5)(6)
+
+	 	-0.9	 	0.68	S-Feb. 2020	-2.4
+
+
+Sewing machines, fabric and supplies(4)(5)
+
+	0.021	-4.6	-0.001	1.24	S-Mar. 2020	-7.1
+
+
+Music instruments and accessories(4)(5)
+
+	0.048	-0.5	0.000	0.64	L-Apr. 2020	1.2
+
+
+Education and communication commodities(11)
+
+	0.523	-0.6	-0.003	0.46	S-Jan. 2020	-1.2
+
+
+Educational books and supplies
+
+	0.110	-0.7	-0.001	0.76	S-Jan. 2020	-1.7
+
+
+College textbooks(4)(14)(6)
+
+	 	-0.3	 	0.84	S-Jan. 2020	-2.7
+
+
+Information technology commodities(11)
+
+	0.413	-0.6	-0.002	0.53	S-Jan. 2020	-1.1
+
+
+Computers, peripherals, and smart home assistants(7)
+
+	0.304	0.3	0.001	0.68	L-Apr. 2020	0.7
+
+
+Computer software and accessories(4)(5)
+
+	0.018	-2.3	0.000	1.50	S-Apr. 2020	-3.8
+
+
+Telephone hardware, calculators, and other consumer information items(5)
+
+	0.091	-3.2	-0.003	0.81	S-EVER	-
+
+
+Alcoholic beverages
+
+	1.047	0.2	0.002	0.18	S-Dec. 2019	0.1
+
+
+Alcoholic beverages at home
+
+	0.587	0.0	0.000	0.27	S-Dec. 2019	-0.1
+
+
+Beer, ale, and other malt beverages at home
+
+	0.228	-0.6	-0.001	0.34	S-Nov. 2019	-0.6
+
+
+Distilled spirits at home
+
+	0.095	0.8	0.001	0.44	L-Apr. 2020	0.8
+
+
+Whiskey at home(4)(6)
+
+	 	1.3	 	0.90	L-Jan. 2020	1.5
+
+
+Distilled spirits, excluding whiskey, at home(4)(6)
+
+	 	0.0	 	0.62	S-Feb. 2020	-0.1
+
+
+Wine at home
+
+	0.265	0.4	0.001	0.47	S-Apr. 2020	0.0
+
+
+Alcoholic beverages away from home(4)
+
+	0.460	0.4	0.002	0.22	S-Apr. 2020	0.0
+
+
+Beer, ale, and other malt beverages away from home(4)(5)(6)
+
+	 	0.6	 	0.25	S-Apr. 2020	-0.2
+
+
+Wine away from home(4)(5)(6)
+
+	 	0.6	 	0.17	S-Apr. 2020	0.6
+
+
+Distilled spirits away from home(4)(5)(6)
+
+	 	 	 	0.25	-	-
+
+
+Other goods(11)
+
+	1.498	0.3	0.005	0.21	L-Mar. 2020	0.3
+
+
+Tobacco and smoking products
+
+	0.595	1.1	0.007	0.13	L-Mar. 2019	1.2
+
+
+Cigarettes(5)
+
+	0.517	1.2	0.006	0.13	L-Mar. 2019	1.3
+
+
+Tobacco products other than cigarettes(4)(5)
+
+	0.060	-0.6	0.000	0.39	S-Apr. 2019	-0.6
+
+
+Personal care products(4)
+
+	0.695	-0.5	-0.004	0.28	S-Dec. 2019	-1.1
+
+
+Hair, dental, shaving, and miscellaneous personal care products(4)(5)
+
+	0.374	-0.5	-0.002	0.37	S-Dec. 2019	-0.6
+
+
+Cosmetics, perfume, bath, nail preparations and implements(4)
+
+	0.313	-0.6	-0.002	0.44	L-Apr. 2020	-0.4
+
+
+Miscellaneous personal goods(5)
+
+	0.208	0.9	0.002	1.05	L-Apr. 2020	0.9
+
+
+Stationery, stationery supplies, gift wrap(6)
+
+	 	-0.5	 	1.05	S-Mar. 2020	-0.6
+
+
+Infants' equipment(4)(8)(6)
+
+	 	3.6	 	1.19	L-Jan. 2020	16.1
+
+
+Services less energy services
+
+	59.774	0.3	0.152	0.04	L-Jan. 2020	0.3
+
+
+Shelter
+
+	33.594	0.1	0.042	0.05	S-Apr. 2020	0.0
+
+
+Rent of shelter(15)
+
+	33.225	0.1	0.040	0.06	S-Apr. 2020	0.0
+
+
+Rent of primary residence
+
+	7.903	0.1	0.009	0.04	S-Apr. 2011	0.1
+
+
+Lodging away from home(5)
+
+	0.940	1.2	0.011	1.55	L-Feb. 2020	2.0
+
+
+Housing at school, excluding board(15)
+
+	0.118	0.1	0.000	0.04	S-Nov. 2019	0.1
+
+
+Other lodging away from home including hotels and motels
+
+	0.822	1.4	0.011	1.76	L-Feb. 2020	2.3
+
+
+Owners' equivalent rent of residences(15)
+
+	24.383	0.1	0.022	0.04	S-Jul. 2013	0.1
+
+
+Owners' equivalent rent of primary residence(15)
+
+	23.159	0.1	0.021	0.04	S-Jul. 2013	0.1
+
+
+Tenants' and household insurance(4)(5)
+
+	0.369	0.0	0.000	0.07	L-Apr. 2020	0.3
+
+
+Water and sewer and trash collection services(5)
+
+	1.100	0.2	0.003	0.08	-	-
+
+
+Water and sewerage maintenance
+
+	0.807	0.2	0.002	0.09	-	-
+
+
+Garbage and trash collection(4)(13)
+
+	0.294	0.4	0.001	0.15	L-Feb. 2020	0.7
+
+
+Household operations(4)(5)
+
+	0.885	0.1	0.001	0.21	L-Mar. 2020	0.1
+
+
+Domestic services(4)(5)
+
+	0.294	-0.1	0.000	0.29	S-Sep. 2019	-0.6
+
+
+Gardening and lawncare services(4)(5)
+
+	0.309	0.0	0.000	0.06	S-Oct. 2019	0.0
+
+
+Moving, storage, freight expense(4)(5)
+
+	0.086	1.1	0.001	0.60	L-Jan. 2020	1.3
+
+
+Repair of household items(4)(5)
+
+	0.116	0.0	0.000	0.22	L-Apr. 2020	0.2
+
+
+Medical care services
+
+	7.385	0.5	0.036	0.17	S-Apr. 2020	0.5
+
+
+Professional services
+
+	3.701	0.3	0.012	0.13	S-Apr. 2020	0.0
+
+
+Physicians' services
+
+	1.835	0.5	0.008	0.17	S-Apr. 2020	-0.1
+
+
+Dental services
+
+	1.017	0.2	0.002	0.10	S-Feb. 2020	-0.1
+
+
+Eyeglasses and eye care(4)(9)
+
+	0.371	0.3	0.001	0.24	S-Apr. 2020	0.0
+
+
+Services by other medical professionals(4)(9)
+
+	0.478	0.3	0.001	0.14	L-Sep. 2019	0.4
+
+
+Hospital and related services
+
+	2.433	0.3	0.007	0.21	L-Apr. 2020	0.5
+
+
+Hospital services(16)
+
+	2.238	0.4	0.008	0.24	L-Apr. 2020	0.5
+
+
+Inpatient hospital services(16)(6)
+
+	 	0.2	 	0.32	S-Feb. 2020	-0.7
+
+
+Outpatient hospital services(9)(6)
+
+	 	0.4	 	0.25	L-Jan. 2020	1.0
+
+
+Nursing homes and adult day services(16)
+
+	0.125	0.2	0.000	0.13	L-Apr. 2020	0.5
+
+
+Care of invalids and elderly at home(4)(8)
+
+	 	 	 	 	 	 
+
+
+Health insurance(4)(8)
+
+	1.251	1.0	0.013	0.20	S-Aug. 2018	-0.3
+
+
+Transportation services
+
+	4.972	2.1	0.102	0.11	L-Apr. 1980	2.1
+
+
+Leased cars and trucks(4)(14)
+
+	 	 	 	 	 	 
+
+
+Car and truck rental(5)
+
+	0.093	17.5	0.017	1.64	L-EVER	-
+
+
+Motor vehicle maintenance and repair(4)
+
+	1.101	0.1	0.001	0.19	S-Apr. 2020	0.1
+
+
+Motor vehicle body work(4)
+
+	0.059	0.0	0.000	0.25	S-Mar. 2020	0.0
+
+
+Motor vehicle maintenance and servicing(4)
+
+	0.636	0.1	0.000	0.23	-	-
+
+
+Motor vehicle repair(4)(5)
+
+	0.346	0.1	0.000	0.26	S-Dec. 2019	0.0
+
+
+Motor vehicle insurance
+
+	1.449	5.1	0.075	0.11	L-EVER	-
+
+
+Motor vehicle fees(4)(5)
+
+	0.571	-0.4	-0.002	0.13	S-Apr. 2020	-1.1
+
+
+State motor vehicle registration and license fees(4)(5)
+
+	0.300	0.0	0.000	0.11	S-Apr. 2020	0.0
+
+
+Parking and other fees(4)(5)
+
+	0.256	-0.9	-0.002	0.25	S-Apr. 2020	-2.2
+
+
+Parking fees and tolls(5)(6)
+
+	 	-1.5	 	0.26	S-Apr. 2020	-1.7
+
+
+Automobile service clubs(4)(5)(6)
+
+	 	3.7	 	0.31	L-Nov. 2016	9.9
+
+
+Public transportation
+
+	1.108	1.5	0.016	0.37	L-May 2015	1.7
+
+
+Airline fares
+
+	0.629	2.6	0.015	0.57	L-May 2015	2.7
+
+
+Other intercity transportation
+
+	0.173	-1.5	-0.003	0.70	S-Mar. 2020	-4.0
+
+
+Intercity bus fare(4)(7)(6)
+
+	 	 	 	 	 	 
+
+
+Intercity train fare(4)(7)(6)
+
+	 	 	 	 	 	 
+
+
+Ship fare(4)(5)(6)
+
+	 	-1.7	 	0.75	S-Jun. 2019	-2.9
+
+
+Intracity transportation(4)
+
+	0.302	-0.5	-0.001	0.35	L-Apr. 2020	0.0
+
+
+Intracity mass transit(4)(11)(6)
+
+	 	-0.3	 	0.13	L-Apr. 2020	0.0
+
+
+Recreation services(11)
+
+	3.878	-0.9	-0.034	0.17	S-EVER	-
+
+
+Video and audio services(11)
+
+	1.263	0.0	0.000	0.17	S-Feb. 2020	-0.6
+
+
+Cable and satellite television service(13)
+
+	1.182	-0.1	-0.001	0.19	S-Feb. 2020	-0.6
+
+
+Video discs and other media, including rental of video(4)(5)
+
+	0.081	1.1	0.001	0.95	L-Jun. 2019	1.5
+
+
+Video discs and other media(4)(5)(6)
+
+	 	1.9	 	1.68	L-Feb. 2019	3.1
+
+
+Rental of video discs and other media(4)(5)(6)
+
+	 	0.3	 	0.76	L-Mar. 2020	0.8
+
+
+Pet services including veterinary(5)
+
+	0.559	0.2	0.001	0.16	S-Feb. 2020	-0.4
+
+
+Pet services(4)(5)(6)
+
+	 	0.0	 	0.24	S-Apr. 2020	-0.1
+
+
+Veterinarian services(5)(6)
+
+	 	0.3	 	0.25	S-Apr. 2020	0.3
+
+
+Photographers and photo processing(4)(5)
+
+	0.044	2.5	0.001	0.46	L-Feb. 2020	2.9
+
+
+Photographer fees(4)(5)(6)
+
+	 	 	 	 	 	 
+
+
+Photo processing(4)(5)(6)
+
+	 	 	 	 	 	 
+
+
+Other recreation services(5)
+
+	2.011	-1.8	-0.036	0.31	S-EVER	-
+
+
+Club membership for shopping clubs, fraternal, or other organizations, or participant sports fees(4)(5)
+
+	0.730	-3.5	-0.026	0.35	S-EVER	-
+
+
+Admissions
+
+	0.727	0.1	0.000	0.69	S-Apr. 2020	-0.6
+
+
+Admission to movies, theaters, and concerts(4)(5)(6)
+
+	 	0.7	 	0.54	S-Apr. 2020	-1.0
+
+
+Admission to sporting events(4)(5)(6)
+
+	 	-0.3	 	2.10	S-Feb. 2020	-4.0
+
+
+Fees for lessons or instructions(4)(9)
+
+	0.214	0.6	0.001	0.43	L-Nov. 2019	1.2
+
+
+Education and communication services(11)
+
+	6.287	-0.1	-0.005	0.07	S-Nov. 2018	-0.5
+
+
+Tuition, other school fees, and childcare
+
+	2.941	0.1	0.003	0.10	S-Sep. 2019	0.1
+
+
+College tuition and fees
+
+	1.582	0.1	0.001	0.16	S-Dec. 2019	0.1
+
+
+Elementary and high school tuition and fees
+
+	0.430	-0.2	-0.001	0.06	S-Sep. 2019	-0.3
+
+
+Day care and preschool(12)
+
+	0.772	0.3	0.003	0.13	L-Feb. 2020	0.6
+
+
+Technical and business school tuition and fees(5)
+
+	0.037	0.6	0.000	0.12	L-Apr. 2020	0.7
+
+
+Postage and delivery services(5)
+
+	0.113	0.3	0.000	0.03	L-Feb. 2020	0.6
+
+
+Postage
+
+	0.103	0.3	0.000	0.00	-	-
+
+
+Delivery services(5)
+
+	0.010	0.9	0.000	0.27	L-Feb. 2019	1.3
+
+
+Telephone services(4)(5)
+
+	2.319	-0.1	-0.003	0.10	S-Feb. 2020	-0.1
+
+
+Wireless telephone services(4)(5)
+
+	1.911	-0.1	-0.002	0.05	S-Feb. 2020	-0.2
+
+
+Land-line telephone services(4)(11)
+
+	0.408	-0.3	-0.001	0.36	L-Apr. 2020	0.8
+
+
+Internet services and electronic information providers(5)
+
+	0.903	-0.5	-0.005	0.22	S-Sep. 2019	-0.6
+
+
+Other personal services(4)(11)
+
+	1.672	0.5	0.008	0.13	L-Jan. 2020	0.6
+
+
+Personal care services(4)
+
+	0.676	1.1	0.008	0.14	L-Jun. 2015	1.6
+
+
+Haircuts and other personal care services(4)(5)
+
+	0.676	1.1	0.008	0.14	L-Jun. 2015	1.6
+
+
+Miscellaneous personal services
+
+	0.996	0.0	0.000	0.15	-	-
+
+
+Legal services(4)(9)
+
+	0.253	0.3	0.001	0.12	L-Feb. 2020	0.6
+
+
+Funeral expenses(4)(9)
+
+	0.142	0.0	0.000	0.19	S-Mar. 2020	0.0
+
+
+Laundry and dry cleaning services(4)(5)
+
+	0.221	0.1	0.000	0.22	L-Mar. 2020	0.1
+
+
+Apparel services other than laundry and dry cleaning(4)(5)
+
+	0.031	0.1	0.000	0.36	L-Apr. 2020	0.6
+
+
+Financial services(9)
+
+	0.237	-0.2	0.000	0.20	S-Apr. 2020	-0.5
+
+
+Checking account and other bank services(4)(5)(6)
+
+	 	0.0	 	0.00	L-Apr. 2020	0.0
+
+
+Tax return preparation and other accounting fees(4)(5)(6)
+
+	 	-0.5	 	0.31	S-Apr. 2020	-1.0
+
+
+
+Special aggregate indexes
+
+	
+
+
+
+All items less food
+
+	85.741	0.6	0.479	0.04	L-Feb. 2013	0.6
+
+
+All items less shelter
+
+	66.406	0.8	0.523	0.05	L-Aug. 2012	0.8
+
+
+All items less food and shelter
+
+	52.146	0.8	0.436	0.06	L-Feb. 2013	0.9
+
+
+All items less food, shelter, and energy
+
+	46.369	0.3	0.146	0.06	L-Aug. 2019	0.3
+
+
+All items less food, shelter, energy, and used cars and trucks
+
+	43.807	0.4	0.176	0.07	L-Mar. 2009	0.4
+
+
+All items less medical care
+
+	90.982	0.6	0.526	0.04	L-Feb. 2013	0.6
+
+
+All items less energy
+
+	94.223	0.3	0.275	0.04	L-Jun. 2019	0.3
+
+
+Commodities
+
+	37.118	1.2	0.427	0.07	L-Jun. 2009	2.0
+
+
+Commodities less food, energy, and used cars and trucks
+
+	17.627	0.4	0.074	0.12	L-May 2011	0.4
+
+
+Commodities less food
+
+	22.858	1.5	0.340	0.09	L-Feb. 2013	1.6
+
+
+Commodities less food and beverages
+
+	21.811	1.6	0.339	0.10	L-Feb. 2013	1.6
+
+
+Services
+
+	62.882	0.2	0.146	0.04	L-Feb. 2020	0.2
+
+
+Services less rent of shelter(15)
+
+	29.657	0.3	0.088	0.06	L-Nov. 2019	0.3
+
+
+Services less medical care services
+
+	55.497	0.2	0.101	0.04	L-Feb. 2020	0.2
+
+
+Durables
+
+	10.767	-0.2	-0.018	0.12	S-Apr. 2020	-0.2
+
+
+Nondurables
+
+	26.351	1.8	0.462	0.08	L-Jun. 2009	2.8
+
+
+Nondurables less food
+
+	12.092	3.0	0.362	0.15	L-Jun. 2009	5.5
+
+
+Nondurables less food and beverages
+
+	11.044	3.3	0.358	0.16	L-Jun. 2009	5.9
+
+
+Nondurables less food, beverages, and apparel
+
+	8.335	3.8	0.311	0.13	L-Sep. 2017	3.9
+
+
+Nondurables less food and apparel
+
+	9.383	3.4	0.315	0.12	L-Sep. 2017	3.6
+
+
+Housing
+
+	42.609	0.2	0.068	0.05	-	-
+
+
+Education and communication(5)
+
+	6.810	-0.1	-0.008	0.07	S-Nov. 2018	-0.6
+
+
+Education(5)
+
+	3.050	0.1	0.002	0.10	S-Dec. 2019	0.1
+
+
+Communication(5)
+
+	3.760	-0.3	-0.010	0.10	S-Nov. 2018	-1.2
+
+
+Information and information processing(5)
+
+	3.647	-0.3	-0.010	0.11	S-Nov. 2018	-1.3
+
+
+Information technology, hardware and services(17)
+
+	1.328	-0.5	-0.007	0.24	S-Sep. 2019	-0.8
+
+
+Recreation(5)
+
+	5.893	-0.6	-0.037	0.15	S-EVER	-
+
+
+Video and audio(5)
+
+	1.537	-0.1	-0.002	0.17	S-Feb. 2020	-0.6
+
+
+Pets, pet products and services(5)
+
+	1.202	-0.4	-0.005	0.16	S-Apr. 2020	-0.5
+
+
+Photography(5)
+
+	0.072	1.7	0.001	0.53	L-Feb. 2020	3.6
+
+
+Food and beverages
+
+	15.307	0.6	0.088	0.07	S-Mar. 2020	0.3
+
+
+Domestically produced farm food
+
+	6.666	0.7	0.050	0.13	S-Mar. 2020	0.5
+
+
+Other services
+
+	11.838	-0.3	-0.031	0.07	S-Mar. 2017	-0.8
+
+
+Apparel less footwear
+
+	2.070	1.7	0.036	0.64	L-Feb. 2009	1.8
+
+
+Fuels and utilities
+
+	4.333	0.1	0.004	0.14	L-Jan. 2020	0.4
+
+
+Household energy
+
+	3.233	0.1	0.002	0.18	L-Jan. 2020	0.5
+
+
+Medical care
+
+	9.018	0.4	0.039	0.18	S-Apr. 2020	0.4
+
+
+Transportation
+
+	14.483	2.5	0.359	0.08	L-Aug. 2012	2.7
+
+
+Private transportation
+
+	13.375	2.6	0.343	0.09	L-Feb. 2013	2.6
+
+
+New and used motor vehicles(5)
+
+	7.310	-0.2	-0.016	0.11	S-Apr. 2020	-0.3
+
+
+Utilities and public transportation
+
+	8.817	-0.1	-0.008	0.10	L-Feb. 2020	0.2
+
+
+Household furnishings and operations
+
+	4.682	0.4	0.021	0.18	-	-
+
+
+Other goods and services
+
+	3.171	0.4	0.011	0.12	L-Feb. 2020	0.4
+
+
+Personal care(4)
+
+	2.575	0.2	0.005	0.15	L-Feb. 2020	0.4
+
+
+Footnotes
+(1) The 'effect' of an item category is a measure of that item's contribution to the All items price change. For example, if the Food index had an effect of 0.40, and the All items index rose 1.2 percent, then the increase in food prices contributed 0.40 / 1.2, or 33.3 percent, to that All items increase. Said another way, had food prices been unchanged for that month the change in the All items index would have been 1.2 percent minus 0.40, or 0.8 percent. Effects can be negative as well. For example, if the effect of food was a negative 0.1, and the All items index rose 0.5 percent, the All items index actually would have been 0.1 percent higher (or 0.6 percent) had food prices been unchanged. Since food prices fell while prices overall were rising, the contribution of food to the All items price change was negative (in this case, -0.1 / 0.5, or minus 20 percent).
+(2) A statistic's margin of error is often expressed as its point estimate plus or minus two standard errors. For example, if a CPI category rose 0.6 percent, and its standard error was 0.15 percent, the margin of error on this item's 1-month percent change would be 0.6 percent, plus or minus 0.3 percent.
+(3) If the current seasonally adjusted 1-month percent change is greater than the previous published 1-month percent change, then this column identifies the closest prior month with a 1-month percent change as (L)arge as or (L)arger than the current 1-month change. If the current 1-month percent change is smaller than the previous published 1-month percent change, the most recent month with a change as (S)mall or (S)maller than the current month change is identified. If the current and previous published 1-month percent changes are equal, a dash will appear. Standard numerical comparisons are used. For example, 0.8% is greater than 0.6%, -0.4% is less than -0.2%, and -0.2% is less than 0.0%. Note that a (L)arger change can be a smaller decline, for example, a -0.2% change is larger than a -0.4% change, but still represents a decline in the price index. Likewise, (S)maller changes can be increases, for example, a 0.6% change is smaller than 0.8%, but still represents an increase in the price index. In this context, a -0.2% change is considered to be smaller than a 0.0% change.
+(4) Not seasonally adjusted.
+(5) Indexes on a December 1997=100 base.
+(6) Special indexes based on a substantially smaller sample. These series do not contribute to the all items index aggregation and therefore do not have a relative importance or effect.
+(7) Indexes on a December 2007=100 base.
+(8) Indexes on a December 2005=100 base.
+(9) Indexes on a December 1986=100 base.
+(10) Indexes on a December 1993=100 base.
+(11) Indexes on a December 2009=100 base.
+(12) Indexes on a December 1990=100 base.
+(13) Indexes on a December 1983=100 base.
+(14) Indexes on a December 2001=100 base.
+(15) Indexes on a December 1982=100 base.
+(16) Indexes on a December 1996=100 base.
+(17) Indexes on a December 1988=100 base.
+
+
+
+
+Table 7. Consumer Price Index for All Urban Consumers (CPI-U): U.S. city average, by expenditure category, June 2020, 12-month analysis table
+[1982-84=100, unless otherwise noted]
+Expenditure category	Relative
+importance
+May
+2020	Twelve Month
+Unadjusted percent change
+Jun. 2019-
+Jun. 2020	Unadjusted effect on All Items
+Jun. 2019-
+Jun. 2020(1)	Standard error, median price change(2)	Largest (L) or Smallest (S) unadjusted change since:(3)
+Date	Percent change
+
+
+All items
+
+	100.000	0.6	 	0.08	L-Mar. 2020	1.5
+
+
+Food
+
+	14.259	4.5	0.619	0.15	L-Dec. 2011	4.7
+
+
+Food at home
+
+	7.976	5.6	0.428	0.19	L-Dec. 2011	6.0
+
+
+Cereals and bakery products
+
+	1.021	3.3	0.033	0.44	L-May 2012	3.7
+
+
+Cereals and cereal products
+
+	0.316	3.0	0.009	0.80	S-Apr. 2020	1.5
+
+
+Flour and prepared flour mixes
+
+	0.043	2.6	0.001	1.08	L-Oct. 2012	2.8
+
+
+Breakfast cereal
+
+	0.145	2.9	0.004	1.01	L-May 2012	3.0
+
+
+Rice, pasta, cornmeal
+
+	0.129	3.1	0.004	1.35	S-Apr. 2020	2.9
+
+
+Rice(4)(5)
+
+	 	1.2	 	1.84	S-Apr. 2020	-0.1
+
+
+Bakery products
+
+	0.705	3.5	0.024	0.55	L-Apr. 2020	3.8
+
+
+Bread(4)
+
+	0.201	4.1	0.008	0.98	L-Apr. 2020	5.3
+
+
+White bread(5)
+
+	 	4.7	 	1.32	L-Apr. 2020	6.4
+
+
+Bread other than white(5)
+
+	 	3.6	 	1.32	L-Apr. 2020	4.3
+
+
+Fresh biscuits, rolls, muffins(4)
+
+	0.102	3.6	0.003	1.35	L-Apr. 2020	3.8
+
+
+Cakes, cupcakes, and cookies
+
+	0.180	2.7	0.005	1.01	L-Aug. 2019	3.2
+
+
+Cookies(5)
+
+	 	3.2	 	1.31	L-Apr. 2020	6.3
+
+
+Fresh cakes and cupcakes(5)
+
+	 	2.1	 	1.09	L-Nov. 2019	2.6
+
+
+Other bakery products
+
+	0.222	3.5	0.008	0.89	L-Apr. 2020	3.6
+
+
+Fresh sweetrolls, coffeecakes, doughnuts(5)
+
+	 	6.1	 	1.97	L-Jul. 2013	7.3
+
+
+Crackers, bread, and cracker products(5)
+
+	 	3.6	 	1.60	S-Mar. 2020	1.8
+
+
+Frozen and refrigerated bakery products, pies, tarts, turnovers(5)
+
+	 	1.5	 	0.81	L-Mar. 2019	2.4
+
+
+Meats, poultry, fish, and eggs
+
+	1.836	12.8	0.212	0.33	L-Jul. 1979	13.4
+
+
+Meats, poultry, and fish
+
+	1.729	12.9	0.202	0.35	L-Jul. 1979	13.3
+
+
+Meats
+
+	1.097	16.7	0.163	0.44	L-May 1979	22.3
+
+
+Beef and veal
+
+	0.530	25.1	0.112	0.59	L-Jul. 1979	25.2
+
+
+Uncooked ground beef
+
+	0.191	26.4	0.043	0.86	L-Jul. 1979	30.0
+
+
+Uncooked beef roasts(4)
+
+	0.088	25.4	0.018	1.62	S-Apr. 2020	9.2
+
+
+Uncooked beef steaks(4)
+
+	0.204	24.4	0.042	0.93	L-Dec. 2003	27.5
+
+
+Uncooked other beef and veal(4)
+
+	0.047	20.9	0.008	1.19	L-Jan. 2015	22.5
+
+
+Pork
+
+	0.334	11.8	0.037	0.91	L-Jun. 2014	12.0
+
+
+Bacon, breakfast sausage, and related products(4)
+
+	0.130	4.9	0.006	1.14	L-Dec. 2017	5.9
+
+
+Bacon and related products(5)
+
+	 	3.6	 	1.48	L-Nov. 2019	3.8
+
+
+Breakfast sausage and related products(4)(5)
+
+	 	6.9	 	1.62	L-Apr. 2020	7.3
+
+
+Ham
+
+	0.069	12.4	0.008	3.14	L-Dec. 2014	13.1
+
+
+Ham, excluding canned(5)
+
+	 	13.1	 	3.40	L-Dec. 2014	14.4
+
+
+Pork chops
+
+	0.056	23.9	0.011	2.19	L-Dec. 1975	25.3
+
+
+Other pork including roasts, steaks, and ribs(4)
+
+	0.080	16.3	0.011	2.01	L-Sep. 2014	20.0
+
+
+Other meats
+
+	0.233	6.7	0.015	0.72	L-Mar. 2015	7.2
+
+
+Frankfurters(5)
+
+	 	12.4	 	1.91	L-Nov. 1990	13.4
+
+
+Lunchmeats(4)(5)
+
+	 	5.5	 	0.88	S-Apr. 2020	4.5
+
+
+Lamb and organ meats(5)
+
+	 	 	 	 	 	 
+
+
+Lamb and mutton(4)(5)
+
+	 	 	 	 	 	 
+
+
+Poultry
+
+	0.349	8.7	0.028	0.77	S-Apr. 2020	6.3
+
+
+Chicken(4)
+
+	0.286	8.7	0.023	0.91	L-Jan. 2008	9.5
+
+
+Fresh whole chicken(5)
+
+	 	7.2	 	1.77	S-Mar. 2020	1.5
+
+
+Fresh and frozen chicken parts(5)
+
+	 	9.3	 	1.08	L-Jan. 2008	10.2
+
+
+Other uncooked poultry including turkey(4)
+
+	0.063	8.9	0.005	2.42	S-Apr. 2020	7.0
+
+
+Fish and seafood
+
+	0.283	4.0	0.011	0.76	S-Mar. 2020	0.1
+
+
+Fresh fish and seafood(4)
+
+	0.143	4.4	0.006	1.11	S-Mar. 2020	1.4
+
+
+Processed fish and seafood(4)
+
+	0.140	3.6	0.005	1.15	L-Feb. 2019	5.2
+
+
+Shelf stable fish and seafood(5)
+
+	 	2.1	 	1.59	-	-
+
+
+Frozen fish and seafood(5)
+
+	 	5.0	 	1.70	L-Dec. 2014	5.2
+
+
+Eggs
+
+	0.108	12.1	0.010	1.58	S-Mar. 2020	-1.6
+
+
+Dairy and related products
+
+	0.799	5.1	0.037	0.43	S-Mar. 2020	3.7
+
+
+Milk(4)
+
+	0.212	4.3	0.009	0.78	S-Nov. 2019	3.9
+
+
+Fresh whole milk(5)
+
+	 	3.9	 	1.41	S-Oct. 2019	3.4
+
+
+Fresh milk other than whole(4)(5)
+
+	 	4.4	 	1.25	S-Mar. 2020	4.2
+
+
+Cheese and related products
+
+	0.270	6.1	0.015	0.71	S-Mar. 2020	5.0
+
+
+Ice cream and related products
+
+	0.113	8.1	0.008	1.16	L-Jan. 2012	8.3
+
+
+Other dairy and related products(4)
+
+	0.204	2.8	0.006	0.87	S-Mar. 2020	1.4
+
+
+Fruits and vegetables
+
+	1.363	2.3	0.031	0.58	L-Mar. 2019	3.9
+
+
+Fresh fruits and vegetables
+
+	1.068	1.7	0.018	0.61	L-May 2019	1.9
+
+
+Fresh fruits
+
+	0.551	-1.1	-0.006	0.64	S-Apr. 2020	-1.7
+
+
+Apples
+
+	0.078	-6.1	-0.005	1.68	S-Mar. 2020	-8.8
+
+
+Bananas
+
+	0.078	-0.8	-0.001	1.27	S-Mar. 2020	-1.4
+
+
+Citrus fruits(4)
+
+	0.139	-0.6	-0.001	1.55	L-Mar. 2019	2.0
+
+
+Oranges, including tangerines(5)
+
+	 	-1.5	 	2.14	L-Mar. 2019	2.7
+
+
+Other fresh fruits(4)
+
+	0.255	0.8	0.001	1.12	L-Mar. 2020	1.0
+
+
+Fresh vegetables
+
+	0.518	4.9	0.024	0.97	L-May 2019	5.2
+
+
+Potatoes
+
+	0.086	13.3	0.010	2.45	L-Sep. 2011	16.2
+
+
+Lettuce
+
+	0.061	7.0	0.004	2.84	L-Jan. 2020	7.6
+
+
+Tomatoes
+
+	0.082	8.4	0.006	2.00	S-Apr. 2020	6.9
+
+
+Other fresh vegetables
+
+	0.289	0.9	0.003	1.12	L-Sep. 2019	1.3
+
+
+Processed fruits and vegetables(4)
+
+	0.295	4.2	0.012	0.94	L-Jun. 2012	5.1
+
+
+Canned fruits and vegetables(4)
+
+	0.153	3.5	0.005	1.33	L-Apr. 2020	4.0
+
+
+Canned fruits(4)(5)
+
+	 	2.7	 	1.81	S-Mar. 2020	-1.9
+
+
+Canned vegetables(4)(5)
+
+	 	3.8	 	1.74	L-Apr. 2020	5.0
+
+
+Frozen fruits and vegetables(4)
+
+	0.089	4.8	0.004	1.57	S-Apr. 2020	4.4
+
+
+Frozen vegetables(5)
+
+	 	3.6	 	1.70	S-Mar. 2020	0.9
+
+
+Other processed fruits and vegetables including dried(4)
+
+	0.053	5.5	0.003	1.31	S-Apr. 2020	3.9
+
+
+Dried beans, peas, and lentils(4)(5)
+
+	 	8.3	 	2.39	S-Apr. 2020	1.9
+
+
+Nonalcoholic beverages and beverage materials
+
+	0.949	5.3	0.048	0.56	L-Dec. 2011	5.8
+
+
+Juices and nonalcoholic drinks(4)
+
+	0.679	6.8	0.043	0.71	L-Dec. 2008	7.3
+
+
+Carbonated drinks
+
+	0.284	8.7	0.023	1.43	L-Mar. 2009	9.3
+
+
+Frozen noncarbonated juices and drinks(4)
+
+	0.006	-0.4	0.000	1.37	L-Apr. 2020	-0.3
+
+
+Nonfrozen noncarbonated juices and drinks(4)
+
+	0.388	5.6	0.020	0.79	-	-
+
+
+Beverage materials including coffee and tea(4)
+
+	0.270	1.6	0.005	0.82	L-Apr. 2020	1.9
+
+
+Coffee
+
+	0.173	0.9	0.002	1.08	L-Apr. 2020	1.5
+
+
+Roasted coffee(5)
+
+	 	0.9	 	1.05	S-Mar. 2020	0.8
+
+
+Instant coffee(5)
+
+	 	-0.6	 	2.32	L-Nov. 2019	2.3
+
+
+Other beverage materials including tea(4)
+
+	0.097	2.8	0.003	1.16	L-Feb. 2009	3.2
+
+
+Other food at home
+
+	2.007	3.4	0.068	0.33	S-Mar. 2020	1.4
+
+
+Sugar and sweets
+
+	0.272	2.9	0.008	0.80	S-Mar. 2020	2.6
+
+
+Sugar and sugar substitutes
+
+	0.038	7.9	0.003	1.49	S-Mar. 2020	5.9
+
+
+Candy and chewing gum(4)
+
+	0.179	2.1	0.004	1.07	S-May 2019	1.7
+
+
+Other sweets(4)
+
+	0.054	2.5	0.001	1.22	S-Apr. 2020	0.1
+
+
+Fats and oils
+
+	0.219	1.5	0.003	0.77	L-Apr. 2020	2.7
+
+
+Butter and margarine(4)
+
+	0.065	-0.6	0.000	1.23	S-Feb. 2020	-1.5
+
+
+Butter(5)
+
+	 	0.5	 	1.96	S-Feb. 2020	-1.3
+
+
+Margarine(5)
+
+	 	0.4	 	1.35	S-Jan. 2020	0.4
+
+
+Salad dressing(4)
+
+	0.052	1.9	0.001	1.42	S-Feb. 2020	1.1
+
+
+Other fats and oils including peanut butter(4)
+
+	0.101	2.6	0.003	1.19	L-Feb. 2018	2.9
+
+
+Peanut butter(4)(5)
+
+	 	4.5	 	2.62	L-Dec. 2018	6.2
+
+
+Other foods
+
+	1.517	3.8	0.056	0.36	S-Mar. 2020	1.5
+
+
+Soups
+
+	0.092	2.4	0.003	1.43	L-Apr. 2020	5.8
+
+
+Frozen and freeze dried prepared foods
+
+	0.264	3.5	0.009	0.81	S-Apr. 2020	2.7
+
+
+Snacks
+
+	0.345	4.6	0.016	0.81	L-Nov. 2012	5.6
+
+
+Spices, seasonings, condiments, sauces
+
+	0.298	2.8	0.009	0.77	S-Mar. 2020	1.8
+
+
+Salt and other seasonings and spices(4)(5)
+
+	 	1.2	 	1.22	S-Feb. 2020	-1.1
+
+
+Olives, pickles, relishes(4)(5)
+
+	 	3.3	 	1.58	L-Sep. 2019	6.8
+
+
+Sauces and gravies(4)(5)
+
+	 	3.8	 	1.28	S-Mar. 2020	2.3
+
+
+Other condiments(5)
+
+	 	0.5	 	1.77	S-Mar. 2020	-0.1
+
+
+Baby food(4)
+
+	0.044	4.2	0.002	2.13	S-Mar. 2020	3.6
+
+
+Other miscellaneous foods(4)
+
+	0.474	4.4	0.018	0.74	S-Apr. 2020	4.2
+
+
+Prepared salads(6)(5)
+
+	 	3.2	 	1.29	S-Apr. 2020	1.2
+
+
+Food away from home
+
+	6.283	3.1	0.191	0.18	L-Jan. 2020	3.1
+
+
+Full service meals and snacks(4)
+
+	3.147	2.7	0.083	0.39	L-Mar. 2020	3.2
+
+
+Limited service meals and snacks(4)
+
+	2.735	4.1	0.106	0.25	L-Jun. 2009	4.7
+
+
+Food at employee sites and schools(4)
+
+	0.146	-4.2	-0.005	0.45	S-EVER	-
+
+
+Food at elementary and secondary schools(7)(5)
+
+	 	 	 	 	 	 
+
+
+Food from vending machines and mobile vendors(4)
+
+	0.081	2.5	0.002	1.05	-	-
+
+
+Other food away from home(4)
+
+	0.175	2.8	0.005	0.47	L-Mar. 2019	3.9
+
+
+
+Energy
+
+	5.777	-12.6	-0.913	0.28	L-Mar. 2020	-5.7
+
+
+Energy commodities
+
+	2.670	-23.2	-0.911	0.33	L-Mar. 2020	-10.4
+
+
+Fuel oil and other fuels
+
+	0.125	-19.9	-0.032	0.83	L-Mar. 2020	-14.2
+
+
+Fuel oil
+
+	0.067	-29.9	-0.030	1.02	L-Mar. 2020	-20.1
+
+
+Propane, kerosene, and firewood(8)
+
+	0.058	-2.8	-0.001	1.25	L-Feb. 2020	-2.7
+
+
+Motor fuel
+
+	2.545	-23.3	-0.879	0.34	L-Mar. 2020	-10.2
+
+
+Gasoline (all types)
+
+	2.481	-23.4	-0.864	0.34	L-Mar. 2020	-10.2
+
+
+Gasoline, unleaded regular(5)
+
+	 	-24.0	 	1.01	L-Mar. 2020	-11.0
+
+
+Gasoline, unleaded midgrade(9)(5)
+
+	 	-20.6	 	1.02	L-Mar. 2020	-6.9
+
+
+Gasoline, unleaded premium(5)
+
+	 	-19.6	 	0.99	L-Mar. 2020	-5.6
+
+
+Other motor fuels(4)
+
+	0.064	-19.2	-0.015	0.49	L-Apr. 2020	-17.3
+
+
+Energy services
+
+	3.108	0.1	-0.002	0.46	L-Nov. 2019	0.6
+
+
+Electricity
+
+	2.436	0.1	-0.002	0.50	L-Apr. 2020	0.2
+
+
+Utility (piped) gas service
+
+	0.672	-0.2	0.000	0.70	L-Nov. 2019	1.1
+
+
+
+All items less food and energy
+
+	79.963	1.2	0.939	0.09	-	-
+
+
+Commodities less food and energy commodities
+
+	20.189	-1.1	-0.208	0.21	S-Aug. 2004	-1.1
+
+
+Household furnishings and supplies(10)
+
+	3.797	1.3	0.053	0.44	L-Sep. 2019	1.6
+
+
+Window and floor coverings and other linens(4)
+
+	0.288	3.9	0.011	1.76	L-EVER	-
+
+
+Floor coverings(4)
+
+	0.064	-4.2	-0.002	2.53	S-Aug. 2013	-4.8
+
+
+Window coverings(4)
+
+	0.061	9.2	0.004	3.82	S-Mar. 2020	7.1
+
+
+Other linens(4)
+
+	0.163	5.8	0.010	2.71	L-EVER	-
+
+
+Furniture and bedding
+
+	0.931	-1.4	-0.013	0.94	S-Apr. 2020	-1.9
+
+
+Bedroom furniture
+
+	0.325	-1.4	-0.005	1.47	L-Mar. 2020	-0.8
+
+
+Living room, kitchen, and dining room furniture(4)
+
+	0.452	-2.0	-0.009	1.78	S-Mar. 2018	-2.0
+
+
+Other furniture(4)
+
+	0.145	0.0	0.001	2.17	L-Jan. 2020	1.0
+
+
+Infants' furniture(7)(5)
+
+	 	8.9	 	8.93	S-Dec. 2018	-4.7
+
+
+Appliances(4)
+
+	0.217	2.6	0.005	1.76	L-Jun. 2019	2.6
+
+
+Major appliances(4)
+
+	0.074	1.2	0.000	2.33	L-Jun. 2019	2.9
+
+
+Laundry equipment(5)
+
+	 	-6.0	 	2.81	L-Apr. 2020	-3.2
+
+
+Other appliances(4)
+
+	0.140	3.7	0.005	2.29	L-Dec. 2019	4.6
+
+
+Other household equipment and furnishings(4)
+
+	0.546	-1.5	-0.006	1.43	-	-
+
+
+Clocks, lamps, and decorator items
+
+	0.319	0.0	0.001	2.31	L-Oct. 2019	0.6
+
+
+Indoor plants and flowers(11)
+
+	0.092	0.3	0.000	1.94	S-Mar. 2020	-0.2
+
+
+Dishes and flatware(4)
+
+	0.055	-5.4	-0.003	4.67	S-May 2019	-8.0
+
+
+Nonelectric cookware and tableware(4)
+
+	0.079	-5.7	-0.005	3.13	S-Mar. 2020	-6.5
+
+
+Tools, hardware, outdoor equipment and supplies(4)
+
+	0.892	2.9	0.025	0.81	L-Sep. 2019	2.9
+
+
+Tools, hardware and supplies(4)
+
+	0.245	-0.2	0.001	1.49	S-Mar. 2020	-0.4
+
+
+Outdoor equipment and supplies(4)
+
+	0.458	4.8	0.019	1.13	L-EVER	-
+
+
+Housekeeping supplies
+
+	0.924	3.3	0.029	0.51	S-Apr. 2020	2.5
+
+
+Household cleaning products(4)
+
+	0.359	2.7	0.010	0.71	L-Mar. 2019	3.3
+
+
+Household paper products(4)
+
+	0.231	5.5	0.012	1.26	S-Mar. 2020	1.2
+
+
+Miscellaneous household products(4)
+
+	0.333	2.2	0.008	1.24	S-Apr. 2020	1.3
+
+
+Apparel
+
+	2.709	-7.3	-0.215	0.86	L-Apr. 2020	-5.7
+
+
+Men's and boys' apparel
+
+	0.684	-5.4	-0.039	1.76	L-Apr. 2020	-4.6
+
+
+Men's apparel
+
+	0.553	-4.8	-0.028	1.51	L-Apr. 2020	-4.0
+
+
+Men's suits, sport coats, and outerwear
+
+	0.094	-11.0	-0.012	3.69	L-Mar. 2020	-4.1
+
+
+Men's underwear, nightwear, swimwear, and accessories
+
+	0.162	2.4	0.004	3.27	L-Apr. 2020	2.5
+
+
+Men's shirts and sweaters(4)
+
+	0.156	-8.4	-0.014	2.43	S-Jun. 2002	-9.0
+
+
+Men's pants and shorts
+
+	0.136	-3.8	-0.006	2.31	S-Dec. 2016	-4.1
+
+
+Boys' apparel
+
+	0.131	-8.0	-0.012	5.37	L-Apr. 2020	-7.5
+
+
+Women's and girls' apparel
+
+	1.104	-10.1	-0.123	1.54	L-Apr. 2020	-7.7
+
+
+Women's apparel
+
+	0.911	-11.2	-0.114	1.74	L-Apr. 2020	-9.4
+
+
+Women's outerwear
+
+	0.060	-17.6	-0.013	4.11	S-EVER	-
+
+
+Women's dresses
+
+	0.088	-25.8	-0.030	3.14	L-Apr. 2020	-17.8
+
+
+Women's suits and separates(4)
+
+	0.482	-9.4	-0.050	2.49	L-Apr. 2020	-9.2
+
+
+Women's underwear, nightwear, swimwear, and accessories(4)
+
+	0.272	-7.1	-0.021	2.54	L-Apr. 2020	-5.0
+
+
+Girls' apparel
+
+	0.193	-4.4	-0.008	3.27	S-Oct. 2019	-5.0
+
+
+Footwear
+
+	0.639	-4.4	-0.030	1.44	L-Apr. 2020	-2.8
+
+
+Men's footwear
+
+	0.225	-2.0	-0.005	1.93	L-Apr. 2020	-0.6
+
+
+Boys' and girls' footwear
+
+	0.134	-2.5	-0.003	3.23	L-Mar. 2020	-0.4
+
+
+Women's footwear
+
+	0.280	-7.2	-0.022	1.86	S-EVER	-
+
+
+Infants' and toddlers' apparel
+
+	0.125	-5.0	-0.007	2.75	L-Feb. 2020	-4.2
+
+
+Jewelry and watches(8)
+
+	0.157	-5.8	-0.017	3.57	S-EVER	-
+
+
+Watches(8)
+
+	0.040	0.9	-0.001	5.88	S-Apr. 2020	-0.6
+
+
+Jewelry(8)
+
+	0.117	-9.7	-0.015	4.18	S-EVER	-
+
+
+Transportation commodities less motor fuel(10)
+
+	6.966	-1.1	-0.073	0.25	S-May 2018	-1.2
+
+
+New vehicles
+
+	3.768	-0.2	-0.007	0.43	L-Feb. 2020	0.4
+
+
+New cars and trucks(4)(5)
+
+	 	-0.2	 	0.39	L-Feb. 2020	0.4
+
+
+New cars(5)
+
+	 	0.1	 	0.52	L-Feb. 2020	0.8
+
+
+New trucks(12)(5)
+
+	 	-0.1	 	0.46	L-Feb. 2020	0.3
+
+
+Used cars and trucks
+
+	2.562	-2.8	-0.067	0.06	S-Oct. 2017	-2.9
+
+
+Motor vehicle parts and equipment
+
+	0.400	0.7	0.003	0.68	S-Sep. 2018	0.4
+
+
+Tires
+
+	0.252	-0.9	-0.002	0.83	S-Sep. 2018	-1.5
+
+
+Vehicle accessories other than tires(4)
+
+	0.148	3.5	0.005	1.13	-	-
+
+
+Vehicle parts and equipment other than tires(5)
+
+	 	4.4	 	1.17	L-Jul. 2009	4.7
+
+
+Motor oil, coolant, and fluids(5)
+
+	 	1.5	 	1.97	S-Mar. 2020	-1.2
+
+
+Medical care commodities
+
+	1.633	1.3	0.022	0.79	L-Mar. 2020	1.3
+
+
+Medicinal drugs(10)
+
+	1.559	1.4	0.023	0.82	L-Feb. 2020	1.9
+
+
+Prescription drugs
+
+	1.177	2.0	0.027	0.95	L-Feb. 2020	2.4
+
+
+Nonprescription drugs(10)
+
+	0.382	-1.0	-0.004	1.00	S-Mar. 2019	-1.6
+
+
+Medical equipment and supplies(10)
+
+	0.074	-2.1	-0.001	1.73	S-EVER	-
+
+
+Recreation commodities(10)
+
+	2.015	-2.1	-0.042	0.62	-	-
+
+
+Video and audio products(10)
+
+	0.274	-7.9	-0.018	0.81	L-Mar. 2020	-7.9
+
+
+Televisions
+
+	0.095	-15.1	-0.014	1.38	L-Mar. 2018	-14.3
+
+
+Other video equipment(4)
+
+	0.043	0.7	0.000	2.24	S-Apr. 2020	-0.8
+
+
+Audio equipment
+
+	0.079	-3.1	-0.001	2.28	L-Mar. 2020	0.1
+
+
+Recorded music and music subscriptions(4)
+
+	0.045	-6.5	-0.003	2.26	L-Apr. 2020	-5.5
+
+
+Pets and pet products
+
+	0.644	-1.7	-0.011	0.73	S-Dec. 2015	-1.8
+
+
+Pet food(4)(5)
+
+	 	-0.7	 	0.63	S-Aug. 2018	-0.7
+
+
+Purchase of pets, pet supplies, accessories(4)(5)
+
+	 	-3.4	 	1.18	S-Jun. 2013	-3.4
+
+
+Sporting goods
+
+	0.583	0.5	0.001	1.48	L-Feb. 2020	2.1
+
+
+Sports vehicles including bicycles
+
+	0.350	3.2	0.008	2.36	L-Feb. 2020	3.3
+
+
+Sports equipment
+
+	0.223	-3.3	-0.007	1.42	L-Apr. 2020	-1.7
+
+
+Photographic equipment and supplies
+
+	0.027	5.6	0.001	1.95	S-Jan. 2020	2.9
+
+
+Film and photographic supplies(4)(5)
+
+	 	 	 	 	 	 
+
+
+Photographic equipment(4)(5)
+
+	 	4.6	 	1.71	S-Jan. 2020	1.9
+
+
+Recreational reading materials
+
+	0.119	5.9	0.007	1.66	L-Feb. 2020	6.0
+
+
+Newspapers and magazines(4)
+
+	0.068	5.6	0.004	2.30	L-Apr. 2020	6.3
+
+
+Recreational books(4)
+
+	0.050	6.3	0.003	2.36	L-EVER	-
+
+
+Other recreational goods(4)
+
+	0.368	-6.6	-0.023	1.29	S-Apr. 2019	-7.5
+
+
+Toys
+
+	0.283	-7.7	-0.020	1.49	S-Feb. 2020	-7.8
+
+
+Toys, games, hobbies and playground equipment(4)(5)
+
+	 	-7.2	 	2.03	S-Apr. 2020	-7.6
+
+
+Sewing machines, fabric and supplies(4)
+
+	0.021	-11.3	-0.003	2.89	S-EVER	-
+
+
+Music instruments and accessories(4)
+
+	0.048	2.6	0.001	2.82	S-Dec. 2019	2.4
+
+
+Education and communication commodities(10)
+
+	0.523	-3.0	-0.015	1.05	L-Sep. 2018	-1.9
+
+
+Educational books and supplies
+
+	0.110	-1.7	-0.002	2.02	S-Apr. 2020	-1.7
+
+
+College textbooks(13)(5)
+
+	 	-2.3	 	1.97	S-Mar. 2020	-2.9
+
+
+Information technology commodities(10)
+
+	0.413	-3.4	-0.013	1.23	L-Sep. 2018	-3.1
+
+
+Computers, peripherals, and smart home assistants(6)
+
+	0.304	0.5	0.002	1.59	L-EVER	-
+
+
+Computer software and accessories(4)
+
+	0.018	-14.9	-0.003	2.89	S-EVER	-
+
+
+Telephone hardware, calculators, and other consumer information items(4)
+
+	0.091	-14.4	-0.012	1.92	S-Dec. 2019	-14.6
+
+
+Alcoholic beverages
+
+	1.047	2.2	0.022	0.38	-	-
+
+
+Alcoholic beverages at home
+
+	0.587	1.8	0.010	0.53	S-Mar. 2020	1.4
+
+
+Beer, ale, and other malt beverages at home
+
+	0.228	3.8	0.009	0.72	S-Mar. 2020	3.4
+
+
+Distilled spirits at home
+
+	0.095	0.6	0.001	1.03	-	-
+
+
+Whiskey at home(5)
+
+	 	0.7	 	1.17	L-Dec. 2019	0.9
+
+
+Distilled spirits, excluding whiskey, at home(5)
+
+	 	1.7	 	1.46	S-Apr. 2020	0.9
+
+
+Wine at home
+
+	0.265	0.1	0.001	0.98	L-Apr. 2020	0.2
+
+
+Alcoholic beverages away from home
+
+	0.460	2.9	0.012	0.43	L-Dec. 2012	3.0
+
+
+Beer, ale, and other malt beverages away from home(4)(5)
+
+	 	2.3	 	0.82	L-Nov. 2018	2.6
+
+
+Wine away from home(4)(5)
+
+	 	3.2	 	1.00	L-Nov. 2018	3.2
+
+
+Distilled spirits away from home(4)(5)
+
+	 	4.2	 	0.60	L-Mar. 2016	4.6
+
+
+Other goods(10)
+
+	1.498	2.7	0.040	0.45	L-Apr. 2020	2.8
+
+
+Tobacco and smoking products
+
+	0.595	5.1	0.032	0.32	L-Mar. 2020	5.4
+
+
+Cigarettes(4)
+
+	0.517	5.6	0.031	0.33	L-Mar. 2020	5.8
+
+
+Tobacco products other than cigarettes(4)
+
+	0.060	0.9	0.001	1.18	S-Feb. 2020	0.8
+
+
+Personal care products
+
+	0.695	-0.5	-0.003	0.58	S-Jan. 2020	-1.2
+
+
+Hair, dental, shaving, and miscellaneous personal care products(4)
+
+	0.374	0.7	0.003	0.77	-	-
+
+
+Cosmetics, perfume, bath, nail preparations and implements
+
+	0.313	-2.0	-0.006	1.01	S-Jan. 2020	-2.7
+
+
+Miscellaneous personal goods(4)
+
+	0.208	5.8	0.012	2.55	L-Jan. 2020	9.4
+
+
+Stationery, stationery supplies, gift wrap(5)
+
+	 	7.7	 	2.41	S-Mar. 2020	5.0
+
+
+Infants' equipment(7)(5)
+
+	 	11.3	 	2.24	L-Apr. 2020	11.3
+
+
+Services less energy services
+
+	59.774	1.9	1.147	0.11	S-Aug. 2011	1.9
+
+
+Shelter
+
+	33.594	2.4	0.781	0.15	S-Nov. 2013	2.4
+
+
+Rent of shelter(14)
+
+	33.225	2.4	0.786	0.15	S-Nov. 2013	2.4
+
+
+Rent of primary residence
+
+	7.903	3.2	0.252	0.14	S-Aug. 2014	3.2
+
+
+Lodging away from home(4)
+
+	0.940	-14.0	-0.145	2.54	L-Apr. 2020	-14.0
+
+
+Housing at school, excluding board(14)
+
+	0.118	2.3	0.003	0.25	-	-
+
+
+Other lodging away from home including hotels and motels
+
+	0.822	-16.0	-0.147	2.87	L-Apr. 2020	-16.0
+
+
+Owners' equivalent rent of residences(14)
+
+	24.383	2.8	0.678	0.15	S-May 2015	2.8
+
+
+Owners' equivalent rent of primary residence(14)
+
+	23.159	2.8	0.641	0.15	S-May 2015	2.8
+
+
+Tenants' and household insurance(4)
+
+	0.369	-1.1	-0.004	0.42	S-Nov. 2007	-1.1
+
+
+Water and sewer and trash collection services(4)
+
+	1.100	2.9	0.031	0.33	-	-
+
+
+Water and sewerage maintenance
+
+	0.807	2.8	0.022	0.40	S-Oct. 2000	2.6
+
+
+Garbage and trash collection(12)
+
+	0.294	3.3	0.009	0.66	L-Mar. 2020	3.5
+
+
+Household operations(4)
+
+	0.885	1.8	0.016	0.71	S-Mar. 2014	1.1
+
+
+Domestic services(4)
+
+	0.294	3.8	0.011	0.87	S-Apr. 2020	1.5
+
+
+Gardening and lawncare services(4)
+
+	0.309	3.4	0.010	1.38	S-May 2019	3.0
+
+
+Moving, storage, freight expense(4)
+
+	0.086	-2.5	-0.003	2.20	S-Jul. 2017	-3.8
+
+
+Repair of household items(4)
+
+	0.116	-3.8	-0.004	0.90	S-EVER	-
+
+
+Medical care services
+
+	7.385	6.0	0.417	0.53	L-Oct. 1993	6.2
+
+
+Professional services
+
+	3.701	2.2	0.077	0.83	-	-
+
+
+Physicians' services
+
+	1.835	2.1	0.037	1.55	L-Mar. 2017	3.0
+
+
+Dental services
+
+	1.017	3.2	0.030	0.76	S-Apr. 2020	3.1
+
+
+Eyeglasses and eye care(8)
+
+	0.371	0.9	0.003	0.64	L-Nov. 2019	1.1
+
+
+Services by other medical professionals(8)
+
+	0.478	1.3	0.006	0.47	L-Jan. 2020	1.4
+
+
+Hospital and related services
+
+	2.433	5.0	0.123	0.52	L-Apr. 2020	5.0
+
+
+Hospital services(15)
+
+	2.238	5.3	0.118	0.58	L-Jan. 2018	6.0
+
+
+Inpatient hospital services(15)(5)
+
+	 	4.7	 	0.84	L-Apr. 2020	4.7
+
+
+Outpatient hospital services(8)(5)
+
+	 	4.0	 	1.14	L-Apr. 2020	4.1
+
+
+Nursing homes and adult day services(15)
+
+	0.125	2.5	0.004	0.51	S-Mar. 2020	2.5
+
+
+Care of invalids and elderly at home(7)
+
+	 	 	 	 	 	 
+
+
+Health insurance(7)
+
+	1.251	19.4	0.217	0.61	S-Sep. 2019	18.8
+
+
+Transportation services
+
+	4.972	-7.0	-0.383	0.33	L-Apr. 2020	-5.5
+
+
+Leased cars and trucks(13)
+
+	 	 	 	 	 	 
+
+
+Car and truck rental(4)
+
+	0.093	-6.3	-0.008	2.41	L-Mar. 2020	3.6
+
+
+Motor vehicle maintenance and repair
+
+	1.101	3.4	0.037	0.59	S-Apr. 2020	3.1
+
+
+Motor vehicle body work
+
+	0.059	3.7	0.002	0.88	S-May 2019	3.0
+
+
+Motor vehicle maintenance and servicing
+
+	0.636	2.9	0.018	0.80	S-Oct. 2018	2.7
+
+
+Motor vehicle repair(4)
+
+	0.346	4.4	0.015	0.93	S-Apr. 2020	2.9
+
+
+Motor vehicle insurance
+
+	1.449	-10.1	-0.167	0.59	L-Apr. 2020	-6.2
+
+
+Motor vehicle fees(4)
+
+	0.571	0.7	0.004	0.46	S-Dec. 2017	0.3
+
+
+State motor vehicle registration and license fees(4)
+
+	0.300	3.0	0.008	0.32	L-Feb. 2016	3.0
+
+
+Parking and other fees(4)
+
+	0.256	-1.7	-0.005	0.83	S-EVER	-
+
+
+Parking fees and tolls(4)(5)
+
+	 	-1.9	 	0.74	S-EVER	-
+
+
+Automobile service clubs(4)(5)
+
+	 	 	 	0.97	-	-
+
+
+Public transportation
+
+	1.108	-18.6	-0.243	0.71	L-Apr. 2020	-16.0
+
+
+Airline fares
+
+	0.629	-27.2	-0.225	1.04	L-Apr. 2020	-24.3
+
+
+Other intercity transportation
+
+	0.173	-7.7	-0.014	1.70	L-Apr. 2020	-7.1
+
+
+Intercity bus fare(6)(5)
+
+	 	 	 	 	 	 
+
+
+Intercity train fare(6)(5)
+
+	 	 	 	 	 	 
+
+
+Ship fare(4)(5)
+
+	 	-8.7	 	1.95	L-Mar. 2020	-7.7
+
+
+Intracity transportation
+
+	0.302	-1.1	-0.003	0.64	L-Apr. 2020	1.2
+
+
+Intracity mass transit(10)(5)
+
+	 	-1.6	 	1.11	S-EVER	-
+
+
+Recreation services(10)
+
+	3.878	3.4	0.130	0.56	S-Apr. 2020	2.4
+
+
+Video and audio services(10)
+
+	1.263	3.5	0.051	0.66	S-Apr. 2020	3.2
+
+
+Cable and satellite television service(12)
+
+	1.182	4.3	0.059	0.66	S-Apr. 2020	3.9
+
+
+Video discs and other media, including rental of video(4)
+
+	0.081	-9.5	-0.009	2.85	S-Mar. 2020	-9.6
+
+
+Video discs and other media(4)(5)
+
+	 	-14.3	 	5.58	L-Apr. 2020	-13.4
+
+
+Rental of video discs and other media(4)(5)
+
+	 	0.5	 	1.16	S-Feb. 2019	0.4
+
+
+Pet services including veterinary(4)
+
+	0.559	3.3	0.016	0.63	S-Apr. 2020	3.2
+
+
+Pet services(4)(5)
+
+	 	2.8	 	1.49	S-Apr. 2020	2.8
+
+
+Veterinarian services(4)(5)
+
+	 	3.4	 	0.53	L-Apr. 2020	3.4
+
+
+Photographers and photo processing(4)
+
+	0.044	2.0	0.001	1.40	L-Sep. 2016	2.3
+
+
+Photographer fees(4)(5)
+
+	 	 	 	 	 	 
+
+
+Photo processing(4)(5)
+
+	 	 	 	 	 	 
+
+
+Other recreation services(4)
+
+	2.011	3.4	0.063	1.03	S-Apr. 2020	1.6
+
+
+Club membership for shopping clubs, fraternal, or other organizations, or participant sports fees(4)
+
+	0.730	3.8	0.025	0.72	S-Apr. 2020	2.6
+
+
+Admissions
+
+	0.727	4.1	0.029	2.01	L-Apr. 2019	4.3
+
+
+Admission to movies, theaters, and concerts(4)(5)
+
+	 	4.1	 	1.29	L-Sep. 2016	4.4
+
+
+Admission to sporting events(4)(5)
+
+	 	7.1	 	4.22	S-Apr. 2020	2.6
+
+
+Fees for lessons or instructions(8)
+
+	0.214	0.8	0.002	1.95	L-Feb. 2020	1.3
+
+
+Education and communication services(10)
+
+	6.287	1.8	0.106	0.22	S-Oct. 2019	1.1
+
+
+Tuition, other school fees, and childcare
+
+	2.941	2.2	0.063	0.33	-	-
+
+
+College tuition and fees
+
+	1.582	1.7	0.028	0.46	-	-
+
+
+Elementary and high school tuition and fees
+
+	0.430	2.8	0.010	0.49	S-Mar. 2020	2.7
+
+
+Day care and preschool(11)
+
+	0.772	2.9	0.023	0.46	-	-
+
+
+Technical and business school tuition and fees(4)
+
+	0.037	2.0	0.001	0.38	L-Apr. 2020	2.2
+
+
+Postage and delivery services(4)
+
+	0.113	3.9	0.004	0.23	L-Apr. 2020	3.9
+
+
+Postage
+
+	0.103	4.3	0.004	0.25	-	-
+
+
+Delivery services(4)
+
+	0.010	-0.9	0.000	0.84	L-Apr. 2020	-0.3
+
+
+Telephone services(4)
+
+	2.319	1.4	0.031	0.29	S-Nov. 2019	1.3
+
+
+Wireless telephone services(4)
+
+	1.911	-0.3	-0.005	0.31	S-Dec. 2019	-0.3
+
+
+Land-line telephone services(10)
+
+	0.408	7.1	0.036	0.72	S-Dec. 2019	6.9
+
+
+Internet services and electronic information providers(4)
+
+	0.903	1.1	0.008	0.93	S-Oct. 2019	0.5
+
+
+Other personal services(10)
+
+	1.672	3.0	0.049	0.36	L-Mar. 2019	3.0
+
+
+Personal care services
+
+	0.676	4.5	0.029	0.48	L-Sep. 2000	4.5
+
+
+Haircuts and other personal care services(4)
+
+	0.676	4.5	0.029	0.48	L-Sep. 2000	4.6
+
+
+Miscellaneous personal services
+
+	0.996	2.1	0.020	0.47	-	-
+
+
+Legal services(8)
+
+	0.253	1.6	0.004	0.93	L-Mar. 2019	1.8
+
+
+Funeral expenses(8)
+
+	0.142	1.5	0.002	0.63	L-Apr. 2020	1.6
+
+
+Laundry and dry cleaning services(4)
+
+	0.221	2.2	0.005	0.69	S-Jul. 2018	2.2
+
+
+Apparel services other than laundry and dry cleaning(4)
+
+	0.031	5.5	0.002	1.68	S-Mar. 2020	5.4
+
+
+Financial services(8)
+
+	0.237	2.4	0.006	1.05	L-Apr. 2020	3.6
+
+
+Checking account and other bank services(4)(5)
+
+	 	2.1	 	0.22	-	-
+
+
+Tax return preparation and other accounting fees(4)(5)
+
+	 	2.7	 	1.83	-	-
+
+
+
+Special aggregate indexes
+
+	
+
+
+
+All items less food
+
+	85.741	0.0	0.027	0.09	L-Mar. 2020	1.5
+
+
+All items less shelter
+
+	66.406	-0.2	-0.136	0.11	L-Mar. 2020	0.8
+
+
+All items less food and shelter
+
+	52.146	-1.4	-0.755	0.13	L-Mar. 2020	0.5
+
+
+All items less food, shelter, and energy
+
+	46.369	0.3	0.158	0.14	-	-
+
+
+All items less food, shelter, energy, and used cars and trucks
+
+	43.807	0.5	0.225	0.14	L-Apr. 2020	0.7
+
+
+All items less medical care
+
+	90.982	0.2	0.207	0.08	L-Mar. 2020	1.2
+
+
+All items less energy
+
+	94.223	1.7	1.559	0.08	L-Apr. 2020	1.7
+
+
+Commodities
+
+	37.118	-1.3	-0.500	0.13	L-Mar. 2020	-0.3
+
+
+Commodities less food, energy, and used cars and trucks
+
+	17.627	-0.8	-0.141	0.24	L-Mar. 2020	-0.2
+
+
+Commodities less food
+
+	22.858	-4.7	-1.119	0.19	L-Mar. 2020	-1.6
+
+
+Commodities less food and beverages
+
+	21.811	-4.9	-1.141	0.20	L-Mar. 2020	-1.8
+
+
+Services
+
+	62.882	1.8	1.145	0.10	S-Aug. 2011	1.8
+
+
+Services less rent of shelter(14)
+
+	29.657	1.2	0.360	0.17	L-Apr. 2020	1.4
+
+
+Services less medical care services
+
+	55.497	1.3	0.728	0.11	-	-
+
+
+Durables
+
+	10.767	-0.9	-0.087	0.27	S-Jan. 2020	-0.9
+
+
+Nondurables
+
+	26.351	-1.5	-0.412	0.16	L-Mar. 2020	-0.3
+
+
+Nondurables less food
+
+	12.092	-7.6	-1.032	0.27	L-Mar. 2020	-2.5
+
+
+Nondurables less food and beverages
+
+	11.044	-8.4	-1.054	0.29	L-Mar. 2020	-2.8
+
+
+Nondurables less food, beverages, and apparel
+
+	8.335	-8.8	-0.839	0.25	L-Mar. 2020	-3.3
+
+
+Nondurables less food and apparel
+
+	9.383	-7.7	-0.816	0.23	L-Mar. 2020	-2.8
+
+
+Housing
+
+	42.609	2.0	0.847	0.13	S-Aug. 2015	2.0
+
+
+Education and communication(4)
+
+	6.810	1.4	0.091	0.22	S-Dec. 2019	1.4
+
+
+Education(4)
+
+	3.050	2.0	0.061	0.34	S-Jun. 2018	2.0
+
+
+Communication(4)
+
+	3.760	0.9	0.030	0.32	S-Jan. 2020	0.9
+
+
+Information and information processing(4)
+
+	3.647	0.8	0.026	0.33	S-Jan. 2020	0.8
+
+
+Information technology, hardware and services(16)
+
+	1.328	-0.4	-0.005	0.77	S-Apr. 2020	-0.4
+
+
+Recreation(4)
+
+	5.893	1.6	0.088	0.47	S-Apr. 2020	0.9
+
+
+Video and audio(4)
+
+	1.537	2.0	0.033	0.58	S-Apr. 2020	1.7
+
+
+Pets, pet products and services(4)
+
+	1.202	0.5	0.004	0.51	S-Mar. 2018	0.5
+
+
+Photography(4)
+
+	0.072	3.5	0.002	1.34	L-Mar. 2020	4.3
+
+
+Food and beverages
+
+	15.307	4.4	0.642	0.14	L-Dec. 2011	4.5
+
+
+Domestically produced farm food
+
+	6.666	5.9	0.370	0.21	L-Dec. 2011	6.0
+
+
+Other services
+
+	11.838	2.5	0.285	0.23	S-Apr. 2020	2.3
+
+
+Apparel less footwear
+
+	2.070	-8.1	-0.186	1.05	L-Apr. 2020	-6.5
+
+
+Fuels and utilities
+
+	4.333	0.0	-0.002	0.34	L-Feb. 2020	0.6
+
+
+Household energy
+
+	3.233	-0.9	-0.034	0.43	L-Feb. 2020	-0.2
+
+
+Medical care
+
+	9.018	5.1	0.439	0.43	L-Dec. 2007	5.2
+
+
+Transportation
+
+	14.483	-8.2	-1.335	0.16	L-Mar. 2020	-2.4
+
+
+Private transportation
+
+	13.375	-7.3	-1.092	0.17	L-Mar. 2020	-2.0
+
+
+New and used motor vehicles(4)
+
+	7.310	-1.3	-0.090	0.26	S-Oct. 2017	-1.7
+
+
+Utilities and public transportation
+
+	8.817	-1.3	-0.123	0.23	L-Apr. 2020	-1.0
+
+
+Household furnishings and operations
+
+	4.682	1.4	0.068	0.37	S-Apr. 2020	1.3
+
+
+Other goods and services
+
+	3.171	2.8	0.089	0.30	L-Apr. 2020	2.8
+
+
+Personal care
+
+	2.575	2.3	0.057	0.37	L-Apr. 2020	2.3
+
+
+Footnotes
+(1) The 'effect' of an item category is a measure of that item's contribution to the All items price change. For example, if the Food index had an effect of 0.40, and the All items index rose 1.2 percent, then the increase in food prices contributed 0.40 / 1.2, or 33.3 percent, to that All items increase. Said another way, had food prices been unchanged for that year the change in the All items index would have been 1.2 percent minus 0.40, or 0.8 percent. Effects can be negative as well. For example, if the effect of food was a negative 0.1, and the All items index rose 0.5 percent, the All items index actually would have been 0.1 percent higher (or 0.6 percent) had food prices been unchanged. Since food prices fell while prices overall were rising, the contribution of food to the All items price change was negative (in this case, -0.1 / 0.5, or minus 20 percent).
+(2) A statistic's margin of error is often expressed as its point estimate plus or minus two standard errors. For example, if a CPI category rose 2.6 percent, and its standard error was 0.25 percent, the margin of error on this item's 12-month percent change would be 2.6 percent, plus or minus 0.5 percent.
+(3) If the current 12-month percent change is greater than the previous published 12-month percent change, then this column identifies the closest prior month with a 12-month percent change as (L)arge as or (L)arger than the current 12-month change. If the current 12-month percent change is smaller than the previous published 12-month percent change, the most recent month with a change as (S)mall or (S)maller than the current month change is identified. If the current and previous published 12-month percent changes are equal, a dash will appear. Standard numerical comparison is used. For example, 2.0% is greater than 0.6%, -4.4% is less than -2.0%, and -2.0% is less than 0.0%. Note that a (L)arger change can be a smaller decline, for example, a -0.2% change is larger than a -0.4% change, but still represents a decline in the price index. Likewise, (S)maller changes can be increases, for example, a 0.6% change is smaller than 0.8%, but still represents an increase in the price index. In this context, a -0.2% change is considered to be smaller than a 0.0% change.
+(4) Indexes on a December 1997=100 base.
+(5) Special indexes based on a substantially smaller sample. These series do not contribute to the all items index aggregation and therefore do not have a relative importance or effect.
+(6) Indexes on a December 2007=100 base.
+(7) Indexes on a December 2005=100 base.
+(8) Indexes on a December 1986=100 base.
+(9) Indexes on a December 1993=100 base.
+(10) Indexes on a December 2009=100 base.
+(11) Indexes on a December 1990=100 base.
+(12) Indexes on a December 1983=100 base.
+(13) Indexes on a December 2001=100 base.
+(14) Indexes on a December 1982=100 base.
+(15) Indexes on a December 1996=100 base.
+(16) Indexes on a December 1988=100 base.
+
+
+
+Last Modified Date: July 14, 2020

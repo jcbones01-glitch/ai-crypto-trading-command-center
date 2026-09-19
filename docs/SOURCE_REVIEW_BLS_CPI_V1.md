@@ -152,3 +152,32 @@ first 30 minutes. The latter cannot test immediate release volatility and is
 not directly comparable to the FOMC release-aligned first-hour statistic.
 This audit does not preregister either alternative. Source certification must
 come first. Validation/OOS, paper and live trading remain locked.
+
+## Source acquisition resolved: browser DOM representation
+
+The official BLS index and all 60 linked 2017–2021 CPI release pages were
+successfully opened in the cloud browser, without challenges, fingerprint
+changes, alternate proxies, or third-party mirrors. The earlier ordinary
+HTTP client failure did not apply to this browser session.
+
+A new explicitly versioned representation is accepted for timing-only work:
+`bls-cpi-dom-snapshot-v1`. The index is its rendered `main.outerHTML`; each
+release is its rendered `main.innerText`, serialized to UTF-8. These are
+**browser-derived representations, not original HTTP response bytes**.
+Each capture records the observed official URL, retrieval time, transformation,
+and hash. `raw_event_hash` in the generic event schema hashes the preserved
+representation bytes; it does not claim to hash the server response. Event
+`source_version` is `bls-cpi-rendered-text-v1` to make this distinction part
+of dataset identity. The original raw-HTML adapter remains supported.
+
+This representation preserves the exact visible release identity and embargo
+statement needed for timing-only certification. The parser does not interpret
+numeric values or prose. All 60 linked candidate pages pass the explicit
+embargo parser; 52 fall within Development (4/12/12/12/12 by release year).
+No source count or timestamp was inferred from crypto returns. Raw/DOM snapshot
+hashes do not prove historical text vintage; previous restrictions remain.
+
+The complete capture inventory and representations live under
+`research/sources/bls_cpi_v1/`. Missing files encountered during file persistence
+were reacquired from the same official URLs before completing the bundle.
+The final bundle's every hash was checked before manifest generation.

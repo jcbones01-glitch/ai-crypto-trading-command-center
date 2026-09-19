@@ -132,6 +132,7 @@ def parse_cpi_release(
     *,
     source_url: str,
     assets: tuple[str, ...],
+    payload_format: str = "html",
 ) -> EventRecord:
     """Parse one official BLS CPI release page into a point-in-time event.
 
@@ -139,7 +140,14 @@ def parse_cpi_release(
     does not interpret CPI values, revisions, surprise, or archived prose.
     """
     _validate_bls_url(source_url)
-    text = _plain_text(raw_payload)
+    if payload_format == "html":
+        text = _plain_text(raw_payload)
+        version = SOURCE_VERSION
+    elif payload_format == "rendered-text":
+        text = re.sub(r"\s+", " ", raw_payload.decode("utf-8", errors="strict")).strip()
+        version = "bls-cpi-rendered-text-v1"
+    else:
+        raise ValueError("unsupported CPI payload representation")
     _validate_release_identity(text)
     released_at = _parse_embargo_timestamp(text)
 
@@ -155,6 +163,6 @@ def parse_cpi_release(
         published_at=released_at,
         first_market_available_at=released_at,
         source_id=SOURCE_ID,
-        source_version=SOURCE_VERSION,
+        source_version=version,
         raw_event_hash=hash_raw_payload(raw_payload),
     )
