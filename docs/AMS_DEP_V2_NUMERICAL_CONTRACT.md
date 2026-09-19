@@ -1,10 +1,11 @@
 # AMS-DEP V2 numerical contract — conditional review follow-up
 
-Status: EXACT ENGINEERING PROPOSAL; NOT CALIBRATION FROZEN OR EMPIRICALLY APPROVED.
-User-supplied conditional design review is recorded in
-AMS_DEP_V2_CONDITIONAL_REVIEW_RESPONSE.md. This document completes ambiguities
-for ratification before any calibration/holdout output. Engineering fixtures
-are separate, bounded, non-calibrating examples.
+Status: FROZEN FOR SYNTHETIC CALIBRATION; NOT EMPIRICALLY APPROVED.
+Independent ratification is recorded in
+AMS_DEP_V2_INDEPENDENT_RATIFICATION_RESULT.md. The scientific content below is
+frozen before calibration. Any calibration-driven result-affecting change
+creates V3. The V2 holdout remains separately unauthorized. Engineering
+fixtures are separate, bounded, non-calibrating examples.
 
 ## Model and restrictions
 
