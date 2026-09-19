@@ -59,4 +59,9 @@ python -m pip install -e '.[dev]'
 pytest
 ```
 
-The repository currently contains no trading strategy and no live execution capability.
+The original V0 scope has since been extended with historical Development strategy experiments. No candidate is currently promoted and no live execution capability is authorized.
+## Active research continuation
+
+The completed HYP-0001–HYP-0025 OHLCV Development family remains closed with no promoted candidate. The research-foundation branch adds the certified AMS-V1 market-state vocabulary. The proposed next phase investigates return dependence without creating a strategy or accessing Validation/OOS.
+
+Start with [repository reconciliation](docs/ADAPTIVE_MARKETS_RECONCILIATION_2026_09_19.md), [market-state protocol](docs/MARKET_STATE_RESEARCH_PROTOCOL.md), and the [execution-blocked preregistration draft](docs/MARKET_STATE_DEPENDENCE_PREREGISTRATION_V1.md). The draft needs independent statistical review and a complete freeze before any empirical run. Green software tests do not constitute research approval.

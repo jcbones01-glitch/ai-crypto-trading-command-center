@@ -22,7 +22,7 @@ Progression through the loop is not automatic. A failed hypothesis is an accepta
 
 The project treats market efficiency and exploitable behavior as potentially conditional and time-varying. A historical edge is not assumed to be permanent.
 
-Any claim that a strategy depends on a market regime must define the relevant market-state variables before protected validation or OOS evaluation. Regime definitions must use only information available at the decision timestamp.
+Any new experiment or strategy claiming market-regime dependence must preregister its state variables and decision rules before its Development evidence is generated. Existing frozen registrations and results remain unchanged. Regime definitions must use only information available at the decision timestamp.
 
 Protected results must not be used to rescue a failed strategy by:
 - retuning parameters,
