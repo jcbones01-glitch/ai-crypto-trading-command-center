@@ -173,16 +173,116 @@ Preferred review order:
 No method advances to V2 execution until the complete numerical contract is
 frozen.
 
+## 9. Scite verification — 2026-09-19
+
+The connected Scite literature index was used to verify exact bibliographic
+records and citation-context evidence for the V2 method candidates.
+
+### Exact primary records verified
+
+- Lo and MacKinlay finite-sample Monte Carlo paper:
+  DOI `10.3386/t0066`.
+- Shao dependent wild bootstrap:
+  DOI `10.1198/jasa.2009.tm08744`.
+- Kiefer and Vogelsang fixed-b HAC theory:
+  DOI `10.1017/S0266466605050565`.
+- Bravo and Godfrey bootstrap HAC for OLS:
+  DOI `10.1111/j.1468-0084.2011.00671.x`.
+- Sun, Phillips and Jin optimal bandwidth/fixed-b testing:
+  DOI `10.1111/j.0012-9682.2008.00822.x`.
+
+### Design implications verified from abstracts/citation context
+
+1. **DWB is not one parameter-free recipe.**
+   Follow-on regression work citing Shao explicitly constructs dependent
+   multiplier draws using a kernel covariance and a bandwidth parameter.
+   Later variants also differ in whether the procedure is residual-based,
+   score-based, blockwise, autoregressive, or otherwise adapted to the target
+   statistic. Therefore Issue #44 must freeze the exact DWB construction,
+   kernel, bandwidth, null imposition and segment behavior before V2 output.
+
+2. **DWB has been extended to regression settings with serial correlation.**
+   Djogbenou, Gonçalves and Perron,
+   `10.1111/jtsa.12118`, considers bootstrap inference in regressions with
+   serially correlated errors and its citation context describes a DWB based
+   on smoothed dependent external draws. This supports DWB as a serious
+   review candidate, but does not validate AMS-DEP's exact restrictions or
+   segmentation.
+
+3. **Bootstrap HAC for OLS is a distinct candidate, not synonymous with DWB.**
+   Bravo and Godfrey's abstract explicitly frames the problem as OLS
+   coefficient inference under unspecified heteroskedasticity and
+   autocorrelation and uses moving-block-bootstrap/quasi-estimator machinery.
+   The AMS-DEP reviewer should therefore compare this architecture with DWB
+   rather than collapsing both into a generic "bootstrap" option.
+
+4. **Fixed-b changes the reference distribution, not merely the covariance
+   estimate.**
+   Kiefer–Vogelsang model HAC bandwidth as a fixed proportion of sample size,
+   yielding a nonstandard limiting distribution that incorporates smoothing
+   choices. Sun–Phillips–Jin likewise studies studentized time-series
+   regression tests with truncation lag `M=bT` and nonstandard fixed-b
+   limits. This is directly relevant to V1's large-bandwidth/reference-law
+   mismatch.
+
+5. **Finite-sample HAC over-rejection is independently documented.**
+   Hartigan, `10.1016/j.csda.2017.09.007`, states in its abstract that HAC
+   test statistics are known to reject too frequently in finite samples and
+   studies alternative covariance estimation. This is consistent with, but
+   does not prove the cause of, the project's V1 synthetic failure.
+
+6. **The Lo/Lo-MacKinlay methodological lesson remains calibration first.**
+   Scite verifies the NBER working paper record for the finite-sample
+   variance-ratio Monte Carlo investigation. The project continues to use its
+   methodological principle—measure finite-sample size/power before empirical
+   interpretation—without claiming that Lo/MacKinlay prescribed DWB,
+   fixed-b, or the AMS-DEP implementation.
+
+### Access limitation
+
+Scite indexed the exact primary records, but full text was not available
+through the connected account for the Shao, Kiefer–Vogelsang, and
+Bravo–Godfrey articles. The Lo–MacKinlay record resolves to open access, but
+Scite did not expose readable indexed body text in this session.
+
+Accordingly, this repository **does not claim formula-level certification**
+from Scite for those papers. Exact implementation details still require
+either an independently reviewed full-text derivation or another
+authoritative accessible source before V2 can be frozen.
+
+### Resulting gate decision
+
+Scite verification strengthens the case that DWB and fixed-b are legitimate
+methods to review, but it does **not** resolve the independent design choice.
+
+Issue #44 remains:
+`INSUFFICIENT_EVIDENCE_FOR_DESIGN_FREEZE`
+until an independent reviewer supplies the exact mathematical V2 contract or
+rejects these candidates.
+
 ## Bibliographic references
 
+- Lo, A. W. and MacKinlay, A. C. (1988), "The Size and Power of the Variance
+  Ratio Test in Finite Samples: A Monte Carlo Investigation," NBER Technical
+  Working Paper 66. DOI: 10.3386/t0066.
 - Shao, X. (2010), "The Dependent Wild Bootstrap," JASA 105(489), 218–235.
+  DOI: 10.1198/jasa.2009.tm08744.
 - Kiefer, N. M. and Vogelsang, T. J. (2005), "A New Asymptotic Theory for
   Heteroskedasticity-Autocorrelation Robust Tests," Econometric Theory
-  21(6), 1130–1164.
+  21(6), 1130–1164. DOI: 10.1017/S0266466605050565.
 - Bravo, F. and Godfrey, L. G. (2012), "Bootstrap HAC Tests for Ordinary
   Least Squares Regression," Oxford Bulletin of Economics and Statistics
-  74(6), 903–922.
+  74(6), 903–922. DOI: 10.1111/j.1468-0084.2011.00671.x.
+- Djogbenou, A., Gonçalves, S. and Perron, B. (2015), "Bootstrap Inference in
+  Regressions with Estimated Factors and Serial Correlation," Journal of Time
+  Series Analysis 36(3), 481–502. DOI: 10.1111/jtsa.12118.
+- Hartigan, L. (2018), "Alternative HAC covariance matrix estimators with
+  improved finite sample properties," Computational Statistics & Data
+  Analysis 119, 55–73. DOI: 10.1016/j.csda.2017.09.007.
+- Sun, Y., Phillips, P. C. B. and Jin, S. (2008), "Optimal Bandwidth
+  Selection in Heteroskedasticity–Autocorrelation Robust Testing,"
+  Econometrica 76(1), 175–194. DOI: 10.1111/j.0012-9682.2008.00822.x.
 
 Additional dynamic-regression/wild-bootstrap literature should be checked in
-full before its exact algorithms are incorporated. Bibliographic or abstract
-review is not treated as formula certification.
+full before its exact algorithms are incorporated. Bibliographic, abstract
+and citation-context review is not treated as formula certification.
