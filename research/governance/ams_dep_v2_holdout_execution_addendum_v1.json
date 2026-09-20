@@ -18,7 +18,6 @@
   "duplicate_task_detection_verified": false,
   "per_cell_invalidity_guard_verified": false,
   "explicit_holdout_execution_authorized": false,
-  "authorized_execution_commit": null,
   "reserved_holdout_seeds_consumed": false,
   "holdout_file_git_blob_sha1": {},
   "required_confirmation": "FROZEN_V2_HOLDOUT",
@@ -27,5 +26,6 @@
   "strategy_pnl_authorized": false,
   "paper_trading_authorized": false,
   "live_trading_authorized": false,
-  "notes": "This addendum is a second, separate execution lock. Calibration PASS alone does not authorize the reserved holdout. The current frozen scientific specification remains unchanged. Holdout execution requires both the existing AMS-DEP release gate and this addendum to be explicitly opened after independent review of the additive holdout path."
+  "notes": "This addendum is a second, separate execution lock. Calibration PASS alone does not authorize the reserved holdout. The current frozen scientific specification remains unchanged. Holdout execution requires both the existing AMS-DEP release gate and this addendum to be explicitly opened after independent review of the additive holdout path.",
+  "reviewed_holdout_code_commit": null
 }
