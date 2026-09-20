@@ -40,5 +40,8 @@
   "reviewed_holdout_code_commit": null,
   "engineering_review_candidate_commit": "28c81cbd64883baa1370552f7f7a17b831d9109a",
   "engineering_preflight_run_id": 35526243104,
-  "engineering_preflight_conclusion": "success"
+  "engineering_preflight_conclusion": "success",
+  "one_shot_claim_ref": "refs/tags/ams-dep-v2-holdout-execution-claimed-v1",
+  "execution_manifest_path": "research/governance/ams_dep_v2_holdout_execution_manifest_v1.json",
+  "execution_manifest_sha256": null
 }
