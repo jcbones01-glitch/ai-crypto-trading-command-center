@@ -91,6 +91,7 @@ def _load_shard_evidence(
     manifest_sha: str,
     spec_sha: str,
     addendum_sha: str,
+    execution_manifest_sha: str,
     expected_claim_ref: str,
     expected_claim_sha: str,
     expected_shards: int = SHARD_COUNT,
@@ -141,6 +142,7 @@ def _load_shard_evidence(
             s["freeze_manifest_sha256"] != manifest_sha
             or s["frozen_spec_sha256"] != spec_sha
             or s["holdout_addendum_sha256"] != addendum_sha
+            or s["execution_manifest_sha256"] != execution_manifest_sha
         ):
             raise RuntimeError("mixed holdout provenance")
         summary_by_shard[shard] = s
@@ -150,6 +152,8 @@ def _load_shard_evidence(
         raise RuntimeError("incomplete shard-summary coverage")
     if len(commits) != 1:
         raise RuntimeError("mixed execution commits")
+    if next(iter(commits)) != expected_claim_sha:
+        raise RuntimeError("execution commit does not match one-shot claim SHA")
 
     n_outer = int(config["holdout_replications_per_dgp"])
     expected = len(config["cases"]) * n_outer * 6
@@ -212,6 +216,7 @@ def main() -> None:
         manifest_sha,
         spec_sha,
         addendum_sha,
+        str(addendum["execution_manifest_sha256"]),
         claim_ref,
         claim_sha,
     )
@@ -254,6 +259,7 @@ def main() -> None:
         "freeze_manifest_sha256": manifest_sha,
         "frozen_spec_sha256": spec_sha,
         "holdout_addendum_sha256": addendum_sha,
+        "execution_manifest_sha256": str(addendum["execution_manifest_sha256"]),
         "task_count": len(rows),
         "outer_result_count": len(outer),
         "shard_count": SHARD_COUNT,
