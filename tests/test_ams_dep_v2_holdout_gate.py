@@ -35,7 +35,7 @@ def _authorized_addendum() -> dict:
             "duplicate_task_detection_verified": True,
             "per_cell_invalidity_guard_verified": True,
             "explicit_holdout_execution_authorized": True,
-            "authorized_execution_commit": "example-commit",
+            "reviewed_holdout_code_commit": "example-commit",
             "reserved_holdout_seeds_consumed": False,
             "holdout_file_git_blob_sha1": {"example": "example"},
         }
