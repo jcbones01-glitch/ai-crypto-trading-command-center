@@ -1,0 +1,11 @@
+{
+  "manifest_id": "AMS-DEP-V2-HOLDOUT-EXECUTION-BUNDLE",
+  "version": 1,
+  "status": "DRAFT_LOCKED",
+  "review_issue": 54,
+  "reviewed_holdout_code_commit": null,
+  "main_gate_sha256": null,
+  "one_shot_claim_ref": "refs/tags/ams-dep-v2-holdout-execution-claimed-v1",
+  "safety_file_git_blob_sha1": {},
+  "notes": "Template only. Before execution, a governance-only transition must build this manifest from the authorized main gate and reviewed code, then store the manifest SHA-256 in the authorized holdout addendum. The manifest does not hash the addendum, avoiding a circular hash dependency. The one-shot claim tag binds the exact execution commit containing the authorized addendum and this manifest."
+}
