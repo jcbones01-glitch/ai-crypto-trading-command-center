@@ -67,8 +67,8 @@ def assert_ams_dep_v2_holdout_path_allowed(
         missing.insert(0, "status=AUTHORIZED")
     if addendum.get("reserved_holdout_seeds_consumed") is not False:
         missing.append("reserved_holdout_seeds_consumed=false")
-    if not addendum.get("authorized_execution_commit"):
-        missing.append("authorized_execution_commit")
+    if not addendum.get("reviewed_holdout_code_commit"):
+        missing.append("reviewed_holdout_code_commit")
     if not addendum.get("holdout_file_git_blob_sha1"):
         missing.append("holdout_file_git_blob_sha1")
 
