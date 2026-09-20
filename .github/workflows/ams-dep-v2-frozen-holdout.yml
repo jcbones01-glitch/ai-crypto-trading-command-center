@@ -1,0 +1,142 @@
+name: AMS-DEP V2 Frozen Holdout
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type FROZEN_V2_HOLDOUT to run the separately authorized reserved synthetic holdout'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - name: Require explicit holdout confirmation
+        run: |
+          test "${{ inputs.confirmation }}" = "FROZEN_V2_HOLDOUT"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[dev]'
+      - name: Verify both holdout execution locks before any reserved RNG use
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          path=Path('research/scripts/run_ams_dep_v2_holdout_shard.py')
+          spec=importlib.util.spec_from_file_location('holdout_runner',path)
+          mod=importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+          gate,addendum,manifest,cfg=mod._verify_holdout()
+          print('MAIN_HOLDOUT_AUTHORIZED',gate['v2_holdout_execution_authorized'])
+          print('ADDENDUM_HOLDOUT_AUTHORIZED',addendum['explicit_holdout_execution_authorized'])
+          print('HOLDOUT_PREFLIGHT_PASS')
+          PY
+      - name: Run holdout path and release-lock tests
+        run: |
+          python -m pytest -q             tests/test_ams_dep_v2_holdout_gate.py             tests/test_ams_dep_v2_holdout_runner.py             tests/test_ams_dep_v2_holdout_aggregation.py             tests/test_ams_dep_release_gate.py
+
+  shard:
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 32
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127]
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[research]'
+      - name: Run one separately authorized frozen holdout shard
+        run: python research/scripts/run_ams_dep_v2_holdout_shard.py --shard-id "${{ matrix.shard }}"
+      - name: Upload holdout shard evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ams-dep-v2-holdout-shard-${{ matrix.shard }}
+          path: research/experiments/ams_dep_v2_holdout_shards/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: shard
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[dev]'
+      - name: Reverify holdout authority before aggregation
+        run: |
+          python - <<'PY'
+          from research_core.ams_dep_v2_holdout_gate import assert_ams_dep_v2_holdout_path_allowed
+          assert_ams_dep_v2_holdout_path_allowed()
+          print('HOLDOUT_AUTHORITY_REVERIFIED')
+          PY
+      - name: Download all holdout shard evidence
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ams-dep-v2-holdout-shard-*
+          path: research/experiments/ams_dep_v2_holdout_shards
+          merge-multiple: true
+      - name: Aggregate exact coverage and registered holdout screen
+        run: |
+          python research/scripts/aggregate_ams_dep_v2_holdout.py             --input-dir research/experiments/ams_dep_v2_holdout_shards             --output-dir research/experiments/ams_dep_v2_holdout_results
+      - name: Upload aggregate holdout evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ams-dep-v2-holdout-results
+          path: research/experiments/ams_dep_v2_holdout_results/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Enforce frozen holdout screen after evidence upload
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('research/experiments/ams_dep_v2_holdout_results/summary.json')
+          d=json.loads(p.read_text())
+          assert d['classification']=='FROZEN_AMS_DEP_V2_SYNTHETIC_HOLDOUT'
+          assert d['market_data_accessed'] is False
+          assert d['validation_or_oos_accessed'] is False
+          assert d['calibration_accessed'] is False
+          assert d['holdout_accessed'] is True
+          assert d['strategy_pnl_calculated'] is False
+          assert d['empirical_release_authorized'] is False
+          assert d['per_cell_invalidity_screen_pass'] is True
+          if not d['holdout_screen_pass']:
+              raise SystemExit('Frozen AMS-DEP V2 holdout FAILED; retain result and keep empirical release locked.')
+          print('AMS_DEP_V2_HOLDOUT_PASS')
+          PY
