@@ -134,3 +134,42 @@ def test_run_slot_rejects_direct_call_without_authorization_context():
             0,
             "DEP",
         )
+
+
+def test_forged_constructed_context_cannot_reach_reserved_holdout_roots(monkeypatch):
+    runner = load_runner()
+    forged = runner._HoldoutExecutionContext("fake-ref", "fake-sha")
+
+    reached_simulation = False
+
+    def forbidden_simulation(*args, **kwargs):
+        nonlocal reached_simulation
+        reached_simulation = True
+        raise AssertionError("reserved holdout simulation must not be reached")
+
+    monkeypatch.setattr(runner, "simulate_case", forbidden_simulation)
+
+    # Empty config is intentional: context verification must fail before either
+    # reserved holdout root is read from config.
+    with pytest.raises(RuntimeError, match="active verified authorization context"):
+        runner._run_slot(
+            forged,
+            {},
+            0,
+            "iid_null",
+            0,
+            0,
+            0,
+            "DEP",
+        )
+    assert reached_simulation is False
+
+
+def test_only_activated_context_identity_is_accepted():
+    runner = load_runner()
+    forged = runner._HoldoutExecutionContext("same-ref", "same-sha")
+    active = runner._activate_context("same-ref", "same-sha")
+
+    with pytest.raises(RuntimeError, match="active verified authorization context"):
+        runner._require_context(forged)
+    assert runner._require_context(active) is active
