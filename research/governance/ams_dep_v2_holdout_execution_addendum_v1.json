@@ -45,7 +45,7 @@
   "live_trading_authorized": false,
   "notes": "This addendum is a second, separate execution lock. Calibration PASS alone does not authorize the reserved holdout. The current frozen scientific specification remains unchanged. Holdout execution requires both the existing AMS-DEP release gate and this addendum to be explicitly opened after independent review of the additive holdout path.",
   "reviewed_holdout_code_commit": null,
-  "engineering_review_candidate_commit": "f716d5ce7923bd903ee95b2a6400178a0982287a",
+  "engineering_review_candidate_commit": "27780eb88ac328905d98d4b832f548518185971d",
   "engineering_preflight_run_id": null,
   "engineering_preflight_conclusion": null,
   "one_shot_claim_ref": "refs/tags/ams-dep-v2-holdout-execution-claimed-v1",
