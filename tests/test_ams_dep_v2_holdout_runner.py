@@ -32,12 +32,12 @@ def test_current_holdout_runner_authority_check_consumes_no_reserved_rng():
         and addendum.get("explicit_holdout_execution_authorized") is True
     )
     if currently_open:
-        verified_gate, verified_addendum, _, _, _, _ = runner._verify_holdout()
+        verified_gate, verified_addendum, _, _, _ = runner._verify_authority()
         assert verified_gate["v2_holdout_execution_authorized"] is True
         assert verified_addendum["explicit_holdout_execution_authorized"] is True
     else:
         with pytest.raises(ResearchGateError):
-            runner._verify_holdout()
+            runner._verify_authority()
 
 
 def test_registered_holdout_seed_namespaces_are_separate_without_rng_instantiation():
