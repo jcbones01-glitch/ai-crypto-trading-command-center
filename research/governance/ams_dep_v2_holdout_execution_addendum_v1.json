@@ -1,0 +1,31 @@
+{
+  "addendum_id": "AMS-DEP-V2-HOLDOUT-EXECUTION",
+  "version": 1,
+  "status": "DRAFT_LOCKED",
+  "created_date": "2026-09-20",
+  "calibration_evidence": {
+    "run_id": 35460656875,
+    "execution_commit": "e348f2f2eb0ce3b5da243bea0d9bed4a2bbd4a18",
+    "artifact_id": 10609078170,
+    "artifact_zip_sha256": "f1cbbe421c5d5636cdac519760b521881b153050cbe6038cc67ffc3ca26b0fbe",
+    "artifact_review": "docs/research/AMS_DEP_V2_CALIBRATION_ARTIFACT_REVIEW.md",
+    "registered_screen_pass": true
+  },
+  "calibration_artifact_verified": true,
+  "holdout_path_independently_reviewed": false,
+  "seed_separation_verified": false,
+  "artifact_integrity_controls_verified": false,
+  "duplicate_task_detection_verified": false,
+  "per_cell_invalidity_guard_verified": false,
+  "explicit_holdout_execution_authorized": false,
+  "authorized_execution_commit": null,
+  "reserved_holdout_seeds_consumed": false,
+  "holdout_file_git_blob_sha1": {},
+  "required_confirmation": "FROZEN_V2_HOLDOUT",
+  "market_data_authorized": false,
+  "validation_or_oos_authorized": false,
+  "strategy_pnl_authorized": false,
+  "paper_trading_authorized": false,
+  "live_trading_authorized": false,
+  "notes": "This addendum is a second, separate execution lock. Calibration PASS alone does not authorize the reserved holdout. The current frozen scientific specification remains unchanged. Holdout execution requires both the existing AMS-DEP release gate and this addendum to be explicitly opened after independent review of the additive holdout path."
+}
