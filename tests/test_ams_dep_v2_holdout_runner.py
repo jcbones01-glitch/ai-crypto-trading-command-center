@@ -5,7 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from research_core.release_gate import ResearchGateError
+from research_core.ams_dep_v2_holdout_gate import load_holdout_addendum
+from research_core.release_gate import ResearchGateError, load_ams_dep_release_gate
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "research/scripts/run_ams_dep_v2_holdout_shard.py"
@@ -20,10 +21,23 @@ def load_runner():
     return module
 
 
-def test_current_holdout_runner_fails_before_any_reserved_rng_work():
+def test_current_holdout_runner_authority_check_consumes_no_reserved_rng():
     runner = load_runner()
-    with pytest.raises(ResearchGateError):
-        runner._verify_holdout()
+    gate = load_ams_dep_release_gate()
+    addendum = load_holdout_addendum()
+    currently_open = (
+        gate.get("v2_synthetic_calibration_passed") is True
+        and gate.get("v2_holdout_execution_authorized") is True
+        and addendum.get("status") == "AUTHORIZED"
+        and addendum.get("explicit_holdout_execution_authorized") is True
+    )
+    if currently_open:
+        verified_gate, verified_addendum, _, _ = runner._verify_holdout()
+        assert verified_gate["v2_holdout_execution_authorized"] is True
+        assert verified_addendum["explicit_holdout_execution_authorized"] is True
+    else:
+        with pytest.raises(ResearchGateError):
+            runner._verify_holdout()
 
 
 def test_registered_holdout_seed_namespaces_are_separate_without_rng_instantiation():
