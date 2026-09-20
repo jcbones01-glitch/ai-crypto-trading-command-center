@@ -22,6 +22,7 @@ for _name in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
 import numpy as np
 import scipy
 
+from research_core.ams_dep_v2_holdout_bundle import verify_execution_bundle
 from research_core.ams_dep_v2_holdout_gate import (
     DEFAULT_HOLDOUT_ADDENDUM,
     assert_ams_dep_v2_holdout_path_allowed,
@@ -43,6 +44,25 @@ MANIFEST = ROOT / "research/governance/ams_dep_v2_freeze_manifest.json"
 OUTDIR = ROOT / "research/experiments/ams_dep_v2_holdout_shards"
 SHARD_COUNT = 128
 HYPOTHESES = ("DEP", "TIME", "STATE")
+_AUTH_SENTINEL = object()
+
+
+class _HoldoutExecutionContext:
+    __slots__ = ("_sentinel", "claim_ref", "claim_sha")
+
+    def __init__(self, claim_ref: str, claim_sha: str):
+        self._sentinel = _AUTH_SENTINEL
+        self.claim_ref = claim_ref
+        self.claim_sha = claim_sha
+
+
+def _require_context(context: object) -> _HoldoutExecutionContext:
+    if (
+        not isinstance(context, _HoldoutExecutionContext)
+        or context._sentinel is not _AUTH_SENTINEL
+    ):
+        raise RuntimeError("reserved holdout computation requires verified authorization context")
+    return context
 
 
 def _digest(payload: bytes) -> str:
@@ -108,8 +128,13 @@ def _verify_git_blob_hashes(mapping: dict, label: str) -> None:
             raise RuntimeError(f"{label} file hash mismatch: {relative}")
 
 
-def _verify_holdout() -> tuple[dict, dict, dict, dict]:
-    """Verify authority and frozen provenance without consuming reserved RNG."""
+def _verify_authority() -> tuple[dict, dict, dict, dict, dict]:
+    """Verify both gates, frozen provenance and final execution bundle.
+
+    This function performs no holdout RNG work and does not require the one-shot
+    claim to exist yet. It is used by the manual workflow immediately before
+    atomically creating that claim.
+    """
     gate, addendum = assert_ams_dep_v2_holdout_path_allowed()
 
     manifest = json.loads(MANIFEST.read_text())
@@ -122,8 +147,6 @@ def _verify_holdout() -> tuple[dict, dict, dict, dict]:
         raise RuntimeError("V2 config is not frozen")
     if config.get("calibration_authorized") is not True:
         raise RuntimeError("frozen config calibration flag changed")
-    # This historical flag was frozen before holdout release and must remain false.
-    # Holdout authority comes only from the two governance locks above.
     if config.get("holdout_authorized") is not False:
         raise RuntimeError("frozen config holdout flag unexpectedly changed")
     if config.get("market_data_authorized") is not False:
@@ -138,6 +161,7 @@ def _verify_holdout() -> tuple[dict, dict, dict, dict]:
         addendum.get("holdout_file_git_blob_sha1", {}),
         "holdout-path",
     )
+    execution_manifest = verify_execution_bundle(addendum)
 
     executing_commit = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
@@ -165,7 +189,51 @@ def _verify_holdout() -> tuple[dict, dict, dict, dict]:
         check=True,
         stdout=subprocess.DEVNULL,
     )
-    return gate, addendum, manifest, config
+    return gate, addendum, manifest, config, execution_manifest
+
+
+def _validate_claim_record(
+    addendum: dict,
+    executing_commit: str,
+    claim_ref: str,
+    claim_sha: str,
+    remote_line: str,
+) -> None:
+    expected_ref = addendum.get("one_shot_claim_ref")
+    if claim_ref != expected_ref:
+        raise RuntimeError("unexpected one-shot holdout claim ref")
+    if claim_sha != executing_commit:
+        raise RuntimeError("holdout claim SHA does not equal executing commit")
+    parts = remote_line.strip().split()
+    if len(parts) != 2 or parts[0] != claim_sha or parts[1] != claim_ref:
+        raise RuntimeError("remote one-shot holdout claim does not match execution")
+
+
+def _verify_claim(addendum: dict) -> tuple[str, str]:
+    executing_commit = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+    ).strip()
+    claim_ref = os.environ.get("AMS_DEP_HOLDOUT_CLAIM_REF", "")
+    claim_sha = os.environ.get("AMS_DEP_HOLDOUT_CLAIM_SHA", "")
+    if not claim_ref or not claim_sha:
+        raise RuntimeError("one-shot holdout claim environment is missing")
+    remote = subprocess.check_output(
+        ["git", "ls-remote", "--refs", "origin", claim_ref],
+        cwd=ROOT,
+        text=True,
+    )
+    _validate_claim_record(
+        addendum, executing_commit, claim_ref, claim_sha, remote
+    )
+    return claim_ref, claim_sha
+
+
+def _verify_holdout() -> tuple[dict, dict, dict, dict, dict, _HoldoutExecutionContext]:
+    """Verify final authority plus the durable one-shot execution claim."""
+    gate, addendum, manifest, config, execution_manifest = _verify_authority()
+    claim_ref, claim_sha = _verify_claim(addendum)
+    context = _HoldoutExecutionContext(claim_ref, claim_sha)
+    return gate, addendum, manifest, config, execution_manifest, context
 
 
 def _tasks_for_shard(config: dict, shard_id: int):
@@ -196,6 +264,7 @@ def _tasks_for_shard(config: dict, shard_id: int):
 
 
 def _run_slot(
+    context: _HoldoutExecutionContext,
     config: dict,
     dgp_index: int,
     case: str,
@@ -204,7 +273,8 @@ def _run_slot(
     hypothesis_index: int,
     hypothesis: str,
 ) -> dict:
-    # Reserved roots are read only after _verify_holdout() has opened both locks.
+    _require_context(context)
+    # Reserved roots are read only after gates, bundle and one-shot claim verify.
     data_root = int(config["data_roots"]["holdout"])
     bootstrap_root = int(config["bootstrap_roots"]["holdout"])
     samples = simulate_case(case, dgp_index, outer_index, config, data_root)
@@ -268,7 +338,7 @@ def main() -> None:
     parser.add_argument("--shard-id", required=True, type=int)
     args = parser.parse_args()
 
-    gate, addendum, manifest, config = _verify_holdout()
+    gate, addendum, manifest, config, execution_manifest, context = _verify_holdout()
     shard_id = args.shard_id
     tasks = list(_tasks_for_shard(config, shard_id))
     expected = 1032 if shard_id < 32 else 1031
@@ -296,6 +366,7 @@ def main() -> None:
             )
         )
         slot = _run_slot(
+            context,
             config,
             dgp_index,
             case,
@@ -349,6 +420,9 @@ def main() -> None:
         "holdout_addendum_sha256": _digest(
             DEFAULT_HOLDOUT_ADDENDUM.read_bytes()
         ),
+        "execution_manifest_sha256": addendum["execution_manifest_sha256"],
+        "one_shot_claim_ref": context.claim_ref,
+        "one_shot_claim_sha": context.claim_sha,
         "python": platform.python_version(),
         "numpy": np.__version__,
         "scipy": scipy.__version__,
