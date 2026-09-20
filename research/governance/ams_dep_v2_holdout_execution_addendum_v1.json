@@ -19,7 +19,17 @@
   "per_cell_invalidity_guard_verified": false,
   "explicit_holdout_execution_authorized": false,
   "reserved_holdout_seeds_consumed": false,
-  "holdout_file_git_blob_sha1": {},
+  "holdout_file_git_blob_sha1": {
+    "docs/AMS_DEP_V2_HOLDOUT_EXECUTION_PLAN.md": "f220843b561d528860b281df88c5f2857bf31c77",
+    "src/research_core/ams_dep_v2_holdout_gate.py": "a705396bd7f65040ef74644afea0bd8e31b23ce4",
+    "research/scripts/run_ams_dep_v2_holdout_shard.py": "ff887ccdb7460ce123ea6d50a87fd403f6427e86",
+    "research/scripts/aggregate_ams_dep_v2_holdout.py": "740306fe194db6ffea07bacf2e01bc37aab4c967",
+    "tests/test_ams_dep_v2_holdout_gate.py": "a30ffd34027976e80164a48585f59ba768e6cbd7",
+    "tests/test_ams_dep_v2_holdout_runner.py": "31d4defdc1274b6e25702b8311c7f466c4749243",
+    "tests/test_ams_dep_v2_holdout_aggregation.py": "1144f84af78019723d4482c01c5bcd0a367cf97c",
+    ".github/workflows/ams-dep-v2-holdout-preflight.yml": "a321e8349a8363e94f8c263b1c7e059d1486ca5a",
+    ".github/workflows/ams-dep-v2-frozen-holdout.yml": "a1c931ccf203c9e7d6cae5d7b3af9adebc25f144"
+  },
   "required_confirmation": "FROZEN_V2_HOLDOUT",
   "market_data_authorized": false,
   "validation_or_oos_authorized": false,
