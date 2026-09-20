@@ -43,9 +43,23 @@ def _authorized_addendum() -> dict:
     return addendum
 
 
-def test_current_holdout_authority_is_fail_closed():
-    with pytest.raises(ResearchGateError):
-        assert_ams_dep_v2_holdout_path_allowed()
+def test_current_holdout_authority_matches_governance_state():
+    gate = load_ams_dep_release_gate()
+    addendum = load_holdout_addendum()
+    expected_open = (
+        gate.get("v2_synthetic_calibration_passed") is True
+        and gate.get("v2_holdout_execution_authorized") is True
+        and addendum.get("status") == "AUTHORIZED"
+        and addendum.get("holdout_path_independently_reviewed") is True
+        and addendum.get("explicit_holdout_execution_authorized") is True
+    )
+    if expected_open:
+        verified_gate, verified_addendum = assert_ams_dep_v2_holdout_path_allowed()
+        assert verified_gate["v2_holdout_execution_authorized"] is True
+        assert verified_addendum["explicit_holdout_execution_authorized"] is True
+    else:
+        with pytest.raises(ResearchGateError):
+            assert_ams_dep_v2_holdout_path_allowed()
 
 
 def test_dual_gate_requires_main_gate_and_addendum(tmp_path):
