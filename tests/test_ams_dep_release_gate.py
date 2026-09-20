@@ -15,9 +15,8 @@ from research_core.release_gate import (
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_current_ams_dep_gate_authorizes_calibration_only():
+def test_current_ams_dep_gate_matches_stage_invariants():
     gate = load_ams_dep_release_gate()
-    assert gate["status"] == "V2_SYNTHETIC_CALIBRATION_AUTHORIZED"
     assert gate["design_review_issue"] == 44
     assert gate["v1_calibration_failed"] is True
     assert gate["conditional_v2_design_review_received"] is True
@@ -27,22 +26,28 @@ def test_current_ams_dep_gate_authorizes_calibration_only():
     assert gate["v2_engineering_oracles_passed"] is True
     assert gate["v2_sharding_plan_verified"] is True
     assert gate["v2_calibration_execution_authorized"] is True
-    assert gate["v2_holdout_execution_authorized"] is False
-    assert gate["v2_synthetic_calibration_passed"] is False
+
+    # A holdout-authorized stage is legal only after calibration PASS.
+    if gate["v2_holdout_execution_authorized"] is True:
+        assert gate["v2_synthetic_calibration_passed"] is True
+        assert_ams_dep_v2_holdout_execution_allowed()
+    else:
+        with pytest.raises(ResearchGateError, match="V2 holdout execution blocked"):
+            assert_ams_dep_v2_holdout_execution_allowed()
+
+    # Synthetic-stage progression must never silently open empirical/trading authority.
     assert gate["development_market_data_execution_authorized"] is False
     assert gate["validation_or_oos_access_authorized"] is False
     assert gate["strategy_pnl_authorized"] is False
     assert gate["paper_trading_authorized"] is False
     assert gate["live_trading_authorized"] is False
-
-
-def test_current_gate_allows_calibration_but_blocks_holdout_and_empirical():
-    assert assert_ams_dep_v2_calibration_execution_allowed()["v2_calibration_execution_authorized"] is True
-    assert assert_ams_dep_v2_synthetic_execution_allowed()["v2_calibration_execution_authorized"] is True
-    with pytest.raises(ResearchGateError, match="V2 holdout execution blocked"):
-        assert_ams_dep_v2_holdout_execution_allowed()
     with pytest.raises(ResearchGateError, match="empirical execution blocked"):
         assert_ams_dep_empirical_release_allowed()
+
+
+def test_current_gate_keeps_calibration_helper_valid_across_synthetic_stages():
+    assert assert_ams_dep_v2_calibration_execution_allowed()["v2_calibration_execution_authorized"] is True
+    assert assert_ams_dep_v2_synthetic_execution_allowed()["v2_calibration_execution_authorized"] is True
 
 
 def test_empirical_gate_requires_all_release_conditions_and_never_oos(tmp_path):
@@ -135,4 +140,27 @@ def test_empirical_release_requires_successful_unopened_holdout(tmp_path):
     path = tmp_path / "gate.json"
     path.write_text(json.dumps(gate))
     with pytest.raises(ResearchGateError, match="v2_synthetic_holdout_passed"):
+        assert_ams_dep_empirical_release_allowed(path)
+
+
+def test_authorized_holdout_fixture_opens_holdout_but_keeps_empirical_closed(tmp_path):
+    import json
+
+    gate = load_ams_dep_release_gate().copy()
+    gate["status"] = "V2_SYNTHETIC_HOLDOUT_AUTHORIZED"
+    gate["v2_synthetic_calibration_passed"] = True
+    gate["v2_holdout_execution_authorized"] = True
+
+    path = tmp_path / "authorized_holdout.json"
+    path.write_text(json.dumps(gate))
+
+    allowed = assert_ams_dep_v2_holdout_execution_allowed(path)
+    assert allowed["v2_synthetic_calibration_passed"] is True
+    assert allowed["v2_holdout_execution_authorized"] is True
+    assert allowed["development_market_data_execution_authorized"] is False
+    assert allowed["validation_or_oos_access_authorized"] is False
+    assert allowed["strategy_pnl_authorized"] is False
+    assert allowed["paper_trading_authorized"] is False
+    assert allowed["live_trading_authorized"] is False
+    with pytest.raises(ResearchGateError, match="empirical execution blocked"):
         assert_ams_dep_empirical_release_allowed(path)
