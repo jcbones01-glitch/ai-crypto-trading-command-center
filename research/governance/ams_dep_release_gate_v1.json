@@ -1,7 +1,7 @@
 {
   "gate_id": "AMS-DEP-EMPIRICAL-RELEASE",
   "version": 1,
-  "status": "V2_SYNTHETIC_CALIBRATION_AUTHORIZED",
+  "status": "V2_SYNTHETIC_HOLDOUT_AUTHORIZED",
   "design_review_issue": 44,
   "parent_failure_issue": 43,
   "v1_calibration_failed": true,
@@ -25,8 +25,8 @@
   "post_freeze_engineering_artifact_digest": "sha256:82030dcfbce4bba89da67cc1765865c3fda3a8885c9f43f6faa698ec06e0ab63",
   "v2_calibration_execution_authorized": true,
   "v2_synthetic_execution_authorized": true,
-  "v2_synthetic_calibration_passed": false,
-  "v2_holdout_execution_authorized": false,
+  "v2_synthetic_calibration_passed": true,
+  "v2_holdout_execution_authorized": true,
   "v2_synthetic_holdout_passed": false,
   "full_pipeline_synthetic_integrity_passed": false,
   "separate_empirical_release_approved": false,
@@ -35,6 +35,6 @@
   "strategy_pnl_authorized": false,
   "paper_trading_authorized": false,
   "live_trading_authorized": false,
-  "next_gate": "Execute frozen V2 synthetic calibration only. Retain PASS or FAIL. Holdout remains locked until an unchanged calibration passes and receives separate authorization.",
-  "notes": "Independent ratification authorizes only frozen V2 synthetic calibration. It does not authorize holdout, market-data AMS-DEP execution, Validation/OOS, P&L, paper trading, or live trading."
+  "next_gate": "Execute the separately authorized frozen V2 synthetic holdout exactly once after final execution-bundle verification and one-shot claim checks. Retain PASS or FAIL. Empirical market data, Validation/OOS, strategy P&L, paper trading, and live trading remain locked.",
+  "notes": "Frozen V2 calibration passed and the reserved synthetic holdout path received independent authorization in Issue #54. This gate authorizes only the one-shot reserved synthetic holdout under the separately authorized addendum and execution manifest. It does not authorize empirical market-data execution, Validation/OOS, P&L, paper trading, or live trading."
 }
