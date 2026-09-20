@@ -71,6 +71,12 @@ def assert_ams_dep_v2_holdout_path_allowed(
         missing.append("reviewed_holdout_code_commit")
     if not addendum.get("holdout_file_git_blob_sha1"):
         missing.append("holdout_file_git_blob_sha1")
+    if not addendum.get("one_shot_claim_ref"):
+        missing.append("one_shot_claim_ref")
+    if not addendum.get("execution_manifest_path"):
+        missing.append("execution_manifest_path")
+    if not addendum.get("execution_manifest_sha256"):
+        missing.append("execution_manifest_sha256")
 
     for forbidden in (
         "market_data_authorized",
