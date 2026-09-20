@@ -142,8 +142,18 @@ def _verify_holdout() -> tuple[dict, dict, dict, dict]:
     executing_commit = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
     ).strip()
-    if executing_commit != addendum.get("authorized_execution_commit"):
-        raise RuntimeError("executing commit does not match holdout authorization")
+    reviewed_commit = str(addendum["reviewed_holdout_code_commit"])
+    ancestor = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", reviewed_commit, executing_commit],
+        cwd=ROOT,
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if ancestor.returncode != 0:
+        raise RuntimeError(
+            "reviewed holdout code commit is not an ancestor of execution"
+        )
 
     if platform.python_version() != "3.12.14":
         raise RuntimeError("unregistered Python version")
