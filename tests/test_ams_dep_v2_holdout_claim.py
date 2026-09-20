@@ -9,6 +9,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "research/scripts/claim_ams_dep_v2_holdout.py"
+WORKFLOW = ROOT / ".github/workflows/ams-dep-v2-frozen-holdout.yml"
 
 
 def load_claim():
@@ -121,3 +122,15 @@ def test_claim_ref_cannot_be_changed_by_cli_input():
             ref="refs/tags/another-ref",
             opener=AtomicFakeGitHub(),
         )
+
+
+def test_execution_workflow_serializes_and_claims_before_shard_fanout():
+    text = WORKFLOW.read_text()
+    assert "group: ams-dep-v2-holdout-one-shot" in text
+    assert "cancel-in-progress: false" in text
+    assert "contents: write" in text
+    claim_pos = text.index("Atomically create durable one-shot holdout claim")
+    shard_pos = text.index("\n  shard:")
+    assert claim_pos < shard_pos
+    assert "claim_ams_dep_v2_holdout.py" in text
+    assert "needs: preflight" in text
