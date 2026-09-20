@@ -1,6 +1,8 @@
 # AMS-DEP V2 calibration result intake — 2026-09-20
 
-Status: **WORKFLOW-REPORTED PASS; DETAILED ARTIFACT REVIEW PENDING**.
+Status at initial intake: **WORKFLOW-REPORTED PASS; DETAILED ARTIFACT REVIEW PENDING**.
+
+Update: the supplied ZIP now matches GitHub’s digest and its outer ledger and numerical summaries have been checked. See the [completed detailed artifact review](AMS_DEP_V2_CALIBRATION_ARTIFACT_REVIEW.md). The historical intake below is retained; its download blocker and pending numerical checks are superseded by that review. Holdout remains unauthorized.
 
 ## Verified evidence
 

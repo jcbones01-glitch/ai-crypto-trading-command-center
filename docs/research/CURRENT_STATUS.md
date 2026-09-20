@@ -4,7 +4,8 @@ Snapshot: 2026-09-20. Recheck live repository and Actions state before acting.
 
 ## Authority
 
-Integration base: adaptive-markets-research at 6431e9995ed3c904b673603b662506692d370539.
+Reviewed integration head: adaptive-markets-research at d3a2a5c6722de44e00980d36be4d307973c04fa1.
+Reviewed PR #52 head before artifact-review update: 91640aea1a13604861720f72af691cc7b915c8ff.
 Controlling gate: [ams_dep_release_gate_v1.json](../../research/governance/ams_dep_release_gate_v1.json).
 The checked gate authorizes frozen V2 synthetic calibration only. Holdout, empirical AMS-DEP market execution, Validation/OOS, strategy P&L, paper trading and live trading remain blocked.
 
@@ -17,12 +18,12 @@ The imported reviews retain their historical repository and workflow observation
 ## Calibration workflow completed
 
 Run 35460656875 completed successfully on 2026-09-20 at 16:37:55 UTC. The aggregate log explicitly reported calibration PASS. All ten frozen file hashes match at execution and the inspected current head.
-Detailed numerical and artifact-integrity review remains pending because the artifact download returned HTTP 403. See [result intake](AMS_DEP_V2_CALIBRATION_RESULT_INTAKE.md) for verified evidence, provenance and remaining checks. Holdout remains locked.
+The supplied ZIP resolves the download blocker. Its hash matches GitHub; all 22000 outer records and six-slot Holm decisions were checked, and 219 summary metrics were recomputed. All registered checks pass, including the independently checked per-cell invalidity maximum. See [detailed artifact review](AMS_DEP_V2_CALIBRATION_ARTIFACT_REVIEW.md) for results and limitations. The machine gate is unchanged; holdout remains locked.
 
 ## Next decision
 
-1. Obtain the aggregate artifact and complete the detailed review described in the result intake.
-2. If unchanged calibration passes, document evidence and obtain the separately required holdout authorization. Do not infer authorization from a green Actions job.
+1. Review and integrate the completed artifact evidence in PR #52.
+2. Prepare a separately reviewed guarded holdout path and evidence/governance transition, then obtain explicit holdout execution authorization under the frozen policy. The current runner is calibration-only. Preserve the specification and seed separation; explicitly check per-cell invalidity. Do not infer authorization from calibration PASS.
 3. If calibration fails, retain the failure and follow the frozen failure/version process. If infrastructure fails, distinguish that from a statistical failure before deciding on recovery.
 4. Pause broad literature gathering. Add a source when an explicit unresolved decision requires it.
 
