@@ -10,11 +10,16 @@ from research_core.ams_dep_v2_holdout_bundle import (
 )
 
 
-def test_draft_execution_manifest_is_fail_closed():
+def test_execution_manifest_shape_matches_current_stage():
     manifest = load_execution_manifest()
-    assert manifest["status"] == "DRAFT_LOCKED"
-    assert manifest["main_gate_sha256"] is None
-    assert manifest["safety_file_git_blob_sha1"] == {}
+    assert manifest["status"] in {"DRAFT_LOCKED", "AUTHORIZED"}
+    if manifest["status"] == "DRAFT_LOCKED":
+        assert manifest["main_gate_sha256"] is None
+        assert manifest["safety_file_git_blob_sha1"] == {}
+    else:
+        assert manifest["main_gate_sha256"]
+        assert manifest["reviewed_holdout_code_commit"]
+        assert manifest["safety_file_git_blob_sha1"]
 
 
 def test_required_safety_boundary_includes_transitive_main_gate_dependencies():
