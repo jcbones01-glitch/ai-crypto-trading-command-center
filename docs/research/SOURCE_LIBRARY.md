@@ -12,7 +12,7 @@ The companion reports in this folder contain evidence cards, source locators, as
 | R02 | [Cont, Kukanov & Stoikov, order-book events (2014)](https://doi.org/10.1093/jjfinec/nbt003) | [Order-flow replication/data feasibility](R02_Order_Flow_Replication_and_Data_Feasibility_Review.md) | Contemporaneous price explanation does not show subsequent-return predictability; event fidelity remains to be qualified. |
 | R03 | [Makarov & Schoar, crypto arbitrage (2020)](https://doi.org/10.1016/j.jfineco.2019.07.001) | [Exchange fragmentation](R03_Exchange_Fragmentation_Review.md) | Historical cross-venue spreads do not establish currently accessible executable arbitrage. |
 | R04 | [Schmeling, Schrimpf & Todorov, Crypto Carry](https://www.bis.org/publ/work1087.htm) | [Carry and market stress](R04_Crypto_Carry_and_Market_Stress_Review.md) | Dated-futures basis and perpetual funding differ; incremental spot predictive value remains untested. |
-| R05 | [Bailey et al., backtest overfitting](https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf) | Review reported complete in playbook; companion report unavailable in supplied materials | Search/exposure ledger and selection-inference compatibility remain unresolved; no report reproduced here. |
+| R05 | [Bailey et al., backtest overfitting](https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf) | [Selection and backtest overfitting](R05_Selection_and_Backtest_Overfitting_Review.md) | Global search/exposure ledger and formal selection-inference compatibility remain unresolved; review recovered 2026-09-20. |
 | D01–D03 | [ALFRED](https://fred.stlouisfed.org/docs/api/fred/alfred.html), [Coin Metrics community](https://github.com/coinmetrics/data), [Coin Metrics market data](https://docs.coinmetrics.io/market-data/market-data-overview) | [Data feasibility](D01_D03_Data_Source_Feasibility_Review.md) | Availability time, coverage, revision policy, licensing and entitlement require dataset-level verification. |
 | OA | [Oxford Analytica Foundation](https://foundation.oxan.com/) and public policy sources | [Geopolitical scenario intake](Oxford_Analytica_Intake_Geopolitical_Scenario_Framework.md) | No proprietary Oxford Analytica report reviewed; scenario framing supplies no alpha claim. |
 | V01 | [MIT Adaptive Markets course](https://ocw.mit.edu/courses/15-481x-adaptive-markets-financial-market-dynamics-and-human-behavior-fall-2022/) | [Course review](V01_MIT_Adaptive_Markets_Course_Review.md) | Educational framework, no crypto strategy validation; some exact timestamps unavailable. |
@@ -27,6 +27,12 @@ The companion reports in this folder contain evidence cards, source locators, as
 
 ## Next integration decisions
 
-1. Retrieve and inspect the missing R05 companion before adding it; do not infer its contents from the playbook.
+1. Use the recovered R05 review to specify and independently review global search accounting before new selection-inference computation.
 2. For any proposed dataset, record original provider, publication/availability timestamp, revision policy, license, coverage, immutable snapshot hash, and authorized use.
 3. For any new experiment, write a distinct prospective protocol and pass the current machine/research authorization process. Preserve negative results and the existing search history.
+
+## Maintenance and provenance
+
+Companion reports are preserved historical review snapshots. Their quoted branch heads, workflow status, prices, regulatory dates and data entitlements must not be treated as current without rechecking. This integration archives supplied reviews; it is not a fresh independent audit of every cited paper or factual claim.
+
+See [current project handoff](CURRENT_STATUS.md) for the integration-time state and next gate. R05 was recovered from the original supplied author's saved report; its historical repository claims remain attributed to that review.
