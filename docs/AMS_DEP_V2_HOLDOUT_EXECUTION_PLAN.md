@@ -52,8 +52,9 @@ Holdout execution requires both:
 
 2. the separate
    `research/governance/ams_dep_v2_holdout_execution_addendum_v1.json` to be
-   independently reviewed, hash-pinned, bound to one authorized execution
-   commit and explicitly changed from `DRAFT_LOCKED` to `AUTHORIZED`.
+   independently reviewed, hash-pinned, bound to a reviewed holdout-code commit
+   that must be an ancestor of the execution commit, and explicitly changed
+   from `DRAFT_LOCKED` to `AUTHORIZED`.
 
 The addendum also requires:
 
@@ -63,7 +64,7 @@ The addendum also requires:
 - artifact-integrity verification;
 - duplicate-task-detection verification;
 - explicit per-cell invalidity guard verification;
-- reserved holdout namespace not previously consumed;
+- reviewed holdout code commit ancestry plus exact pinned blob hashes;\n- reserved holdout namespace not previously consumed;
 - market-data / Validation-OOS / P&L / paper / live permissions all false.
 
 A PASS in the calibration report alone cannot satisfy these controls.
