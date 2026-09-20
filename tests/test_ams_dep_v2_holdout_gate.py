@@ -103,3 +103,19 @@ def test_holdout_cannot_open_without_calibration_pass(tmp_path):
     )
     with pytest.raises(ResearchGateError, match="v2_synthetic_calibration_passed"):
         assert_ams_dep_v2_holdout_path_allowed(gate_path, addendum_path)
+
+
+def test_locked_addendum_blob_map_matches_current_files():
+    import subprocess
+
+    root = Path(__file__).resolve().parents[1]
+    addendum = load_holdout_addendum()
+    mapping = addendum["holdout_file_git_blob_sha1"]
+    assert mapping
+    for relative, expected in mapping.items():
+        actual = subprocess.check_output(
+            ["git", "hash-object", "--", relative],
+            cwd=root,
+            text=True,
+        ).strip()
+        assert actual == expected, (relative, actual, expected)
