@@ -47,18 +47,31 @@ jobs:
       - name: Run holdout preparation tests
         run: |
           python -m pytest -q             tests/test_ams_dep_v2_holdout_gate.py             tests/test_ams_dep_v2_holdout_runner.py             tests/test_ams_dep_v2_holdout_aggregation.py             tests/test_ams_dep_release_gate.py
-      - name: Confirm current holdout path remains locked
+      - name: Verify holdout authority state without reserved RNG use
         run: |
           python - <<'PY'
           from research_core.ams_dep_v2_holdout_gate import (
               HoldoutAuthorizationError,
               assert_ams_dep_v2_holdout_path_allowed,
+              load_holdout_addendum,
           )
-          from research_core.release_gate import ResearchGateError
+          from research_core.release_gate import ResearchGateError, load_ams_dep_release_gate
+          gate=load_ams_dep_release_gate()
+          addendum=load_holdout_addendum()
+          expected_open=(
+              gate.get('v2_synthetic_calibration_passed') is True
+              and gate.get('v2_holdout_execution_authorized') is True
+              and addendum.get('status')=='AUTHORIZED'
+              and addendum.get('explicit_holdout_execution_authorized') is True
+          )
           try:
               assert_ams_dep_v2_holdout_path_allowed()
           except (HoldoutAuthorizationError, ResearchGateError) as exc:
+              if expected_open:
+                  raise
               print('HOLDOUT_LOCK_CONFIRMED', exc)
           else:
-              raise SystemExit('Preparation branch unexpectedly authorizes holdout execution')
+              if not expected_open:
+                  raise SystemExit('Holdout path opened without matching governance state')
+              print('HOLDOUT_AUTHORITY_CONFIRMED')
           PY
