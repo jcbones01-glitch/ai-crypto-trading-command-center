@@ -217,3 +217,128 @@ hash/commit pinning, may open the runner.
 Until then:
 
 **NO RESERVED HOLDOUT EXECUTION.**
+
+
+## Issue #54 remediation — post-review candidate
+
+The first independent review returned
+`REQUIRE_CHANGES_BEFORE_HOLDOUT_EXECUTION`. The statistical holdout design was
+not rejected. Three execution/governance blockers were identified and are
+remediated in the next candidate.
+
+### 1. State-aware release tests
+
+`tests/test_ams_dep_release_gate.py` no longer hard-codes the historical
+calibration-only state as the only passing state.
+
+It now verifies stage invariants:
+
+- calibration authority remains valid;
+- holdout authority may open only when calibration PASS is true;
+- a properly authorized synthetic holdout fixture is accepted;
+- Development market data, Validation/OOS, strategy P&L, paper and live trading
+  remain closed;
+- empirical execution remains blocked.
+
+The holdout-specific current-state tests are likewise stage-aware. Therefore a
+legitimate governance transition no longer makes the execution workflow fail
+merely because it is no longer in the old locked state.
+
+### 2. Durable one-shot execution claim
+
+The static `reserved_holdout_seeds_consumed` field is no longer the sole
+one-shot mechanism.
+
+The execution workflow now uses the GitHub create-ref API through
+`research/scripts/claim_ams_dep_v2_holdout.py` to atomically create exactly:
+
+`refs/tags/ams-dep-v2-holdout-execution-claimed-v1`
+
+The claim is created:
+
+1. after explicit user confirmation;
+2. after both authorization locks and the final execution bundle verify;
+3. after all state-aware non-RNG safety tests pass;
+4. immediately before shard fan-out.
+
+GitHub ref creation is create-once: a second creation of the fixed ref fails.
+The workflow also declares a repository-wide holdout concurrency group with
+`cancel-in-progress: false` to serialize simultaneous attempts.
+
+Tests cover:
+
+- first claim succeeds;
+- sequential second claim fails;
+- two simultaneous claims yield exactly one winner;
+- the claim ref cannot be changed by CLI input;
+- the workflow contains concurrency control and creates the claim before the
+  shard job.
+
+The claim ref and exact claimed commit SHA are passed to every shard, recorded
+in every shard summary, checked against the remote Git ref before reserved RNG
+use, and rechecked by aggregation.
+
+A shard can run only when its checkout HEAD equals the SHA stored in the durable
+claim tag.
+
+### 3. Complete authorization hash boundary
+
+A final execution bundle is introduced:
+
+`research/governance/ams_dep_v2_holdout_execution_manifest_v1.json`
+
+Before execution it must be changed from `DRAFT_LOCKED` to `AUTHORIZED`
+through the governance-only post-review transition.
+
+The final manifest binds:
+
+- the authorized main release-gate SHA-256;
+- the reviewed holdout code commit;
+- the fixed one-shot claim ref;
+- exact Git blob hashes for all safety-critical runtime/test/workflow
+  dependencies.
+
+The required safety set explicitly includes the previously omitted:
+
+- `src/research_core/release_gate.py`;
+- `tests/test_ams_dep_release_gate.py`.
+
+It also includes the holdout gate, execution-bundle verifier, claim script,
+runner, aggregator, holdout safety tests and both holdout workflows.
+
+The authorized addendum must store the SHA-256 of the final execution manifest.
+The execution manifest intentionally does not hash the addendum, avoiding a
+circular hash dependency. Instead, the create-once claim tag binds the exact
+execution commit containing both the authorized addendum and the already-hashed
+execution manifest.
+
+`research/scripts/build_ams_dep_v2_holdout_execution_manifest.py` is provided
+to construct the final manifest after an independent authorization decision and
+after the main gate/addendum are moved to their authorized state. The builder
+performs no simulation or RNG work.
+
+### Additional defense-in-depth hardening
+
+The remediation also strengthens two secondary findings from the first review:
+
+- `_run_slot()` now requires an authorization context that can be produced only
+  after the full authority bundle and one-shot claim verify;
+- aggregation now checks shard classification, both authorization flags,
+  Python/NumPy/SciPy versions, BLAS thread count, execution-manifest hash,
+  one-shot claim ref/SHA, and that the common execution commit equals the
+  claimed commit.
+
+Mutable GitHub action references and the hosted runner image remain an explicit
+reproducibility limitation for this candidate; the core Python/numerical
+environment and scientific files remain pinned as before.
+
+### Remediation boundary
+
+These changes still do **not** authorize execution.
+
+Until a new independent review returns
+`AUTHORIZE_V2_SYNTHETIC_HOLDOUT_EXECUTION`, the main release gate remains
+closed and the addendum remains `DRAFT_LOCKED`. The execution manifest also
+remains `DRAFT_LOCKED`.
+
+No reserved holdout RNG should be instantiated during remediation or review.
