@@ -44,24 +44,35 @@ MANIFEST = ROOT / "research/governance/ams_dep_v2_freeze_manifest.json"
 OUTDIR = ROOT / "research/experiments/ams_dep_v2_holdout_shards"
 SHARD_COUNT = 128
 HYPOTHESES = ("DEP", "TIME", "STATE")
-_AUTH_SENTINEL = object()
+_ACTIVE_CONTEXT = None
 
 
 class _HoldoutExecutionContext:
-    __slots__ = ("_sentinel", "claim_ref", "claim_sha")
+    __slots__ = ("claim_ref", "claim_sha")
 
     def __init__(self, claim_ref: str, claim_sha: str):
-        self._sentinel = _AUTH_SENTINEL
+        # Construction alone never grants authority.  Only _activate_context(),
+        # reached after full gate/bundle/claim verification, can make a context
+        # active for reserved holdout computation.
         self.claim_ref = claim_ref
         self.claim_sha = claim_sha
+
+
+def _activate_context(claim_ref: str, claim_sha: str) -> _HoldoutExecutionContext:
+    global _ACTIVE_CONTEXT
+    context = _HoldoutExecutionContext(claim_ref, claim_sha)
+    _ACTIVE_CONTEXT = context
+    return context
 
 
 def _require_context(context: object) -> _HoldoutExecutionContext:
     if (
         not isinstance(context, _HoldoutExecutionContext)
-        or context._sentinel is not _AUTH_SENTINEL
+        or context is not _ACTIVE_CONTEXT
     ):
-        raise RuntimeError("reserved holdout computation requires verified authorization context")
+        raise RuntimeError(
+            "reserved holdout computation requires active verified authorization context"
+        )
     return context
 
 
@@ -232,7 +243,7 @@ def _verify_holdout() -> tuple[dict, dict, dict, dict, dict, _HoldoutExecutionCo
     """Verify final authority plus the durable one-shot execution claim."""
     gate, addendum, manifest, config, execution_manifest = _verify_authority()
     claim_ref, claim_sha = _verify_claim(addendum)
-    context = _HoldoutExecutionContext(claim_ref, claim_sha)
+    context = _activate_context(claim_ref, claim_sha)
     return gate, addendum, manifest, config, execution_manifest, context
 
 
