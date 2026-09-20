@@ -32,7 +32,7 @@ def test_current_holdout_runner_authority_check_consumes_no_reserved_rng():
         and addendum.get("explicit_holdout_execution_authorized") is True
     )
     if currently_open:
-        verified_gate, verified_addendum, _, _ = runner._verify_holdout()
+        verified_gate, verified_addendum, _, _, _, _ = runner._verify_holdout()
         assert verified_gate["v2_holdout_execution_authorized"] is True
         assert verified_addendum["explicit_holdout_execution_authorized"] is True
     else:
@@ -91,3 +91,46 @@ def test_holdout_runner_selects_only_reserved_holdout_roots():
     assert 'config["data_roots"]["holdout"]' in text
     assert 'config["bootstrap_roots"]["holdout"]' in text
     assert "--suite" not in text
+
+
+def test_claim_record_requires_exact_ref_sha_and_remote_binding():
+    runner = load_runner()
+    addendum = {"one_shot_claim_ref": "refs/tags/fixed"}
+    runner._validate_claim_record(
+        addendum,
+        "a" * 40,
+        "refs/tags/fixed",
+        "a" * 40,
+        ("a" * 40) + "\trefs/tags/fixed\n",
+    )
+    with pytest.raises(RuntimeError, match="claim SHA"):
+        runner._validate_claim_record(
+            addendum,
+            "a" * 40,
+            "refs/tags/fixed",
+            "b" * 40,
+            ("b" * 40) + "\trefs/tags/fixed\n",
+        )
+    with pytest.raises(RuntimeError, match="claim ref"):
+        runner._validate_claim_record(
+            addendum,
+            "a" * 40,
+            "refs/tags/other",
+            "a" * 40,
+            ("a" * 40) + "\trefs/tags/other\n",
+        )
+
+
+def test_run_slot_rejects_direct_call_without_authorization_context():
+    runner = load_runner()
+    with pytest.raises(RuntimeError, match="authorization context"):
+        runner._run_slot(
+            None,
+            {},
+            0,
+            "iid_null",
+            0,
+            0,
+            0,
+            "DEP",
+        )
