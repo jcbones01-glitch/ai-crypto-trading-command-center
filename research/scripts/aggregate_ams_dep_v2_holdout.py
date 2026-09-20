@@ -4,7 +4,12 @@ import argparse
 import gzip
 import hashlib
 import json
+import os
+import platform
 from pathlib import Path
+
+import numpy as np
+import scipy
 
 from research_core.ams_dep_v2_aggregation import summarize, task_index
 from research_core.ams_dep_v2_holdout_gate import (
@@ -86,6 +91,8 @@ def _load_shard_evidence(
     manifest_sha: str,
     spec_sha: str,
     addendum_sha: str,
+    expected_claim_ref: str,
+    expected_claim_sha: str,
     expected_shards: int = SHARD_COUNT,
 ) -> tuple[dict, set[str], dict]:
     ledgers = sorted(input_dir.rglob("shard_*.jsonl.gz"))
@@ -102,6 +109,8 @@ def _load_shard_evidence(
         shard = int(s["shard_id"])
         if shard in summary_by_shard:
             raise RuntimeError("duplicate shard summary")
+        if s.get("classification") != "FROZEN_AMS_DEP_V2_SYNTHETIC_HOLDOUT_SHARD":
+            raise RuntimeError("unexpected holdout shard classification")
         if s.get("suite") != "holdout":
             raise RuntimeError("non-holdout shard summary")
         if s.get("holdout_run") is not True:
@@ -114,6 +123,20 @@ def _load_shard_evidence(
             or s.get("strategy_pnl_calculated")
         ):
             raise RuntimeError("forbidden access flag")
+        if s.get("main_holdout_gate_authorized") is not True:
+            raise RuntimeError("shard lacks main holdout authorization")
+        if s.get("addendum_holdout_authorized") is not True:
+            raise RuntimeError("shard lacks addendum holdout authorization")
+        if s.get("one_shot_claim_ref") != expected_claim_ref:
+            raise RuntimeError("mixed/unexpected one-shot claim ref")
+        if s.get("one_shot_claim_sha") != expected_claim_sha:
+            raise RuntimeError("mixed/unexpected one-shot claim SHA")
+        if s.get("python") != "3.12.14":
+            raise RuntimeError("unexpected Python version")
+        if s.get("numpy") != "2.2.6" or s.get("scipy") != "1.15.3":
+            raise RuntimeError("unexpected numerical dependency version")
+        if s.get("blas_threads") != 1:
+            raise RuntimeError("unexpected BLAS thread count")
         if (
             s["freeze_manifest_sha256"] != manifest_sha
             or s["frozen_spec_sha256"] != spec_sha
@@ -178,12 +201,19 @@ def main() -> None:
     spec_sha = sha(CONFIG.read_bytes())
     addendum_sha = sha(DEFAULT_HOLDOUT_ADDENDUM.read_bytes())
 
+    claim_ref = os.environ.get("AMS_DEP_HOLDOUT_CLAIM_REF", "")
+    claim_sha = os.environ.get("AMS_DEP_HOLDOUT_CLAIM_SHA", "")
+    if not claim_ref or not claim_sha:
+        raise RuntimeError("one-shot claim environment is missing")
+
     rows, commits, shard_hashes = _load_shard_evidence(
         args.input_dir,
         config,
         manifest_sha,
         spec_sha,
         addendum_sha,
+        claim_ref,
+        claim_sha,
     )
 
     # The frozen summarizer uses the calibration-count field internally.
@@ -241,6 +271,8 @@ def main() -> None:
         "addendum_holdout_authorized": addendum[
             "explicit_holdout_execution_authorized"
         ],
+        "one_shot_claim_ref": claim_ref,
+        "one_shot_claim_sha": claim_sha,
         "per_cell_invalidity_screen_pass": per_cell_pass,
         "cases": cases,
         "holdout_screen_pass": bool(
