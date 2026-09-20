@@ -51,18 +51,10 @@ class _HoldoutExecutionContext:
     __slots__ = ("claim_ref", "claim_sha")
 
     def __init__(self, claim_ref: str, claim_sha: str):
-        # Construction alone never grants authority.  Only _activate_context(),
-        # reached after full gate/bundle/claim verification, can make a context
-        # active for reserved holdout computation.
+        # Construction alone never grants authority. Only _verify_holdout(),
+        # after full gate/bundle/claim verification, installs the active identity.
         self.claim_ref = claim_ref
         self.claim_sha = claim_sha
-
-
-def _activate_context(claim_ref: str, claim_sha: str) -> _HoldoutExecutionContext:
-    global _ACTIVE_CONTEXT
-    context = _HoldoutExecutionContext(claim_ref, claim_sha)
-    _ACTIVE_CONTEXT = context
-    return context
 
 
 def _require_context(context: object) -> _HoldoutExecutionContext:
@@ -241,9 +233,11 @@ def _verify_claim(addendum: dict) -> tuple[str, str]:
 
 def _verify_holdout() -> tuple[dict, dict, dict, dict, dict, _HoldoutExecutionContext]:
     """Verify final authority plus the durable one-shot execution claim."""
+    global _ACTIVE_CONTEXT
     gate, addendum, manifest, config, execution_manifest = _verify_authority()
     claim_ref, claim_sha = _verify_claim(addendum)
-    context = _activate_context(claim_ref, claim_sha)
+    context = _HoldoutExecutionContext(claim_ref, claim_sha)
+    _ACTIVE_CONTEXT = context
     return gate, addendum, manifest, config, execution_manifest, context
 
 
