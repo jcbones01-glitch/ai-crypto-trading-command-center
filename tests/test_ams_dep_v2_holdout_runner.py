@@ -165,11 +165,26 @@ def test_forged_constructed_context_cannot_reach_reserved_holdout_roots(monkeypa
     assert reached_simulation is False
 
 
-def test_only_activated_context_identity_is_accepted():
+def test_no_callable_activation_helper_exists():
     runner = load_runner()
-    forged = runner._HoldoutExecutionContext("same-ref", "same-sha")
-    active = runner._activate_context("same-ref", "same-sha")
+    assert not hasattr(runner, "_activate_context")
 
+
+def test_constructed_context_cannot_self_activate():
+    runner = load_runner()
+    first = runner._HoldoutExecutionContext("same-ref", "same-sha")
+    second = runner._HoldoutExecutionContext("same-ref", "same-sha")
     with pytest.raises(RuntimeError, match="active verified authorization context"):
-        runner._require_context(forged)
-    assert runner._require_context(active) is active
+        runner._require_context(first)
+    with pytest.raises(RuntimeError, match="active verified authorization context"):
+        runner._require_context(second)
+
+
+def test_active_context_is_installed_only_inside_verified_holdout_path():
+    source = SCRIPT.read_text()
+    assert "def _activate_context" not in source
+    verify_start = source.index("def _verify_holdout")
+    tasks_start = source.index("def _tasks_for_shard")
+    verify_body = source[verify_start:tasks_start]
+    assert "_ACTIVE_CONTEXT = context" in verify_body
+    assert source.count("_ACTIVE_CONTEXT = context") == 1
