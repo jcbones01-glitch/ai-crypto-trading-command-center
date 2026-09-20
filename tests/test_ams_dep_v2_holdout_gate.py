@@ -38,6 +38,9 @@ def _authorized_addendum() -> dict:
             "reviewed_holdout_code_commit": "example-commit",
             "reserved_holdout_seeds_consumed": False,
             "holdout_file_git_blob_sha1": {"example": "example"},
+            "one_shot_claim_ref": "refs/tags/ams-dep-v2-holdout-execution-claimed-v1",
+            "execution_manifest_path": "research/governance/ams_dep_v2_holdout_execution_manifest_v1.json",
+            "execution_manifest_sha256": "a" * 64,
         }
     )
     return addendum
