@@ -63,6 +63,14 @@ def verify_execution_bundle(
     manifest = load_execution_manifest(p)
     if manifest.get("status") != "AUTHORIZED":
         raise HoldoutBundleError("holdout execution manifest is not AUTHORIZED")
+    if addendum.get("execution_manifest_path") != str(
+        p.relative_to(ROOT)
+    ):
+        raise HoldoutBundleError("authorized addendum points to unexpected execution manifest")
+
+    forbidden = manifest.get("forbidden_permissions") or {}
+    if not forbidden or any(value is not False for value in forbidden.values()):
+        raise HoldoutBundleError("execution manifest opens or omits forbidden permissions")
 
     expected_manifest_sha = addendum.get("execution_manifest_sha256")
     if not expected_manifest_sha:
