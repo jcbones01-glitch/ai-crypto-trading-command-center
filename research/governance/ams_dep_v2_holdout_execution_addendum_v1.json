@@ -21,14 +21,14 @@
   "reserved_holdout_seeds_consumed": false,
   "holdout_file_git_blob_sha1": {
     "docs/AMS_DEP_V2_HOLDOUT_EXECUTION_PLAN.md": "f220843b561d528860b281df88c5f2857bf31c77",
-    "src/research_core/ams_dep_v2_holdout_gate.py": "6cb524dfc449a03bd617582008bc6e12974493ab",
-    "research/scripts/run_ams_dep_v2_holdout_shard.py": "bf3d6dd3488506822be0ec6c3ac055218487f99d",
-    "research/scripts/aggregate_ams_dep_v2_holdout.py": "740306fe194db6ffea07bacf2e01bc37aab4c967",
-    "tests/test_ams_dep_v2_holdout_gate.py": "b32534e7853efa56ff7d1b1c61f6e5ed8ab7a916",
-    "tests/test_ams_dep_v2_holdout_runner.py": "31d4defdc1274b6e25702b8311c7f466c4749243",
+    "src/research_core/ams_dep_v2_holdout_gate.py": "54facc621d20a7fd67708a587e3b16bcd8b9e956",
+    "research/scripts/run_ams_dep_v2_holdout_shard.py": "5b12932eb6994949e48dfb23673aa84cb2c5af79",
+    "research/scripts/aggregate_ams_dep_v2_holdout.py": "56ff6e8f621985f31ef69ea18b304425a1f72170",
+    "tests/test_ams_dep_v2_holdout_gate.py": "0dc6704d39676786f078b89bcd154172fa02cb57",
+    "tests/test_ams_dep_v2_holdout_runner.py": "7b7d1ce18573ce4bd5e7a65107db98db42ccd7b9",
     "tests/test_ams_dep_v2_holdout_aggregation.py": "1144f84af78019723d4482c01c5bcd0a367cf97c",
-    ".github/workflows/ams-dep-v2-holdout-preflight.yml": "a321e8349a8363e94f8c263b1c7e059d1486ca5a",
-    ".github/workflows/ams-dep-v2-frozen-holdout.yml": "a1c931ccf203c9e7d6cae5d7b3af9adebc25f144"
+    ".github/workflows/ams-dep-v2-holdout-preflight.yml": "99883603a548fbecc8bd771eb6d9a9cf59605cef",
+    ".github/workflows/ams-dep-v2-frozen-holdout.yml": "6f6c8119bf5b1116aa21691d3510f636debf6121"
   },
   "required_confirmation": "FROZEN_V2_HOLDOUT",
   "market_data_authorized": false,
