@@ -5,26 +5,26 @@
   "approved_spec_merge_commit": "e19b36e764dc5b17b5e148f0d233928fe74f7436",
   "approved_spec_review_issue": 59,
   "implementation_pr": 60,
-  "implementation_candidate_commit": "43fc958e98501c5da402f1088eb2446d86ea9a08",
+  "implementation_candidate_commit": "3201676238048bf74bc5dca0e6c4bc8634ad62f1",
   "reviewed_implementation_commit": null,
   "independent_implementation_reviewed": false,
   "certification_execution_authorized": false,
   "first_certification_executed": false,
   "implementation_preflight": {
-    "full_pipeline_implementation_run_id": 35649791763,
+    "full_pipeline_implementation_run_id": 35650866889,
     "full_pipeline_implementation_conclusion": "success",
-    "release_gate_run_id": 35649791860,
+    "release_gate_run_id": 35650866783,
     "release_gate_conclusion": "success",
     "certification_job_conclusion": "skipped"
   },
   "file_git_blob_sha1": {
     "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md": "781cdfcbe1ce01aedc9de567f8843bce2a793460",
     "research/governance/ams_dep_full_pipeline_integrity_v1.json": "fafbf6fcb44e9d8ac66072eb865b75bcac844946",
-    "src/research_core/ams_dep_pipeline.py": "439769ed7e53dd3e61d2c3ac273a32e64367c9d1",
+    "src/research_core/ams_dep_pipeline.py": "11be156d93c8f59208054c294a972bb63f6b344c",
     "src/research_core/ams_dep_empirical_access.py": "9a89817a7bff58926fac717dfb7f59e0195a56a8",
     "research/scripts/run_ams_dep_empirical.py": "74a5f20048240367345079d51453f5bd041cf1d5",
-    "research/scripts/run_ams_dep_full_pipeline_integrity.py": "5490b12de9b45536b579e0c431ef033dfca83cac",
-    "tests/test_ams_dep_full_pipeline_integrity.py": "1cac52f93a6c7b89a8c089f6c0c2ae816ca5416a",
+    "research/scripts/run_ams_dep_full_pipeline_integrity.py": "9bdfacba05eaaca01114f5cfc1373366911e2435",
+    "tests/test_ams_dep_full_pipeline_integrity.py": "d4a469b5359907b72cd90a3b8d82bf97bb3eac4d",
     "tests/test_ams_dep_empirical_firewall.py": "672a6b763a9810665d7a059ef80d60ac9eba1e79",
     "tests/test_ams_dep_full_pipeline_runner.py": "0852419e67dcb4770e880e7d294e5762acfd1c92",
     ".github/workflows/ams-dep-full-pipeline-integrity.yml": "3ecc3ef2d1777f5b3c8f0b4771d1476175cc72f1",
@@ -60,5 +60,5 @@
     "file_git_blob_sha1": "must remain byte-identical to reviewed implementation",
     "pinned_existing_production_git_blob_sha1": "must remain byte-identical to approved specification"
   },
-  "notes": "Draft implementation freeze for hardened candidate 43fc958e98501c5da402f1088eb2446d86ea9a08. Certification remains fail-closed while status is DRAFT_LOCKED, reviewed_implementation_commit is null, independent_implementation_reviewed is false, or certification_execution_authorized is false. No empirical data, protected outcomes, calibration/holdout seeds, P&L, paper trading, or live trading are authorized."
+  "notes": "Draft implementation freeze for candidate 3201676238048bf74bc5dca0e6c4bc8634ad62f1. This candidate routes deterministic generated Binance-format ZIPs through the existing Gate 1A scan/build_manifest/bind_source_identity path, uses return_eligible in row construction, and uses common_certified_intervals in cross-asset joining. Certification remains fail-closed while status is DRAFT_LOCKED, reviewed_implementation_commit is null, independent_implementation_reviewed is false, or certification_execution_authorized is false. No empirical data, protected outcomes, calibration/holdout seeds, P&L, paper trading, or live trading are authorized."
 }
