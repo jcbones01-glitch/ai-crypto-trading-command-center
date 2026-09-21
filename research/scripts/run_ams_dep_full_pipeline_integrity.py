@@ -152,50 +152,89 @@ def _git_blob(path: str) -> str:
     return _git("hash-object", "--", path)
 
 
-def _verify_freeze() -> tuple[dict, dict, str]:
-    try:
-        freeze = json.loads(FREEZE.read_text())
-        registration = json.loads(REGISTRATION.read_text())
-        gate = json.loads(RELEASE_GATE.read_text())
-    except (OSError, json.JSONDecodeError) as exc:
-        raise CertificationLockError("cannot load certification governance") from exc
+def _git_tree_blob(commit: str, path: str) -> str:
+    return _git("rev-parse", f"{commit}:{path}")
 
-    if freeze.get("freeze_id") != "AMS-DEP-FULL-PIPELINE-IMPLEMENTATION-FREEZE-V1":
-        raise CertificationLockError("unexpected implementation freeze identity")
-    if freeze.get("status") != "AUTHORIZED_FOR_FIRST_CERTIFICATION":
-        raise CertificationLockError("implementation freeze is not authorized")
-    if freeze.get("certification_execution_authorized") is not True:
-        raise CertificationLockError("certification execution is not authorized")
-    if freeze.get("reviewed_implementation_commit") in (None, ""):
-        raise CertificationLockError("reviewed implementation commit is missing")
 
-    required_frozen_paths = {
-        "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md",
-        "research/governance/ams_dep_full_pipeline_integrity_v1.json",
-    }
-    frozen_paths = set(freeze.get("file_git_blob_sha1", {}))
-    if not required_frozen_paths.issubset(frozen_paths):
-        raise CertificationLockError("approved plan/registration are not frozen by Git blob")
-
-    current_commit = _git("rev-parse", "HEAD")
-    reviewed = str(freeze["reviewed_implementation_commit"])
-    ancestor = subprocess.run(
-        ["git", "merge-base", "--is-ancestor", reviewed, current_commit],
+def _is_ancestor(ancestor: str, descendant: str) -> bool:
+    completed = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ancestor, descendant],
         cwd=ROOT,
         check=False,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
-    if ancestor.returncode != 0:
+    return completed.returncode == 0
+
+
+def _validate_freeze_contract(
+    freeze: dict,
+    registration: dict,
+    gate: dict,
+    current_commit: str,
+    *,
+    current_blob,
+    candidate_blob,
+    is_ancestor,
+) -> None:
+    if freeze.get("freeze_id") != "AMS-DEP-FULL-PIPELINE-IMPLEMENTATION-FREEZE-V1":
+        raise CertificationLockError("unexpected implementation freeze identity")
+    if freeze.get("status") != "AUTHORIZED_FOR_FIRST_CERTIFICATION":
+        raise CertificationLockError("implementation freeze is not authorized")
+    if freeze.get("independent_implementation_reviewed") is not True:
+        raise CertificationLockError("independent implementation review is not recorded")
+    if freeze.get("certification_execution_authorized") is not True:
+        raise CertificationLockError("certification execution is not authorized")
+
+    candidate = freeze.get("implementation_candidate_commit")
+    reviewed = freeze.get("reviewed_implementation_commit")
+    if not candidate:
+        raise CertificationLockError("implementation candidate commit is missing")
+    if not reviewed:
+        raise CertificationLockError("reviewed implementation commit is missing")
+    if reviewed != candidate:
+        raise CertificationLockError(
+            "reviewed implementation commit does not equal frozen candidate"
+        )
+
+    frozen_map = freeze.get("file_git_blob_sha1")
+    if not isinstance(frozen_map, dict):
+        raise CertificationLockError("implementation blob map is missing")
+    if set(frozen_map) != EXPECTED_FROZEN_PATHS:
+        raise CertificationLockError("implementation blob path set is incomplete or altered")
+
+    approved_existing = registration.get("pinned_existing_production_git_blob_sha1")
+    frozen_existing = freeze.get("pinned_existing_production_git_blob_sha1")
+    if not isinstance(approved_existing, dict) or frozen_existing != approved_existing:
+        raise CertificationLockError(
+            "existing-production pin map differs from approved registration"
+        )
+
+    try:
+        for path, expected in frozen_map.items():
+            if candidate_blob(path) != expected:
+                raise CertificationLockError(
+                    f"candidate implementation blob mismatch: {path}"
+                )
+            if current_blob(path) != expected:
+                raise CertificationLockError(
+                    f"executing implementation blob mismatch: {path}"
+                )
+
+        for path, expected in approved_existing.items():
+            if candidate_blob(path) != expected:
+                raise CertificationLockError(
+                    f"candidate approved-production blob mismatch: {path}"
+                )
+            if current_blob(path) != expected:
+                raise CertificationLockError(
+                    f"executing approved-production blob mismatch: {path}"
+                )
+    except (KeyError, subprocess.CalledProcessError) as exc:
+        raise CertificationLockError("unable to verify frozen Git blobs") from exc
+
+    if not is_ancestor(reviewed, current_commit):
         raise CertificationLockError("reviewed implementation commit is not an ancestor")
-
-    for path, expected in freeze.get("file_git_blob_sha1", {}).items():
-        if _git_blob(path) != expected:
-            raise CertificationLockError(f"implementation blob mismatch: {path}")
-
-    for path, expected in registration["pinned_existing_production_git_blob_sha1"].items():
-        if _git_blob(path) != expected:
-            raise CertificationLockError(f"approved production blob changed: {path}")
 
     required_false = (
         "full_pipeline_synthetic_integrity_passed",
@@ -208,12 +247,35 @@ def _verify_freeze() -> tuple[dict, dict, str]:
     )
     wrong = [field for field in required_false if gate.get(field) is not False]
     if wrong:
-        raise CertificationLockError("protected gate unexpectedly open: " + ", ".join(wrong))
+        raise CertificationLockError(
+            "protected gate unexpectedly open: " + ", ".join(wrong)
+        )
     if gate.get("v2_synthetic_holdout_passed") is not True:
         raise CertificationLockError("accepted V2 holdout PASS is not recorded")
 
-    return freeze, registration, current_commit
 
+def _verify_freeze() -> tuple[dict, dict, str]:
+    try:
+        freeze = json.loads(FREEZE.read_text())
+        registration = json.loads(REGISTRATION.read_text())
+        gate = json.loads(RELEASE_GATE.read_text())
+        current_commit = _git("rev-parse", "HEAD")
+        candidate = str(freeze.get("implementation_candidate_commit") or "")
+        _validate_freeze_contract(
+            freeze,
+            registration,
+            gate,
+            current_commit,
+            current_blob=_git_blob,
+            candidate_blob=lambda path: _git_tree_blob(candidate, path),
+            is_ancestor=_is_ancestor,
+        )
+    except CertificationLockError:
+        raise
+    except (OSError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
+        raise CertificationLockError("cannot verify certification governance") from exc
+
+    return freeze, registration, current_commit
 
 def _run_pytest(nodeids: list[str]) -> dict:
     completed = subprocess.run(
