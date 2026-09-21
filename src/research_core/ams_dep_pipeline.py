@@ -24,17 +24,23 @@ from .data_ingestion import (
     DatasetMetadata,
     content_hash,
     dataset_identity,
+    make_metadata,
+    read_archive,
     validate_dataset,
 )
 from .data_interfaces import MarketBar
+from .data_quality import scan_archive
 from .data_quality_treatment_v2 import (
     TREATMENT_PROTOCOL_VERSION,
     PartitionCertification,
     ResearchTreatmentManifest,
+    build_manifest,
+    common_certified_intervals,
+    return_eligible,
 )
 from .dependence_statistics import RESTRICTIONS, SLOTS, holm_six, primary_design
 from .market_state import build_market_states
-from .source_identity import source_identity
+from .source_identity import bind_source_identity, source_identity
 
 REGISTERED_TREATMENT_IDENTITIES = {
     "BTCUSDT": "1590cf8e69ed757eeb6701a218d561448beb2eb6ea09dcd0ae31d15a8f5197cf",
@@ -181,6 +187,66 @@ def _expected_hour_grid(start: datetime, end: datetime) -> tuple[datetime, ...]:
         cursor += timedelta(hours=1)
     return tuple(out)
 
+
+
+def build_certified_bundle_from_archives(
+    symbol: str,
+    archive_paths: Iterable[Path],
+    *,
+    checksum_verified: bool,
+) -> CertifiedDataBundle:
+    """Construct the canonical Gate 1A Development bundle from raw archives.
+
+    This internal constructor deliberately reuses the existing Gate 1/Gate 1A
+    scan, treatment, source-binding, normalization, and metadata primitives.
+    It performs no network acquisition and grants no empirical authorization.
+    """
+
+    paths = tuple(Path(path) for path in archive_paths)
+    if symbol not in REGISTERED_TREATMENT_IDENTITIES:
+        raise PipelineIntegrityError("unsupported AMS-DEP symbol")
+    if not paths:
+        raise PipelineIntegrityError("at least one archive is required")
+    if len({path.name for path in paths}) != len(paths):
+        raise PipelineIntegrityError("archive filenames must be unique")
+
+    ordered_paths = tuple(sorted(paths, key=lambda path: path.name))
+    reports = [
+        scan_archive(path, symbol, checksum_verified=checksum_verified)
+        for path in ordered_paths
+    ]
+    manifest = build_manifest(
+        symbol,
+        reports,
+        research_start=DEVELOPMENT_START,
+        research_end=DEVELOPMENT_END,
+    )
+    manifest = bind_source_identity(manifest, list(ordered_paths))
+
+    bars: list[MarketBar] = []
+    units: set[str] = set()
+    for path in ordered_paths:
+        archive_bars, unit = read_archive(path, symbol)
+        bars.extend(archive_bars)
+        units.add(unit)
+    if len(units) != 1:
+        raise PipelineIntegrityError("mixed timestamp precision across archives")
+    bars.sort(key=lambda bar: bar.timestamp)
+
+    raw_identity = source_identity(list(ordered_paths))
+    metadata = make_metadata(
+        bars,
+        symbol,
+        next(iter(units)),
+        source_identity=raw_identity,
+    )
+    return CertifiedDataBundle(
+        symbol=symbol,
+        bars=tuple(bars),
+        metadata=metadata,
+        manifest=manifest,
+        raw_archive_paths=ordered_paths,
+    )
 
 def verify_certified_bundle(
     bundle: CertifiedDataBundle,
@@ -397,10 +463,15 @@ def build_primary_sample(
             reasons.append("FORWARD_ENDPOINT_UNAVAILABLE")
 
         if segment_id is not None:
-            if (
-                _segment_for(previous, segments) != segment_id
-                or _segment_for(forward, segments) != segment_id
-            ):
+            same_manifest_segment = (
+                _segment_for(previous, segments) == segment_id
+                and _segment_for(forward, segments) == segment_id
+            )
+            eligible_returns = (
+                return_eligible(previous, t, bundle.manifest.continuity_breaks)
+                and return_eligible(t, forward, bundle.manifest.continuity_breaks)
+            )
+            if not same_manifest_segment or not eligible_returns:
                 reasons.append("CROSSES_CONTINUITY_BOUNDARY")
 
         state = states_by_timestamp.get(t)
@@ -539,8 +610,22 @@ def assemble_primary_family(raw_p_by_slot: Mapping[str, float | None]) -> list[d
 def exact_timestamp_intersection(
     btc: PrimarySample,
     eth: PrimarySample,
+    *,
+    btc_manifest: ResearchTreatmentManifest,
+    eth_manifest: ResearchTreatmentManifest,
 ) -> tuple[datetime, ...]:
-    return tuple(sorted(set(btc.accepted_timestamps) & set(eth.accepted_timestamps)))
+    """Exact accepted-predictor intersection within common certified intervals."""
+
+    common = common_certified_intervals(btc_manifest, eth_manifest)
+    joined = tuple(
+        sorted(set(btc.accepted_timestamps) & set(eth.accepted_timestamps))
+    )
+    for timestamp in joined:
+        if not _inside_any(timestamp, common):
+            raise PipelineIntegrityError(
+                "cross-asset join contains timestamp outside common certification"
+            )
+    return joined
 
 
 def rejection_reason_counts(sample: PrimarySample) -> dict[str, int]:
