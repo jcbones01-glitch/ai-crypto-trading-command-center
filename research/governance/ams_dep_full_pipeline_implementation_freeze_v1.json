@@ -1,0 +1,63 @@
+{
+  "freeze_id": "AMS-DEP-FULL-PIPELINE-IMPLEMENTATION-FREEZE-V1",
+  "version": 1,
+  "status": "DRAFT_LOCKED",
+  "approved_spec_merge_commit": "e19b36e764dc5b17b5e148f0d233928fe74f7436",
+  "approved_spec_review_issue": 59,
+  "implementation_pr": 60,
+  "implementation_candidate_commit": "164940a24fc575e70d07cfa94e22d476e81d117b",
+  "reviewed_implementation_commit": null,
+  "independent_implementation_reviewed": false,
+  "certification_execution_authorized": false,
+  "first_certification_executed": false,
+  "implementation_preflight": {
+    "full_pipeline_implementation_run_id": 35648861883,
+    "full_pipeline_implementation_conclusion": "success",
+    "release_gate_run_id": 35648861808,
+    "release_gate_conclusion": "success"
+  },
+  "file_git_blob_sha1": {
+    "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md": "781cdfcbe1ce01aedc9de567f8843bce2a793460",
+    "research/governance/ams_dep_full_pipeline_integrity_v1.json": "fafbf6fcb44e9d8ac66072eb865b75bcac844946",
+    "src/research_core/ams_dep_pipeline.py": "62898354ec23118bd45c03c0aaae2e0557d39767",
+    "src/research_core/ams_dep_empirical_access.py": "9a89817a7bff58926fac717dfb7f59e0195a56a8",
+    "research/scripts/run_ams_dep_empirical.py": "74a5f20048240367345079d51453f5bd041cf1d5",
+    "research/scripts/run_ams_dep_full_pipeline_integrity.py": "53d7e71a0d8e4976a805605e898003a83efb488d",
+    "tests/test_ams_dep_full_pipeline_integrity.py": "f6297200a57df11802f157835cb1bdd2e14a05d6",
+    "tests/test_ams_dep_empirical_firewall.py": "41b39ce4090856a109cf8c3a6e24ad2be193bde8",
+    "tests/test_ams_dep_full_pipeline_runner.py": "29ece2018a0f226456762d61b0b93a6b8cf77d94",
+    ".github/workflows/ams-dep-full-pipeline-integrity.yml": "3ecc3ef2d1777f5b3c8f0b4771d1476175cc72f1",
+    "research/governance/ams_dep_release_gate_v1.json": "55a4ac492b2f454491e749029d9c8131cb2f7de7",
+    "pyproject.toml": "c285596629c88e741cadd90064361258a9f820c2"
+  },
+  "pinned_existing_production_git_blob_sha1": {
+    "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+    "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+    "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+    "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534",
+    "src/research_core/dataset.py": "236dcd2bc598a68b331788eb28a1b06e19d6cd12",
+    "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+    "src/research_core/dependent_wild_bootstrap_v2.py": "4e77f4576b85a4a35c3738d71e9b49315dd4f248",
+    "src/research_core/release_gate.py": "14f283025fd217bbf5b5a248e3dac9ad38c4fb81",
+    "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9",
+    "src/research_core/historical_dataset.py": "7910e95b6f34a97e0034070884748b592a7b11d0"
+  },
+  "protected_access": {
+    "market_data_accessed": false,
+    "development_market_outcomes_accessed": false,
+    "validation_or_oos_accessed": false,
+    "strategy_pnl_calculated": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "calibration_or_holdout_seed_used": false
+  },
+  "required_authorization_transition": {
+    "status": "AUTHORIZED_FOR_FIRST_CERTIFICATION",
+    "independent_implementation_reviewed": true,
+    "reviewed_implementation_commit": "must equal independently reviewed implementation candidate",
+    "certification_execution_authorized": true,
+    "file_git_blob_sha1": "must remain byte-identical to reviewed implementation",
+    "pinned_existing_production_git_blob_sha1": "must remain byte-identical to approved specification"
+  },
+  "notes": "Draft implementation freeze. Certification is fail-closed while status is DRAFT_LOCKED or certification_execution_authorized is false. No empirical data, protected outcomes, calibration/holdout seeds, P&L, paper trading, or live trading are authorized."
+}
