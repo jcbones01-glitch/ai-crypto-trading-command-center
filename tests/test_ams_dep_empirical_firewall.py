@@ -188,3 +188,22 @@ def test_wrong_symbol_rejected_before_machine_gate(monkeypatch):
     with pytest.raises(access.EmpiricalAccessError, match="unsupported"):
         access._authorize_request("development", "DOGEUSDT")
     assert gate_called is False
+
+
+def test_empirical_cli_exposes_only_symbol_option():
+    root = Path(__file__).resolve().parents[1]
+    script = root / "research/scripts/run_ams_dep_empirical.py"
+    source = script.read_text()
+    assert 'parser.add_argument("--symbol"' in source
+    for forbidden in (
+        "--gate",
+        "--gate-path",
+        "--partition",
+        "--loader",
+        "--validation",
+        "--oos",
+        "--pnl",
+        "--paper",
+        "--live",
+    ):
+        assert forbidden not in source
