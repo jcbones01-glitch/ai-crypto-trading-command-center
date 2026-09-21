@@ -43,12 +43,16 @@ def test_representative_fixture_evidence_is_complete_and_synthetic(tmp_path):
     assert len(evidence["support"]["BTCUSDT"]["cells"]) == 15
     assert len(evidence["support"]["ETHUSDT"]["cells"]) == 15
 
+    assert set(evidence["fixture_identities"]) == {"BTCUSDT", "ETHUSDT"}
+    assert all(len(value) == 64 for value in evidence["fixture_identities"].values())
     assert evidence["exact_cross_asset_join"]["count"] > 0
-    assert (
-        evidence["numerical_wiring"]["engineering_fixture"]["classification"]
-        == "ENGINEERING_ONLY_NOT_CALIBRATION"
+    fixtures = evidence["numerical_wiring"]["engineering_fixtures"]
+    assert set(fixtures) == {"DEP", "TIME", "STATE"}
+    assert all(
+        item["classification"] == "ENGINEERING_ONLY_NOT_CALIBRATION"
+        for item in fixtures.values()
     )
-    assert evidence["numerical_wiring"]["engineering_fixture"]["p_value"] is None
+    assert all(item["p_value"] is None for item in fixtures.values())
     assert len(evidence["six_slot_assembly"]) == 6
     assert (
         evidence["directed_cross_asset_lagged_diagnostics"]["status"]
