@@ -1,0 +1,76 @@
+{
+  "registration_id": "AMS-DEP-FULL-PIPELINE-SYNTHETIC-INTEGRITY-V1",
+  "version": 1,
+  "status": "PROPOSED_FOR_INDEPENDENT_REVIEW",
+  "classification": "SYNTHETIC_ENGINEERING_INTEGRITY_NOT_MARKET_EVIDENCE",
+  "source_gate_status_required": "V2_SYNTHETIC_HOLDOUT_PASSED",
+  "protected_access": {
+    "market_data": false,
+    "development_market_outcomes": false,
+    "validation_or_oos": false,
+    "strategy_pnl": false,
+    "paper_trading": false,
+    "live_trading": false
+  },
+  "development_window": [
+    "2017-08-17T00:00:00Z",
+    "2022-01-01T00:00:00Z"
+  ],
+  "empirical_dataset_identities": {
+    "BTCUSDT": "1590cf8e69ed757eeb6701a218d561448beb2eb6ea09dcd0ae31d15a8f5197cf",
+    "ETHUSDT": "d35bf21e309820abc88090bad29601adc1d1ea6b31dcddf0b80d510af4cf542f"
+  },
+  "row_semantics": {
+    "predictor": "x_t=log(C_t/C_(t-1))",
+    "target": "y_t=log(C_(t+1)/C_t)",
+    "state_time": "t",
+    "year_time": "t+1h predictor availability",
+    "endpoints_same_certified_segment": true,
+    "complete_ams_v1_required": true
+  },
+  "support": {
+    "minimum_rows_per_asset": 5000,
+    "years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021
+    ],
+    "volatility_states": [
+      "VOL_LOW",
+      "VOL_NORMAL",
+      "VOL_HIGH"
+    ],
+    "minimum_rows_per_year_state_cell": 200,
+    "minimum_distinct_utc_dates_per_year_state_cell": 10
+  },
+  "exclusion_reason_codes": [
+    "PREVIOUS_ENDPOINT_UNAVAILABLE",
+    "FORWARD_ENDPOINT_UNAVAILABLE",
+    "CROSSES_CONTINUITY_BOUNDARY",
+    "INCOMPLETE_AMS_V1_STATE",
+    "PROTECTED_PARTITION_ENDPOINT",
+    "NONFINITE_RETURN"
+  ],
+  "exact_cross_asset_join": "intersection_by_predictor_timestamp_only",
+  "oracles": [
+    "FP-01_AMS_V1_WARMUP",
+    "FP-02_CONTINUITY_RESET",
+    "FP-03_ROW_TIMING_ENDPOINTS",
+    "FP-04_COMPLETE_STATE_SELECTION",
+    "FP-05_SUPPORT_ENFORCEMENT",
+    "FP-06_EXCLUSION_ACCOUNTING",
+    "FP-07_EXACT_CROSS_ASSET_JOIN",
+    "FP-08_DESIGN_RESTRICTION_WIRING",
+    "FP-09_SOURCE_IDENTITY_CERTIFICATION",
+    "FP-10_PROTECTED_READ_BLOCKING",
+    "FP-11_OUTPUT_INVENTORY"
+  ],
+  "pass_token": "FULL_PIPELINE_SYNTHETIC_INTEGRITY_PASS",
+  "fail_token": "FULL_PIPELINE_SYNTHETIC_INTEGRITY_FAIL",
+  "partial_pass_allowed": false,
+  "engineering_bootstrap_only": true,
+  "calibration_or_holdout_seed_use": false,
+  "empirical_release_consequence": false
+}
