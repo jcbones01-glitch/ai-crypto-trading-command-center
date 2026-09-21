@@ -259,7 +259,17 @@ def test_exact_timestamp_join_is_set_intersection_not_row_index():
                    int((start + timedelta(hours=i)).timestamp() // 3600), 0)
         for i in (0, 2, 3, 4)
     ]
-    joined = exact_timestamp_intersection(_sample(btc_rows), _sample(eth_rows, "ETHUSDT"))
+    segment = CertifiedSegment(
+        start.isoformat(), (start + timedelta(hours=5)).isoformat()
+    )
+    btc_manifest = _manifest("0" * 64, symbol="BTCUSDT", segments=(segment,))
+    eth_manifest = _manifest("1" * 64, symbol="ETHUSDT", segments=(segment,))
+    joined = exact_timestamp_intersection(
+        _sample(btc_rows),
+        _sample(eth_rows, "ETHUSDT"),
+        btc_manifest=btc_manifest,
+        eth_manifest=eth_manifest,
+    )
     assert joined == (
         start,
         start + timedelta(hours=3),
@@ -572,7 +582,17 @@ def test_registered_asynchronous_cross_asset_pattern_uses_exact_intersection():
 
     btc = _sample(rows(btc_offsets))
     eth = _sample(rows(eth_offsets), "ETHUSDT")
-    joined = exact_timestamp_intersection(btc, eth)
+    segment = CertifiedSegment(
+        start.isoformat(), (start + timedelta(hours=1500)).isoformat()
+    )
+    btc_manifest = _manifest("0" * 64, symbol="BTCUSDT", segments=(segment,))
+    eth_manifest = _manifest("1" * 64, symbol="ETHUSDT", segments=(segment,))
+    joined = exact_timestamp_intersection(
+        btc,
+        eth,
+        btc_manifest=btc_manifest,
+        eth_manifest=eth_manifest,
+    )
     expected = tuple(
         start + timedelta(hours=i)
         for i in sorted(set(btc_offsets) & set(eth_offsets))
