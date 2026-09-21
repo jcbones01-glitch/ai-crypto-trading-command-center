@@ -1,6 +1,6 @@
 # AMS-DEP V2 holdout result intake — 2026-09-21
 
-Status: **WORKFLOW-REPORTED HOLDOUT PASS; DETAILED ARTIFACT AUDIT PENDING**.
+Status: **HOLDOUT ARTIFACT CONTENT VERIFIED; REGISTERED SYNTHETIC SCREEN PASS; GOVERNANCE TRANSITION PENDING INDEPENDENT REVIEW**.
 
 ## Verified evidence
 
@@ -14,18 +14,32 @@ Status: **WORKFLOW-REPORTED HOLDOUT PASS; DETAILED ARTIFACT AUDIT PENDING**.
 - [Results artifact 10655486394](https://github.com/jcbones01-glitch/ai-crypto-trading-command-center/actions/runs/35529411234/artifacts/10655486394): `ams-dep-v2-holdout-results`, 979668 bytes, two uploaded files according to job log.
 - GitHub metadata and upload log agree on ZIP SHA-256 `0208861fc4dbeed2d6dda1a6b574678eb59957e628f1a521ba6c56227ef5435d`.
 
-## Download limitation
+## Artifact content audit completed
 
-The connector returned a ZIP file reference, but fetching its temporary download URL returned HTTP 403. The ZIP bytes, summary.json and outer_results.jsonl.gz were not read in this review. No independently verified numerical rates, outer coverage, local ZIP integrity or full holdout audit are claimed. The supplied calibration ZIP is a different artifact and cannot substitute for the holdout ZIP.
+The user supplied the two extracted aggregate members through connected Google Drive: `summary.json` and `outer_results.jsonl.gz`. The detailed audit is recorded in [AMS_DEP_V2_HOLDOUT_ARTIFACT_REVIEW.md](AMS_DEP_V2_HOLDOUT_ARTIFACT_REVIEW.md).
 
-## Remaining audit
+Independent checks established:
 
-1. Obtain the original holdout ZIP and verify bytes against the GitHub digest above.
-2. Verify summary execution commit, suite, frozen spec/manifest/addendum identities, execution-bundle/claim provenance, counts and access flags against execution-commit source.
-3. Verify outer-ledger digest and exact 11-DGP × 2000-outer × six-slot coverage. Independently recompute Holm decisions, false-rejection rates, registered powers, original and bootstrap invalidity, per-cell maxima and Wilson intervals where the ledger permits.
-4. Retain all diagnostics and adverse findings. Do not change the frozen method or thresholds after viewing holdout outcomes.
-5. Document the reviewed holdout result before any governance transition. If evidence is missing or inconsistent, preserve the blocker; no automatic rerun.
-6. Full-pipeline synthetic integrity and separate empirical-release approval remain required after any accepted holdout PASS. No market-data, Validation/OOS, P&L, paper or live release follows from this workflow success.
+- compressed outer-ledger SHA-256 exactly matches the summary;
+- exact 22000 DGP/outer records and 132000 six-slot tests;
+- no duplicate, missing or extra DGP/outer coordinates;
+- all raw p-values on the registered 1/5000 grid;
+- all 22000 Holm families independently recomputed with zero mismatches;
+- all 219 reported summary metric objects independently recomputed to tolerance 1e-14 with zero mismatches;
+- all registered null-FWER, power and invalidity criteria pass;
+- every per-case/per-slot maximum bootstrap invalid fraction is zero;
+- execution/claim provenance matches commit `80d0fb5a90a6c4dc02073605159c38f520ad3410`.
+
+The original GitHub ZIP container itself was not supplied to Drive, so its GitHub-reported SHA-256 remains provenance from the Actions upload log rather than an independently recalculated ZIP-container hash. The two supplied member files were independently hashed and audited.
+
+## Remaining governance work
+
+1. Obtain an independent review of the detailed holdout artifact audit.
+2. If accepted, perform a narrowly scoped post-holdout governance closeout that records `v2_synthetic_holdout_passed=true` and closes the one-shot execution state as consumed.
+3. Do not rerun, reset or delete the durable claim.
+4. Do not alter the frozen V2 method, thresholds, DGPs or seeds in response to the holdout result.
+5. Full-pipeline synthetic integrity, separate empirical-release approval and Development market-data authorization remain separate later gates.
+6. Market data, Validation/OOS, strategy P&L, paper trading and live trading remain locked.
 
 ## Governance snapshot
 
