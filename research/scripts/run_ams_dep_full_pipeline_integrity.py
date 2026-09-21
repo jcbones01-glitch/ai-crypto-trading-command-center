@@ -37,6 +37,7 @@ from research_core.ams_dep_pipeline import (
     support_report,
     verify_certified_bundle,
 )
+from research_core.dependence_statistics import SLOTS
 from research_core.dependent_wild_bootstrap_v2 import engineering_fixture
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -95,6 +96,44 @@ ORACLE_TESTS = {
         "tests/test_ams_dep_empirical_firewall.py",
     ],
 }
+
+EXPECTED_FROZEN_PATHS = frozenset(
+    {
+        "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md",
+        "research/governance/ams_dep_full_pipeline_integrity_v1.json",
+        "src/research_core/ams_dep_pipeline.py",
+        "src/research_core/ams_dep_empirical_access.py",
+        "research/scripts/run_ams_dep_empirical.py",
+        "research/scripts/run_ams_dep_full_pipeline_integrity.py",
+        "tests/test_ams_dep_full_pipeline_integrity.py",
+        "tests/test_ams_dep_empirical_firewall.py",
+        "tests/test_ams_dep_full_pipeline_runner.py",
+        ".github/workflows/ams-dep-full-pipeline-integrity.yml",
+        "research/governance/ams_dep_release_gate_v1.json",
+        "pyproject.toml",
+    }
+)
+
+INVENTORY_KEYS = frozenset(
+    {
+        "loaded_normalized_source_timestamps",
+        "candidate_predictor_timestamps",
+        "accepted_predictor_timestamps",
+        "rejected_predictor_timestamps",
+        "accepted_segment_assignments",
+    }
+)
+
+ACCESS_FALSE_FIELDS = (
+    "market_data_accessed",
+    "development_market_outcomes_accessed",
+    "validation_or_oos_accessed",
+    "strategy_pnl_calculated",
+    "paper_trading_authorized",
+    "live_trading_authorized",
+    "calibration_or_holdout_seed_used",
+)
+
 
 
 class CertificationLockError(RuntimeError):
