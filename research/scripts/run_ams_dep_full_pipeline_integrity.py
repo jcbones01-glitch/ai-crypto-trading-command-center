@@ -59,13 +59,16 @@ FAIL_TOKEN = "FULL_PIPELINE_SYNTHETIC_INTEGRITY_FAIL"
 ORACLE_TESTS = {
     "FP-01_AMS_V1_WARMUP": [
         "tests/test_ams_dep_full_pipeline_integrity.py::test_ams_v1_warmup_and_row_timing_use_t_state_and_t_plus_one_year",
+        "tests/test_ams_dep_full_pipeline_integrity.py::test_future_bar_mutation_cannot_change_past_ams_v1_state",
     ],
     "FP-02_CONTINUITY_AND_EXACT_HOUR_FAIL_CLOSED": [
         "tests/test_ams_dep_full_pipeline_integrity.py::test_missing_hour_inside_certified_segment_hard_fails",
         "tests/test_ams_dep_full_pipeline_integrity.py::test_documented_gap_is_allowed_only_between_clean_segments",
+        "tests/test_ams_dep_full_pipeline_integrity.py::test_continuity_break_restarts_744_bar_warmup_and_is_never_bridged",
     ],
     "FP-03_ROW_TIMING_ENDPOINTS": [
         "tests/test_ams_dep_full_pipeline_integrity.py::test_ams_v1_warmup_and_row_timing_use_t_state_and_t_plus_one_year",
+        "tests/test_ams_dep_full_pipeline_integrity.py::test_primary_return_values_use_exact_t_minus_one_t_and_t_plus_one",
         "tests/test_ams_dep_full_pipeline_integrity.py::test_development_end_forward_endpoint_is_never_accepted",
     ],
     "FP-04_COMPLETE_STATE_AND_LABEL_TRANSLATION": [
@@ -74,15 +77,20 @@ ORACLE_TESTS = {
     ],
     "FP-05_SUPPORT_ENFORCEMENT": [
         "tests/test_ams_dep_full_pipeline_integrity.py::test_support_report_enforces_all_fifteen_cells_and_total",
+        "tests/test_ams_dep_full_pipeline_integrity.py::test_support_fails_one_cell_below_200_even_when_total_exceeds_5000",
+        "tests/test_ams_dep_full_pipeline_integrity.py::test_support_fails_cell_with_fewer_than_ten_dates_at_adequate_row_count",
     ],
     "FP-06_SOURCE_SAMPLE_INVENTORY_AND_EXCLUSION_ACCOUNTING": [
         "tests/test_ams_dep_full_pipeline_integrity.py::test_documented_gap_is_allowed_only_between_clean_segments",
+        "tests/test_ams_dep_full_pipeline_integrity.py::test_loaded_bar_outside_certified_or_excluded_inventory_hard_fails",
     ],
     "FP-07_EXACT_CROSS_ASSET_JOIN_AND_LAG_DEFERRAL": [
         "tests/test_ams_dep_full_pipeline_integrity.py::test_exact_timestamp_join_is_set_intersection_not_row_index",
+        "tests/test_ams_dep_full_pipeline_integrity.py::test_registered_asynchronous_cross_asset_pattern_uses_exact_intersection",
     ],
     "FP-08_NUMERICAL_HOURS_SEGMENTS_RESTRICTIONS_DWB_HOLM_WIRING": [
         "tests/test_ams_dep_full_pipeline_integrity.py::test_numerical_wiring_preserves_epoch_hours_segments_and_engineering_only",
+        "tests/test_ams_dep_full_pipeline_integrity.py::test_same_numerical_arrays_feed_all_three_registered_hypotheses",
         "tests/test_ams_dep_full_pipeline_integrity.py::test_holm_family_keeps_exact_six_slots_and_unavailable_entries",
     ],
     "FP-09_TWO_STAGE_SOURCE_IDENTITY_CERTIFICATION": [
@@ -379,6 +387,13 @@ def _digest_timestamps(values) -> str:
     ).hexdigest()
 
 
+def _stable_json_sha256(value) -> str:
+    payload = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode()
+    return hashlib.sha256(payload).hexdigest()
+
+
 def _fixture_evidence(root: Path) -> dict:
     bundles = {
         symbol: _representative_bundle(root, symbol)
@@ -404,14 +419,17 @@ def _fixture_evidence(root: Path) -> dict:
 
     numerical_sample = _numerical_fixture()
     wired = numerical_inputs(numerical_sample)
-    dwb = engineering_fixture(
-        wired["design"],
-        wired["target"],
-        wired["hours"],
-        wired["segments"],
-        "DEP",
-        draws=2,
-    )
+    dwb = {
+        hypothesis: engineering_fixture(
+            wired["design"],
+            wired["target"],
+            wired["hours"],
+            wired["segments"],
+            hypothesis,
+            draws=2,
+        )
+        for hypothesis in ("DEP", "TIME", "STATE")
+    }
     holm = assemble_primary_family(
         {
             "BTC_DEP": 0.01,
@@ -423,19 +441,37 @@ def _fixture_evidence(root: Path) -> dict:
         }
     )
 
-    return {
-        "bundle_verification": bundle_evidence,
-        "primary_accounting": {
-            symbol: {
-                "loaded_rows": len(sample.loaded_timestamps),
-                "candidate_rows": sample.candidate_count,
-                "accepted_rows": sample.accepted_count,
-                "rejected_rows": sample.rejected_count,
-                "inventory_sha256": dict(sample.inventory_sha256),
-                "exclusion_reason_counts": rejection_reason_counts(sample),
+    primary_accounting = {
+        symbol: {
+            "loaded_rows": len(sample.loaded_timestamps),
+            "candidate_rows": sample.candidate_count,
+            "accepted_rows": sample.accepted_count,
+            "rejected_rows": sample.rejected_count,
+            "inventory_sha256": dict(sample.inventory_sha256),
+            "exclusion_reason_counts": rejection_reason_counts(sample),
+        }
+        for symbol, sample in samples.items()
+    }
+    fixture_identities = {
+        symbol: _stable_json_sha256(
+            {
+                "symbol": symbol,
+                "bundle_verification": bundle_evidence[symbol],
+                "loaded_timestamp_sha256": primary_accounting[symbol][
+                    "inventory_sha256"
+                ]["loaded_normalized_source_timestamps"],
+                "candidate_timestamp_sha256": primary_accounting[symbol][
+                    "inventory_sha256"
+                ]["candidate_predictor_timestamps"],
             }
-            for symbol, sample in samples.items()
-        },
+        )
+        for symbol in ("BTCUSDT", "ETHUSDT")
+    }
+
+    return {
+        "fixture_identities": fixture_identities,
+        "bundle_verification": bundle_evidence,
+        "primary_accounting": primary_accounting,
         "support": support,
         "exact_cross_asset_join": {
             "count": len(join),
@@ -445,7 +481,7 @@ def _fixture_evidence(root: Path) -> dict:
             "design_shape": list(wired["design"].shape),
             "hour_vector_sha256": _digest_ints(wired["hours"]),
             "segment_vector_sha256": _digest_ints(wired["segments"]),
-            "engineering_fixture": dwb,
+            "engineering_fixtures": dwb,
         },
         "six_slot_assembly": holm,
         "directed_cross_asset_lagged_diagnostics": {
@@ -507,6 +543,7 @@ def main() -> None:
         report["fixture_evidence"] = _fixture_evidence(Path(directory))
 
     required_fixture_keys = {
+        "fixture_identities",
         "bundle_verification",
         "primary_accounting",
         "support",
@@ -515,7 +552,28 @@ def main() -> None:
         "six_slot_assembly",
         "directed_cross_asset_lagged_diagnostics",
     }
-    fp11_pass = required_fixture_keys.issubset(report["fixture_evidence"])
+    evidence = report["fixture_evidence"]
+    expected_engineering = evidence["numerical_wiring"]["engineering_fixtures"]
+    fp11_pass = (
+        required_fixture_keys.issubset(evidence)
+        and all(evidence["support"][symbol]["pass"] is True for symbol in ("BTCUSDT", "ETHUSDT"))
+        and len(evidence["six_slot_assembly"]) == 6
+        and all(
+            item["classification"] == "ENGINEERING_ONLY_NOT_CALIBRATION"
+            and item["p_value"] is None
+            for item in expected_engineering.values()
+        )
+        and set(expected_engineering) == {"DEP", "TIME", "STATE"}
+        and evidence["directed_cross_asset_lagged_diagnostics"]["authorized_by_v1_pass"] is False
+        and evidence["directed_cross_asset_lagged_diagnostics"]["status"]
+        == "BLOCKED_PENDING_SEPARATE_CROSS_ASSET_LAG_INTEGRITY_SPEC"
+        and all(
+            evidence["primary_accounting"][symbol]["candidate_rows"]
+            == evidence["primary_accounting"][symbol]["accepted_rows"]
+            + evidence["primary_accounting"][symbol]["rejected_rows"]
+            for symbol in ("BTCUSDT", "ETHUSDT")
+        )
+    )
     report["oracles"]["FP-11_IMMUTABLE_PROVENANCE_OUTPUT_INVENTORY"] = {
         "pass": fp11_pass,
         "required_fixture_keys": sorted(required_fixture_keys),
