@@ -130,10 +130,13 @@ def _verify_freeze() -> tuple[dict, dict, str]:
     if freeze.get("reviewed_implementation_commit") in (None, ""):
         raise CertificationLockError("reviewed implementation commit is missing")
 
-    if freeze.get("plan_sha256") != _sha256(PLAN):
-        raise CertificationLockError("approved plan hash mismatch")
-    if freeze.get("registration_sha256") != _sha256(REGISTRATION):
-        raise CertificationLockError("approved registration hash mismatch")
+    required_frozen_paths = {
+        "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md",
+        "research/governance/ams_dep_full_pipeline_integrity_v1.json",
+    }
+    frozen_paths = set(freeze.get("file_git_blob_sha1", {}))
+    if not required_frozen_paths.issubset(frozen_paths):
+        raise CertificationLockError("approved plan/registration are not frozen by Git blob")
 
     current_commit = _git("rev-parse", "HEAD")
     reviewed = str(freeze["reviewed_implementation_commit"])
