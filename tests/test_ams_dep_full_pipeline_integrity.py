@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+import math
 from pathlib import Path
 
 import numpy as np
@@ -34,6 +35,7 @@ from research_core.data_quality_treatment_v2 import (
 from research_core.dependence_statistics import SLOTS
 from research_core.dependent_wild_bootstrap_v2 import engineering_fixture
 from research_core.historical_dataset import _archive_set_identity
+from research_core.market_state import build_market_states
 from research_core.source_identity import source_identity
 
 
@@ -364,3 +366,248 @@ def test_non_missing_whole_bundle_validation_issue_hard_fails(tmp_path):
         verify_certified_bundle(
             bundle, registered_identity=bundle.manifest.dataset_identity
         )
+
+
+def test_loaded_bar_outside_certified_or_excluded_inventory_hard_fails(tmp_path):
+    start = datetime(2019, 1, 1, tzinfo=timezone.utc)
+    bars = _bars(start, 800)
+    segment = CertifiedSegment(
+        (start + timedelta(hours=1)).isoformat(),
+        (start + timedelta(hours=800)).isoformat(),
+    )
+    bundle = _bundle(tmp_path, bars, segments=(segment,))
+    with pytest.raises(PipelineIntegrityError, match="neither certified nor documented"):
+        verify_certified_bundle(
+            bundle, registered_identity=bundle.manifest.dataset_identity
+        )
+
+
+def test_future_bar_mutation_cannot_change_past_ams_v1_state():
+    start = datetime(2019, 1, 1, tzinfo=timezone.utc)
+    bars = list(_bars(start, 900))
+    original = build_market_states(bars)
+    last = bars[-1]
+    changed_close = last.close * Decimal("2")
+    bars[-1] = replace(
+        last,
+        open=changed_close,
+        high=changed_close + Decimal("1"),
+        low=changed_close - Decimal("1"),
+        close=changed_close,
+        volume=last.volume * Decimal("3"),
+    )
+    mutated = build_market_states(bars)
+    assert original[800] == mutated[800]
+    assert original[800].complete is True
+
+
+def test_continuity_break_restarts_744_bar_warmup_and_is_never_bridged(tmp_path):
+    start = datetime(2019, 1, 1, tzinfo=timezone.utc)
+    full = _bars(start, 1700)
+    gap = start + timedelta(hours=800)
+    bars = tuple(bar for bar in full if bar.timestamp != gap)
+    exclusion = Exclusion(
+        gap.isoformat(),
+        (gap + timedelta(hours=1)).isoformat(),
+        ("registered-break",),
+        "registered synthetic continuity break",
+    )
+    second_start = gap + timedelta(hours=1)
+    segments = (
+        CertifiedSegment(start.isoformat(), gap.isoformat()),
+        CertifiedSegment(
+            second_start.isoformat(),
+            (start + timedelta(hours=1700)).isoformat(),
+        ),
+    )
+    bundle = _bundle(tmp_path, bars, segments=segments, exclusions=(exclusion,))
+    sample = build_primary_sample(
+        bundle, registered_identity=bundle.manifest.dataset_identity
+    )
+    second_rows = [row for row in sample.rows if row.segment_id == 1]
+    assert second_rows
+    assert second_rows[0].predictor_timestamp == second_start + timedelta(hours=744)
+    assert gap - timedelta(hours=1) not in sample.accepted_timestamps
+    assert second_start not in sample.accepted_timestamps
+    crossing = next(
+        row for row in sample.rejected if row.predictor_timestamp == gap - timedelta(hours=1)
+    )
+    assert "FORWARD_ENDPOINT_UNAVAILABLE" in crossing.reasons
+    assert "CROSSES_CONTINUITY_BOUNDARY" in crossing.reasons
+
+
+def test_primary_return_values_use_exact_t_minus_one_t_and_t_plus_one(tmp_path):
+    start = datetime(2019, 1, 1, tzinfo=timezone.utc)
+    bars = _bars(start, 900)
+    bundle = _bundle(tmp_path, bars)
+    sample = build_primary_sample(
+        bundle, registered_identity=bundle.manifest.dataset_identity
+    )
+    first = sample.rows[0]
+    i = 744
+    expected_x = math.log(float(bars[i].close / bars[i - 1].close))
+    expected_y = math.log(float(bars[i + 1].close / bars[i].close))
+    assert first.predictor_timestamp == bars[i].timestamp
+    assert first.x == pytest.approx(expected_x)
+    assert first.y == pytest.approx(expected_y)
+
+
+def _support_fixture_rows():
+    rows = []
+    counter = 0
+    for year in range(2017, 2022):
+        for state_index, state in enumerate(("VOL_LOW", "VOL_NORMAL", "VOL_HIGH")):
+            base = datetime(year, 2 + state_index, 1, tzinfo=timezone.utc)
+            for j in range(334):
+                t = base + timedelta(hours=j * 2)
+                rows.append(
+                    PrimaryRow(
+                        t,
+                        t + timedelta(hours=1),
+                        0.001 + counter * 1e-8,
+                        0.002,
+                        year,
+                        state,
+                        "ACTIVITY_NORMAL",
+                        "TREND_NEUTRAL",
+                        int(t.timestamp() // 3600),
+                        year - 2017,
+                    )
+                )
+                counter += 1
+    return rows
+
+
+def test_support_fails_one_cell_below_200_even_when_total_exceeds_5000():
+    rows = _support_fixture_rows()
+    target = [
+        row for row in rows
+        if row.year == 2021 and row.volatility_state == "VOL_HIGH"
+    ]
+    remove = set(row.predictor_timestamp for row in target[199:])
+    rows = [
+        row for row in rows
+        if not (
+            row.year == 2021
+            and row.volatility_state == "VOL_HIGH"
+            and row.predictor_timestamp in remove
+        )
+    ]
+    # Replace removed rows in a different already-sufficient cell with unique
+    # 2017 timestamps so the total-row threshold still passes.
+    needed = 5010 - len(rows)
+    base = datetime(2017, 11, 1, tzinfo=timezone.utc)
+    for j in range(needed):
+        t = base + timedelta(hours=j)
+        rows.append(
+            PrimaryRow(
+                t, t + timedelta(hours=1), .001, .002, 2017, "VOL_LOW",
+                "ACTIVITY_NORMAL", "TREND_NEUTRAL",
+                int(t.timestamp() // 3600), 0,
+            )
+        )
+    report = support_report(_sample(rows))
+    assert report["total_rows_pass"] is True
+    assert report["cells"]["2021|VOL_HIGH"]["rows"] == 199
+    assert report["cells"]["2021|VOL_HIGH"]["pass"] is False
+    assert report["pass"] is False
+
+
+def test_support_fails_cell_with_fewer_than_ten_dates_at_adequate_row_count():
+    rows = _support_fixture_rows()
+    rows = [
+        row for row in rows
+        if not (row.year == 2021 and row.volatility_state == "VOL_HIGH")
+    ]
+    base = datetime(2021, 12, 1, tzinfo=timezone.utc)
+    # 200 hourly rows occupy nine UTC dates: row support passes, date support fails.
+    for j in range(200):
+        t = base + timedelta(hours=j)
+        rows.append(
+            PrimaryRow(
+                t, t + timedelta(hours=1), .001, .002, 2021, "VOL_HIGH",
+                "ACTIVITY_NORMAL", "TREND_NEUTRAL",
+                int(t.timestamp() // 3600), 4,
+            )
+        )
+    # Restore total >= 5000 in a different cell.
+    extra = 5010 - len(rows)
+    extra_base = datetime(2018, 11, 1, tzinfo=timezone.utc)
+    for j in range(extra):
+        t = extra_base + timedelta(hours=j)
+        rows.append(
+            PrimaryRow(
+                t, t + timedelta(hours=1), .001, .002, 2018, "VOL_LOW",
+                "ACTIVITY_NORMAL", "TREND_NEUTRAL",
+                int(t.timestamp() // 3600), 1,
+            )
+        )
+    report = support_report(_sample(rows))
+    cell = report["cells"]["2021|VOL_HIGH"]
+    assert cell["rows"] == 200
+    assert cell["distinct_utc_dates"] == 9
+    assert cell["pass"] is False
+    assert report["pass"] is False
+
+
+def test_registered_asynchronous_cross_asset_pattern_uses_exact_intersection():
+    start = datetime(2020, 1, 1, tzinfo=timezone.utc)
+    offsets = range(1500)
+    btc_offsets = [i for i in offsets if i % 97 != 0]
+    eth_offsets = [
+        i for i in offsets
+        if i % 89 != 0 and not (1000 <= i < 1024)
+    ]
+
+    def rows(which):
+        return [
+            PrimaryRow(
+                start + timedelta(hours=i),
+                start + timedelta(hours=i + 1),
+                .01, .02, 2020, "VOL_NORMAL", "ACTIVITY_NORMAL", "TREND_NEUTRAL",
+                int((start + timedelta(hours=i)).timestamp() // 3600), 0,
+            )
+            for i in which
+        ]
+
+    btc = _sample(rows(btc_offsets))
+    eth = _sample(rows(eth_offsets), "ETHUSDT")
+    joined = exact_timestamp_intersection(btc, eth)
+    expected = tuple(
+        start + timedelta(hours=i)
+        for i in sorted(set(btc_offsets) & set(eth_offsets))
+    )
+    assert joined == expected
+    assert list(btc.accepted_timestamps[:50]) != list(eth.accepted_timestamps[:50])
+    assert len(joined) < min(len(btc.accepted_timestamps), len(eth.accepted_timestamps))
+
+
+def test_same_numerical_arrays_feed_all_three_registered_hypotheses():
+    rows = []
+    counter = 0
+    for year in range(2017, 2022):
+        for state_index, state in enumerate(("VOL_LOW", "VOL_NORMAL", "VOL_HIGH")):
+            for j in range(5):
+                t = datetime(year, 2 + state_index, 1, tzinfo=timezone.utc) + timedelta(hours=j)
+                x = .001 * (counter + 1) + .00003 * ((counter % 7) - 3)
+                y = .0007 * ((counter % 11) - 5) + .2 * x * x
+                rows.append(
+                    PrimaryRow(
+                        t, t + timedelta(hours=1), x, y, year, state,
+                        "ACTIVITY_NORMAL", "TREND_NEUTRAL",
+                        int(t.timestamp() // 3600), year - 2017,
+                    )
+                )
+                counter += 1
+    wired = numerical_inputs(_sample(rows))
+    for hypothesis in ("DEP", "TIME", "STATE"):
+        result = engineering_fixture(
+            wired["design"],
+            wired["target"],
+            wired["hours"],
+            wired["segments"],
+            hypothesis,
+            draws=1,
+        )
+        assert result["classification"] == "ENGINEERING_ONLY_NOT_CALIBRATION"
+        assert result["p_value"] is None
