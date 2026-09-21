@@ -5,29 +5,29 @@
   "approved_spec_merge_commit": "e19b36e764dc5b17b5e148f0d233928fe74f7436",
   "approved_spec_review_issue": 59,
   "implementation_pr": 60,
-  "implementation_candidate_commit": "3201676238048bf74bc5dca0e6c4bc8634ad62f1",
+  "implementation_candidate_commit": "d1d26881b8123914ea196557d9f8000bcac70a1f",
   "reviewed_implementation_commit": null,
   "independent_implementation_reviewed": false,
   "certification_execution_authorized": false,
   "first_certification_executed": false,
   "implementation_preflight": {
-    "full_pipeline_implementation_run_id": 35650866889,
+    "full_pipeline_implementation_run_id": 35652797412,
     "full_pipeline_implementation_conclusion": "success",
-    "release_gate_run_id": 35650866783,
+    "release_gate_run_id": 35652797221,
     "release_gate_conclusion": "success",
     "certification_job_conclusion": "skipped"
   },
   "file_git_blob_sha1": {
     "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md": "781cdfcbe1ce01aedc9de567f8843bce2a793460",
     "research/governance/ams_dep_full_pipeline_integrity_v1.json": "fafbf6fcb44e9d8ac66072eb865b75bcac844946",
-    "src/research_core/ams_dep_pipeline.py": "11be156d93c8f59208054c294a972bb63f6b344c",
+    "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
     "src/research_core/ams_dep_empirical_access.py": "9a89817a7bff58926fac717dfb7f59e0195a56a8",
     "research/scripts/run_ams_dep_empirical.py": "74a5f20048240367345079d51453f5bd041cf1d5",
-    "research/scripts/run_ams_dep_full_pipeline_integrity.py": "9bdfacba05eaaca01114f5cfc1373366911e2435",
+    "research/scripts/run_ams_dep_full_pipeline_integrity.py": "75bab7b7346bddea410f31c8f44c281a9e8cba9b",
     "tests/test_ams_dep_full_pipeline_integrity.py": "d4a469b5359907b72cd90a3b8d82bf97bb3eac4d",
     "tests/test_ams_dep_empirical_firewall.py": "672a6b763a9810665d7a059ef80d60ac9eba1e79",
-    "tests/test_ams_dep_full_pipeline_runner.py": "0852419e67dcb4770e880e7d294e5762acfd1c92",
-    ".github/workflows/ams-dep-full-pipeline-integrity.yml": "3ecc3ef2d1777f5b3c8f0b4771d1476175cc72f1",
+    "tests/test_ams_dep_full_pipeline_runner.py": "24e5ddfd612e4f47fe326dab8e6ca90858eed2a9",
+    ".github/workflows/ams-dep-full-pipeline-integrity.yml": "da8726df0328dcab1a6db31b45a1f5b61711996a",
     "research/governance/ams_dep_release_gate_v1.json": "55a4ac492b2f454491e749029d9c8131cb2f7de7",
     "pyproject.toml": "c285596629c88e741cadd90064361258a9f820c2"
   },
@@ -60,5 +60,5 @@
     "file_git_blob_sha1": "must remain byte-identical to reviewed implementation",
     "pinned_existing_production_git_blob_sha1": "must remain byte-identical to approved specification"
   },
-  "notes": "Draft implementation freeze for candidate 3201676238048bf74bc5dca0e6c4bc8634ad62f1. This candidate routes deterministic generated Binance-format ZIPs through the existing Gate 1A scan/build_manifest/bind_source_identity path, uses return_eligible in row construction, and uses common_certified_intervals in cross-asset joining. Certification remains fail-closed while status is DRAFT_LOCKED, reviewed_implementation_commit is null, independent_implementation_reviewed is false, or certification_execution_authorized is false. No empirical data, protected outcomes, calibration/holdout seeds, P&L, paper trading, or live trading are authorized."
+  "notes": "Draft implementation freeze for Issue #61 remediation candidate d1d26881b8123914ea196557d9f8000bcac70a1f. The certification lock now requires the independent-review flag, exact reviewed-candidate equality, reviewed-candidate ancestry, the exact complete frozen implementation path set, candidate-tree and executing-tree blob equality, and exact equality of the approved existing-production pin map. Runner-lock tests are executed in CI and adversarially test each authorization condition. FP-11 now semantically verifies identity chains, inventories, 15 support cells, join/digest evidence, numerical digests, exact SLOTS/unavailability behavior, protected access flags, and expected/observed blob equality. Certification remains fail-closed while status is DRAFT_LOCKED, reviewed_implementation_commit is null, independent_implementation_reviewed is false, or certification_execution_authorized is false. No empirical data, protected outcomes, calibration/holdout seeds, P&L, paper trading, or live trading are authorized."
 }
