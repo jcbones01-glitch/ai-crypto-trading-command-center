@@ -13,10 +13,10 @@ import os
 import subprocess
 import sys
 import tempfile
-from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from pathlib import Path
+from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
 import numpy as np
 import scipy
@@ -28,6 +28,7 @@ from research_core.ams_dep_pipeline import (
     PrimaryRow,
     PrimarySample,
     assemble_primary_family,
+    build_certified_bundle_from_archives,
     build_primary_sample,
     exact_timestamp_intersection,
     numerical_inputs,
@@ -36,16 +37,7 @@ from research_core.ams_dep_pipeline import (
     support_report,
     verify_certified_bundle,
 )
-from research_core.data_ingestion import make_metadata
-from research_core.data_interfaces import MarketBar
-from research_core.data_quality_treatment_v2 import (
-    CertifiedSegment,
-    Exclusion,
-    PartitionCertification,
-    ResearchTreatmentManifest,
-)
 from research_core.dependent_wild_bootstrap_v2 import engineering_fixture
-from research_core.source_identity import source_identity
 
 ROOT = Path(__file__).resolve().parents[2]
 PLAN = ROOT / "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md"
@@ -207,98 +199,50 @@ def _run_pytest(nodeids: list[str]) -> dict:
     }
 
 
-def _bars(start: datetime, count: int, symbol: str) -> tuple[MarketBar, ...]:
-    canonical = "BTC/USDT" if symbol == "BTCUSDT" else "ETH/USDT"
-    out = []
-    for i in range(count):
-        t = start + timedelta(hours=i)
-        close = (
-            Decimal("100")
-            + Decimal(i) / Decimal("20")
-            + Decimal((i % 17) - 8) / Decimal("50")
-        )
-        out.append(
-            MarketBar(
-                t,
-                canonical,
-                close - Decimal(".03"),
-                close + Decimal(".10"),
-                close - Decimal(".10"),
-                close,
-                Decimal("1000") + Decimal((i * 37) % 211),
+def _write_synthetic_archive(root: Path, symbol: str) -> Path:
+    """Write a deterministic Binance-format ZIP for the frozen Development span."""
+
+    missing = datetime(2019, 1, 1, tzinfo=timezone.utc)
+    rows: list[str] = []
+    cursor = DEVELOPMENT_START
+    i = 0
+    while cursor < DEVELOPMENT_END:
+        if cursor != missing:
+            close = (
+                Decimal("100")
+                + Decimal(i) / Decimal("20")
+                + Decimal((i % 17) - 8) / Decimal("50")
             )
-        )
-    return tuple(out)
+            open_ = close - Decimal(".03")
+            high = close + Decimal(".10")
+            low = close - Decimal(".10")
+            volume = Decimal("1000") + Decimal((i * 37) % 211)
+            timestamp_ms = int(cursor.timestamp()) * 1000
+            rows.append(
+                f"{timestamp_ms},{open_},{high},{low},{close},{volume}"
+            )
+        cursor += timedelta(hours=1)
+        i += 1
 
-
-def _synthetic_manifest(
-    raw_identity: str,
-    symbol: str,
-    segments: tuple[CertifiedSegment, ...],
-    exclusions: tuple[Exclusion, ...],
-) -> ResearchTreatmentManifest:
-    certification = "VALID" if not exclusions else "VALID WITH DOCUMENTED EXCLUSIONS"
-    partition = PartitionCertification(
-        "development",
-        DEVELOPMENT_START.isoformat(),
-        DEVELOPMENT_END.isoformat(),
-        certification,
-        segments,
-        exclusions,
-    )
-    manifest = ResearchTreatmentManifest(
-        source_version=f"binance-public-data-spot-1h:{raw_identity}",
-        treatment_protocol_version="gate1a-v1",
-        normalization_version="gate1-v1",
-        symbol=symbol,
-        timeframe="1h",
-        research_start=DEVELOPMENT_START.isoformat(),
-        research_end=DEVELOPMENT_END.isoformat(),
-        anomaly_ids=(),
-        affected_regions=(),
-        continuity_breaks=(),
-        exclusions=exclusions,
-        certified_segments=segments,
-        partitions=(partition,),
-        source_integrity="SOURCE VERIFIED",
-        research_certification=certification,
-        dataset_identity="",
-    )
-    return replace(
-        manifest,
-        dataset_identity=recompute_treatment_manifest_identity(manifest),
-    )
+    path = root / f"{symbol}-1h-synthetic.zip"
+    member = f"{symbol}-1h-synthetic.csv"
+    info = ZipInfo(member, date_time=(2020, 1, 1, 0, 0, 0))
+    info.compress_type = ZIP_STORED
+    info.create_system = 3
+    info.external_attr = 0o600 << 16
+    payload = ("\n".join(rows) + "\n").encode("utf-8")
+    with ZipFile(path, "w", compression=ZIP_STORED) as archive:
+        archive.writestr(info, payload)
+    return path
 
 
 def _representative_bundle(root: Path, symbol: str) -> CertifiedDataBundle:
-    start = datetime(2019, 1, 1, tzinfo=timezone.utc)
-    full = _bars(start, 1600, symbol)
-    missing = start + timedelta(hours=800)
-    bars = tuple(bar for bar in full if bar.timestamp != missing)
-
-    raw = root / f"{symbol}-synthetic-source.zip"
-    raw.write_bytes((symbol + "|full-pipeline-synthetic-fixture").encode())
-    raw_identity = source_identity([raw])
-
-    exclusion = Exclusion(
-        missing.isoformat(),
-        (missing + timedelta(hours=1)).isoformat(),
-        ("full-pipeline-synthetic-gap",),
-        "deterministic documented synthetic exclusion",
+    raw = _write_synthetic_archive(root, symbol)
+    return build_certified_bundle_from_archives(
+        symbol,
+        [raw],
+        checksum_verified=True,
     )
-    segments = (
-        CertifiedSegment(start.isoformat(), missing.isoformat()),
-        CertifiedSegment(
-            (missing + timedelta(hours=1)).isoformat(),
-            (start + timedelta(hours=1600)).isoformat(),
-        ),
-    )
-    manifest = _synthetic_manifest(raw_identity, symbol, segments, (exclusion,))
-    metadata = make_metadata(
-        list(bars), symbol, "milliseconds", source_identity=raw_identity
-    )
-    return CertifiedDataBundle(symbol, bars, metadata, manifest, (raw,))
-
 
 def _support_fixture(symbol: str) -> PrimarySample:
     rows = []
@@ -410,7 +354,12 @@ def _fixture_evidence(root: Path) -> dict:
             bundle, registered_identity=synthetic_identity
         )
 
-    join = exact_timestamp_intersection(samples["BTCUSDT"], samples["ETHUSDT"])
+    join = exact_timestamp_intersection(
+        samples["BTCUSDT"],
+        samples["ETHUSDT"],
+        btc_manifest=bundles["BTCUSDT"].manifest,
+        eth_manifest=bundles["ETHUSDT"].manifest,
+    )
 
     support = {
         symbol: support_report(_support_fixture(symbol))
