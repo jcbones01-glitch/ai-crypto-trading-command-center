@@ -1,7 +1,7 @@
 {
   "addendum_id": "AMS-DEP-V2-HOLDOUT-EXECUTION",
   "version": 1,
-  "status": "AUTHORIZED",
+  "status": "CONSUMED_PASS_RECORDED",
   "created_date": "2026-09-20",
   "calibration_evidence": {
     "run_id": 35460656875,
@@ -17,8 +17,8 @@
   "artifact_integrity_controls_verified": true,
   "duplicate_task_detection_verified": true,
   "per_cell_invalidity_guard_verified": true,
-  "explicit_holdout_execution_authorized": true,
-  "reserved_holdout_seeds_consumed": false,
+  "explicit_holdout_execution_authorized": false,
+  "reserved_holdout_seeds_consumed": true,
   "holdout_file_git_blob_sha1": {
     "docs/AMS_DEP_V2_HOLDOUT_EXECUTION_PLAN.md": "6c801643e9fb8e7d9a15ab0aa2bc0cf53b94f865",
     "src/research_core/release_gate.py": "14f283025fd217bbf5b5a248e3dac9ad38c4fb81",
@@ -43,7 +43,7 @@
   "strategy_pnl_authorized": false,
   "paper_trading_authorized": false,
   "live_trading_authorized": false,
-  "notes": "This addendum is a second, separate execution lock. Calibration PASS alone does not authorize the reserved holdout. The current frozen scientific specification remains unchanged. Holdout execution requires both the existing AMS-DEP release gate and this addendum to be explicitly opened after independent review of the additive holdout path.",
+  "notes": "Terminal post-execution closeout for the single reserved V2 synthetic holdout. The durable one-shot claim remains immutable at the execution commit. Further holdout execution is not authorized. The historical authorized execution manifest is preserved unchanged. This closeout records PASS and consumption only; market data, Validation/OOS, strategy P&L, paper trading, and live trading remain unauthorized.",
   "reviewed_holdout_code_commit": "f716d5ce7923bd903ee95b2a6400178a0982287a",
   "engineering_review_candidate_commit": "f716d5ce7923bd903ee95b2a6400178a0982287a",
   "engineering_preflight_run_id": 35528303501,
@@ -55,5 +55,18 @@
   "remediation_review_issue": 54,
   "release_gate_preflight_run_id": 35528303481,
   "release_gate_preflight_conclusion": "success",
-  "helper_context_firewall_verified": true
+  "helper_context_firewall_verified": true,
+  "holdout_result_evidence": {
+    "run_id": 35529411234,
+    "execution_commit": "80d0fb5a90a6c4dc02073605159c38f520ad3410",
+    "aggregate_job_id": 106443566096,
+    "aggregate_artifact_id": 10655486394,
+    "artifact_zip_sha256": "0208861fc4dbeed2d6dda1a6b574678eb59957e628f1a521ba6c56227ef5435d",
+    "summary_sha256": "ad66d2a8b153e9e98209e82dbb475de4a7714d178233e0ebb0d7d6a749a01ebd",
+    "outer_ledger_sha256": "089b5be7b049090a22be17c04b266e0247c384df58f06ee3a2090bfb795cbb5d",
+    "registered_screen_pass": true,
+    "artifact_review": "docs/research/AMS_DEP_V2_HOLDOUT_ARTIFACT_REVIEW.md",
+    "independent_closeout_review_issue": 56,
+    "independent_closeout_decision": "ACCEPT_V2_SYNTHETIC_HOLDOUT_PASS"
+  }
 }
