@@ -393,6 +393,8 @@ def verify_certified_bundle(
         "symbol": bundle.symbol,
         "raw_source_identity": actual_source_identity,
         "manifest_source_identity": manifest_raw_identity,
+        "metadata_source_identity": metadata.source_identity,
+        "stored_manifest_identity": manifest.dataset_identity,
         "recomputed_manifest_identity": recomputed_manifest_identity,
         "normalized_dataset_id": metadata.dataset_id,
         "normalized_content_hash": metadata.content_hash,
