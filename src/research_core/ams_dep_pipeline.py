@@ -282,6 +282,17 @@ def verify_certified_bundle(
     exclusions = tuple(partition.exclusions)
     certified_segments = tuple(sorted(partition.certified_segments, key=lambda s: s.start))
 
+    # Every observed normalized bar must be either certified or deliberately
+    # excluded by the manifest. A bar in neither set is a source/manifest
+    # mismatch, not a row-level exclusion.
+    for bar in bars:
+        if not _inside_any(bar.timestamp, certified_segments) and not _inside_any(
+            bar.timestamp, exclusions
+        ):
+            raise PipelineIntegrityError(
+                "loaded timestamp is neither certified nor documented as excluded"
+            )
+
     for issue in whole.issues:
         if issue.timestamp is None:
             raise PipelineIntegrityError("missing_interval issue lacks timestamp")
@@ -309,6 +320,9 @@ def verify_certified_bundle(
         if not segment_report.valid:
             raise PipelineIntegrityError("certified segment failed validate_dataset")
 
+    missing_timestamps = tuple(
+        issue.timestamp for issue in whole.issues if issue.timestamp is not None
+    )
     return {
         "symbol": bundle.symbol,
         "raw_source_identity": actual_source_identity,
@@ -316,7 +330,11 @@ def verify_certified_bundle(
         "recomputed_manifest_identity": recomputed_manifest_identity,
         "normalized_dataset_id": metadata.dataset_id,
         "normalized_content_hash": metadata.content_hash,
-        "whole_bundle_missing_intervals": len(whole.issues),
+        "whole_bundle_missing_intervals": len(missing_timestamps),
+        "whole_bundle_missing_interval_sha256": _timestamp_digest(
+            missing_timestamps
+        ),
+        "documented_exclusion_count": len(exclusions),
         "certified_segment_count": len(certified_segments),
     }
 
