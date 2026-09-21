@@ -1,8 +1,8 @@
 {
   "registration_id": "AMS-DEP-FULL-PIPELINE-SYNTHETIC-INTEGRITY-V1",
   "version": 1,
-  "revision": 2,
-  "status": "REVISED_FOR_INDEPENDENT_REREVIEW",
+  "revision": 3,
+  "status": "REVISED_FOR_SECOND_INDEPENDENT_REREVIEW",
   "prior_review_issue": 59,
   "prior_review_decision": "REQUIRE_CHANGES_BEFORE_FULL_PIPELINE_IMPLEMENTATION",
   "classification": "SYNTHETIC_ENGINEERING_INTEGRITY_NOT_MARKET_EVIDENCE",
@@ -46,7 +46,45 @@
     "validate_dataset_required": true,
     "returned_symbol_must_match_request": true,
     "bars_must_match_metadata": true,
-    "partition_boundaries_must_match_registration": true
+    "partition_boundaries_must_match_registration": true,
+    "recompute_treatment_manifest_identity": true,
+    "treatment_manifest_identity_canonicalization": {
+      "record": "ResearchTreatmentManifest.to_record_without_identity() equivalent",
+      "json_sort_keys": true,
+      "json_separators": [
+        ",",
+        ":"
+      ],
+      "ensure_ascii": true,
+      "digest": "sha256"
+    },
+    "authoritative_raw_source_identity": {
+      "implementation": "research_core.source_identity.source_identity",
+      "path": "src/research_core/source_identity.py",
+      "algorithm": [
+        "sort archive paths by filename",
+        "record (filename, sha256(file_bytes)) for each archive",
+        "json.dumps(records, separators=(',', ':'), ensure_ascii=True)",
+        "sha256(serialized_bytes)"
+      ],
+      "manifest_source_version_prefix": "binance-public-data-spot-1h:",
+      "manifest_source_version_digest_must_equal_loaded_archive_identity": true,
+      "dataset_metadata_source_identity_must_equal_loaded_archive_identity": true,
+      "historical_dataset_private_archive_set_identity_authoritative": false
+    },
+    "documented_gap_validation": {
+      "whole_bundle_validate_dataset_required": true,
+      "whole_bundle_allowed_issue_codes": [
+        "missing_interval"
+      ],
+      "whole_bundle_missing_intervals_must_be_fully_covered_by_registered_manifest_exclusions": true,
+      "whole_bundle_missing_intervals_must_be_outside_all_certified_segments": true,
+      "every_certified_segment_validate_dataset_required": true,
+      "every_certified_segment_validation_must_be_valid_true": true,
+      "any_other_validation_issue_hard_fail": true
+    },
+    "returned_manifest_complete_content_must_match_registered_identity": true,
+    "raw_archive_set_must_match_manifest_source_version": true
   },
   "pre_load_authorization": {
     "canonical_repository_gate_only": true,
@@ -193,7 +231,8 @@
     "family_size": 6,
     "drop_unavailable_allowed": false,
     "identical_primary_sample_per_asset_across_DEP_TIME_STATE": true,
-    "fabricated_p_value_fixture_is_wiring_only": true
+    "fabricated_p_value_fixture_is_wiring_only": true,
+    "identical_design_target_hours_segments_per_asset_across_DEP_TIME_STATE": true
   },
   "cross_asset": {
     "certified_join_primitive": "exact intersection by accepted predictor timestamp only",
@@ -226,7 +265,9 @@
     "src/research_core/dataset.py": "236dcd2bc598a68b331788eb28a1b06e19d6cd12",
     "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
     "src/research_core/dependent_wild_bootstrap_v2.py": "4e77f4576b85a4a35c3738d71e9b49315dd4f248",
-    "src/research_core/release_gate.py": "14f283025fd217bbf5b5a248e3dac9ad38c4fb81"
+    "src/research_core/release_gate.py": "14f283025fd217bbf5b5a248e3dac9ad38c4fb81",
+    "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9",
+    "src/research_core/historical_dataset.py": "7910e95b6f34a97e0034070884748b592a7b11d0"
   },
   "existing_component_change_policy": "VERSIONED_AMENDMENT_AND_INDEPENDENT_REVIEW_REQUIRED",
   "implementation_freeze_manifest_required_before_first_certification_run": true,
@@ -263,7 +304,12 @@
     "validation_or_oos_accessed": false,
     "strategy_pnl_calculated": false,
     "paper_trading_authorized": false,
-    "live_trading_authorized": false
+    "live_trading_authorized": false,
+    "authoritative_raw_archive_set_identity": true,
+    "manifest_embedded_raw_source_identity": true,
+    "recomputed_treatment_manifest_identity": true,
+    "normalized_content_dataset_id_and_hash": true,
+    "whole_bundle_validation_and_documented_gap_accounting": true
   },
   "pass_token": "FULL_PIPELINE_SYNTHETIC_INTEGRITY_PASS",
   "fail_token": "FULL_PIPELINE_SYNTHETIC_INTEGRITY_FAIL",
@@ -279,5 +325,11 @@
     "paper_trading_authorized",
     "live_trading_authorized",
     "directed_cross_asset_lagged_diagnostics"
-  ]
+  ],
+  "adversarial_source_identity_fixtures": {
+    "stale_manifest_identity_after_segment_or_exclusion_mutation": "HARD_FAIL_BEFORE_STATE_OR_ROW_CONSTRUCTION",
+    "altered_raw_archive_bytes_with_stale_manifest_and_metadata": "HARD_FAIL_BEFORE_STATE_OR_ROW_CONSTRUCTION",
+    "undocumented_missing_hour": "HARD_FAIL_BEFORE_STATE_OR_ROW_CONSTRUCTION",
+    "documented_exclusion_gap": "PERMITTED_ONLY_IF_EXACTLY_COVERED_BY_MANIFEST_EXCLUSION_AND_ALL_CERTIFIED_SEGMENTS_VALIDATE_CLEANLY"
+  }
 }
