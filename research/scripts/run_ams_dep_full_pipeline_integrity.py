@@ -541,6 +541,208 @@ def _fixture_evidence(root: Path) -> dict:
     }
 
 
+def _is_hex64(value) -> bool:
+    if not isinstance(value, str) or len(value) != 64:
+        return False
+    try:
+        int(value, 16)
+    except ValueError:
+        return False
+    return value == value.lower()
+
+
+def _evaluate_fp11(report: dict, evidence: dict, freeze: dict, registration: dict) -> dict:
+    checks: dict[str, bool] = {}
+
+    checks["top_level_hashes"] = all(
+        _is_hex64(report.get(field))
+        for field in (
+            "plan_sha256",
+            "registration_sha256",
+            "implementation_freeze_sha256",
+        )
+    )
+
+    expected_existing = registration["pinned_existing_production_git_blob_sha1"]
+    reported_existing = report.get("existing_production_blobs", {})
+    checks["existing_blob_path_set"] = set(reported_existing) == set(expected_existing)
+    checks["existing_blob_equality"] = checks["existing_blob_path_set"] and all(
+        reported_existing[path].get("expected") == expected
+        and reported_existing[path].get("observed") == expected
+        for path, expected in expected_existing.items()
+    )
+
+    expected_impl = freeze["file_git_blob_sha1"]
+    reported_impl = report.get("implementation_blobs", {})
+    checks["implementation_blob_path_set"] = set(reported_impl) == set(expected_impl)
+    checks["implementation_blob_equality"] = checks["implementation_blob_path_set"] and all(
+        reported_impl[path].get("expected") == expected
+        and reported_impl[path].get("observed") == expected
+        for path, expected in expected_impl.items()
+    )
+
+    fixture_ids = evidence.get("fixture_identities", {})
+    bundle = evidence.get("bundle_verification", {})
+    accounting = evidence.get("primary_accounting", {})
+    support = evidence.get("support", {})
+    symbols = ("BTCUSDT", "ETHUSDT")
+    checks["exact_symbol_sets"] = all(
+        set(section) == set(symbols)
+        for section in (fixture_ids, bundle, accounting, support)
+    )
+
+    bundle_checks = []
+    fixture_checks = []
+    accounting_checks = []
+    support_checks = []
+    expected_cells = {
+        f"{year}|{state}"
+        for year in (2017, 2018, 2019, 2020, 2021)
+        for state in ("VOL_LOW", "VOL_NORMAL", "VOL_HIGH")
+    }
+    for symbol in symbols:
+        if symbol not in bundle or symbol not in accounting or symbol not in support:
+            bundle_checks.append(False)
+            fixture_checks.append(False)
+            accounting_checks.append(False)
+            support_checks.append(False)
+            continue
+
+        b = bundle[symbol]
+        source_ids = (
+            b.get("raw_source_identity"),
+            b.get("manifest_source_identity"),
+            b.get("metadata_source_identity"),
+        )
+        manifest_ids = (
+            b.get("stored_manifest_identity"),
+            b.get("recomputed_manifest_identity"),
+        )
+        bundle_checks.append(
+            all(_is_hex64(value) for value in source_ids + manifest_ids)
+            and len(set(source_ids)) == 1
+            and len(set(manifest_ids)) == 1
+            and _is_hex64(b.get("normalized_dataset_id"))
+            and _is_hex64(b.get("normalized_content_hash"))
+            and _is_hex64(b.get("whole_bundle_missing_interval_sha256"))
+            and isinstance(b.get("whole_bundle_missing_intervals"), int)
+            and b["whole_bundle_missing_intervals"] >= 1
+            and isinstance(b.get("documented_exclusion_count"), int)
+            and b["documented_exclusion_count"] >= 1
+            and isinstance(b.get("certified_segment_count"), int)
+            and b["certified_segment_count"] >= 1
+        )
+
+        a = accounting[symbol]
+        inventory = a.get("inventory_sha256", {})
+        accounting_checks.append(
+            isinstance(a.get("loaded_rows"), int)
+            and a["loaded_rows"] > 0
+            and isinstance(a.get("candidate_rows"), int)
+            and a["candidate_rows"] > 0
+            and a["candidate_rows"] == a.get("accepted_rows", -1) + a.get("rejected_rows", -1)
+            and set(inventory) == INVENTORY_KEYS
+            and all(_is_hex64(value) for value in inventory.values())
+        )
+
+        expected_fixture = _stable_json_sha256(
+            {
+                "symbol": symbol,
+                "bundle_verification": b,
+                "loaded_timestamp_sha256": inventory.get(
+                    "loaded_normalized_source_timestamps"
+                ),
+                "candidate_timestamp_sha256": inventory.get(
+                    "candidate_predictor_timestamps"
+                ),
+            }
+        )
+        fixture_checks.append(
+            _is_hex64(fixture_ids.get(symbol))
+            and fixture_ids.get(symbol) == expected_fixture
+        )
+
+        s = support[symbol]
+        cells = s.get("cells", {})
+        support_checks.append(
+            s.get("pass") is True
+            and s.get("total_rows_pass") is True
+            and isinstance(s.get("total_rows"), int)
+            and s["total_rows"] >= 5000
+            and set(cells) == expected_cells
+            and len(cells) == 15
+            and all(
+                isinstance(cell.get("rows"), int)
+                and cell["rows"] >= 200
+                and isinstance(cell.get("distinct_utc_dates"), int)
+                and cell["distinct_utc_dates"] >= 10
+                and cell.get("pass") is True
+                for cell in cells.values()
+            )
+        )
+
+    checks["bundle_identity_semantics"] = all(bundle_checks)
+    checks["fixture_identity_semantics"] = all(fixture_checks)
+    checks["inventory_accounting_semantics"] = all(accounting_checks)
+    checks["support_semantics"] = all(support_checks)
+
+    join = evidence.get("exact_cross_asset_join", {})
+    checks["join_semantics"] = (
+        isinstance(join.get("count"), int)
+        and join["count"] > 0
+        and _is_hex64(join.get("timestamp_sha256"))
+    )
+
+    numerical = evidence.get("numerical_wiring", {})
+    engineering = numerical.get("engineering_fixtures", {})
+    checks["numerical_digest_semantics"] = (
+        numerical.get("design_shape") == [75, 14]
+        and _is_hex64(numerical.get("hour_vector_sha256"))
+        and _is_hex64(numerical.get("segment_vector_sha256"))
+        and set(engineering) == {"DEP", "TIME", "STATE"}
+        and all(
+            item.get("classification") == "ENGINEERING_ONLY_NOT_CALIBRATION"
+            and item.get("p_value") is None
+            for item in engineering.values()
+        )
+    )
+
+    family = evidence.get("six_slot_assembly", [])
+    exact_slots = [item.get("slot") for item in family] == list(SLOTS)
+    unavailable_semantics = all(
+        (
+            item.get("available") is False
+            and item.get("calculation_p") == 1.0
+            and item.get("adjusted_p") is None
+            and item.get("reject") is False
+        )
+        if item.get("raw_p") is None
+        else (
+            item.get("available") is True
+            and isinstance(item.get("calculation_p"), float)
+            and 0.0 <= item["calculation_p"] <= 1.0
+            and item.get("adjusted_p") is not None
+        )
+        for item in family
+    )
+    checks["six_slot_holm_semantics"] = (
+        len(family) == 6 and exact_slots and unavailable_semantics
+    )
+
+    deferred = evidence.get("directed_cross_asset_lagged_diagnostics", {})
+    checks["deferred_lag_semantics"] = (
+        deferred.get("status")
+        == "BLOCKED_PENDING_SEPARATE_CROSS_ASSET_LAG_INTEGRITY_SPEC"
+        and deferred.get("authorized_by_v1_pass") is False
+    )
+
+    checks["protected_access_flags"] = all(
+        report.get(field) is False for field in ACCESS_FALSE_FIELDS
+    )
+
+    return {"pass": all(checks.values()), "checks": checks}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
@@ -592,42 +794,10 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="ams-dep-full-pipeline-") as directory:
         report["fixture_evidence"] = _fixture_evidence(Path(directory))
 
-    required_fixture_keys = {
-        "fixture_identities",
-        "bundle_verification",
-        "primary_accounting",
-        "support",
-        "exact_cross_asset_join",
-        "numerical_wiring",
-        "six_slot_assembly",
-        "directed_cross_asset_lagged_diagnostics",
-    }
-    evidence = report["fixture_evidence"]
-    expected_engineering = evidence["numerical_wiring"]["engineering_fixtures"]
-    fp11_pass = (
-        required_fixture_keys.issubset(evidence)
-        and all(evidence["support"][symbol]["pass"] is True for symbol in ("BTCUSDT", "ETHUSDT"))
-        and len(evidence["six_slot_assembly"]) == 6
-        and all(
-            item["classification"] == "ENGINEERING_ONLY_NOT_CALIBRATION"
-            and item["p_value"] is None
-            for item in expected_engineering.values()
-        )
-        and set(expected_engineering) == {"DEP", "TIME", "STATE"}
-        and evidence["directed_cross_asset_lagged_diagnostics"]["authorized_by_v1_pass"] is False
-        and evidence["directed_cross_asset_lagged_diagnostics"]["status"]
-        == "BLOCKED_PENDING_SEPARATE_CROSS_ASSET_LAG_INTEGRITY_SPEC"
-        and all(
-            evidence["primary_accounting"][symbol]["candidate_rows"]
-            == evidence["primary_accounting"][symbol]["accepted_rows"]
-            + evidence["primary_accounting"][symbol]["rejected_rows"]
-            for symbol in ("BTCUSDT", "ETHUSDT")
-        )
+    report["oracles"]["FP-11_IMMUTABLE_PROVENANCE_OUTPUT_INVENTORY"] = (
+        _evaluate_fp11(report, report["fixture_evidence"], freeze, registration)
     )
-    report["oracles"]["FP-11_IMMUTABLE_PROVENANCE_OUTPUT_INVENTORY"] = {
-        "pass": fp11_pass,
-        "required_fixture_keys": sorted(required_fixture_keys),
-    }
+
 
     all_pass = all(value.get("pass") is True for value in report["oracles"].values())
     report["decision"] = PASS_TOKEN if all_pass else FAIL_TOKEN
