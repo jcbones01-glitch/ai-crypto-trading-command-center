@@ -5,27 +5,28 @@
   "approved_spec_merge_commit": "e19b36e764dc5b17b5e148f0d233928fe74f7436",
   "approved_spec_review_issue": 59,
   "implementation_pr": 60,
-  "implementation_candidate_commit": "164940a24fc575e70d07cfa94e22d476e81d117b",
+  "implementation_candidate_commit": "43fc958e98501c5da402f1088eb2446d86ea9a08",
   "reviewed_implementation_commit": null,
   "independent_implementation_reviewed": false,
   "certification_execution_authorized": false,
   "first_certification_executed": false,
   "implementation_preflight": {
-    "full_pipeline_implementation_run_id": 35648861883,
+    "full_pipeline_implementation_run_id": 35649791763,
     "full_pipeline_implementation_conclusion": "success",
-    "release_gate_run_id": 35648861808,
-    "release_gate_conclusion": "success"
+    "release_gate_run_id": 35649791860,
+    "release_gate_conclusion": "success",
+    "certification_job_conclusion": "skipped"
   },
   "file_git_blob_sha1": {
     "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md": "781cdfcbe1ce01aedc9de567f8843bce2a793460",
     "research/governance/ams_dep_full_pipeline_integrity_v1.json": "fafbf6fcb44e9d8ac66072eb865b75bcac844946",
-    "src/research_core/ams_dep_pipeline.py": "62898354ec23118bd45c03c0aaae2e0557d39767",
+    "src/research_core/ams_dep_pipeline.py": "439769ed7e53dd3e61d2c3ac273a32e64367c9d1",
     "src/research_core/ams_dep_empirical_access.py": "9a89817a7bff58926fac717dfb7f59e0195a56a8",
     "research/scripts/run_ams_dep_empirical.py": "74a5f20048240367345079d51453f5bd041cf1d5",
-    "research/scripts/run_ams_dep_full_pipeline_integrity.py": "53d7e71a0d8e4976a805605e898003a83efb488d",
-    "tests/test_ams_dep_full_pipeline_integrity.py": "f6297200a57df11802f157835cb1bdd2e14a05d6",
-    "tests/test_ams_dep_empirical_firewall.py": "41b39ce4090856a109cf8c3a6e24ad2be193bde8",
-    "tests/test_ams_dep_full_pipeline_runner.py": "29ece2018a0f226456762d61b0b93a6b8cf77d94",
+    "research/scripts/run_ams_dep_full_pipeline_integrity.py": "5490b12de9b45536b579e0c431ef033dfca83cac",
+    "tests/test_ams_dep_full_pipeline_integrity.py": "1cac52f93a6c7b89a8c089f6c0c2ae816ca5416a",
+    "tests/test_ams_dep_empirical_firewall.py": "672a6b763a9810665d7a059ef80d60ac9eba1e79",
+    "tests/test_ams_dep_full_pipeline_runner.py": "0852419e67dcb4770e880e7d294e5762acfd1c92",
     ".github/workflows/ams-dep-full-pipeline-integrity.yml": "3ecc3ef2d1777f5b3c8f0b4771d1476175cc72f1",
     "research/governance/ams_dep_release_gate_v1.json": "55a4ac492b2f454491e749029d9c8131cb2f7de7",
     "pyproject.toml": "c285596629c88e741cadd90064361258a9f820c2"
@@ -59,5 +60,5 @@
     "file_git_blob_sha1": "must remain byte-identical to reviewed implementation",
     "pinned_existing_production_git_blob_sha1": "must remain byte-identical to approved specification"
   },
-  "notes": "Draft implementation freeze. Certification is fail-closed while status is DRAFT_LOCKED or certification_execution_authorized is false. No empirical data, protected outcomes, calibration/holdout seeds, P&L, paper trading, or live trading are authorized."
+  "notes": "Draft implementation freeze for hardened candidate 43fc958e98501c5da402f1088eb2446d86ea9a08. Certification remains fail-closed while status is DRAFT_LOCKED, reviewed_implementation_commit is null, independent_implementation_reviewed is false, or certification_execution_authorized is false. No empirical data, protected outcomes, calibration/holdout seeds, P&L, paper trading, or live trading are authorized."
 }
