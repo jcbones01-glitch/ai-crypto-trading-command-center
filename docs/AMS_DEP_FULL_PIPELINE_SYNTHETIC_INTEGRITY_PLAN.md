@@ -42,6 +42,10 @@ V1 freezes the following existing production Git blobs **before implementation**
 | `src/research_core/dependence_statistics.py` | `c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b` |
 | `src/research_core/dependent_wild_bootstrap_v2.py` | `4e77f4576b85a4a35c3738d71e9b49315dd4f248` |
 | `src/research_core/release_gate.py` | `14f283025fd217bbf5b5a248e3dac9ad38c4fb81` |
+| `src/research_core/source_identity.py` | `8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9` |
+| `src/research_core/historical_dataset.py` | `7910e95b6f34a97e0034070884748b592a7b11d0` |
+
+`source_identity.py` is the authoritative Gate 1A raw-archive-set identity implementation for this specification. The private `historical_dataset._archive_set_identity()` helper uses a different serialization and MUST NOT be substituted for the Gate 1A identity. If `historical_dataset.py` is used for archive reading/assembly, its behavior is also frozen by the blob above.
 
 These are specification inputs, not files that implementation may silently edit. Any change to a pinned existing component before the first certification run invalidates this V1 specification and requires a versioned amendment plus independent review.
 
@@ -56,6 +60,8 @@ The implementation must call, not reimplement:
 - `research_core.data_quality_treatment_v2.return_eligible`;
 - `research_core.data_quality_treatment_v2.common_certified_intervals`;
 - `research_core.data_ingestion.validate_dataset`, `content_hash`, and `dataset_identity` for returned normalized bars;
+- `research_core.source_identity.source_identity` as the sole authoritative raw-archive-set identity algorithm for Gate 1A source binding;
+- the exact Gate 1A manifest-identity construction used by `source_identity.bind_source_identity`: SHA-256 of canonical JSON over the full manifest record with `dataset_identity` removed and the bound `source_version` present, using `sort_keys=True`, separators `(",", ":")`, and `ensure_ascii=True`;
 - `research_core.dependence_statistics.primary_design`;
 - `research_core.dependence_statistics.RESTRICTIONS`;
 - `research_core.dependence_statistics.SLOTS`;
@@ -97,6 +103,43 @@ Registered treatment-manifest identities:
 
 The normalized-content `DatasetMetadata.dataset_id` and `content_hash` are separate runtime integrity values. They must be recomputed from the returned bars and must match the returned metadata, but V1 does not substitute them for the registered treatment-manifest identity.
 
+### Treatment-manifest identity must be recomputed, not trusted
+
+The returned `ResearchTreatmentManifest.dataset_identity` field is never trusted by string comparison alone.
+
+Before state or row construction, the pipeline must:
+
+1. take the complete returned manifest contents;
+2. remove only the `dataset_identity` field;
+3. serialize the remaining record exactly with `json.dumps(..., sort_keys=True, separators=(",", ":"), ensure_ascii=True)`;
+4. SHA-256 that canonical JSON payload;
+5. require:
+
+`recomputed_manifest_identity == manifest.dataset_identity == registered_treatment_manifest_identity[symbol]`.
+
+This recomputation therefore binds all result-affecting manifest contents, including source version, normalization/treatment versions, symbol/timeframe, research boundaries, anomaly IDs, affected regions, continuity breaks, exclusions, certified segments, partitions, source integrity, and certification.
+
+A fixture must alter a certified segment or exclusion while deliberately leaving the stored `dataset_identity` unchanged and prove hard failure before state construction.
+
+### Raw archive set must be rebound to the registered manifest
+
+The authoritative raw-source identity algorithm is exactly `research_core.source_identity.source_identity(paths)`:
+
+- sort raw archive paths by filename;
+- for each archive form `(filename, sha256(file_bytes))`;
+- JSON-serialize the ordered record list with separators `(",", ":")` and `ensure_ascii=True`;
+- SHA-256 the resulting bytes.
+
+For an authorized empirical load, the raw archive set actually opened by the canonical loader must be hashed with that exact algorithm. The resulting digest must equal the digest encoded in the registered manifest's `source_version`, which must have the exact form:
+
+`binance-public-data-spot-1h:<64-lowercase-hex-source-identity>`.
+
+The loader must also require any returned `DatasetMetadata.source_identity` used by the canonical bundle to equal this same authoritative `source_identity(paths)` value.
+
+The private `historical_dataset._archive_set_identity()` digest is explicitly non-authoritative for this gate because it serializes filenames/digests differently. It may not satisfy or replace this check.
+
+A fixture must alter one raw archive's bytes while keeping filenames, returned normalized-bar metadata, and stored manifest identity strings unchanged and prove hard failure before state/row construction.
+
 ## Two-stage empirical access contract
 
 ### Stage A — pre-load authorization
@@ -132,13 +175,19 @@ Required checks:
 - treatment-manifest identity equals the registered asset identity;
 - treatment-manifest Development boundaries equal the frozen Development boundaries;
 - metadata row count, start/end timestamps and symbol metadata match the returned bars;
-- `validate_dataset` succeeds on returned bars;
+- the treatment-manifest identity is recomputed from the complete returned manifest and equals both its stored identity and the registered asset identity;
+- the raw archive set actually opened is hashed with authoritative `source_identity(paths)`, equals the digest embedded in manifest `source_version`, and equals the bundle's source-identity metadata where present;
+- whole-bundle structural validation checks symbol, UTC/hour-grid alignment, strict ordering, duplicates and nonfinite/invalid bars;
+- documented gaps are handled only by the frozen certified-segment rule below rather than by silently accepting an invalid whole-bundle report;
+- each manifest-certified continuous segment is separately passed to `validate_dataset` and MUST return `valid=True`;
+- every whole-bundle `missing_interval` timestamp MUST lie entirely inside a manifest-documented exclusion interval and outside all certified segments; any undocumented missing timestamp is a hard failure;
+- no whole-bundle validation issue other than such fully accounted `missing_interval` findings is tolerated;
 - recomputed normalized-content `dataset_identity(bars)` equals metadata `dataset_id`;
 - recomputed `content_hash(bars)` equals metadata `content_hash`;
 - no bar lies outside the requested Development interval;
 - loaded timestamp inventory is exactly the inventory used by all later sample construction.
 
-Wrong returned symbol, truncated/altered bars, mismatched metadata, wrong manifest, unverified source, unusable certification, or boundary mismatch is a **hard source-integrity failure**, not a row exclusion.
+Wrong returned symbol, altered archive bytes, truncated/altered bars, stale or forged manifest identity, mismatched metadata, wrong manifest, unverified source, unusable certification, undocumented gaps, or boundary mismatch is a **hard source-integrity failure**, not a row exclusion.
 
 ## Exact-hour certified-segment invariant
 
@@ -385,7 +434,7 @@ Accepted rows must feed unchanged numerical primitives:
 - bounded `engineering_fixture` returns `ENGINEERING_ONLY_NOT_CALIBRATION` and `p_value=None`;
 - six-slot `SLOTS` ordering and `holm_six` assembly are verified with fabricated p-values;
 - unavailable slots remain in the six-test family;
-- each asset's three primary hypotheses share the exact same accepted sample.
+- each asset's three primary hypotheses share the exact same accepted sample, design matrix, target vector, actual-hour vector, and segment vector.
 
 No engineering fixture or fabricated-p-value result is a statistical release criterion.
 
@@ -408,9 +457,15 @@ Post-load tests reject before row/state construction:
 - wrong normalization or treatment version;
 - unverified source;
 - unusable certification;
-- wrong treatment-manifest identity;
+- forged/stale treatment-manifest identity, including changed segment/exclusion content with unchanged stored identity;
+- raw archive bytes whose authoritative `source_identity(paths)` differs from the identity embedded in manifest `source_version`;
+- bundle source-identity metadata inconsistent with the authoritative raw-source identity;
+- use of the non-authoritative `historical_dataset._archive_set_identity()` as a substitute for Gate 1A source identity;
 - partition boundary mismatch;
-- certified-segment grid mismatch.
+- certified-segment grid mismatch;
+- any documented-exclusion gap whose timestamps are not exactly covered by manifest exclusions;
+- any certified segment that fails `validate_dataset(...).valid is True`;
+- any whole-bundle validation issue other than `missing_interval` findings exactly and completely accounted for by registered manifest exclusions.
 
 ### FP-10 — protected read and production-interface blocking
 
@@ -432,10 +487,12 @@ The certification report must contain:
 - classification and version;
 - code commit;
 - SHA-256 of this plan and machine registration;
-- expected and observed Git blob identities for every pinned existing production component;
+- expected and observed Git blob identities for every pinned existing production component, including `source_identity.py` and `historical_dataset.py`;
 - implementation-freeze-manifest identity for all new implementation files;
 - deterministic fixture identities;
 - oracle-by-oracle PASS/FAIL;
+- authoritative raw archive-set identity, manifest-embedded raw-source identity, recomputed treatment-manifest identity, normalized-content dataset ID/content hash, and their equality checks;
+- whole-bundle validation findings plus exact documented-gap accounting;
 - loaded/candidate/accepted/rejected timestamp counts and SHA-256 digests;
 - accepted segment-assignment digest;
 - exclusion reason counts;
@@ -480,7 +537,7 @@ Only after independent re-approval may implementation add:
 
 Before the first certification run, the implementation-freeze manifest must be independently reviewed and bind all new result-affecting files plus the pinned existing components.
 
-Existing pinned production components and frozen V2 scientific files must not be modified under this V1 implementation.
+Existing pinned production components and frozen V2 scientific files must not be modified under this V1 implementation. In particular, implementation may not choose between competing raw-source identity algorithms: `source_identity.source_identity` is frozen as authoritative, and `historical_dataset._archive_set_identity` is not a valid substitute.
 
 ## Release consequence
 
