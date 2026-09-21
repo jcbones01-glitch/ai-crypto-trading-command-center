@@ -33,6 +33,7 @@ from research_core.data_quality_treatment_v2 import (
 )
 from research_core.dependence_statistics import SLOTS
 from research_core.dependent_wild_bootstrap_v2 import engineering_fixture
+from research_core.historical_dataset import _archive_set_identity
 from research_core.source_identity import source_identity
 
 
@@ -309,3 +310,57 @@ def test_holm_family_keeps_exact_six_slots_and_unavailable_entries():
     assert result[1]["available"] is False
     assert result[1]["calculation_p"] == 1.0
     assert len(result) == 6
+
+
+def test_private_archive_set_identity_cannot_substitute_authoritative_source_identity(tmp_path):
+    start = datetime(2019, 1, 1, tzinfo=timezone.utc)
+    bundle = _bundle(tmp_path, _bars(start, 800))
+    private_identity = _archive_set_identity(list(bundle.raw_archive_paths))
+    authoritative = source_identity(list(bundle.raw_archive_paths))
+    assert private_identity != authoritative
+
+    stale_manifest = replace(
+        bundle.manifest,
+        source_version=f"binance-public-data-spot-1h:{private_identity}",
+        dataset_identity="",
+    )
+    stale_manifest = replace(
+        stale_manifest,
+        dataset_identity=recompute_treatment_manifest_identity(stale_manifest),
+    )
+    stale_metadata = replace(bundle.metadata, source_identity=private_identity)
+    altered = replace(bundle, manifest=stale_manifest, metadata=stale_metadata)
+    with pytest.raises(PipelineIntegrityError, match="raw archive set"):
+        verify_certified_bundle(
+            altered, registered_identity=stale_manifest.dataset_identity
+        )
+
+
+def test_unknown_volatility_state_hard_fails_numerical_wiring():
+    t = datetime(2020, 1, 1, tzinfo=timezone.utc)
+    row = PrimaryRow(
+        t,
+        t + timedelta(hours=1),
+        0.01,
+        0.02,
+        2020,
+        "VOL_UNKNOWN",
+        "ACTIVITY_NORMAL",
+        "TREND_NEUTRAL",
+        int(t.timestamp() // 3600),
+        0,
+    )
+    with pytest.raises(PipelineIntegrityError, match="unknown volatility"):
+        numerical_inputs(_sample([row]))
+
+
+def test_non_missing_whole_bundle_validation_issue_hard_fails(tmp_path):
+    start = datetime(2019, 1, 1, tzinfo=timezone.utc)
+    original = _bars(start, 800)
+    bad_first = replace(original[0], symbol="WRONG/SYMBOL")
+    bars = (bad_first,) + original[1:]
+    bundle = _bundle(tmp_path, bars)
+    with pytest.raises(PipelineIntegrityError):
+        verify_certified_bundle(
+            bundle, registered_identity=bundle.manifest.dataset_identity
+        )
