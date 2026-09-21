@@ -578,7 +578,13 @@ def test_registered_asynchronous_cross_asset_pattern_uses_exact_intersection():
         for i in sorted(set(btc_offsets) & set(eth_offsets))
     )
     assert joined == expected
-    assert list(btc.accepted_timestamps[:50]) != list(eth.accepted_timestamps[:50])
+    assert btc.accepted_timestamps != eth.accepted_timestamps
+    assert any(
+        btc_ts != eth_ts
+        for btc_ts, eth_ts in zip(
+            btc.accepted_timestamps, eth.accepted_timestamps
+        )
+    )
     assert len(joined) < min(len(btc.accepted_timestamps), len(eth.accepted_timestamps))
 
 
