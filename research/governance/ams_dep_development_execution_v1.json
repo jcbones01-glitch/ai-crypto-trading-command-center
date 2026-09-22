@@ -1,12 +1,20 @@
 {
   "registration_id": "AMS-DEP-DEVELOPMENT-EMPIRICAL-EXECUTION-V1",
   "version": 1,
-  "status": "PROPOSED_FOR_INDEPENDENT_REVIEW",
-  "specification_head": "5918dd38bb043608a81cdab4af1abeefe18b3ce5",
-  "development_bounds": [
-    "2017-08-17T00:00:00+00:00",
-    "2022-01-01T00:00:00+00:00"
-  ],
+  "revision": 2,
+  "status": "REVISED_AFTER_INDEPENDENT_REVIEW_REMEDIATION",
+  "prior_review_issue": 67,
+  "prior_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_EMPIRICAL_IMPLEMENTATION",
+  "base_governance_head": "5918dd38bb043608a81cdab4af1abeefe18b3ce5",
+  "specification_path": "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V1.md",
+  "specification_git_blob_sha1": "d1d87806933e409ed6155ad4a1b2a5e10a07a346",
+  "specification_revision_commit": "ba0c70e07b588746b34b5471b2210ed87a4d6fe1",
+  "empirical_execution_now_authorized": false,
+  "development_bounds": {
+    "start": "2017-08-17T00:00:00+00:00",
+    "end": "2022-01-01T00:00:00+00:00",
+    "half_open": true
+  },
   "symbols": [
     "BTCUSDT",
     "ETHUSDT"
@@ -21,13 +29,95 @@
     "total_archives": 106,
     "filename_rule": "{SYMBOL}-1h-{YYYY}-{MM}.zip",
     "url_builder": "research_core.data_ingestion.archive_url",
-    "checksum_rule": "official .CHECKSUM required for every archive",
+    "downloader": "research_core.data_ingestion.download_archive",
+    "official_checksum_required": true,
+    "verify_checksum_argument_must_be_true": true,
     "fallback_mirror_allowed": false,
-    "caller_source_override_allowed": false
+    "caller_url_override_allowed": false,
+    "caller_archive_path_override_allowed": false,
+    "caller_data_root_override_allowed": false,
+    "caller_month_range_override_allowed": false,
+    "caller_timeframe_override_allowed": false,
+    "production_staging_directory": "internally-created temporary directory only",
+    "partial_inventory_inference_allowed": false,
+    "validation_or_oos_months_allowed": false
   },
-  "registered_treatment_identities": {
-    "BTCUSDT": "1590cf8e69ed757eeb6701a218d561448beb2eb6ea09dcd0ae31d15a8f5197cf",
-    "ETHUSDT": "d35bf21e309820abc88090bad29601adc1d1ea6b31dcddf0b80d510af4cf542f"
+  "identity_model": {
+    "historical_whole_research_parent_manifest_identity": {
+      "role": "LINEAGE_ONLY_NOT_DEVELOPMENT_EQUALITY_TARGET",
+      "BTCUSDT": "1590cf8e69ed757eeb6701a218d561448beb2eb6ea09dcd0ae31d15a8f5197cf",
+      "ETHUSDT": "d35bf21e309820abc88090bad29601adc1d1ea6b31dcddf0b80d510af4cf542f"
+    },
+    "development_projection": {
+      "version": "ams-dep-development-projection-v1",
+      "expected_digest_preregistered": false,
+      "digest_selected_after_results_allowed": false,
+      "canonical_json": {
+        "sort_keys": true,
+        "separators": [
+          ",",
+          ":"
+        ],
+        "ensure_ascii": true,
+        "encoding": "utf-8",
+        "digest": "sha256"
+      },
+      "required_fields": [
+        "projection_version",
+        "historical_whole_research_parent_manifest_identity",
+        "symbol",
+        "source_provider",
+        "market",
+        "timeframe",
+        "normalization_version",
+        "treatment_protocol_version",
+        "development_start",
+        "development_end",
+        "authoritative_development_raw_source_identity",
+        "ordered_archive_evidence_53",
+        "development_certification",
+        "development_certified_segments",
+        "development_exclusions",
+        "development_intersecting_continuity_breaks",
+        "development_referenced_anomaly_ids",
+        "normalized_dataset_id",
+        "normalized_content_hash",
+        "normalized_row_count",
+        "normalized_start_timestamp",
+        "normalized_end_timestamp"
+      ],
+      "forbidden_fields": [
+        "validation_partition_certification",
+        "oos_partition_certification",
+        "empirical_statistics",
+        "p_values",
+        "coefficients",
+        "market_outcomes"
+      ],
+      "generic_future_partition_objects": "NON_AUTHORITATIVE_HELPER_OUTPUT_NOT_EVIDENCE_OF_PROTECTED_PARTITION_CERTIFICATION",
+      "construct_before_state_sample_or_inference": true,
+      "failure_policy": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1_INTEGRITY_FAIL"
+    },
+    "canonical_bundle_reuse": {
+      "default_whole_research_identity_equality_for_development_execution": false,
+      "development_wrapper_required": true,
+      "wrapper_must_enforce_fixed_source_and_projection_before_explicit_identity_reuse": true,
+      "explicit_identity_for_existing_bundle_sample_verifier": "recomputed Development-only helper manifest identity only after projection verification",
+      "arbitrary_identity_injection_allowed": false
+    }
+  },
+  "contract_precedence": [
+    "AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V1_AND_REGISTRATION",
+    "ACCEPTED_FULL_PIPELINE_REGISTRATION_AND_SPEC_FOR_SOURCE_SAMPLE_STATE_SUPPORT_JOIN_EXCEPT_DEVELOPMENT_IDENTITY_PROJECTION",
+    "FROZEN_AMS_DEP_V2_NUMERICAL_CONTRACT_AND_FREEZE",
+    "HISTORICAL_MARKET_STATE_DEPENDENCE_PREREGISTRATION_V1_ONLY_WHERE_EXPLICITLY_ADOPTED"
+  ],
+  "historical_preregistration": {
+    "path": "docs/MARKET_STATE_DEPENDENCE_PREREGISTRATION_V1.md",
+    "retained_unchanged_as_provenance": true,
+    "old_bartlett_asymptotic_primary_inference_superseded": true,
+    "secondary_outputs_not_explicitly_in_v1_execution_spec_authorized": false,
+    "directed_cross_asset_lagged_diagnostics_authorized": false
   },
   "bootstrap": {
     "method": "V2 dependent wild bootstrap with exact-time Parzen geometry",
@@ -47,9 +137,29 @@
     ],
     "seed_path_before_segment": "[2026092201,2,4294967295,4294967295,asset_index,hypothesis_index,bootstrap_index]",
     "segment_ordinal_appended_by_frozen_v2_implementation": true,
-    "redraw_invalid": false,
+    "execution_order_invariant": true,
+    "reroll_invalid": false,
     "invalid_counts_as_exceedance": true,
-    "invalid_fraction_ceiling": 0.01
+    "invalid_fraction_ceiling": 0.01,
+    "engineering_fixture_for_empirical_p_value_allowed": false,
+    "wald_zero_for_empirical_p_value_allowed": false,
+    "asymptotic_fallback_allowed": false,
+    "calibration_seed_use_allowed": false,
+    "holdout_seed_use_allowed": false
+  },
+  "original_fit_failure": {
+    "slot_available": false,
+    "raw_p": null,
+    "retain_slot_in_family": true
+  },
+  "invalidity_policy": {
+    "available_slot_invalid_fraction_operator": ">",
+    "ceiling": 0.01,
+    "whole_run_classification": "EMPIRICAL_INFERENCE_VALIDITY_FAIL",
+    "raw_mechanical_values_retained_for_audit": true,
+    "holm_interpretation_allowed_after_validity_fail": false,
+    "promotion_allowed_after_validity_fail": false,
+    "rerun_or_method_rescue_allowed": false
   },
   "primary_family": [
     "BTC_DEP",
@@ -59,6 +169,7 @@
     "ETH_TIME",
     "ETH_STATE"
   ],
+  "unavailable_slot_retained": true,
   "alpha": 0.05,
   "support": {
     "minimum_rows_per_asset": 5000,
@@ -74,10 +185,105 @@
       "VOL_NORMAL",
       "VOL_HIGH"
     ],
+    "required_cell_count": 15,
     "minimum_rows_per_cell": 200,
-    "minimum_distinct_utc_dates_per_cell": 10
+    "minimum_distinct_utc_dates_per_cell": 10,
+    "asset_support_failure_makes_all_three_asset_slots_unavailable": true,
+    "threshold_lowering_or_cell_merging_allowed": false
   },
-  "directed_cross_asset_lagged_diagnostics": "BLOCKED_PENDING_SEPARATE_CROSS_ASSET_LAG_INTEGRITY_SPEC",
+  "one_shot_execution": {
+    "required": true,
+    "claim_ref": "refs/tags/ams-dep-development-execution-claimed-v1",
+    "concurrency_group": "ams-dep-development-empirical-v1",
+    "cancel_in_progress": false,
+    "claim_must_precede_network_source_access": true,
+    "claim_must_precede_archive_read": true,
+    "claim_must_precede_empirical_seed_instantiation": true,
+    "claim_target": "exact reviewed executing commit",
+    "claim_may_be_deleted_recreated_repointed_or_force_updated": false,
+    "existing_claim_behavior": "HARD_FAIL_BEFORE_SOURCE_ACCESS",
+    "retry_before_claim_allowed": true,
+    "failure_after_claim_consumes_v1_opportunity": true,
+    "failure_after_claim_requires_independent_incident_review": true,
+    "deterministic_rerun_is_not_automatic_permission": true
+  },
+  "workflow": {
+    "trigger": "workflow_dispatch_only",
+    "exact_confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1",
+    "literal_confirmation_required": true,
+    "pull_request_empirical_execution_allowed": false,
+    "push_empirical_execution_allowed": false,
+    "schedule_empirical_execution_allowed": false,
+    "repository_dispatch_empirical_execution_allowed": false,
+    "workflow_run_empirical_execution_allowed": false,
+    "pr_push_ci_network_source_adapter_allowed": false,
+    "pr_push_ci_empirical_seed_namespace_allowed": false,
+    "pr_push_ci_claim_creation_allowed": false,
+    "pr_push_ci_empirical_result_artifact_allowed": false
+  },
+  "execution_manifest": {
+    "path": "research/governance/ams_dep_development_execution_manifest_v1.json",
+    "pre_review_status": "DRAFT_LOCKED",
+    "pre_review_development_execution_authorized": false,
+    "pre_review_first_empirical_execution_claimed": false,
+    "pre_review_first_empirical_execution_executed": false,
+    "independent_implementation_review_required": true,
+    "authorization_status": "AUTHORIZED_FOR_FIRST_DEVELOPMENT_EXECUTION",
+    "reviewed_commit_must_equal_candidate": true,
+    "canonical_release_gate_and_execution_manifest_both_required": true
+  },
+  "artifact_provenance_required": {
+    "executing_commit": true,
+    "implementation_candidate_commit": true,
+    "independently_reviewed_implementation_commit": true,
+    "reviewed_commit_must_equal_candidate": true,
+    "release_gate_sha256": true,
+    "development_execution_manifest_sha256": true,
+    "development_execution_spec_sha256": true,
+    "machine_registration_sha256": true,
+    "implementation_freeze_sha256": true,
+    "expected_and_observed_result_affecting_git_blobs": true,
+    "workflow_event": true,
+    "workflow_run_id": true,
+    "workflow_run_attempt": true,
+    "workflow_job_id_where_available": true,
+    "confirmation_token_status": true,
+    "claim_ref": true,
+    "claim_target_commit": true,
+    "claim_created_before_source_access_evidence": true,
+    "source_archive_urls_checksums_and_local_hashes": true,
+    "historical_parent_manifest_identity": true,
+    "development_projection_record_and_sha256": true,
+    "normalized_dataset_id_and_content_hash": true,
+    "sample_counts_and_five_inventory_digests": true,
+    "all_support_cells": true,
+    "exact_seed_contract": true,
+    "requested_draws": true,
+    "invalid_draw_counts": true,
+    "exact_six_slot_family": true,
+    "hour_and_segment_vector_digests": true,
+    "exact_cross_asset_intersection_digest": true,
+    "engineering_fixture_used_for_empirical_p_value_false": true,
+    "wald_zero_used_for_empirical_p_value_false": true,
+    "protected_access_flags": true
+  },
+  "protected_permissions": {
+    "market_data_execution_authorized": false,
+    "validation_or_oos_access_authorized": false,
+    "strategy_pnl_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "directed_cross_asset_lagged_diagnostics_executed": false
+  },
+  "post_exposure_policy": {
+    "claim_creation_consumes_v1_opportunity": true,
+    "result_affecting_v1_rescue_change_allowed": false,
+    "material_change_requires_new_prospectively_reviewed_execution_version": true,
+    "post_claim_failure_requires_independent_incident_review": true,
+    "validation_or_oos_remains_locked": true,
+    "strategy_pnl_remains_locked": true,
+    "paper_live_remain_locked": true
+  },
   "runtime": {
     "python": "3.12.14",
     "numpy": "2.2.6",
@@ -85,13 +291,7 @@
     "dtype": "float64",
     "blas_threads_per_worker": 1
   },
-  "protected_permissions": {
-    "market_data_execution_authorized": false,
-    "validation_or_oos_access_authorized": false,
-    "strategy_pnl_authorized": false,
-    "paper_trading_authorized": false,
-    "live_trading_authorized": false
-  },
+  "directed_cross_asset_lagged_diagnostics": "BLOCKED_PENDING_SEPARATE_CROSS_ASSET_LAG_INTEGRITY_SPEC",
   "pinned_upstream_git_blob_sha1": {
     "docs/AMS_DEP_V2_NUMERICAL_CONTRACT.md": "95e0129e4fc38a5125a945514f43e2a8e670ea1c",
     "research/governance/ams_dep_v2_freeze_manifest.json": "cfa1408c4705cd07e0ddf4a0d731faa131dff947",
@@ -112,12 +312,23 @@
     "src/research_core/ams_dep_development_source.py",
     "src/research_core/ams_dep_empirical_access.py",
     "research/scripts/run_ams_dep_development_empirical_v1.py",
+    "src/research_core/ams_dep_development_execution_lock.py",
     "research/governance/ams_dep_development_execution_manifest_v1.json",
     "research/governance/ams_dep_development_implementation_freeze_v1.json",
-    "tests dedicated to Development source/runner/firewall/seed/inference wiring",
+    "tests dedicated to Development source/projection/claim/seed/inference/firewall wiring",
     ".github/workflows/ams-dep-development-empirical-v1.yml"
   ],
+  "explicitly_forbidden_implementation_changes": [
+    "pyproject.toml",
+    "src/research_core/ams_dep_pipeline.py",
+    "src/research_core/dependent_wild_bootstrap_v2.py",
+    "src/research_core/dependence_statistics.py",
+    "src/research_core/market_state.py",
+    "src/research_core/data_quality_treatment_v2.py",
+    "src/research_core/data_ingestion.py",
+    "src/research_core/source_identity.py",
+    "src/research_core/release_gate.py"
+  ],
   "implementation_requires_independent_review": true,
-  "execution_authorization_separate_after_implementation_review": true,
-  "empirical_execution_now_authorized": false
+  "execution_authorization_separate_after_implementation_review": true
 }
