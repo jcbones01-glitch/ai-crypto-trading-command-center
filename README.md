@@ -74,3 +74,14 @@ The project also maintains an external research benchmark covering current quant
 - [Institutional Quant Architecture — Target Blueprint](docs/INSTITUTIONAL_QUANT_ARCHITECTURE.md)
 
 These documents provide strategic research and architecture context only. They grant no new empirical, protected-data, paper-trading, or live-trading authorization and do not modify any frozen AMS-DEP specification or machine-readable release gate.
+
+
+### Deep Research expansion — 2026-09-19
+
+A second research pass extends the institutional benchmark with a stronger focus on reproducibility, false-discovery control, point-in-time provenance, agent permissions, crypto microstructure, execution realism, and research-governance implementation.
+
+- [Institutional Research Appendix Expansion — 2026-09-19](docs/INSTITUTIONAL_RESEARCH_APPENDIX_EXPANSION_2026_09_19.md)
+- [External Research Evidence Ledger — 2026-09-19](docs/EXTERNAL_RESEARCH_EVIDENCE_LEDGER_2026_09_19.md)
+- [Research Governance Implementation Pack — 2026-09-19](docs/RESEARCH_GOVERNANCE_IMPLEMENTATION_PACK_2026_09_19.md)
+
+These files are research and architecture context only. They do not modify the AMS-DEP release gate, authorize protected-data access, or authorize paper/live trading.
