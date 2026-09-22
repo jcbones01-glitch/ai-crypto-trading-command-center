@@ -8,7 +8,7 @@ It is a research-governance layer, not a trading strategy and not evidence that 
 
 ## Core premise
 
-Market efficiency is treated as conditional and time-varying rather than fixed. Strategy performance may depend on competition, participant behavior, liquidity, volatility, technology, regulation, and other features of the market environment.
+Market efficiency may be conditional and time-varying; whether measurable dependence changes is an empirical question, not an assumption this project must confirm. Strategy performance may depend on competition, participant behavior, liquidity, volatility, technology, regulation, and other features of the market environment.
 
 The project therefore must not assume that a historically profitable rule represents a permanent edge.
 
@@ -22,7 +22,7 @@ Purely data-mined patterns without a plausible mechanism may be explored, but th
 
 ### 2. Market-state variables must be predeclared
 
-Before protected validation or OOS evaluation, any market-state variables used to condition a strategy must be defined in advance.
+Before Development evidence for a new experiment is generated, its market-state variables and statistical decision rules must be preregistered. Existing frozen definitions are not changed by this amendment.
 
 Examples may include:
 - realized volatility
@@ -178,3 +178,32 @@ Primary references:
 - Andrew W. Lo (2004), "The Adaptive Markets Hypothesis: Market Efficiency from an Evolutionary Perspective," Journal of Portfolio Management. MIT-hosted copy: https://web.mit.edu/Alo/www/Papers/JPM2004_Pub.pdf
 - Andrew W. Lo, "Reconciling Efficient Markets with Behavioral Finance: The Adaptive Markets Hypothesis." MIT-hosted copy: https://web.mit.edu/Alo/www/Papers/JIC2005_Final.pdf
 - MIT OpenCourseWare, 15.481x Adaptive Markets: Financial Market Dynamics and Human Behavior: https://ocw.mit.edu/courses/15-481x-adaptive-markets-financial-market-dynamics-and-human-behavior-fall-2022/
+
+## First dependence study and additive protocols
+
+The certified AMS-V1 state vocabulary is retained unchanged. See:
+
+- `MARKET_STATE_RESEARCH_PROTOCOL.md` for the diagnostic research boundary;
+- `MARKET_STATE_DEPENDENCE_PREREGISTRATION_V1.md` for the execution-blocked design draft;
+- `MARKET_ECOLOGY_DATA_PLAN.md` for selective data certification;
+- `EDGE_LIFECYCLE_PROTOCOL.md` for expiring authorization and distinct authorities;
+- `ADAPTIVE_MARKETS_RECONCILIATION_2026_09_19.md` for inspected repository state.
+
+The expanded lifecycle is market ecology → mechanism → hypothesis → preregistration → certified data → Development test → regime/robustness analysis → Validation → locked OOS → paper trading → controlled live trading → edge-health monitoring → maintain / reduce / suspend / retire. It does not supersede any existing gate or authorize execution.
+
+## Empirical literature and limits of transfer
+
+These sources motivate methods and cautions; project-specific windows, thresholds and governance are engineering choices, not methods prescribed or endorsed by Lo.
+
+| Primary source | Relevance and limit | Verification in this phase |
+| --- | --- | --- |
+| [Lo (2004), Adaptive Markets Hypothesis](https://web.mit.edu/Alo/www/Papers/JPM2004_Pub.pdf) | Evolutionary framing motivates changing opportunity sets; does not establish a crypto edge | MIT-hosted full paper available |
+| [Lo (2005), Reconciling Efficient Markets with Behavioral Finance](https://web.mit.edu/Alo/www/Papers/JIC2005_Final.pdf) | Market ecology and adaptation motivate falsifiable conditional questions | MIT-hosted full paper available |
+| [Lo and MacKinlay (1988), Stock Market Prices Do Not Follow Random Walks](https://doi.org/10.1093/rfs/1.1.41), [NBER working paper 2168](https://www.nber.org/papers/w2168) | Variance-ratio approach; rejection of a specified random walk is not proof of profitable predictability | Primary bibliographic/search record checked; full-text access failed here; equation audit remains blocked |
+| [Lo, Mamaysky and Wang (2000), Foundations of Technical Analysis](https://www.cis.upenn.edu/~mkearns/teaching/cis700/lo.pdf) | Algorithmic pattern definitions and conditional-distribution comparisons replace visual assertion; evidence for US stocks does not transfer automatically to BTC/ETH | University-hosted full paper available; no new pattern strategy proposed |
+| [Lo and MacKinlay (1990), An Econometric Analysis of Nonsynchronous Trading](https://doi.org/10.1016/0304-4076(90)90098-E), [NBER working paper 2960](https://www.nber.org/papers/w2960) | Asynchronous observations can alter measured dependence; motivates timestamp and staleness controls | Primary bibliographic/search abstract checked; full-text retrieval failed here |
+| [Lo (2002), The Statistics of Sharpe Ratios](https://alo.mit.edu/publications/page/18/) | Estimation uncertainty and serial correlation complicate risk-adjusted performance and time scaling; no naive square-root annualization assumption | Author's MIT publication record and abstract checked |
+| [MIT 15.481x course](https://ocw.mit.edu/courses/15-481x-adaptive-markets-financial-market-dynamics-and-human-behavior-fall-2022/) | Educational context only, not empirical confirmation | Official course page checked |
+| [Newey and West (1987), HAC covariance estimator](https://www.jstor.org/stable/1913610) | Proposed robust uncertainty framework; finite-sample calibration and assumptions still require independent review | Primary journal bibliographic record checked |
+
+No inaccessible source is represented as fully audited. Implementation-specific formulas and inference cannot be certified from titles, citations or search snippets. Null, insufficient-data and microstructure-confounded findings remain legitimate; the objective is not to prove AMH correct.

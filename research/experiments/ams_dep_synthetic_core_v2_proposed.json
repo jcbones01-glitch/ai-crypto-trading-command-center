@@ -1,0 +1,259 @@
+{
+  "version": "ams-dep-synthetic-core-v2-proposed",
+  "status": "PENDING_CONDITIONAL_REVIEW_RATIFICATION_NOT_EXECUTABLE",
+  "calibration_replications_per_dgp": 2000,
+  "holdout_replications_per_dgp": 2000,
+  "bootstrap_requested_draws": 4999,
+  "primary_slots": [
+    "BTC_DEP",
+    "BTC_TIME",
+    "BTC_STATE",
+    "ETH_DEP",
+    "ETH_TIME",
+    "ETH_STATE"
+  ],
+  "alpha": 0.05,
+  "null_fwer_upper_bound": 0.075,
+  "power_lower_bound": 0.8,
+  "invalid_fraction_upper_bound": 0.01,
+  "numerical_environment": {
+    "python": "3.12.14",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "dtype": "float64",
+    "blas_threads_per_worker": 1
+  },
+  "bootstrap_roots": {
+    "engineering": 2026092001,
+    "calibration": 2026092002,
+    "holdout": 2026092003
+  },
+  "data_roots": {
+    "calibration": 2026092102,
+    "holdout": 2026092103
+  },
+  "bootstrap_seed_coordinates": [
+    "root",
+    "version_2",
+    "dgp_index",
+    "outer_index",
+    "asset_index",
+    "hypothesis_index",
+    "bootstrap_index",
+    "segment_ordinal"
+  ],
+  "data_seed_coordinates": [
+    "data_root",
+    "version_2",
+    "dgp_index",
+    "outer_index",
+    "independent_shock_index",
+    "reserved_4294967295",
+    "reserved_4294967295",
+    "year_index",
+    "channel_index"
+  ],
+  "data_stream_notes": "Gaussian independent shock indices 0 and 1, channel 0; common chi-square at shock 2, channel 1; bid/ask sign streams channels 2, assets 0 and 1. No calibration or holdout root has been consumed.",
+  "v1_retained_scientific_parameters": {
+    "alpha": 0.05,
+    "asset_correlation": 0.6,
+    "burn_in": 1000,
+    "cases": [
+      "iid_null",
+      "heteroskedastic_null",
+      "garch_null",
+      "stable_ar",
+      "time_ar",
+      "state_ar",
+      "bid_ask_bounce"
+    ],
+    "classification": "SYNTHETIC_NUMERICAL_CALIBRATION_NOT_MARKET_EVIDENCE",
+    "generator": "numpy.random.Generator(PCG64(SeedSequence([seed,case_index,replication])))",
+    "hac_lags": 168,
+    "innovation_sd": 0.01,
+    "invalid_fraction_upper_bound": 0.01,
+    "notes": "Fixed exogenous state labels; numerical core only. Full endogenous AMS-V1 calibration and empirical release remain blocked.",
+    "null_fwer_upper_bound": 0.075,
+    "observations_per_year": 2000,
+    "power_lower_bound": 0.8,
+    "replications": 1000,
+    "seed": 20260919,
+    "state_block_hours": 240,
+    "version": "ams-dep-synthetic-core-v1",
+    "years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021
+    ]
+  },
+  "v1_generator_source_sha256": "d4ea30cd056728eac87d7be68d8e4d41816bfae18fc422d3c535f3364256fe6b",
+  "v1_retention_notes": "Retain seven distributions, burn-in 1000, 2000 rows/year, five years, correlation .6, original phi/sigma/bounce parameters. New V2 seed namespaces change realizations, not DGPs. V1 code/results remain untouched.",
+  "cases": [
+    "iid_null",
+    "heteroskedastic_null",
+    "garch_null",
+    "stable_ar",
+    "time_ar",
+    "state_ar",
+    "bid_ask_bounce",
+    "student_t5_null",
+    "volatility_break_null",
+    "irregular_null",
+    "asynchronous_null"
+  ],
+  "added_dgps": {
+    "student_t5_null": {
+      "df": 5,
+      "innovation_sd": 0.01,
+      "rho": 0.6,
+      "definition": "At each generated hour, g0,g1 independent standard normals, q independent chi-square(5). e=.01*sqrt(3/q)*(g0, .6*g0+.8*g1). Common q yields marginal t5 with unit-variance scaling and cross-asset correlation .6. Hours independent; x=r_t,y=r_(t+1)."
+    },
+    "volatility_break_null": {
+      "innovation_sds": [
+        0.005,
+        0.01,
+        0.03,
+        0.01
+      ],
+      "eligible_hour_breaks": [
+        0,
+        500,
+        1000,
+        1500,
+        2001
+      ],
+      "variance_ratios": [
+        1,
+        4,
+        36,
+        4
+      ],
+      "definition": "Independent correlated Gaussian martingale innovations, rho=.6. Per year use four deterministic blocks; burn-in uses .01 SD. x=r_t,y=r_(t+1), so row crossing scale break retains actual consecutive endpoints."
+    },
+    "irregular_null": {
+      "base": "iid_null",
+      "missing_hour_blocks_half_open": [
+        [
+          720,
+          744
+        ],
+        [
+          1440,
+          1464
+        ]
+      ],
+      "isolated_missing_offsets": [
+        101,
+        307,
+        509,
+        911,
+        1117,
+        1723,
+        1901
+      ],
+      "definition": "Generate full V1-style IID path first. In each year retain row t only when both t and t+1 are observed. Do not compress hours. Each long missing block starts a new declared segment after it; isolated missing rows stay within that declared segment. Apply identical masks to both assets; keep original fixed state/year labels."
+    },
+    "asynchronous_null": {
+      "base": "iid_null",
+      "btc_missing_modulus": 97,
+      "eth_missing_modulus": 89,
+      "eth_additional_missing_block_half_open": [
+        1000,
+        1024
+      ],
+      "definition": "Generate correlated simultaneous IID paths. Remove observed hour offsets divisible by the asset modulus, including zero; also ETH block. Retain each within-asset regression pair only if t and t+1 observed. Keep actual hours and labels; reset ETH continuity after block. Six primary tests use separate asset supports. Exact cross-asset join expectation is intersection of independently constructed eligible hour sets, never nearest-match or row-index match; production join proof is later full-pipeline gate."
+    }
+  },
+  "null_slots": {
+    "iid_null": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "heteroskedastic_null": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "garch_null": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "stable_ar": [
+      1,
+      2,
+      4,
+      5
+    ],
+    "time_ar": [
+      2,
+      5
+    ],
+    "state_ar": [
+      1,
+      4
+    ],
+    "student_t5_null": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "volatility_break_null": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "irregular_null": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "asynchronous_null": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "power_slots": {
+    "stable_ar": [
+      "BTC_DEP",
+      "ETH_DEP"
+    ],
+    "time_ar": [
+      "BTC_TIME",
+      "ETH_TIME"
+    ],
+    "state_ar": [
+      "BTC_STATE",
+      "ETH_STATE"
+    ]
+  },
+  "bid_ask_bounce_interpretation": "Measurement-effect diagnostic; no added null/power success criterion; invalidity remains gated.",
+  "holdout_policy": "Only after unchanged calibration passes, execute separate frozen holdout and apply same thresholds. Any calibration-driven method/code adjustment creates V3, leaves V2 failed, and does not open V2 holdout to rescue it.",
+  "calibration_authorized": false,
+  "market_data_authorized": false
+}

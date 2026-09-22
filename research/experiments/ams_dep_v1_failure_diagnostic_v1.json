@@ -1,0 +1,16 @@
+{
+  "version": "ams-dep-v1-failure-diagnostic-v1",
+  "classification": "SYNTHETIC_DIAGNOSTIC_ONLY",
+  "source_v1_config": "research/experiments/ams_dep_synthetic_core_v1.json",
+  "cases": ["iid_null", "heteroskedastic_null", "garch_null"],
+  "replications": 1000,
+  "hac_lags": [0, 24, 168],
+  "oracle_replications": [0, 1, 2],
+  "oracle_lag": 168,
+  "coefficient_tolerance": 1e-10,
+  "covariance_tolerance": 1e-10,
+  "raw_alpha": 0.05,
+  "market_data_accessed": false,
+  "validation_or_oos_accessed": false,
+  "empirical_release_authorized": false
+}

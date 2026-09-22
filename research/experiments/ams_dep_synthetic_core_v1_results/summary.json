@@ -1,0 +1,617 @@
+{
+  "cases": {
+    "bid_ask_bounce": {
+      "engineering_screen_pass": true,
+      "false_rejection_any_true_null": null,
+      "interpretation": "MEASUREMENT_EFFECT_NOT_TRADING_EDGE",
+      "invalid_replicates": {
+        "count": 0,
+        "denominator": 1000,
+        "rate": 0.0,
+        "wilson_95": [
+          2.168404344971009e-19,
+          0.0038267584855551234
+        ]
+      },
+      "power_screen_slots": [],
+      "rejection_rates": {
+        "BTC_DEP": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "BTC_STATE": {
+          "count": 27,
+          "denominator": 1000,
+          "rate": 0.027,
+          "wilson_95": [
+            0.018621382774294995,
+            0.03899873075304015
+          ]
+        },
+        "BTC_TIME": {
+          "count": 36,
+          "denominator": 1000,
+          "rate": 0.036,
+          "wilson_95": [
+            0.02611557140738732,
+            0.049435660467207834
+          ]
+        },
+        "ETH_DEP": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "ETH_STATE": {
+          "count": 26,
+          "denominator": 1000,
+          "rate": 0.026,
+          "wilson_95": [
+            0.017803938201616326,
+            0.03782382884268993
+          ]
+        },
+        "ETH_TIME": {
+          "count": 42,
+          "denominator": 1000,
+          "rate": 0.042,
+          "wilson_95": [
+            0.031220885546165447,
+            0.056284425226603055
+          ]
+        }
+      }
+    },
+    "garch_null": {
+      "engineering_screen_pass": false,
+      "false_rejection_any_true_null": {
+        "count": 143,
+        "denominator": 1000,
+        "rate": 0.143,
+        "wilson_95": [
+          0.12266731749770252,
+          0.16606498806098383
+        ]
+      },
+      "interpretation": "SYNTHETIC_ONLY",
+      "invalid_replicates": {
+        "count": 0,
+        "denominator": 1000,
+        "rate": 0.0,
+        "wilson_95": [
+          2.168404344971009e-19,
+          0.0038267584855551234
+        ]
+      },
+      "power_screen_slots": [],
+      "rejection_rates": {
+        "BTC_DEP": {
+          "count": 71,
+          "denominator": 1000,
+          "rate": 0.071,
+          "wilson_95": [
+            0.056669695350451466,
+            0.08861366343015481
+          ]
+        },
+        "BTC_STATE": {
+          "count": 26,
+          "denominator": 1000,
+          "rate": 0.026,
+          "wilson_95": [
+            0.017803938201616326,
+            0.03782382884268993
+          ]
+        },
+        "BTC_TIME": {
+          "count": 39,
+          "denominator": 1000,
+          "rate": 0.039,
+          "wilson_95": [
+            0.028658960904180485,
+            0.052869310419501346
+          ]
+        },
+        "ETH_DEP": {
+          "count": 47,
+          "denominator": 1000,
+          "rate": 0.047,
+          "wilson_95": [
+            0.0355271051063845,
+            0.06193993808152845
+          ]
+        },
+        "ETH_STATE": {
+          "count": 20,
+          "denominator": 1000,
+          "rate": 0.02,
+          "wilson_95": [
+            0.012983682916415136,
+            0.030690005229717786
+          ]
+        },
+        "ETH_TIME": {
+          "count": 37,
+          "denominator": 1000,
+          "rate": 0.037,
+          "wilson_95": [
+            0.026961180875554734,
+            0.05058239748206931
+          ]
+        }
+      }
+    },
+    "heteroskedastic_null": {
+      "engineering_screen_pass": false,
+      "false_rejection_any_true_null": {
+        "count": 247,
+        "denominator": 1000,
+        "rate": 0.247,
+        "wilson_95": [
+          0.22127210294989538,
+          0.27466423684379554
+        ]
+      },
+      "interpretation": "SYNTHETIC_ONLY",
+      "invalid_replicates": {
+        "count": 0,
+        "denominator": 1000,
+        "rate": 0.0,
+        "wilson_95": [
+          2.168404344971009e-19,
+          0.0038267584855551234
+        ]
+      },
+      "power_screen_slots": [],
+      "rejection_rates": {
+        "BTC_DEP": {
+          "count": 127,
+          "denominator": 1000,
+          "rate": 0.127,
+          "wilson_95": [
+            0.10778000925843848,
+            0.14907475257178568
+          ]
+        },
+        "BTC_STATE": {
+          "count": 17,
+          "denominator": 1000,
+          "rate": 0.017,
+          "wilson_95": [
+            0.010640689856816328,
+            0.027055958840229925
+          ]
+        },
+        "BTC_TIME": {
+          "count": 94,
+          "denominator": 1000,
+          "rate": 0.094,
+          "wilson_95": [
+            0.07743417357376373,
+            0.11367315431650704
+          ]
+        },
+        "ETH_DEP": {
+          "count": 112,
+          "denominator": 1000,
+          "rate": 0.112,
+          "wilson_95": [
+            0.09391954090888108,
+            0.1330500236759097
+          ]
+        },
+        "ETH_STATE": {
+          "count": 21,
+          "denominator": 1000,
+          "rate": 0.021,
+          "wilson_95": [
+            0.013775739567924286,
+            0.03189029506123752
+          ]
+        },
+        "ETH_TIME": {
+          "count": 88,
+          "denominator": 1000,
+          "rate": 0.088,
+          "wilson_95": [
+            0.07198099794232085,
+            0.10717225104977657
+          ]
+        }
+      }
+    },
+    "iid_null": {
+      "engineering_screen_pass": false,
+      "false_rejection_any_true_null": {
+        "count": 126,
+        "denominator": 1000,
+        "rate": 0.126,
+        "wilson_95": [
+          0.10685291068700914,
+          0.14800950466018614
+        ]
+      },
+      "interpretation": "SYNTHETIC_ONLY",
+      "invalid_replicates": {
+        "count": 0,
+        "denominator": 1000,
+        "rate": 0.0,
+        "wilson_95": [
+          2.168404344971009e-19,
+          0.0038267584855551234
+        ]
+      },
+      "power_screen_slots": [],
+      "rejection_rates": {
+        "BTC_DEP": {
+          "count": 60,
+          "denominator": 1000,
+          "rate": 0.06,
+          "wilson_95": [
+            0.04689647267593196,
+            0.07647107479135655
+          ]
+        },
+        "BTC_STATE": {
+          "count": 12,
+          "denominator": 1000,
+          "rate": 0.012,
+          "wilson_95": [
+            0.006877647806403522,
+            0.02085726847549828
+          ]
+        },
+        "BTC_TIME": {
+          "count": 28,
+          "denominator": 1000,
+          "rate": 0.028,
+          "wilson_95": [
+            0.019442276812770925,
+            0.04017018319759311
+          ]
+        },
+        "ETH_DEP": {
+          "count": 53,
+          "denominator": 1000,
+          "rate": 0.053,
+          "wilson_95": [
+            0.04074650524859452,
+            0.06867461683749176
+          ]
+        },
+        "ETH_STATE": {
+          "count": 17,
+          "denominator": 1000,
+          "rate": 0.017,
+          "wilson_95": [
+            0.010640689856816328,
+            0.027055958840229925
+          ]
+        },
+        "ETH_TIME": {
+          "count": 34,
+          "denominator": 1000,
+          "rate": 0.034,
+          "wilson_95": [
+            0.024431348663226313,
+            0.04713519024531107
+          ]
+        }
+      }
+    },
+    "stable_ar": {
+      "engineering_screen_pass": false,
+      "false_rejection_any_true_null": {
+        "count": 116,
+        "denominator": 1000,
+        "rate": 0.116,
+        "wilson_95": [
+          0.09760567703963383,
+          0.13733327347727253
+        ]
+      },
+      "interpretation": "SYNTHETIC_ONLY",
+      "invalid_replicates": {
+        "count": 0,
+        "denominator": 1000,
+        "rate": 0.0,
+        "wilson_95": [
+          2.168404344971009e-19,
+          0.0038267584855551234
+        ]
+      },
+      "power_screen_slots": [
+        "BTC_DEP",
+        "ETH_DEP"
+      ],
+      "rejection_rates": {
+        "BTC_DEP": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "BTC_STATE": {
+          "count": 22,
+          "denominator": 1000,
+          "rate": 0.022,
+          "wilson_95": [
+            0.014572707764791058,
+            0.03308567334739963
+          ]
+        },
+        "BTC_TIME": {
+          "count": 44,
+          "denominator": 1000,
+          "rate": 0.044,
+          "wilson_95": [
+            0.0329382145884185,
+            0.058551789150407776
+          ]
+        },
+        "ETH_DEP": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "ETH_STATE": {
+          "count": 24,
+          "denominator": 1000,
+          "rate": 0.024,
+          "wilson_95": [
+            0.016180168466636995,
+            0.03546290561161149
+          ]
+        },
+        "ETH_TIME": {
+          "count": 41,
+          "denominator": 1000,
+          "rate": 0.041,
+          "wilson_95": [
+            0.030364971082098315,
+            0.0551479932076413
+          ]
+        }
+      }
+    },
+    "state_ar": {
+      "engineering_screen_pass": false,
+      "false_rejection_any_true_null": {
+        "count": 123,
+        "denominator": 1000,
+        "rate": 0.123,
+        "wilson_95": [
+          0.10407414325107295,
+          0.1448112326470356
+        ]
+      },
+      "interpretation": "SYNTHETIC_ONLY",
+      "invalid_replicates": {
+        "count": 0,
+        "denominator": 1000,
+        "rate": 0.0,
+        "wilson_95": [
+          2.168404344971009e-19,
+          0.0038267584855551234
+        ]
+      },
+      "power_screen_slots": [
+        "BTC_STATE",
+        "ETH_STATE"
+      ],
+      "rejection_rates": {
+        "BTC_DEP": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "BTC_STATE": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "BTC_TIME": {
+          "count": 64,
+          "denominator": 1000,
+          "rate": 0.064,
+          "wilson_95": [
+            0.050436200898229526,
+            0.08090073250117454
+          ]
+        },
+        "ETH_DEP": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "ETH_STATE": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "ETH_TIME": {
+          "count": 71,
+          "denominator": 1000,
+          "rate": 0.071,
+          "wilson_95": [
+            0.056669695350451466,
+            0.08861366343015481
+          ]
+        }
+      }
+    },
+    "time_ar": {
+      "engineering_screen_pass": true,
+      "false_rejection_any_true_null": {
+        "count": 75,
+        "denominator": 1000,
+        "rate": 0.075,
+        "wilson_95": [
+          0.06025180497346736,
+          0.0930009397392545
+        ]
+      },
+      "interpretation": "SYNTHETIC_ONLY",
+      "invalid_replicates": {
+        "count": 0,
+        "denominator": 1000,
+        "rate": 0.0,
+        "wilson_95": [
+          2.168404344971009e-19,
+          0.0038267584855551234
+        ]
+      },
+      "power_screen_slots": [
+        "BTC_TIME",
+        "ETH_TIME"
+      ],
+      "rejection_rates": {
+        "BTC_DEP": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "BTC_STATE": {
+          "count": 33,
+          "denominator": 1000,
+          "rate": 0.033,
+          "wilson_95": [
+            0.023592927958426907,
+            0.04598126446708159
+          ]
+        },
+        "BTC_TIME": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "ETH_DEP": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        },
+        "ETH_STATE": {
+          "count": 50,
+          "denominator": 1000,
+          "rate": 0.05,
+          "wilson_95": [
+            0.03813026239274882,
+            0.06531382024425081
+          ]
+        },
+        "ETH_TIME": {
+          "count": 1000,
+          "denominator": 1000,
+          "rate": 1.0,
+          "wilson_95": [
+            0.996173241514445,
+            1.0
+          ]
+        }
+      }
+    }
+  },
+  "classification": "SYNTHETIC_NUMERICAL_CALIBRATION_NOT_MARKET_EVIDENCE",
+  "config": {
+    "alpha": 0.05,
+    "asset_correlation": 0.6,
+    "burn_in": 1000,
+    "cases": [
+      "iid_null",
+      "heteroskedastic_null",
+      "garch_null",
+      "stable_ar",
+      "time_ar",
+      "state_ar",
+      "bid_ask_bounce"
+    ],
+    "classification": "SYNTHETIC_NUMERICAL_CALIBRATION_NOT_MARKET_EVIDENCE",
+    "generator": "numpy.random.Generator(PCG64(SeedSequence([seed,case_index,replication])))",
+    "hac_lags": 168,
+    "innovation_sd": 0.01,
+    "invalid_fraction_upper_bound": 0.01,
+    "notes": "Fixed exogenous state labels; numerical core only. Full endogenous AMS-V1 calibration and empirical release remain blocked.",
+    "null_fwer_upper_bound": 0.075,
+    "observations_per_year": 2000,
+    "power_lower_bound": 0.8,
+    "replications": 1000,
+    "seed": 20260919,
+    "state_block_hours": 240,
+    "version": "ams-dep-synthetic-core-v1",
+    "years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021
+    ]
+  },
+  "empirical_release_authorized": false,
+  "engineering_screen_pass": false,
+  "market_data_accessed": false,
+  "provenance": {
+    "blas_threads": 1,
+    "executing_commit": "7bd395d53a6cb456949049e3c1ddbcd7b26bc5e2",
+    "file_sha256": {
+      "docs/AMS_DEP_NUMERICAL_CONTRACT_V1.md": "c51d4cf766923a8fd44de8fe3d5a9d6b797f443c37b5951591eb6a3429cdcb9c",
+      "docs/AMS_DEP_SYNTHETIC_CALIBRATION_V1.md": "d04dd8669ef321ebb7ee6aaa386a920f7569da7644f48602f4b5f87f67d48cca",
+      "research/experiments/ams_dep_synthetic_core_v1.json": "b10c518a5904c99af6654be5d9c6049c916ca601bf4ced6f3aa5cc4b0a0ee96b",
+      "research/scripts/run_ams_dep_synthetic_core_v1.py": "d4ea30cd056728eac87d7be68d8e4d41816bfae18fc422d3c535f3364256fe6b",
+      "src/research_core/dependence_statistics.py": "c0e1542e56b5d8be9d44a3c75cc8f00233ce589017b81aca3c3022859e296252"
+    },
+    "numpy": "2.2.6",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "python": "3.12.14",
+    "scipy": "1.15.3",
+    "specification_commit": "2dd1543f654b5a605a902ce2b3cf98c70c9755b1"
+  },
+  "replicate_count": 7000,
+  "replicate_ledger_sha256": "4b0f03574641add65089494dd41ee8195aae03e160759bcb8e2889320908fb0b",
+  "replicate_ledger_uncompressed_sha256": "08ebef6ea76866fc8214132e45077b80a59266e8be625e642a89451e728467c4",
+  "scope": "fixed exogenous states; not full AMS-V1 pipeline calibration",
+  "validation_or_oos_accessed": false
+}

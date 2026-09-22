@@ -1,0 +1,34 @@
+{
+  "alpha": 0.05,
+  "asset_correlation": 0.6,
+  "burn_in": 1000,
+  "cases": [
+    "iid_null",
+    "heteroskedastic_null",
+    "garch_null",
+    "stable_ar",
+    "time_ar",
+    "state_ar",
+    "bid_ask_bounce"
+  ],
+  "classification": "SYNTHETIC_NUMERICAL_CALIBRATION_NOT_MARKET_EVIDENCE",
+  "generator": "numpy.random.Generator(PCG64(SeedSequence([seed,case_index,replication])))",
+  "hac_lags": 168,
+  "innovation_sd": 0.01,
+  "invalid_fraction_upper_bound": 0.01,
+  "notes": "Fixed exogenous state labels; numerical core only. Full endogenous AMS-V1 calibration and empirical release remain blocked.",
+  "null_fwer_upper_bound": 0.075,
+  "observations_per_year": 2000,
+  "power_lower_bound": 0.8,
+  "replications": 1000,
+  "seed": 20260919,
+  "state_block_hours": 240,
+  "version": "ams-dep-synthetic-core-v1",
+  "years": [
+    2017,
+    2018,
+    2019,
+    2020,
+    2021
+  ]
+}
