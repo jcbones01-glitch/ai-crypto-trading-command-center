@@ -1,7 +1,7 @@
 {
   "gate_id": "AMS-DEP-EMPIRICAL-RELEASE",
   "version": 1,
-  "status": "V2_SYNTHETIC_HOLDOUT_PASSED",
+  "status": "FULL_PIPELINE_SYNTHETIC_INTEGRITY_PASSED",
   "design_review_issue": 44,
   "parent_failure_issue": 43,
   "v1_calibration_failed": true,
@@ -28,13 +28,13 @@
   "v2_synthetic_calibration_passed": true,
   "v2_holdout_execution_authorized": false,
   "v2_synthetic_holdout_passed": true,
-  "full_pipeline_synthetic_integrity_passed": false,
+  "full_pipeline_synthetic_integrity_passed": true,
   "separate_empirical_release_approved": false,
   "development_market_data_execution_authorized": false,
   "validation_or_oos_access_authorized": false,
   "strategy_pnl_authorized": false,
   "paper_trading_authorized": false,
   "live_trading_authorized": false,
-  "next_gate": "Complete and independently review full-pipeline synthetic integrity before any empirical AMS-DEP market-data release. Separate empirical-release approval and Development market-data authorization remain required afterward. Validation/OOS, strategy P&L, paper trading, and live trading remain locked.",
-  "notes": "Frozen V2 calibration and the single reserved synthetic holdout both passed their preregistered screens. Holdout PASS was independently accepted in Issue #56 after verification of the original aggregate ZIP, exact 22,000-family/132,000-slot coverage, Holm decisions, summary metrics, frozen blobs, safety blobs, execution provenance, and one-shot claim. Further holdout execution is closed. Full-pipeline synthetic integrity is the next gate; no empirical, Validation/OOS, P&L, paper, or live authority is granted."
+  "next_gate": "Obtain separate independent empirical-release approval before any Development market-data execution. Development market-data execution authorization remains a distinct later gate even after such approval. Validation/OOS, strategy P&L, paper trading, live trading, and deferred directed cross-asset lag diagnostics remain locked.",
+  "notes": "AMS-DEP V2 synthetic calibration and the single reserved synthetic holdout passed their preregistered screens. The deterministic full-pipeline synthetic integrity certification passed in run 35706223905 at execution SHA b884658b7b7f231ba17015912a2f70d0ff11e803 and was independently accepted in Issue #62 after direct re-download and hashing of artifact 10684737205, verification of FP-01 through FP-11, frozen implementation/production blobs, support/accounting/join/numerical/multiplicity evidence, and the protected-access firewall. The historical authorization freeze remains unchanged as execution provenance. Separate empirical release approval and Development market-data execution authorization remain false; no Validation/OOS, P&L, paper, live, or deferred directed lag authority is granted."
 }
