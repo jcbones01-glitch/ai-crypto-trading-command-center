@@ -38,5 +38,5 @@
     "tests/test_ams_dep_development_workflow.py": "369126c76eac94a6f802229afe8185ed8077f955"
   },
   "notes": "Remediation in progress after Issue #69 REQUIRE_CHANGES. Execution remains locked: status=DRAFT_LOCKED, reviewed_implementation_commit is unset, independent_implementation_reviewed=false, development_execution_authorized=false, first execution is unclaimed/unexecuted, canonical Development market-data authorization remains false, and no empirical BTC/ETH archive has been opened. The fixed review anchor is declared but must not be created until a remediated candidate is independently approved.",
-  "review_anchor_ref": "refs/tags/ams-dep-development-implementation-reviewed-v1"
+  "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v1"
 }
