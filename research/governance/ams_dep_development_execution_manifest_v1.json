@@ -9,8 +9,8 @@
   "registration_path": "research/governance/ams_dep_development_execution_v1.json",
   "implementation_freeze_path": "research/governance/ams_dep_development_implementation_freeze_v1.json",
   "implementation_candidate_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
-  "reviewed_implementation_commit": null,
-  "independent_implementation_reviewed": false,
+  "reviewed_implementation_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
+  "independent_implementation_reviewed": true,
   "development_execution_authorized": false,
   "first_empirical_execution_claimed": false,
   "first_empirical_execution_executed": false,
@@ -38,6 +38,8 @@
     "tests/test_ams_dep_development_source.py": "8e88e931c8149d068bb6a224fa801d736d381f38",
     "tests/test_ams_dep_development_workflow.py": "8be53ce2ba96d497f6dcf9ce3f91297e889f6033"
   },
-  "notes": "Remediated candidate ccd825c92208030adf59d9f383aaa8ae806381db is frozen for independent re-review after exact-candidate offline-only CI run 35780130412 passed 45 dedicated tests. Execution remains locked: reviewed_implementation_commit is unset, independent_implementation_reviewed=false, development_execution_authorized=false, canonical Development market-data authorization remains false, and neither the review anchor nor execution claim has been created.",
-  "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v1"
+  "notes": "Independent Issue #69 re-review approved the exact candidate and the fixed review anchor now binds to it. Execution is still blocked here: development_execution_authorized=false, first execution unclaimed/unexecuted, and the canonical Development market-data gate remains a separate key.",
+  "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v1",
+  "independent_review_issue": 69,
+  "independent_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_IMPLEMENTATION_FREEZE"
 }
