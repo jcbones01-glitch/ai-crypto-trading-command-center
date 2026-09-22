@@ -206,3 +206,76 @@ def test_fixed_url_is_official_binance_only():
     url = source._fixed_official_url("BTCUSDT", 2021, 12)
     assert url.startswith("https://data.binance.vision/data/spot/")
     assert url.endswith("/BTCUSDT-1h-2021-12.zip")
+
+
+def test_durable_claim_verification_fails_before_staging_or_download(monkeypatch):
+    staged = False
+    downloaded = False
+
+    monkeypatch.setattr(
+        source,
+        "assert_development_execution_allowed",
+        lambda: {"authorized": True},
+    )
+
+    def blocked_claim():
+        raise RuntimeError("DURABLE_CLAIM_MISSING")
+
+    def forbidden_mkdtemp(*args, **kwargs):
+        nonlocal staged
+        staged = True
+        raise AssertionError("staging must not be reached")
+
+    def forbidden_download(*args, **kwargs):
+        nonlocal downloaded
+        downloaded = True
+        raise AssertionError("download must not be reached")
+
+    monkeypatch.setattr(source, "assert_claim_environment", blocked_claim)
+    monkeypatch.setattr(source.tempfile, "mkdtemp", forbidden_mkdtemp)
+    monkeypatch.setattr(source, "download_archive", forbidden_download)
+
+    with pytest.raises(RuntimeError, match="DURABLE_CLAIM_MISSING"):
+        source.acquire_registered_development_source("BTCUSDT")
+    assert staged is False
+    assert downloaded is False
+
+
+def test_source_failure_carries_completed_archive_evidence(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        source,
+        "assert_development_execution_allowed",
+        lambda: {"authorized": True},
+    )
+    monkeypatch.setattr(
+        source,
+        "assert_claim_environment",
+        lambda: {"ref": "claim", "sha": "a" * 40},
+    )
+    monkeypatch.setattr(
+        source.tempfile,
+        "mkdtemp",
+        lambda **kwargs: str(tmp_path),
+    )
+
+    calls = 0
+
+    def fake_download(url, destination, verify_checksum):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise OSError("injected second archive failure")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        payload = b"first"
+        destination.write_bytes(payload)
+        return hashlib.sha256(payload).hexdigest()
+
+    monkeypatch.setattr(source, "download_archive", fake_download)
+
+    with pytest.raises(source.DevelopmentSourceError) as info:
+        source.acquire_registered_development_source("BTCUSDT")
+
+    assert len(info.value.partial_archive_evidence) == 1
+    assert info.value.partial_archive_evidence[0].filename.endswith(
+        "2017-08.zip"
+    )
