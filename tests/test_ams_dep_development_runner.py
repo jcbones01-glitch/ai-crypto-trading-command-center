@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import inspect
+from types import SimpleNamespace
 from pathlib import Path
 
 import numpy as np
@@ -11,7 +12,10 @@ SCRIPT = ROOT / "research/scripts/run_ams_dep_development_empirical_v1.py"
 
 
 def load_runner():
-    spec = importlib.util.spec_from_file_location("ams_dep_development_runner", SCRIPT)
+    spec = importlib.util.spec_from_file_location(
+        "ams_dep_development_runner",
+        SCRIPT,
+    )
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
@@ -72,6 +76,111 @@ def test_invalidity_above_one_percent_blocks_holm_interpretation():
     assert mod._inference_validity_fail(slots) is True
     slots["BTC_DEP"]["invalid_fraction"] = 0.01
     assert mod._inference_validity_fail(slots) is False
+
+
+def test_support_failure_geometry_uses_actual_accepted_sample_rows():
+    mod = load_runner()
+    sample = SimpleNamespace(
+        rows=(
+            SimpleNamespace(hour=100, segment_id=0),
+            SimpleNamespace(hour=101, segment_id=0),
+            SimpleNamespace(hour=200, segment_id=1),
+        )
+    )
+    result = mod._geometry_provenance(sample, None)
+    assert result["accepted_geometry_row_count"] == 3
+    assert result["design_shape"] is None
+    assert result["hour_vector_sha256"] == mod._digest_lines([100, 101, 200])
+    assert result["segment_vector_sha256"] == mod._digest_lines([0, 0, 1])
+    assert result["hour_vector_sha256"] != mod._digest_lines([])
+
+
+def test_failure_artifact_retains_consumed_governance_and_partial_evidence():
+    mod = load_runner()
+    mod._reset_incident_state()
+    mod.INCIDENT_STATE.update(
+        {
+            "stage": "SOURCE_ETHUSDT",
+            "execution_provenance": {
+                "executing_commit": "a" * 40,
+                "implementation_candidate_commit": "b" * 40,
+                "review_anchor_ref": mod.DEFAULT_REVIEW_ANCHOR_REF,
+                "review_anchor_sha": "b" * 40,
+                "one_shot_claim_ref": mod.DEFAULT_CLAIM_REF,
+                "one_shot_claim_sha": "a" * 40,
+                "release_gate_sha256": "1" * 64,
+                "development_execution_manifest_sha256": "2" * 64,
+                "development_execution_spec_sha256": "3" * 64,
+                "machine_registration_sha256": "4" * 64,
+                "implementation_freeze_sha256": "5" * 64,
+                "implementation_blob_evidence": {"x": {"expected": "y"}},
+                "workflow_event": "workflow_dispatch",
+                "workflow_run_id": "123",
+                "workflow_run_attempt": "1",
+                "workflow_job": "execute",
+                "confirmation_verified": True,
+            },
+            "source_provenance": {
+                "BTCUSDT": {"status": "COMPLETE"},
+                "ETHUSDT": {
+                    "status": "PARTIAL_SOURCE_FAILURE",
+                    "completed_archive_count": 17,
+                },
+            },
+            "sample_provenance": {
+                "BTCUSDT": {"accepted_rows": 1000}
+            },
+            "numerical_provenance": {
+                "BTCUSDT": {
+                    "hour_vector_sha256": "6" * 64,
+                    "segment_vector_sha256": "7" * 64,
+                }
+            },
+            "market_data_accessed": True,
+            "development_market_outcomes_accessed": True,
+        }
+    )
+    failure = mod._failure_result(RuntimeError("injected"))
+    assert failure["failure_stage"] == "SOURCE_ETHUSDT"
+    assert failure["execution_provenance"]["one_shot_claim_sha"] == "a" * 40
+    assert (
+        failure["source_provenance"]["ETHUSDT"]["completed_archive_count"]
+        == 17
+    )
+    assert failure["sample_provenance"]["BTCUSDT"]["accepted_rows"] == 1000
+    assert "hour_vector_sha256" in failure["numerical_provenance"]["BTCUSDT"]
+    assert failure["protected_access"]["validation_or_oos_accessed"] is False
+
+
+def test_main_falls_back_to_incident_artifact_if_result_write_fails(monkeypatch):
+    mod = load_runner()
+
+    def fake_run():
+        mod._reset_incident_state()
+        mod.INCIDENT_STATE["stage"] = "RESULT_ARTIFACT_WRITE"
+        mod.INCIDENT_STATE["execution_provenance"] = {
+            "one_shot_claim_ref": mod.DEFAULT_CLAIM_REF,
+            "one_shot_claim_sha": "a" * 40,
+        }
+        raise RuntimeError("injected result-stage failure")
+
+    writes = []
+
+    def fake_write(path, value):
+        writes.append((path, value))
+        if path == mod.OUTPUT_PATH:
+            raise OSError("injected primary artifact failure")
+
+    monkeypatch.setattr(mod, "run", fake_run)
+    monkeypatch.setattr(mod, "_write_json", fake_write)
+
+    with np.testing.assert_raises(SystemExit):
+        mod.main()
+
+    assert writes[0][0] == mod.OUTPUT_PATH
+    assert writes[1][0] == mod.INCIDENT_PATH
+    assert writes[1][1]["failure_stage"] == "RESULT_ARTIFACT_WRITE"
+    assert "result_write_error" in writes[1][1]
 
 
 def test_runner_uses_frozen_dwb_path_not_engineering_or_asymptotic_fallback():
