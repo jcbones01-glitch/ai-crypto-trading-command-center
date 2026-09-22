@@ -1,8 +1,8 @@
 """First outcome-producing AMS-DEP Development empirical runner V1.
 
-The runner is inert unless both the canonical release gate and the separately
-reviewed Development execution manifest are authorized and the durable one-shot
-claim has already been created for this exact commit.
+The runner is inert unless the canonical release gate, independently reviewed
+candidate anchor, frozen implementation pins, execution manifest, and durable
+one-shot claim all verify for the exact executing commit.
 """
 from __future__ import annotations
 
@@ -15,10 +15,13 @@ from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
+import scipy
 
 from research_core.ams_dep_development_execution_lock import (
+    DEFAULT_CLAIM_REF,
     DEFAULT_EXECUTION_MANIFEST,
     DEFAULT_IMPLEMENTATION_FREEZE,
+    DEFAULT_REVIEW_ANCHOR_REF,
     assert_claim_environment,
     assert_development_execution_allowed,
 )
@@ -46,16 +49,32 @@ from research_core.release_gate import DEFAULT_GATE, assert_ams_dep_empirical_re
 ROOT = Path(__file__).resolve().parents[2]
 SPEC_PATH = ROOT / "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V1.md"
 REGISTRATION_PATH = ROOT / "research/governance/ams_dep_development_execution_v1.json"
-OUTPUT_PATH = ROOT / "research/experiments/ams_dep_development_empirical_v1/result.json"
+OUTPUT_DIR = ROOT / "research/experiments/ams_dep_development_empirical_v1"
+OUTPUT_PATH = OUTPUT_DIR / "result.json"
+INCIDENT_PATH = OUTPUT_DIR / "incident.json"
+
 EMPIRICAL_BOOTSTRAP_ROOT = 2026092201
 EMPIRICAL_SENTINEL = 4294967295
 ASSET_ORDER = ("BTCUSDT", "ETHUSDT")
 HYPOTHESIS_ORDER = ("DEP", "TIME", "STATE")
 INVALID_FRACTION_CEILING = 0.01
-ACCESS_STATE = {
-    "market_data_accessed": False,
-    "development_market_outcomes_accessed": False,
-}
+
+INCIDENT_STATE: dict = {}
+
+
+def _reset_incident_state() -> None:
+    INCIDENT_STATE.clear()
+    INCIDENT_STATE.update(
+        {
+            "stage": "PRE_AUTHORITY",
+            "execution_provenance": None,
+            "source_provenance": {},
+            "sample_provenance": {},
+            "numerical_provenance": {},
+            "market_data_accessed": False,
+            "development_market_outcomes_accessed": False,
+        }
+    )
 
 
 def _sha256_file(path: Path) -> str:
@@ -76,7 +95,12 @@ def _git_blob(relative: str) -> str:
     ).strip()
 
 
-def _run_slot(inputs: dict, hypothesis: str, asset_index: int, hypothesis_index: int) -> dict:
+def _run_slot(
+    inputs: dict,
+    hypothesis: str,
+    asset_index: int,
+    hypothesis_index: int,
+) -> dict:
     design = inputs["design"]
     target = inputs["target"]
     hours = inputs["hours"]
@@ -165,6 +189,7 @@ def _source_record(result) -> dict:
         else None
     )
     return {
+        "status": "COMPLETE",
         "historical_whole_research_parent_manifest_identity":
             result.projection_record[
                 "historical_whole_research_parent_manifest_identity"
@@ -208,6 +233,16 @@ def _source_record(result) -> dict:
     }
 
 
+def _partial_source_record(symbol: str, exc: Exception) -> dict:
+    evidence = tuple(getattr(exc, "partial_archive_evidence", ()))
+    return {
+        "status": "PARTIAL_SOURCE_FAILURE",
+        "symbol": symbol,
+        "completed_archive_count": len(evidence),
+        "archive_evidence": [asdict(value) for value in evidence],
+    }
+
+
 def _sample_record(sample) -> dict:
     return {
         "loaded_rows": len(sample.loaded_timestamps),
@@ -219,6 +254,17 @@ def _sample_record(sample) -> dict:
         "inventory_sha256": dict(sample.inventory_sha256),
         "rejection_reason_counts": rejection_reason_counts(sample),
         "support": support_report(sample),
+    }
+
+
+def _geometry_provenance(sample, numerical: dict | None) -> dict:
+    hours = [row.hour for row in sample.rows]
+    segments = [row.segment_id for row in sample.rows]
+    return {
+        "accepted_geometry_row_count": len(sample.rows),
+        "hour_vector_sha256": _digest_lines(hours),
+        "segment_vector_sha256": _digest_lines(segments),
+        "design_shape": None if numerical is None else list(numerical["design"].shape),
     }
 
 
@@ -236,6 +282,7 @@ def _implementation_blob_evidence(freeze: dict) -> dict:
 def _execution_provenance(authority: dict, claim: dict) -> dict:
     manifest = authority["manifest"]
     freeze = authority["freeze"]
+    anchor = authority["review_anchor"]
     return {
         "executing_commit": authority["executing_sha"],
         "implementation_candidate_commit":
@@ -245,6 +292,12 @@ def _execution_provenance(authority: dict, claim: dict) -> dict:
         "reviewed_commit_equals_candidate":
             manifest["reviewed_implementation_commit"]
             == manifest["implementation_candidate_commit"],
+        "review_anchor_ref": anchor["ref"],
+        "review_anchor_sha": anchor["sha"],
+        "review_anchor_matches_candidate":
+            anchor["sha"] == manifest["implementation_candidate_commit"],
+        "post_candidate_changed_paths":
+            list(authority["post_candidate_changed_paths"]),
         "release_gate_sha256": _sha256_file(Path(DEFAULT_GATE)),
         "development_execution_manifest_sha256":
             _sha256_file(Path(DEFAULT_EXECUTION_MANIFEST)),
@@ -254,49 +307,119 @@ def _execution_provenance(authority: dict, claim: dict) -> dict:
             _sha256_file(Path(DEFAULT_IMPLEMENTATION_FREEZE)),
         "implementation_blob_evidence":
             _implementation_blob_evidence(freeze),
+        "runtime": {
+            "python": sys.version.split()[0],
+            "numpy": np.__version__,
+            "scipy": scipy.__version__,
+            "dtype": "float64",
+            "openblas_num_threads": os.environ.get("OPENBLAS_NUM_THREADS"),
+            "omp_num_threads": os.environ.get("OMP_NUM_THREADS"),
+            "mkl_num_threads": os.environ.get("MKL_NUM_THREADS"),
+        },
         "workflow_event": os.environ.get("GITHUB_EVENT_NAME"),
         "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
         "workflow_run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
         "workflow_job": os.environ.get("GITHUB_JOB"),
+        "workflow_job_id_where_available": os.environ.get("GITHUB_JOB_ID"),
         "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1",
         "confirmation_verified":
             os.environ.get("AMS_DEP_DEVELOPMENT_CONFIRMATION_VERIFIED") == "true",
         "one_shot_claim_ref": claim["ref"],
         "one_shot_claim_sha": claim["sha"],
+        "durable_claim_verified_against_github": True,
         "claim_created_before_source_access": True,
     }
 
 
+def _base_protected_access() -> dict:
+    return {
+        "market_data_accessed": bool(INCIDENT_STATE["market_data_accessed"]),
+        "development_market_outcomes_accessed": bool(
+            INCIDENT_STATE["development_market_outcomes_accessed"]
+        ),
+        "validation_or_oos_accessed": False,
+        "strategy_pnl_calculated": False,
+        "paper_trading_authorized": False,
+        "live_trading_authorized": False,
+        "directed_cross_asset_lagged_diagnostics_executed": False,
+        "calibration_or_holdout_seed_used": False,
+    }
+
+
+def _failure_result(exc: Exception) -> dict:
+    return {
+        "classification": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1_INTEGRITY_FAIL",
+        "version": 1,
+        "failure_stage": INCIDENT_STATE.get("stage"),
+        "error": f"{type(exc).__name__}: {exc}",
+        "execution_provenance": INCIDENT_STATE.get("execution_provenance"),
+        "source_provenance": dict(INCIDENT_STATE.get("source_provenance", {})),
+        "sample_provenance": dict(INCIDENT_STATE.get("sample_provenance", {})),
+        "numerical_provenance": dict(
+            INCIDENT_STATE.get("numerical_provenance", {})
+        ),
+        "protected_access": _base_protected_access(),
+    }
+
+
 def run() -> dict:
-    # Defense in depth. No source adapter is touched before all gates and claim
-    # provenance are validated.
+    _reset_incident_state()
+
+    # No source adapter is touched before the canonical gate, frozen candidate,
+    # review anchor, and durable one-shot claim have all been verified.
     assert_ams_dep_empirical_release_allowed()
     authority = assert_development_execution_allowed()
     claim = assert_claim_environment(authority["executing_sha"])
+    INCIDENT_STATE["execution_provenance"] = _execution_provenance(
+        authority,
+        claim,
+    )
+    INCIDENT_STATE["stage"] = "POST_CLAIM_PRE_SOURCE"
 
     source_results = {}
     samples = {}
     support = {}
     numerical = {}
 
-    ACCESS_STATE["market_data_accessed"] = False
-    ACCESS_STATE["development_market_outcomes_accessed"] = False
     for symbol in ASSET_ORDER:
-        ACCESS_STATE["market_data_accessed"] = True
-        source_results[symbol] = load_development_source(symbol)
-        ACCESS_STATE["development_market_outcomes_accessed"] = True
+        INCIDENT_STATE["stage"] = f"SOURCE_{symbol}"
+        INCIDENT_STATE["market_data_accessed"] = True
+        try:
+            source_results[symbol] = load_development_source(symbol)
+        except Exception as exc:
+            INCIDENT_STATE["source_provenance"][symbol] = _partial_source_record(
+                symbol,
+                exc,
+            )
+            raise
+
+        INCIDENT_STATE["development_market_outcomes_accessed"] = True
+        INCIDENT_STATE["source_provenance"][symbol] = _source_record(
+            source_results[symbol]
+        )
+
+        INCIDENT_STATE["stage"] = f"SAMPLE_{symbol}"
         samples[symbol] = build_primary_sample(
             source_results[symbol].bundle,
             registered_identity=
                 source_results[symbol].bundle.manifest.dataset_identity,
         )
+        INCIDENT_STATE["sample_provenance"][symbol] = _sample_record(
+            samples[symbol]
+        )
+
         support[symbol] = support_report(samples[symbol])
         numerical[symbol] = (
             numerical_inputs(samples[symbol])
             if support[symbol]["pass"]
             else None
         )
+        INCIDENT_STATE["numerical_provenance"][symbol] = _geometry_provenance(
+            samples[symbol],
+            numerical[symbol],
+        )
 
+    INCIDENT_STATE["stage"] = "PRIMARY_INFERENCE"
     slot_results = {}
     raw_p_by_slot = {}
     for asset_index, symbol in enumerate(ASSET_ORDER):
@@ -323,6 +446,7 @@ def run() -> dict:
     if not invalidity_fail:
         holm = assemble_primary_family(raw_p_by_slot)
 
+    INCIDENT_STATE["stage"] = "CROSS_ASSET_INTERSECTION"
     joined = exact_timestamp_intersection(
         samples["BTCUSDT"],
         samples["ETHUSDT"],
@@ -330,36 +454,19 @@ def run() -> dict:
         eth_manifest=source_results["ETHUSDT"].bundle.manifest,
     )
 
-    numerical_provenance = {}
-    for symbol in ASSET_ORDER:
-        values = numerical[symbol]
-        numerical_provenance[symbol] = {
-            "hour_vector_sha256":
-                _digest_lines([] if values is None else values["hours"]),
-            "segment_vector_sha256":
-                _digest_lines([] if values is None else values["segments"]),
-            "design_shape":
-                None if values is None else list(values["design"].shape),
-        }
-
     classification = (
         "EMPIRICAL_INFERENCE_VALIDITY_FAIL"
         if invalidity_fail
         else "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1_EXECUTED"
     )
+    INCIDENT_STATE["stage"] = "RESULT_ASSEMBLY"
 
     return {
         "classification": classification,
         "version": 1,
-        "execution_provenance": _execution_provenance(authority, claim),
-        "source_provenance": {
-            symbol: _source_record(source_results[symbol])
-            for symbol in ASSET_ORDER
-        },
-        "sample_provenance": {
-            symbol: _sample_record(samples[symbol])
-            for symbol in ASSET_ORDER
-        },
+        "execution_provenance": INCIDENT_STATE["execution_provenance"],
+        "source_provenance": dict(INCIDENT_STATE["source_provenance"]),
+        "sample_provenance": dict(INCIDENT_STATE["sample_provenance"]),
         "inference": {
             "slot_order": list(SLOTS),
             "slot_results": slot_results,
@@ -375,7 +482,8 @@ def run() -> dict:
             "requested_draws": BOOTSTRAP_DRAWS,
             "seed_path_before_segment":
                 "[2026092201,2,4294967295,4294967295,asset_index,hypothesis_index,bootstrap_index]",
-            "numerical_provenance": numerical_provenance,
+            "numerical_provenance":
+                dict(INCIDENT_STATE["numerical_provenance"]),
             "engineering_fixture_used_for_empirical_p_value": False,
             "wald_zero_used_for_empirical_p_value": False,
         },
@@ -387,57 +495,38 @@ def run() -> dict:
                 "BLOCKED_PENDING_SEPARATE_CROSS_ASSET_LAG_INTEGRITY_SPEC",
             "directed_cross_asset_lagged_diagnostics_executed": False,
         },
-        "protected_access": {
-            "market_data_accessed": True,
-            "development_market_outcomes_accessed": True,
-            "validation_or_oos_accessed": False,
-            "strategy_pnl_calculated": False,
-            "paper_trading_authorized": False,
-            "live_trading_authorized": False,
-            "directed_cross_asset_lagged_diagnostics_executed": False,
-            "calibration_or_holdout_seed_used": False,
-        },
+        "protected_access": _base_protected_access(),
     }
 
 
-def _write_result(value: dict) -> None:
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_PATH.write_text(
+def _write_json(path: Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
         json.dumps(value, sort_keys=True, indent=2) + "\n",
         encoding="utf-8",
     )
+    temporary.replace(path)
 
 
 def main() -> None:
+    _reset_incident_state()
     try:
         result = run()
-        _write_result(result)
+        INCIDENT_STATE["stage"] = "RESULT_ARTIFACT_WRITE"
+        _write_json(OUTPUT_PATH, result)
         print(result["classification"])
         if result["classification"] == "EMPIRICAL_INFERENCE_VALIDITY_FAIL":
             raise SystemExit(3)
     except Exception as exc:
-        failure = {
-            "classification": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1_INTEGRITY_FAIL",
-            "version": 1,
-            "error": f"{type(exc).__name__}: {exc}",
-            "executing_commit": os.environ.get("GITHUB_SHA"),
-            "one_shot_claim_ref":
-                os.environ.get("AMS_DEP_DEVELOPMENT_CLAIM_REF"),
-            "one_shot_claim_sha":
-                os.environ.get("AMS_DEP_DEVELOPMENT_CLAIM_SHA"),
-            "protected_access": {
-                "market_data_accessed": ACCESS_STATE["market_data_accessed"],
-                "development_market_outcomes_accessed":
-                    ACCESS_STATE["development_market_outcomes_accessed"],
-                "validation_or_oos_accessed": False,
-                "strategy_pnl_calculated": False,
-                "paper_trading_authorized": False,
-                "live_trading_authorized": False,
-                "directed_cross_asset_lagged_diagnostics_executed": False,
-                "calibration_or_holdout_seed_used": False,
-            },
-        }
-        _write_result(failure)
+        failure = _failure_result(exc)
+        try:
+            _write_json(OUTPUT_PATH, failure)
+        except Exception as result_write_exc:
+            failure["result_write_error"] = (
+                f"{type(result_write_exc).__name__}: {result_write_exc}"
+            )
+            _write_json(INCIDENT_PATH, failure)
         print("AMS_DEP_DEVELOPMENT_EMPIRICAL_V1_INTEGRITY_FAIL")
         raise SystemExit(2) from exc
 
