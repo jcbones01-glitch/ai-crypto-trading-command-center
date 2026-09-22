@@ -8,7 +8,6 @@ from urllib.error import HTTPError
 import pytest
 
 import research_core.ams_dep_development_execution_lock as lock
-from research_core.release_gate import ResearchGateError
 
 
 class FakeResponse:
@@ -28,30 +27,29 @@ class FakeResponse:
 class AtomicFakeGitHub:
     def __init__(self):
         self.guard = threading.Lock()
-        self.created = None
+        self.refs = {}
 
     def __call__(self, request):
         method = request.get_method()
         if method == "GET":
-            with self.guard:
-                if self.created is None:
-                    raise HTTPError(
-                        request.full_url,
-                        404,
-                        "Not Found",
-                        {},
-                        io.BytesIO(b'{"message":"Not Found"}'),
+            for ref, sha in self.refs.items():
+                short = ref.removeprefix("refs/")
+                if request.full_url.endswith("/git/ref/" + short):
+                    return FakeResponse(
+                        {"ref": ref, "object": {"sha": sha}}
                     )
-                return FakeResponse(
-                    {
-                        "ref": self.created["ref"],
-                        "object": {"sha": self.created["sha"]},
-                    }
-                )
+            raise HTTPError(
+                request.full_url,
+                404,
+                "Not Found",
+                {},
+                io.BytesIO(b'{"message":"Not Found"}'),
+            )
 
         payload = json.loads(request.data)
+        ref = payload["ref"]
         with self.guard:
-            if self.created is not None:
+            if ref in self.refs:
                 raise HTTPError(
                     request.full_url,
                     422,
@@ -59,36 +57,13 @@ class AtomicFakeGitHub:
                     {},
                     io.BytesIO(b'{"message":"Reference already exists"}'),
                 )
-            self.created = payload
+            self.refs[ref] = payload["sha"]
             return FakeResponse(
                 {
-                    "ref": payload["ref"],
+                    "ref": ref,
                     "object": {"sha": payload["sha"]},
                 }
             )
-
-
-def test_current_machine_gate_blocks_before_execution_manifest(monkeypatch):
-    called = False
-
-    def forbidden_manifest():
-        nonlocal called
-        called = True
-        raise AssertionError("execution manifest must not be reached")
-
-    monkeypatch.setattr(lock, "load_development_execution_manifest", forbidden_manifest)
-    with pytest.raises(ResearchGateError, match="empirical execution blocked"):
-        lock.assert_development_execution_allowed("a" * 40)
-    assert called is False
-
-
-def test_current_execution_manifest_is_locked():
-    manifest = lock.load_development_execution_manifest()
-    assert manifest["status"] == "DRAFT_LOCKED"
-    assert manifest["development_execution_authorized"] is False
-    assert manifest["first_empirical_execution_claimed"] is False
-    assert manifest["first_empirical_execution_executed"] is False
-    assert manifest["reviewed_implementation_commit"] is None
 
 
 def test_claim_absent_then_atomic_create_then_second_create_fails():
@@ -140,7 +115,10 @@ def test_simultaneous_claim_creation_has_one_winner():
 
 
 def test_claim_ref_is_fixed():
-    with pytest.raises(lock.DevelopmentExecutionError, match="unexpected Development claim ref"):
+    with pytest.raises(
+        lock.DevelopmentExecutionError,
+        match="unexpected Development claim ref",
+    ):
         lock.create_claim(
             "owner/repo",
             "a" * 40,
@@ -150,18 +128,102 @@ def test_claim_ref_is_fixed():
         )
 
 
-def test_claim_environment_requires_exact_ref_and_execution_sha(monkeypatch):
-    monkeypatch.setenv("GITHUB_SHA", "c" * 40)
-    monkeypatch.setenv("AMS_DEP_DEVELOPMENT_CLAIM_REF", lock.DEFAULT_CLAIM_REF)
-    monkeypatch.setenv("AMS_DEP_DEVELOPMENT_CLAIM_SHA", "c" * 40)
-    assert lock.assert_claim_environment() == {
+def test_review_anchor_is_fixed_and_one_shot():
+    backend = AtomicFakeGitHub()
+    created = lock.create_fixed_ref(
+        "owner/repo",
+        "a" * 40,
+        "token",
+        ref=lock.DEFAULT_REVIEW_ANCHOR_REF,
+        opener=backend,
+    )
+    assert created == {
+        "ref": lock.DEFAULT_REVIEW_ANCHOR_REF,
+        "sha": "a" * 40,
+    }
+    with pytest.raises(lock.DevelopmentExecutionError, match="already exists"):
+        lock.create_fixed_ref(
+            "owner/repo",
+            "b" * 40,
+            "token",
+            ref=lock.DEFAULT_REVIEW_ANCHOR_REF,
+            opener=backend,
+        )
+
+
+def _claim_backend(sha: str | None):
+    backend = AtomicFakeGitHub()
+    if sha is not None:
+        backend.refs[lock.DEFAULT_CLAIM_REF] = sha
+    return backend
+
+
+def _set_forwarded_claim(monkeypatch, sha: str):
+    monkeypatch.setenv("GITHUB_SHA", sha)
+    monkeypatch.setenv("GITHUB_REPOSITORY", "owner/repo")
+    monkeypatch.setenv("GITHUB_TOKEN", "token")
+    monkeypatch.setenv(
+        "AMS_DEP_DEVELOPMENT_CLAIM_REF",
+        lock.DEFAULT_CLAIM_REF,
+    )
+    monkeypatch.setenv("AMS_DEP_DEVELOPMENT_CLAIM_SHA", sha)
+
+
+def test_forged_environment_without_durable_claim_fails(monkeypatch):
+    sha = "c" * 40
+    _set_forwarded_claim(monkeypatch, sha)
+    with pytest.raises(
+        lock.DevelopmentExecutionError,
+        match="durable Development claim does not exist",
+    ):
+        lock.assert_claim_environment(opener=_claim_backend(None))
+
+
+def test_wrong_durable_claim_target_fails(monkeypatch):
+    sha = "c" * 40
+    _set_forwarded_claim(monkeypatch, sha)
+    with pytest.raises(
+        lock.DevelopmentExecutionError,
+        match="durable Development claim target mismatch",
+    ):
+        lock.assert_claim_environment(
+            opener=_claim_backend("d" * 40)
+        )
+
+
+def test_deleted_or_repointed_claim_is_detected(monkeypatch):
+    sha = "c" * 40
+    _set_forwarded_claim(monkeypatch, sha)
+    backend = _claim_backend(sha)
+    assert lock.assert_claim_environment(opener=backend) == {
         "ref": lock.DEFAULT_CLAIM_REF,
-        "sha": "c" * 40,
+        "sha": sha,
     }
 
-    monkeypatch.setenv("AMS_DEP_DEVELOPMENT_CLAIM_SHA", "d" * 40)
-    with pytest.raises(lock.DevelopmentExecutionError, match="claim SHA mismatch"):
-        lock.assert_claim_environment()
+    del backend.refs[lock.DEFAULT_CLAIM_REF]
+    with pytest.raises(
+        lock.DevelopmentExecutionError,
+        match="durable Development claim does not exist",
+    ):
+        lock.assert_claim_environment(opener=backend)
+
+    backend.refs[lock.DEFAULT_CLAIM_REF] = "d" * 40
+    with pytest.raises(
+        lock.DevelopmentExecutionError,
+        match="durable Development claim target mismatch",
+    ):
+        lock.assert_claim_environment(opener=backend)
+
+
+def test_correct_durable_claim_and_forwarded_values_pass(monkeypatch):
+    sha = "e" * 40
+    _set_forwarded_claim(monkeypatch, sha)
+    assert lock.assert_claim_environment(
+        opener=_claim_backend(sha)
+    ) == {
+        "ref": lock.DEFAULT_CLAIM_REF,
+        "sha": sha,
+    }
 
 
 def test_only_governance_paths_may_change_after_candidate():
@@ -179,6 +241,7 @@ def test_exact_frozen_implementation_path_set_is_hard_coded():
         "src/research_core/ams_dep_development_execution_lock.py",
         "src/research_core/ams_dep_development_source.py",
         "src/research_core/ams_dep_empirical_access.py",
+        "tests/test_ams_dep_development_authorized_preflight.py",
         "tests/test_ams_dep_development_execution_lock.py",
         "tests/test_ams_dep_development_runner.py",
         "tests/test_ams_dep_development_source.py",
@@ -186,7 +249,7 @@ def test_exact_frozen_implementation_path_set_is_hard_coded():
     }
 
 
-def test_freeze_path_deletion_cannot_reduce_required_set(monkeypatch):
+def test_freeze_path_deletion_cannot_reduce_required_set():
     registration = lock.load_development_registration()
     freeze = {
         "implementation_file_git_blob_sha1": {
@@ -201,5 +264,26 @@ def test_freeze_path_deletion_cannot_reduce_required_set(monkeypatch):
     with pytest.raises(
         lock.DevelopmentExecutionError,
         match="path set is incomplete or altered",
+    ):
+        lock.verify_frozen_implementation(freeze)
+
+
+def test_freeze_pin_value_replacement_is_rejected():
+    registration = lock.load_development_registration()
+    implementation = {
+        path: lock._git_blob(path)
+        for path in lock.EXPECTED_IMPLEMENTATION_PATHS
+    }
+    freeze = {
+        "implementation_file_git_blob_sha1": implementation,
+        "pinned_upstream_git_blob_sha1":
+            registration["pinned_upstream_git_blob_sha1"],
+    }
+    victim = "research/scripts/run_ams_dep_development_empirical_v1.py"
+    freeze["implementation_file_git_blob_sha1"][victim] = "0" * 40
+
+    with pytest.raises(
+        lock.DevelopmentExecutionError,
+        match="frozen implementation blob mismatch",
     ):
         lock.verify_frozen_implementation(freeze)
