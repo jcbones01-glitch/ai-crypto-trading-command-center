@@ -277,6 +277,7 @@ def test_source_failure_carries_completed_archive_evidence(monkeypatch, tmp_path
         source.acquire_registered_development_source("BTCUSDT")
 
     assert len(info.value.partial_archive_evidence) == 1
+    assert info.value.network_source_access_attempted is True
     assert info.value.partial_archive_evidence[0].filename.endswith(
         "2017-08.zip"
     )
@@ -320,3 +321,4 @@ def test_empirical_access_preserves_partial_archive_evidence(monkeypatch):
         empirical_access.load_development_source("BTCUSDT")
 
     assert info.value.partial_archive_evidence == evidence
+    assert info.value.network_source_access_attempted is False
