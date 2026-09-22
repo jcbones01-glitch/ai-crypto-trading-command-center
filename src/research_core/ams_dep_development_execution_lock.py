@@ -28,7 +28,7 @@ DEFAULT_REGISTRATION = (
 )
 DEFAULT_CLAIM_REF = "refs/tags/ams-dep-development-execution-claimed-v1"
 DEFAULT_REVIEW_ANCHOR_REF = (
-    "refs/tags/ams-dep-development-implementation-reviewed-v1"
+    "refs/heads/ams-dep-development-implementation-reviewed-v1"
 )
 EXACT_CONFIRMATION = "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1"
 
