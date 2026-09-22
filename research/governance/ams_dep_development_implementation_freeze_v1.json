@@ -10,13 +10,13 @@
   "prior_review_issue": 69,
   "prior_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_EXECUTION_AUTHORIZATION",
   "implementation_candidate_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
-  "reviewed_implementation_commit": null,
+  "reviewed_implementation_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
   "independent_review_required": true,
-  "independent_implementation_reviewed": false,
+  "independent_implementation_reviewed": true,
   "execution_authorized": false,
   "one_shot_claim_created": false,
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v1",
-  "review_anchor_created": false,
+  "review_anchor_created": true,
   "implementation_file_git_blob_sha1": {
     ".github/workflows/ams-dep-development-empirical-v1.yml": "19366972f33121c4b057885b6e423b94c2422814",
     "research/scripts/run_ams_dep_development_empirical_v1.py": "0adbe9a7bfd1b67a8e998ae1b2d4a98511c63de1",
@@ -75,5 +75,7 @@
     "live_trading_authorized": false,
     "directed_cross_asset_lagged_diagnostics_authorized": false
   },
-  "notes": "Issue #69 remediation candidate frozen after exact-candidate offline-only CI. No empirical source adapter, claim creation, empirical seed namespace, or outcome execution ran in the offline review. This freeze is for independent implementation re-review only; execution remains unauthorized."
+  "notes": "Independent Issue #69 re-review approved the exact remediated candidate ccd825c92208030adf59d9f383aaa8ae806381db. The fixed review anchor refs/heads/ams-dep-development-implementation-reviewed-v1 now resolves exactly to that candidate. This commit records implementation approval only; the two Development execution keys remain separate governance decisions and downstream Validation/OOS/P&L/paper/live permissions remain closed.",
+  "independent_review_issue": 69,
+  "independent_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_IMPLEMENTATION_FREEZE"
 }
