@@ -1,7 +1,7 @@
 {
   "freeze_id": "AMS-DEP-DEVELOPMENT-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "FROZEN_FOR_INDEPENDENT_REVIEW",
+  "status": "SUPERSEDED_BY_ISSUE_69_REMEDIATION",
   "approved_spec_review_issue": 67,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC",
   "approved_spec_merge_commit": "c15d4089f0ec2cf3cffece88cd6903f93ba6997b",
@@ -62,5 +62,7 @@
     "live_trading_authorized": false,
     "directed_cross_asset_lagged_diagnostics_authorized": false
   },
-  "notes": "This freeze binds the exact result-affecting Development implementation candidate before independent implementation review. The execution manifest and canonical release gate remain locked. No empirical BTC/ETH archive was opened, no one-shot claim was created, and no empirical Development result was produced. The new dedicated tests are frozen as part of the candidate but are not represented as executed CI evidence at this exact candidate; independent review must account for that limitation."
+  "notes": "The original candidate was rejected by Issue #69 and is superseded. This document remains fail-closed until replaced with the exact remediated candidate and blob set. No empirical execution is authorized.",
+  "superseded_candidate_commit": "b0b3a18754596db2b175568f4281f115598c7633",
+  "replacement_candidate_commit": null
 }
