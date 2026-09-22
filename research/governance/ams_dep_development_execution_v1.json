@@ -1,0 +1,123 @@
+{
+  "registration_id": "AMS-DEP-DEVELOPMENT-EMPIRICAL-EXECUTION-V1",
+  "version": 1,
+  "status": "PROPOSED_FOR_INDEPENDENT_REVIEW",
+  "specification_head": "5918dd38bb043608a81cdab4af1abeefe18b3ce5",
+  "development_bounds": [
+    "2017-08-17T00:00:00+00:00",
+    "2022-01-01T00:00:00+00:00"
+  ],
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT"
+  ],
+  "source": {
+    "provider": "Binance Public Data",
+    "market": "spot",
+    "timeframe": "1h",
+    "first_month": "2017-08",
+    "last_month": "2021-12",
+    "archives_per_symbol": 53,
+    "total_archives": 106,
+    "filename_rule": "{SYMBOL}-1h-{YYYY}-{MM}.zip",
+    "url_builder": "research_core.data_ingestion.archive_url",
+    "checksum_rule": "official .CHECKSUM required for every archive",
+    "fallback_mirror_allowed": false,
+    "caller_source_override_allowed": false
+  },
+  "registered_treatment_identities": {
+    "BTCUSDT": "1590cf8e69ed757eeb6701a218d561448beb2eb6ea09dcd0ae31d15a8f5197cf",
+    "ETHUSDT": "d35bf21e309820abc88090bad29601adc1d1ea6b31dcddf0b80d510af4cf542f"
+  },
+  "bootstrap": {
+    "method": "V2 dependent wild bootstrap with exact-time Parzen geometry",
+    "requested_draws": 4999,
+    "empirical_root": 2026092201,
+    "version_coordinate": 2,
+    "empirical_dgp_sentinel": 4294967295,
+    "empirical_outer_sentinel": 4294967295,
+    "asset_order": [
+      "BTCUSDT",
+      "ETHUSDT"
+    ],
+    "hypothesis_order": [
+      "DEP",
+      "TIME",
+      "STATE"
+    ],
+    "seed_path_before_segment": "[2026092201,2,4294967295,4294967295,asset_index,hypothesis_index,bootstrap_index]",
+    "segment_ordinal_appended_by_frozen_v2_implementation": true,
+    "redraw_invalid": false,
+    "invalid_counts_as_exceedance": true,
+    "invalid_fraction_ceiling": 0.01
+  },
+  "primary_family": [
+    "BTC_DEP",
+    "BTC_TIME",
+    "BTC_STATE",
+    "ETH_DEP",
+    "ETH_TIME",
+    "ETH_STATE"
+  ],
+  "alpha": 0.05,
+  "support": {
+    "minimum_rows_per_asset": 5000,
+    "years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021
+    ],
+    "volatility_states": [
+      "VOL_LOW",
+      "VOL_NORMAL",
+      "VOL_HIGH"
+    ],
+    "minimum_rows_per_cell": 200,
+    "minimum_distinct_utc_dates_per_cell": 10
+  },
+  "directed_cross_asset_lagged_diagnostics": "BLOCKED_PENDING_SEPARATE_CROSS_ASSET_LAG_INTEGRITY_SPEC",
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "dtype": "float64",
+    "blas_threads_per_worker": 1
+  },
+  "protected_permissions": {
+    "market_data_execution_authorized": false,
+    "validation_or_oos_access_authorized": false,
+    "strategy_pnl_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false
+  },
+  "pinned_upstream_git_blob_sha1": {
+    "docs/AMS_DEP_V2_NUMERICAL_CONTRACT.md": "95e0129e4fc38a5125a945514f43e2a8e670ea1c",
+    "research/governance/ams_dep_v2_freeze_manifest.json": "cfa1408c4705cd07e0ddf4a0d731faa131dff947",
+    "research/governance/ams_dep_full_pipeline_integrity_v1.json": "fafbf6fcb44e9d8ac66072eb865b75bcac844946",
+    "research/governance/ams_dep_full_pipeline_implementation_freeze_v1.json": "7f6265f71d3b476f16d7130192c0b90d1c2f94c4",
+    "docs/AMS_DEP_FULL_PIPELINE_SYNTHETIC_INTEGRITY_PLAN.md": "781cdfcbe1ce01aedc9de567f8843bce2a793460",
+    "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
+    "src/research_core/release_gate.py": "14f283025fd217bbf5b5a248e3dac9ad38c4fb81",
+    "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9",
+    "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+    "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+    "src/research_core/historical_dataset.py": "7910e95b6f34a97e0034070884748b592a7b11d0",
+    "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+    "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+    "src/research_core/dependent_wild_bootstrap_v2.py": "4e77f4576b85a4a35c3738d71e9b49315dd4f248"
+  },
+  "allowed_implementation_surface": [
+    "src/research_core/ams_dep_development_source.py",
+    "src/research_core/ams_dep_empirical_access.py",
+    "research/scripts/run_ams_dep_development_empirical_v1.py",
+    "research/governance/ams_dep_development_execution_manifest_v1.json",
+    "research/governance/ams_dep_development_implementation_freeze_v1.json",
+    "tests dedicated to Development source/runner/firewall/seed/inference wiring",
+    ".github/workflows/ams-dep-development-empirical-v1.yml"
+  ],
+  "implementation_requires_independent_review": true,
+  "execution_authorization_separate_after_implementation_review": true,
+  "empirical_execution_now_authorized": false
+}
