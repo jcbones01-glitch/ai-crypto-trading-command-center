@@ -27,9 +27,11 @@ class EmpiricalAccessError(RuntimeError):
         message: str,
         *,
         partial_archive_evidence: tuple = (),
+        network_source_access_attempted: bool = False,
     ):
         super().__init__(message)
         self.partial_archive_evidence = partial_archive_evidence
+        self.network_source_access_attempted = network_source_access_attempted
 
 
 def _assert_canonical_empirical_release() -> dict:
@@ -63,6 +65,9 @@ def load_development_source(symbol: str) -> DevelopmentSourceResult:
             f"Development source adapter failed: {exc}",
             partial_archive_evidence=tuple(
                 getattr(exc, "partial_archive_evidence", ())
+            ),
+            network_source_access_attempted=bool(
+                getattr(exc, "network_source_access_attempted", False)
             ),
         ) from exc
     if result.symbol != symbol or result.bundle.symbol != symbol:
