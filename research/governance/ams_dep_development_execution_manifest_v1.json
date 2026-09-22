@@ -37,5 +37,6 @@
     "tests/test_ams_dep_development_source.py": "f01d55a96d734d98a61b4f55f7cda616c36c7610",
     "tests/test_ams_dep_development_workflow.py": "369126c76eac94a6f802229afe8185ed8077f955"
   },
-  "notes": "Implementation candidate frozen for independent review. Execution remains locked: reviewed_implementation_commit is unset, independent_implementation_reviewed=false, development_execution_authorized=false, first execution is unclaimed/unexecuted, and the canonical Development market-data gate remains false. No empirical BTC/ETH archive has been opened."
+  "notes": "Remediation in progress after Issue #69 REQUIRE_CHANGES. Execution remains locked: status=DRAFT_LOCKED, reviewed_implementation_commit is unset, independent_implementation_reviewed=false, development_execution_authorized=false, first execution is unclaimed/unexecuted, canonical Development market-data authorization remains false, and no empirical BTC/ETH archive has been opened. The fixed review anchor is declared but must not be created until a remediated candidate is independently approved.",
+  "review_anchor_ref": "refs/tags/ams-dep-development-implementation-reviewed-v1"
 }
