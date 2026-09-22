@@ -1,0 +1,31 @@
+{
+  "manifest_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V1",
+  "version": 1,
+  "status": "DRAFT_LOCKED",
+  "approved_spec_review_issue": 67,
+  "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC",
+  "approved_spec_merge_commit": "c15d4089f0ec2cf3cffece88cd6903f93ba6997b",
+  "specification_path": "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V1.md",
+  "registration_path": "research/governance/ams_dep_development_execution_v1.json",
+  "implementation_freeze_path": "research/governance/ams_dep_development_implementation_freeze_v1.json",
+  "implementation_candidate_commit": null,
+  "reviewed_implementation_commit": null,
+  "independent_implementation_reviewed": false,
+  "development_execution_authorized": false,
+  "first_empirical_execution_claimed": false,
+  "first_empirical_execution_executed": false,
+  "one_shot_claim_ref": "refs/tags/ams-dep-development-execution-claimed-v1",
+  "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1",
+  "workflow_trigger": "workflow_dispatch_only",
+  "empirical_bootstrap_root": 2026092201,
+  "development_projection_version": "ams-dep-development-projection-v1",
+  "protected_permissions": {
+    "validation_or_oos_access_authorized": false,
+    "strategy_pnl_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "directed_cross_asset_lagged_diagnostics_authorized": false
+  },
+  "implementation_file_git_blob_sha1": {},
+  "notes": "Draft implementation lock. No empirical market-data execution is authorized. Candidate/pins are populated only after implementation is complete and before independent implementation review."
+}
