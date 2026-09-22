@@ -1,7 +1,7 @@
 {
   "manifest_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V1",
   "version": 1,
-  "status": "DRAFT_LOCKED",
+  "status": "AUTHORIZED_FOR_FIRST_DEVELOPMENT_EXECUTION",
   "approved_spec_review_issue": 67,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC",
   "approved_spec_merge_commit": "c15d4089f0ec2cf3cffece88cd6903f93ba6997b",
@@ -11,7 +11,7 @@
   "implementation_candidate_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
   "reviewed_implementation_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
   "independent_implementation_reviewed": true,
-  "development_execution_authorized": false,
+  "development_execution_authorized": true,
   "first_empirical_execution_claimed": false,
   "first_empirical_execution_executed": false,
   "one_shot_claim_ref": "refs/tags/ams-dep-development-execution-claimed-v1",
@@ -38,7 +38,7 @@
     "tests/test_ams_dep_development_source.py": "8e88e931c8149d068bb6a224fa801d736d381f38",
     "tests/test_ams_dep_development_workflow.py": "8be53ce2ba96d497f6dcf9ce3f91297e889f6033"
   },
-  "notes": "Independent Issue #69 re-review approved the exact candidate and the fixed review anchor now binds to it. Execution is still blocked here: development_execution_authorized=false, first execution unclaimed/unexecuted, and the canonical Development market-data gate remains a separate key.",
+  "notes": "Issue #69 approved the exact implementation candidate ccd825c92208030adf59d9f383aaa8ae806381db; the fixed review anchor binds that candidate; the canonical Development market-data key is open; and this second execution-manifest key is now authorized for the first one-shot Development execution only. The claim remains absent/unconsumed. Validation/OOS, strategy P&L, paper trading, live trading, and directed cross-asset lag diagnostics remain locked.",
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v1",
   "independent_review_issue": 69,
   "independent_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_IMPLEMENTATION_FREEZE"
