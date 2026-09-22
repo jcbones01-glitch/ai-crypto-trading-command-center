@@ -212,3 +212,51 @@ def test_runner_has_no_user_controlled_empirical_parameters():
         "--live",
     ):
         assert forbidden not in text
+
+
+def test_claim_recheck_failure_keeps_provisional_execution_provenance(monkeypatch):
+    mod = load_runner()
+    candidate = "b" * 40
+    executing = "a" * 40
+    authority = {
+        "executing_sha": executing,
+        "manifest": {
+            "implementation_candidate_commit": candidate,
+            "reviewed_implementation_commit": candidate,
+        },
+        "freeze": {"implementation_file_git_blob_sha1": {}},
+        "review_anchor": {
+            "ref": mod.DEFAULT_REVIEW_ANCHOR_REF,
+            "sha": candidate,
+        },
+        "post_candidate_changed_paths": [
+            "research/governance/ams_dep_release_gate_v1.json"
+        ],
+    }
+
+    monkeypatch.setattr(
+        mod,
+        "assert_ams_dep_empirical_release_allowed",
+        lambda: {"authorized": True},
+    )
+    monkeypatch.setattr(
+        mod,
+        "assert_development_execution_allowed",
+        lambda: authority,
+    )
+
+    def fail_claim(*args, **kwargs):
+        raise RuntimeError("injected durable claim mismatch")
+
+    monkeypatch.setattr(mod, "assert_claim_environment", fail_claim)
+
+    with np.testing.assert_raises(RuntimeError):
+        mod.run()
+
+    failure = mod._failure_result(RuntimeError("injected durable claim mismatch"))
+    assert failure["failure_stage"] == "DURABLE_CLAIM_VERIFICATION"
+    provenance = failure["execution_provenance"]
+    assert provenance["executing_commit"] == executing
+    assert provenance["implementation_candidate_commit"] == candidate
+    assert provenance["review_anchor_sha"] == candidate
+    assert provenance["durable_claim_verified_against_github"] is False
