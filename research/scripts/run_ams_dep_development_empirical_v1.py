@@ -90,6 +90,7 @@ def _reset_incident_state() -> None:
             "source_provenance": {},
             "sample_provenance": {},
             "numerical_provenance": {},
+            "inference_provenance": {"slot_results": {}},
             "market_data_accessed": False,
             "development_market_outcomes_accessed": False,
         }
@@ -382,6 +383,9 @@ def _failure_result(exc: Exception) -> dict:
         "numerical_provenance": dict(
             INCIDENT_STATE.get("numerical_provenance", {})
         ),
+        "inference_provenance": dict(
+            INCIDENT_STATE.get("inference_provenance", {})
+        ),
         "protected_access": _base_protected_access(),
     }
 
@@ -426,6 +430,15 @@ def run() -> dict:
 
         INCIDENT_STATE["market_data_accessed"] = True
         INCIDENT_STATE["development_market_outcomes_accessed"] = True
+        INCIDENT_STATE["source_provenance"][symbol] = {
+            "status": "ACQUIRED_PENDING_FULL_PROVENANCE_RECORD",
+            "archive_evidence": [
+                asdict(value)
+                for value in source_results[symbol].archive_evidence
+            ],
+            "development_projection_sha256":
+                source_results[symbol].projection_sha256,
+        }
         INCIDENT_STATE["source_provenance"][symbol] = _source_record(
             source_results[symbol]
         )
@@ -441,6 +454,10 @@ def run() -> dict:
         )
 
         support[symbol] = support_report(samples[symbol])
+        INCIDENT_STATE["numerical_provenance"][symbol] = _geometry_provenance(
+            samples[symbol],
+            None,
+        )
         numerical[symbol] = (
             numerical_inputs(samples[symbol])
             if support[symbol]["pass"]
@@ -457,6 +474,7 @@ def run() -> dict:
     for asset_index, symbol in enumerate(ASSET_ORDER):
         for hypothesis_index, hypothesis in enumerate(HYPOTHESIS_ORDER):
             slot = f"{'BTC' if symbol == 'BTCUSDT' else 'ETH'}_{hypothesis}"
+            INCIDENT_STATE["stage"] = f"PRIMARY_INFERENCE_{slot}"
             if not support[symbol]["pass"]:
                 result = _unavailable_support_slot()
             else:
@@ -467,6 +485,7 @@ def run() -> dict:
                     hypothesis_index,
                 )
             slot_results[slot] = result
+            INCIDENT_STATE["inference_provenance"]["slot_results"][slot] = result
             raw_p_by_slot[slot] = result["raw_p"]
 
     if tuple(raw_p_by_slot) != SLOTS:
@@ -477,6 +496,13 @@ def run() -> dict:
     holm = None
     if not invalidity_fail:
         holm = assemble_primary_family(raw_p_by_slot)
+    INCIDENT_STATE["inference_provenance"].update(
+        {
+            "invalidity_fail": invalidity_fail,
+            "holm": holm,
+            "holm_interpretation_authorized": not invalidity_fail,
+        }
+    )
 
     INCIDENT_STATE["stage"] = "CROSS_ASSET_INTERSECTION"
     joined = exact_timestamp_intersection(
