@@ -60,5 +60,11 @@
     "file_git_blob_sha1": "must remain byte-identical to reviewed implementation",
     "pinned_existing_production_git_blob_sha1": "must remain byte-identical to approved specification"
   },
-  "notes": "Governance-only authorization after independent Issue #61 approval. Reviewed implementation commit equals frozen candidate d1d26881b8123914ea196557d9f8000bcac70a1f. All 12 implementation pins and the approved ten-production-file pin map remain unchanged. Authorization is limited to the first deterministic synthetic full-pipeline certification. Empirical BTC/ETH access, Development outcomes, Validation/OOS, strategy P&L, paper/live trading, calibration/holdout seeds, and deferred 1/6/24-hour lagged diagnostics remain unauthorized."
+  "notes": "Authorized for the first deterministic synthetic full-pipeline certification only after Issue #61 independent approval. Reviewed implementation commit equals the frozen candidate d1d26881b8123914ea196557d9f8000bcac70a1f. All 12 implementation pins and all 10 approved existing-production pins are unchanged. Empirical market data, Development outcomes, Validation/OOS, strategy P&L, paper trading, live trading, calibration/holdout seeds, and deferred directed cross-asset diagnostics remain unauthorized.",
+  "independent_review": {
+    "issue": 61,
+    "decision": "APPROVE_FULL_PIPELINE_IMPLEMENTATION_FREEZE",
+    "reviewed_governance_head": "0bc70a448aeaa642258ae88a8e7a8fde40de29a4",
+    "reviewed_implementation_candidate": "d1d26881b8123914ea196557d9f8000bcac70a1f"
+  }
 }
