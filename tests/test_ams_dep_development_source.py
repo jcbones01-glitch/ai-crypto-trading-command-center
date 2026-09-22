@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 import research_core.ams_dep_development_source as source
+import research_core.ams_dep_empirical_access as empirical_access
 from research_core.ams_dep_pipeline import (
     DEVELOPMENT_END,
     DEVELOPMENT_START,
@@ -279,3 +280,43 @@ def test_source_failure_carries_completed_archive_evidence(monkeypatch, tmp_path
     assert info.value.partial_archive_evidence[0].filename.endswith(
         "2017-08.zip"
     )
+
+
+def test_empirical_access_preserves_partial_archive_evidence(monkeypatch):
+    evidence = (
+        source.ArchiveEvidence(
+            symbol="BTCUSDT",
+            year=2017,
+            month=8,
+            filename="BTCUSDT-1h-2017-08.zip",
+            official_url=(
+                "https://data.binance.vision/data/spot/monthly/klines/"
+                "BTCUSDT/1h/BTCUSDT-1h-2017-08.zip"
+            ),
+            official_checksum_sha256="a" * 64,
+            local_zip_sha256="a" * 64,
+        ),
+    )
+
+    monkeypatch.setattr(
+        empirical_access,
+        "_authorize_request",
+        lambda partition, symbol: {"authorized": True},
+    )
+
+    def fail_source(symbol):
+        raise source.DevelopmentSourceError(
+            "injected",
+            partial_archive_evidence=evidence,
+        )
+
+    monkeypatch.setattr(
+        empirical_access,
+        "_load_registered_development_source",
+        fail_source,
+    )
+
+    with pytest.raises(empirical_access.EmpiricalAccessError) as info:
+        empirical_access.load_development_source("BTCUSDT")
+
+    assert info.value.partial_archive_evidence == evidence
