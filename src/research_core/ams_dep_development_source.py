@@ -160,6 +160,18 @@ def build_development_projection(
     if observed != expected:
         raise DevelopmentSourceError("Development archive filename inventory mismatch")
 
+    ordered_paths = tuple(sorted(bundle.raw_archive_paths, key=lambda path: path.name))
+    if len(ordered_paths) != EXPECTED_ARCHIVES_PER_SYMBOL:
+        raise DevelopmentSourceError("Development bundle must bind exactly 53 raw archives")
+    if tuple(path.name for path in ordered_paths) != expected:
+        raise DevelopmentSourceError("raw archive paths differ from frozen Development inventory")
+    for path, evidence in zip(ordered_paths, archive_evidence):
+        local_sha = _sha256_file(path)
+        if local_sha != evidence.local_zip_sha256:
+            raise DevelopmentSourceError("archive evidence local SHA-256 mismatch")
+        if evidence.official_checksum_sha256 != evidence.local_zip_sha256:
+            raise DevelopmentSourceError("archive evidence official checksum mismatch")
+
     try:
         verification = verify_certified_bundle(
             bundle,
