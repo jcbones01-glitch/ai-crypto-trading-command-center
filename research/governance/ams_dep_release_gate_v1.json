@@ -1,7 +1,7 @@
 {
   "gate_id": "AMS-DEP-EMPIRICAL-RELEASE",
   "version": 1,
-  "status": "SEPARATE_EMPIRICAL_RELEASE_APPROVED",
+  "status": "DEVELOPMENT_EXECUTION_KEY_OPEN",
   "design_review_issue": 44,
   "parent_failure_issue": 43,
   "v1_calibration_failed": true,
@@ -30,11 +30,11 @@
   "v2_synthetic_holdout_passed": true,
   "full_pipeline_synthetic_integrity_passed": true,
   "separate_empirical_release_approved": true,
-  "development_market_data_execution_authorized": false,
+  "development_market_data_execution_authorized": true,
   "validation_or_oos_access_authorized": false,
   "strategy_pnl_authorized": false,
   "paper_trading_authorized": false,
   "live_trading_authorized": false,
-  "next_gate": "Prepare, freeze, and independently review the exact Development empirical source adapter/inventory and first empirical execution package before setting development_market_data_execution_authorized=true. Validation/OOS, strategy P&L, paper trading, live trading, and deferred directed cross-asset lag diagnostics remain locked.",
-  "notes": "The frozen V2 numerical method passed calibration and its one-shot synthetic holdout; the deterministic full-pipeline synthetic integrity gate also passed and was independently accepted. Issue #64 independently approved the separate empirical-release review gate at governance head 90380637dcfe91dd5e9c78ec9de88b4f79b4d92f after verifying the production access boundary, source/data provenance, canonical sample/numerical semantics, and the independent two-key separation between release approval and Development execution authorization. This state records separate_empirical_release_approved=true only. Development market-data execution remains false, and the private Development source adapter is still intentionally unconfigured pending a later bounded implementation/freeze/review. No Validation/OOS, P&L, paper, live, or deferred directed lag authority is granted."
+  "next_gate": "Require the independently reviewed Development execution manifest and fixed review anchor, then consume the one-shot claim only through the manual execute workflow. Validation/OOS, strategy P&L, paper trading, live trading, and directed cross-asset lag diagnostics remain locked.",
+  "notes": "The frozen V2 numerical method passed calibration and its one-shot synthetic holdout; the deterministic full-pipeline synthetic integrity gate also passed and was independently accepted. Issue #64 independently approved the separate empirical-release review gate at governance head 90380637dcfe91dd5e9c78ec9de88b4f79b4d92f after verifying the production access boundary, source/data provenance, canonical sample/numerical semantics, and the independent two-key separation between release approval and Development execution authorization. This state records separate_empirical_release_approved=true only. Development market-data execution remains false, and the private Development source adapter is still intentionally unconfigured pending a later bounded implementation/freeze/review. No Validation/OOS, P&L, paper, live, or deferred directed lag authority is granted. Issue #69 approved the exact Development implementation candidate ccd825c92208030adf59d9f383aaa8ae806381db. The fixed review anchor now binds that candidate. This transition opens only the canonical Development market-data execution key; all downstream permissions remain false and the separate execution-manifest key is still required."
 }
