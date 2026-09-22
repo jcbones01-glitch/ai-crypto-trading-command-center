@@ -170,3 +170,36 @@ def test_only_governance_paths_may_change_after_candidate():
         "research/governance/ams_dep_development_execution_manifest_v1.json",
         "research/governance/ams_dep_release_gate_v1.json",
     }
+
+
+def test_exact_frozen_implementation_path_set_is_hard_coded():
+    assert lock.EXPECTED_IMPLEMENTATION_PATHS == {
+        ".github/workflows/ams-dep-development-empirical-v1.yml",
+        "research/scripts/run_ams_dep_development_empirical_v1.py",
+        "src/research_core/ams_dep_development_execution_lock.py",
+        "src/research_core/ams_dep_development_source.py",
+        "src/research_core/ams_dep_empirical_access.py",
+        "tests/test_ams_dep_development_execution_lock.py",
+        "tests/test_ams_dep_development_runner.py",
+        "tests/test_ams_dep_development_source.py",
+        "tests/test_ams_dep_development_workflow.py",
+    }
+
+
+def test_freeze_path_deletion_cannot_reduce_required_set(monkeypatch):
+    registration = lock.load_development_registration()
+    freeze = {
+        "implementation_file_git_blob_sha1": {
+            path: "a" * 40 for path in lock.EXPECTED_IMPLEMENTATION_PATHS
+        },
+        "pinned_upstream_git_blob_sha1":
+            registration["pinned_upstream_git_blob_sha1"],
+    }
+    freeze["implementation_file_git_blob_sha1"].pop(
+        "research/scripts/run_ams_dep_development_empirical_v1.py"
+    )
+    with pytest.raises(
+        lock.DevelopmentExecutionError,
+        match="path set is incomplete or altered",
+    ):
+        lock.verify_frozen_implementation(freeze)
