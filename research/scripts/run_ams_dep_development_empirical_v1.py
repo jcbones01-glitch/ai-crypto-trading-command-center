@@ -52,6 +52,10 @@ EMPIRICAL_SENTINEL = 4294967295
 ASSET_ORDER = ("BTCUSDT", "ETHUSDT")
 HYPOTHESIS_ORDER = ("DEP", "TIME", "STATE")
 INVALID_FRACTION_CEILING = 0.01
+ACCESS_STATE = {
+    "market_data_accessed": False,
+    "development_market_outcomes_accessed": False,
+}
 
 
 def _sha256_file(path: Path) -> str:
@@ -140,6 +144,15 @@ def _unavailable_support_slot() -> dict:
         "invalid_fraction": None,
         "error": "INSUFFICIENT_REGISTERED_SUPPORT",
     }
+
+
+def _inference_validity_fail(slot_results: dict) -> bool:
+    return any(
+        value["available"]
+        and value["invalid_fraction"] is not None
+        and value["invalid_fraction"] > INVALID_FRACTION_CEILING
+        for value in slot_results.values()
+    )
 
 
 def _source_record(result) -> dict:
@@ -266,8 +279,12 @@ def run() -> dict:
     support = {}
     numerical = {}
 
+    ACCESS_STATE["market_data_accessed"] = False
+    ACCESS_STATE["development_market_outcomes_accessed"] = False
     for symbol in ASSET_ORDER:
+        ACCESS_STATE["market_data_accessed"] = True
         source_results[symbol] = load_development_source(symbol)
+        ACCESS_STATE["development_market_outcomes_accessed"] = True
         samples[symbol] = build_primary_sample(
             source_results[symbol].bundle,
             registered_identity=
@@ -300,12 +317,7 @@ def run() -> dict:
     if tuple(raw_p_by_slot) != SLOTS:
         raise RuntimeError("empirical primary family order changed")
 
-    invalidity_fail = any(
-        value["available"]
-        and value["invalid_fraction"] is not None
-        and value["invalid_fraction"] > INVALID_FRACTION_CEILING
-        for value in slot_results.values()
-    )
+    invalidity_fail = _inference_validity_fail(slot_results)
 
     holm = None
     if not invalidity_fail:
@@ -397,12 +409,7 @@ def _write_result(value: dict) -> None:
 
 
 def main() -> None:
-    source_attempted = False
     try:
-        # Marking this before run() is conservative for failure reporting: once
-        # all one-shot preconditions pass, any downstream source-stage failure
-        # must be treated as a consumed incident rather than a silent retry.
-        source_attempted = True
         result = run()
         _write_result(result)
         print(result["classification"])
@@ -419,8 +426,9 @@ def main() -> None:
             "one_shot_claim_sha":
                 os.environ.get("AMS_DEP_DEVELOPMENT_CLAIM_SHA"),
             "protected_access": {
-                "market_data_accessed": source_attempted,
-                "development_market_outcomes_accessed": False,
+                "market_data_accessed": ACCESS_STATE["market_data_accessed"],
+                "development_market_outcomes_accessed":
+                    ACCESS_STATE["development_market_outcomes_accessed"],
                 "validation_or_oos_accessed": False,
                 "strategy_pnl_calculated": False,
                 "paper_trading_authorized": False,
