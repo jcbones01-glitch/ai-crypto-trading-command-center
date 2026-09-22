@@ -26,6 +26,11 @@ DEFAULT_IMPLEMENTATION_FREEZE = (
 )
 DEFAULT_CLAIM_REF = "refs/tags/ams-dep-development-execution-claimed-v1"
 EXACT_CONFIRMATION = "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1"
+ALLOWED_POST_CANDIDATE_PATHS = {
+    "research/governance/ams_dep_development_implementation_freeze_v1.json",
+    "research/governance/ams_dep_development_execution_manifest_v1.json",
+    "research/governance/ams_dep_release_gate_v1.json",
+}
 
 
 class DevelopmentExecutionError(ResearchGateError):
@@ -85,6 +90,41 @@ def verify_frozen_implementation(freeze: dict) -> dict[str, str]:
     return observed
 
 
+def _verify_execution_commit(candidate: str, executing_sha: str) -> tuple[str, ...]:
+    if executing_sha == candidate:
+        return ()
+    try:
+        ancestor = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", candidate, executing_sha],
+            cwd=ROOT,
+            check=False,
+        )
+    except OSError as exc:
+        raise DevelopmentExecutionError("cannot verify execution ancestry") from exc
+    if ancestor.returncode != 0:
+        raise DevelopmentExecutionError(
+            "executing commit is not descended from the reviewed implementation candidate"
+        )
+    try:
+        changed = tuple(
+            value for value in subprocess.check_output(
+                ["git", "diff", "--name-only", candidate, executing_sha],
+                cwd=ROOT,
+                text=True,
+            ).splitlines()
+            if value
+        )
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise DevelopmentExecutionError("cannot verify post-candidate changes") from exc
+    forbidden = sorted(set(changed) - ALLOWED_POST_CANDIDATE_PATHS)
+    if forbidden:
+        raise DevelopmentExecutionError(
+            "result-affecting or unapproved post-candidate path changed: "
+            + ", ".join(forbidden)
+        )
+    return changed
+
+
 def assert_development_execution_allowed(executing_sha: str | None = None) -> dict:
     """Require the main release gate and independently reviewed execution lock."""
     gate = assert_ams_dep_empirical_release_allowed()
@@ -120,8 +160,8 @@ def assert_development_execution_allowed(executing_sha: str | None = None) -> di
 
     if executing_sha is None:
         executing_sha = os.environ.get("GITHUB_SHA")
-    if executing_sha and executing_sha != candidate:
-        missing.append("executing commit equals reviewed candidate")
+    if not executing_sha:
+        missing.append("executing commit SHA")
 
     protected = manifest.get("protected_permissions") or {}
     for field in (
@@ -144,11 +184,13 @@ def assert_development_execution_allowed(executing_sha: str | None = None) -> di
         )
 
     verify_frozen_implementation(freeze)
+    changed = _verify_execution_commit(candidate, executing_sha)
     return {
         "gate": gate,
         "manifest": manifest,
         "freeze": freeze,
         "executing_sha": executing_sha,
+        "post_candidate_changed_paths": list(changed),
     }
 
 
