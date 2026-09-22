@@ -75,4 +75,5 @@ def _load_registered_development_bundle(symbol: str) -> CertifiedDataBundle:
 
 def load_development_bundle(symbol: str) -> CertifiedDataBundle:
     """Compatibility API exposing only symbol and returning a verified bundle."""
+    _authorize_request("development", symbol)
     return _load_registered_development_bundle(symbol)
