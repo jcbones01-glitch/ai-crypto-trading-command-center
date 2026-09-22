@@ -50,6 +50,15 @@ _ALLOWED_SYMBOLS = tuple(PARENT_MANIFEST_IDENTITIES)
 class DevelopmentSourceError(RuntimeError):
     """Raised when the frozen Development source/projection contract fails."""
 
+    def __init__(
+        self,
+        message: str,
+        *,
+        partial_archive_evidence: tuple["ArchiveEvidence", ...] = (),
+    ):
+        super().__init__(message)
+        self.partial_archive_evidence = partial_archive_evidence
+
 
 @dataclass(frozen=True)
 class ArchiveEvidence:
@@ -315,6 +324,17 @@ def acquire_registered_development_source(symbol: str) -> DevelopmentSourceResul
             projection_sha256=projection_sha,
             staging_root=str(root),
         )
-    except Exception:
+    except Exception as exc:
+        partial = tuple(evidence)
         shutil.rmtree(root, ignore_errors=True)
-        raise
+        if isinstance(exc, DevelopmentSourceError):
+            if exc.partial_archive_evidence:
+                raise
+            raise DevelopmentSourceError(
+                str(exc),
+                partial_archive_evidence=partial,
+            ) from exc
+        raise DevelopmentSourceError(
+            f"Development source acquisition failed: {type(exc).__name__}: {exc}",
+            partial_archive_evidence=partial,
+        ) from exc
