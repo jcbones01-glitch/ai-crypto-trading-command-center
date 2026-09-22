@@ -8,7 +8,7 @@
   "specification_path": "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V1.md",
   "registration_path": "research/governance/ams_dep_development_execution_v1.json",
   "implementation_freeze_path": "research/governance/ams_dep_development_implementation_freeze_v1.json",
-  "implementation_candidate_commit": "b0b3a18754596db2b175568f4281f115598c7633",
+  "implementation_candidate_commit": null,
   "reviewed_implementation_commit": null,
   "independent_implementation_reviewed": false,
   "development_execution_authorized": false,
@@ -26,17 +26,7 @@
     "live_trading_authorized": false,
     "directed_cross_asset_lagged_diagnostics_authorized": false
   },
-  "implementation_file_git_blob_sha1": {
-    ".github/workflows/ams-dep-development-empirical-v1.yml": "e02f9eaa0b5ef078b2362cca1124883430b92442",
-    "research/scripts/run_ams_dep_development_empirical_v1.py": "027e22f14ae6ccfa39171fbc21b7803fdf5c0dd9",
-    "src/research_core/ams_dep_development_execution_lock.py": "e563a72364ec11a21efdb41dc4a77c829d685b93",
-    "src/research_core/ams_dep_development_source.py": "5a696689ee85afae562663750ba4bff43c051877",
-    "src/research_core/ams_dep_empirical_access.py": "e85ce6d43fe0c1b21ff0949933e9bef717ec3208",
-    "tests/test_ams_dep_development_execution_lock.py": "c6aaf2c06c75dd15763ec11fc5c95191f0115ae8",
-    "tests/test_ams_dep_development_runner.py": "21d1cb395015120fc2bd916a7a08ba17e46ac196",
-    "tests/test_ams_dep_development_source.py": "f01d55a96d734d98a61b4f55f7cda616c36c7610",
-    "tests/test_ams_dep_development_workflow.py": "369126c76eac94a6f802229afe8185ed8077f955"
-  },
-  "notes": "Remediation in progress after Issue #69 REQUIRE_CHANGES. Execution remains locked: status=DRAFT_LOCKED, reviewed_implementation_commit is unset, independent_implementation_reviewed=false, development_execution_authorized=false, first execution is unclaimed/unexecuted, canonical Development market-data authorization remains false, and no empirical BTC/ETH archive has been opened. The fixed review anchor is declared but must not be created until a remediated candidate is independently approved.",
+  "implementation_file_git_blob_sha1": {},
+  "notes": "Issue #69 remediation is complete in implementation code/tests/workflow, but no replacement candidate is yet bound in this manifest. Execution remains locked; canonical Development market-data authorization remains false; the execution claim and review anchor must remain absent until the replacement candidate is independently reviewed.",
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v1"
 }
