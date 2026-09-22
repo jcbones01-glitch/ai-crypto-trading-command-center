@@ -8,7 +8,7 @@
   "specification_path": "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V1.md",
   "registration_path": "research/governance/ams_dep_development_execution_v1.json",
   "implementation_freeze_path": "research/governance/ams_dep_development_implementation_freeze_v1.json",
-  "implementation_candidate_commit": null,
+  "implementation_candidate_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
   "reviewed_implementation_commit": null,
   "independent_implementation_reviewed": false,
   "development_execution_authorized": false,
@@ -26,7 +26,18 @@
     "live_trading_authorized": false,
     "directed_cross_asset_lagged_diagnostics_authorized": false
   },
-  "implementation_file_git_blob_sha1": {},
-  "notes": "Issue #69 remediation is complete in implementation code/tests/workflow, but no replacement candidate is yet bound in this manifest. Execution remains locked; canonical Development market-data authorization remains false; the execution claim and review anchor must remain absent until the replacement candidate is independently reviewed.",
+  "implementation_file_git_blob_sha1": {
+    ".github/workflows/ams-dep-development-empirical-v1.yml": "19366972f33121c4b057885b6e423b94c2422814",
+    "research/scripts/run_ams_dep_development_empirical_v1.py": "0adbe9a7bfd1b67a8e998ae1b2d4a98511c63de1",
+    "src/research_core/ams_dep_development_execution_lock.py": "f6cfcfa3d30511915ec62411edced46cf588b79a",
+    "src/research_core/ams_dep_development_source.py": "8c6b7cc863b492cb34deff9fed0a54e1689574dc",
+    "src/research_core/ams_dep_empirical_access.py": "8a7f2452ee370bcf202e0751107b7c67c1d0e9c1",
+    "tests/test_ams_dep_development_authorized_preflight.py": "737eb7cae867455e31fefd44c16202a1e063639d",
+    "tests/test_ams_dep_development_execution_lock.py": "e405aeb77b925eec64475aee47a07468e42e3b27",
+    "tests/test_ams_dep_development_runner.py": "47aa3b7f1705006ea1e014c9ccacef05415d546c",
+    "tests/test_ams_dep_development_source.py": "8e88e931c8149d068bb6a224fa801d736d381f38",
+    "tests/test_ams_dep_development_workflow.py": "8be53ce2ba96d497f6dcf9ce3f91297e889f6033"
+  },
+  "notes": "Remediated candidate ccd825c92208030adf59d9f383aaa8ae806381db is frozen for independent re-review after exact-candidate offline-only CI run 35780130412 passed 45 dedicated tests. Execution remains locked: reviewed_implementation_commit is unset, independent_implementation_reviewed=false, development_execution_authorized=false, canonical Development market-data authorization remains false, and neither the review anchor nor execution claim has been created.",
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v1"
 }
