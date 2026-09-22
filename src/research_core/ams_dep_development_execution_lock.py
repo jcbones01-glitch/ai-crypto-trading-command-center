@@ -24,12 +24,26 @@ DEFAULT_EXECUTION_MANIFEST = (
 DEFAULT_IMPLEMENTATION_FREEZE = (
     ROOT / "research/governance/ams_dep_development_implementation_freeze_v1.json"
 )
+DEFAULT_REGISTRATION = (
+    ROOT / "research/governance/ams_dep_development_execution_v1.json"
+)
 DEFAULT_CLAIM_REF = "refs/tags/ams-dep-development-execution-claimed-v1"
 EXACT_CONFIRMATION = "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1"
 ALLOWED_POST_CANDIDATE_PATHS = {
     "research/governance/ams_dep_development_implementation_freeze_v1.json",
     "research/governance/ams_dep_development_execution_manifest_v1.json",
     "research/governance/ams_dep_release_gate_v1.json",
+}
+EXPECTED_IMPLEMENTATION_PATHS = {
+    ".github/workflows/ams-dep-development-empirical-v1.yml",
+    "research/scripts/run_ams_dep_development_empirical_v1.py",
+    "src/research_core/ams_dep_development_execution_lock.py",
+    "src/research_core/ams_dep_development_source.py",
+    "src/research_core/ams_dep_empirical_access.py",
+    "tests/test_ams_dep_development_execution_lock.py",
+    "tests/test_ams_dep_development_runner.py",
+    "tests/test_ams_dep_development_source.py",
+    "tests/test_ams_dep_development_workflow.py",
 }
 
 
@@ -63,6 +77,14 @@ def load_development_implementation_freeze() -> dict:
     )
 
 
+def load_development_registration() -> dict:
+    return _load_json(
+        DEFAULT_REGISTRATION,
+        "registration_id",
+        "AMS-DEP-DEVELOPMENT-EMPIRICAL-EXECUTION-V1",
+    )
+
+
 def _git_blob(relative: str) -> str:
     try:
         return subprocess.check_output(
@@ -76,8 +98,24 @@ def _git_blob(relative: str) -> str:
 
 def verify_frozen_implementation(freeze: dict) -> dict[str, str]:
     mapping = freeze.get("implementation_file_git_blob_sha1") or {}
-    if not mapping:
-        raise DevelopmentExecutionError("implementation freeze has no blob map")
+    if set(mapping) != EXPECTED_IMPLEMENTATION_PATHS:
+        raise DevelopmentExecutionError(
+            "implementation freeze path set is incomplete or altered"
+        )
+
+    registration = load_development_registration()
+    approved_upstream = registration.get("pinned_upstream_git_blob_sha1") or {}
+    frozen_upstream = freeze.get("pinned_upstream_git_blob_sha1") or {}
+    if not approved_upstream or frozen_upstream != approved_upstream:
+        raise DevelopmentExecutionError(
+            "frozen upstream pin map differs from approved registration"
+        )
+
+    spec_path = registration.get("specification_path")
+    spec_blob = registration.get("specification_git_blob_sha1")
+    if not spec_path or _git_blob(spec_path) != spec_blob:
+        raise DevelopmentExecutionError("approved Development specification blob mismatch")
+
     observed: dict[str, str] = {}
     for relative, expected in mapping.items():
         path = ROOT / relative
@@ -87,6 +125,13 @@ def verify_frozen_implementation(freeze: dict) -> dict[str, str]:
         observed[relative] = actual
         if actual != expected:
             raise DevelopmentExecutionError(f"frozen implementation blob mismatch: {relative}")
+
+    for relative, expected in approved_upstream.items():
+        path = ROOT / relative
+        if not path.exists():
+            raise DevelopmentExecutionError(f"missing frozen upstream path: {relative}")
+        if _git_blob(relative) != expected:
+            raise DevelopmentExecutionError(f"frozen upstream blob mismatch: {relative}")
     return observed
 
 
