@@ -55,9 +55,11 @@ class DevelopmentSourceError(RuntimeError):
         message: str,
         *,
         partial_archive_evidence: tuple["ArchiveEvidence", ...] = (),
+        network_source_access_attempted: bool = False,
     ):
         super().__init__(message)
         self.partial_archive_evidence = partial_archive_evidence
+        self.network_source_access_attempted = network_source_access_attempted
 
 
 @dataclass(frozen=True)
@@ -280,11 +282,13 @@ def acquire_registered_development_source(symbol: str) -> DevelopmentSourceResul
 
     evidence: list[ArchiveEvidence] = []
     paths: list[Path] = []
+    network_source_access_attempted = False
     try:
         for year, month in development_months():
             url = _fixed_official_url(symbol, year, month)
             filename = Path(urlparse(url).path).name
             destination = symbol_root / filename
+            network_source_access_attempted = True
             checksum = download_archive(url, destination, verify_checksum=True)
             if checksum is None:
                 raise DevelopmentSourceError("official checksum evidence is required")
@@ -333,8 +337,10 @@ def acquire_registered_development_source(symbol: str) -> DevelopmentSourceResul
             raise DevelopmentSourceError(
                 str(exc),
                 partial_archive_evidence=partial,
+                network_source_access_attempted=network_source_access_attempted,
             ) from exc
         raise DevelopmentSourceError(
             f"Development source acquisition failed: {type(exc).__name__}: {exc}",
             partial_archive_evidence=partial,
+            network_source_access_attempted=network_source_access_attempted,
         ) from exc
