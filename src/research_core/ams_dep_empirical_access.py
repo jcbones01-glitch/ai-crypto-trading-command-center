@@ -22,6 +22,15 @@ from .release_gate import assert_ams_dep_empirical_release_allowed
 class EmpiricalAccessError(RuntimeError):
     """Protected empirical access is unavailable or invalid."""
 
+    def __init__(
+        self,
+        message: str,
+        *,
+        partial_archive_evidence: tuple = (),
+    ):
+        super().__init__(message)
+        self.partial_archive_evidence = partial_archive_evidence
+
 
 def _assert_canonical_empirical_release() -> dict:
     # Deliberately no path argument: production always reads DEFAULT_GATE.
@@ -50,7 +59,12 @@ def load_development_source(symbol: str) -> DevelopmentSourceResult:
     except Exception as exc:
         if isinstance(exc, EmpiricalAccessError):
             raise
-        raise EmpiricalAccessError(f"Development source adapter failed: {exc}") from exc
+        raise EmpiricalAccessError(
+            f"Development source adapter failed: {exc}",
+            partial_archive_evidence=tuple(
+                getattr(exc, "partial_archive_evidence", ())
+            ),
+        ) from exc
     if result.symbol != symbol or result.bundle.symbol != symbol:
         raise EmpiricalAccessError("returned Development source symbol mismatch")
     try:
