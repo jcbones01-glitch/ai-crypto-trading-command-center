@@ -1,0 +1,111 @@
+name: AMS-DEP Full Pipeline Implementation
+
+on:
+  pull_request:
+    paths:
+      - 'src/research_core/ams_dep_pipeline.py'
+      - 'src/research_core/ams_dep_empirical_access.py'
+      - 'research/scripts/run_ams_dep_empirical.py'
+      - 'research/scripts/run_ams_dep_full_pipeline_integrity.py'
+      - 'tests/test_ams_dep_full_pipeline_integrity.py'
+      - 'tests/test_ams_dep_empirical_firewall.py'
+      - 'tests/test_ams_dep_full_pipeline_runner.py'
+      - 'research/governance/ams_dep_full_pipeline_integrity_v1.json'
+      - 'research/governance/ams_dep_full_pipeline_implementation_freeze_v1.json'
+      - '.github/workflows/ams-dep-full-pipeline-integrity.yml'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type FULL_PIPELINE_SYNTHETIC_INTEGRITY to run the independently frozen certification'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  implementation-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[dev]'
+      - name: Verify approved existing production blobs
+        run: |
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          registration = json.loads(
+              Path('research/governance/ams_dep_full_pipeline_integrity_v1.json').read_text()
+          )
+          for path, expected in registration['pinned_existing_production_git_blob_sha1'].items():
+              actual = subprocess.check_output(
+                  ['git', 'hash-object', '--', path], text=True
+              ).strip()
+              assert actual == expected, (path, actual, expected)
+          print('FULL_PIPELINE_EXISTING_BLOBS_UNCHANGED')
+          PY
+      - name: Run implementation, firewall, runner-lock, and release tests
+        run: |
+          python -m pytest -q \
+            tests/test_ams_dep_full_pipeline_integrity.py \
+            tests/test_ams_dep_empirical_firewall.py \
+            tests/test_ams_dep_full_pipeline_runner.py \
+            tests/test_ams_dep_release_gate.py
+      - name: Confirm empirical machine gate remains locked
+        run: |
+          python - <<'PY'
+          from research_core.release_gate import (
+              ResearchGateError,
+              assert_ams_dep_empirical_release_allowed,
+          )
+          try:
+              assert_ams_dep_empirical_release_allowed()
+          except ResearchGateError as exc:
+              print('EMPIRICAL_GATE_LOCK_CONFIRMED', exc)
+          else:
+              raise SystemExit('empirical gate unexpectedly open')
+          PY
+
+
+  certification:
+    if: github.event_name == 'workflow_dispatch'
+    needs: implementation-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - name: Require explicit certification confirmation
+        run: |
+          test "${{ inputs.confirmation }}" = "FULL_PIPELINE_SYNTHETIC_INTEGRITY"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[dev]'
+      - name: Run independently frozen deterministic certification
+        run: |
+          python research/scripts/run_ams_dep_full_pipeline_integrity.py \
+            --output research/experiments/ams_dep_full_pipeline_integrity_v1.json
+      - name: Upload certification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ams-dep-full-pipeline-integrity-v1
+          path: research/experiments/ams_dep_full_pipeline_integrity_v1.json
+          if-no-files-found: error
+          retention-days: 90
