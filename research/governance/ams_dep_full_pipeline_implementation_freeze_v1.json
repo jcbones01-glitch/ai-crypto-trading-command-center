@@ -1,19 +1,19 @@
 {
   "freeze_id": "AMS-DEP-FULL-PIPELINE-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "DRAFT_LOCKED",
+  "status": "AUTHORIZED_FOR_FIRST_CERTIFICATION",
   "approved_spec_merge_commit": "e19b36e764dc5b17b5e148f0d233928fe74f7436",
   "approved_spec_review_issue": 59,
   "implementation_pr": 60,
   "implementation_candidate_commit": "d1d26881b8123914ea196557d9f8000bcac70a1f",
-  "reviewed_implementation_commit": null,
-  "independent_implementation_reviewed": false,
-  "certification_execution_authorized": false,
+  "reviewed_implementation_commit": "d1d26881b8123914ea196557d9f8000bcac70a1f",
+  "independent_implementation_reviewed": true,
+  "certification_execution_authorized": true,
   "first_certification_executed": false,
   "implementation_preflight": {
-    "full_pipeline_implementation_run_id": 35652797412,
+    "full_pipeline_implementation_run_id": 35652958344,
     "full_pipeline_implementation_conclusion": "success",
-    "release_gate_run_id": 35652797221,
+    "release_gate_run_id": 35652958485,
     "release_gate_conclusion": "success",
     "certification_job_conclusion": "skipped"
   },
@@ -60,5 +60,5 @@
     "file_git_blob_sha1": "must remain byte-identical to reviewed implementation",
     "pinned_existing_production_git_blob_sha1": "must remain byte-identical to approved specification"
   },
-  "notes": "Draft implementation freeze for Issue #61 remediation candidate d1d26881b8123914ea196557d9f8000bcac70a1f. The certification lock now requires the independent-review flag, exact reviewed-candidate equality, reviewed-candidate ancestry, the exact complete frozen implementation path set, candidate-tree and executing-tree blob equality, and exact equality of the approved existing-production pin map. Runner-lock tests are executed in CI and adversarially test each authorization condition. FP-11 now semantically verifies identity chains, inventories, 15 support cells, join/digest evidence, numerical digests, exact SLOTS/unavailability behavior, protected access flags, and expected/observed blob equality. Certification remains fail-closed while status is DRAFT_LOCKED, reviewed_implementation_commit is null, independent_implementation_reviewed is false, or certification_execution_authorized is false. No empirical data, protected outcomes, calibration/holdout seeds, P&L, paper trading, or live trading are authorized."
+  "notes": "Governance-only authorization after independent Issue #61 approval. Reviewed implementation commit equals frozen candidate d1d26881b8123914ea196557d9f8000bcac70a1f. All 12 implementation pins and the approved ten-production-file pin map remain unchanged. Authorization is limited to the first deterministic synthetic full-pipeline certification. Empirical BTC/ETH access, Development outcomes, Validation/OOS, strategy P&L, paper/live trading, calibration/holdout seeds, and deferred 1/6/24-hour lagged diagnostics remain unauthorized."
 }
