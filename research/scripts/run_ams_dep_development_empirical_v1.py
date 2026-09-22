@@ -62,12 +62,31 @@ INVALID_FRACTION_CEILING = 0.01
 INCIDENT_STATE: dict = {}
 
 
+def _ambient_execution_context() -> dict:
+    return {
+        "executing_commit": os.environ.get("GITHUB_SHA"),
+        "workflow_event": os.environ.get("GITHUB_EVENT_NAME"),
+        "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
+        "workflow_run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+        "workflow_job": os.environ.get("GITHUB_JOB"),
+        "workflow_job_id_where_available": os.environ.get("GITHUB_JOB_ID"),
+        "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1",
+        "confirmation_verified":
+            os.environ.get("AMS_DEP_DEVELOPMENT_CONFIRMATION_VERIFIED") == "true",
+        "forwarded_claim_ref":
+            os.environ.get("AMS_DEP_DEVELOPMENT_CLAIM_REF"),
+        "forwarded_claim_sha":
+            os.environ.get("AMS_DEP_DEVELOPMENT_CLAIM_SHA"),
+        "durable_claim_verified_against_github": False,
+    }
+
+
 def _reset_incident_state() -> None:
     INCIDENT_STATE.clear()
     INCIDENT_STATE.update(
         {
             "stage": "PRE_AUTHORITY",
-            "execution_provenance": None,
+            "execution_provenance": _ambient_execution_context(),
             "source_provenance": {},
             "sample_provenance": {},
             "numerical_provenance": {},
@@ -279,25 +298,37 @@ def _implementation_blob_evidence(freeze: dict) -> dict:
     }
 
 
+def _provisional_execution_provenance(authority: dict) -> dict:
+    manifest = authority["manifest"]
+    anchor = authority["review_anchor"]
+    value = _ambient_execution_context()
+    value.update(
+        {
+            "executing_commit": authority["executing_sha"],
+            "implementation_candidate_commit":
+                manifest["implementation_candidate_commit"],
+            "independently_reviewed_implementation_commit":
+                manifest["reviewed_implementation_commit"],
+            "reviewed_commit_equals_candidate":
+                manifest["reviewed_implementation_commit"]
+                == manifest["implementation_candidate_commit"],
+            "review_anchor_ref": anchor["ref"],
+            "review_anchor_sha": anchor["sha"],
+            "review_anchor_matches_candidate":
+                anchor["sha"] == manifest["implementation_candidate_commit"],
+            "post_candidate_changed_paths":
+                list(authority["post_candidate_changed_paths"]),
+        }
+    )
+    return value
+
+
 def _execution_provenance(authority: dict, claim: dict) -> dict:
     manifest = authority["manifest"]
     freeze = authority["freeze"]
     anchor = authority["review_anchor"]
-    return {
-        "executing_commit": authority["executing_sha"],
-        "implementation_candidate_commit":
-            manifest["implementation_candidate_commit"],
-        "independently_reviewed_implementation_commit":
-            manifest["reviewed_implementation_commit"],
-        "reviewed_commit_equals_candidate":
-            manifest["reviewed_implementation_commit"]
-            == manifest["implementation_candidate_commit"],
-        "review_anchor_ref": anchor["ref"],
-        "review_anchor_sha": anchor["sha"],
-        "review_anchor_matches_candidate":
-            anchor["sha"] == manifest["implementation_candidate_commit"],
-        "post_candidate_changed_paths":
-            list(authority["post_candidate_changed_paths"]),
+    value = _provisional_execution_provenance(authority)
+    value.update({
         "release_gate_sha256": _sha256_file(Path(DEFAULT_GATE)),
         "development_execution_manifest_sha256":
             _sha256_file(Path(DEFAULT_EXECUTION_MANIFEST)),
@@ -316,19 +347,12 @@ def _execution_provenance(authority: dict, claim: dict) -> dict:
             "omp_num_threads": os.environ.get("OMP_NUM_THREADS"),
             "mkl_num_threads": os.environ.get("MKL_NUM_THREADS"),
         },
-        "workflow_event": os.environ.get("GITHUB_EVENT_NAME"),
-        "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
-        "workflow_run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
-        "workflow_job": os.environ.get("GITHUB_JOB"),
-        "workflow_job_id_where_available": os.environ.get("GITHUB_JOB_ID"),
-        "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1",
-        "confirmation_verified":
-            os.environ.get("AMS_DEP_DEVELOPMENT_CONFIRMATION_VERIFIED") == "true",
         "one_shot_claim_ref": claim["ref"],
         "one_shot_claim_sha": claim["sha"],
         "durable_claim_verified_against_github": True,
         "claim_created_before_source_access": True,
-    }
+    })
+    return value
 
 
 def _base_protected_access() -> dict:
@@ -369,6 +393,10 @@ def run() -> dict:
     # review anchor, and durable one-shot claim have all been verified.
     assert_ams_dep_empirical_release_allowed()
     authority = assert_development_execution_allowed()
+    INCIDENT_STATE["execution_provenance"] = _provisional_execution_provenance(
+        authority
+    )
+    INCIDENT_STATE["stage"] = "DURABLE_CLAIM_VERIFICATION"
     claim = assert_claim_environment(authority["executing_sha"])
     INCIDENT_STATE["execution_provenance"] = _execution_provenance(
         authority,
@@ -383,16 +411,20 @@ def run() -> dict:
 
     for symbol in ASSET_ORDER:
         INCIDENT_STATE["stage"] = f"SOURCE_{symbol}"
-        INCIDENT_STATE["market_data_accessed"] = True
         try:
             source_results[symbol] = load_development_source(symbol)
         except Exception as exc:
+            INCIDENT_STATE["market_data_accessed"] = bool(
+                INCIDENT_STATE["market_data_accessed"]
+                or getattr(exc, "network_source_access_attempted", False)
+            )
             INCIDENT_STATE["source_provenance"][symbol] = _partial_source_record(
                 symbol,
                 exc,
             )
             raise
 
+        INCIDENT_STATE["market_data_accessed"] = True
         INCIDENT_STATE["development_market_outcomes_accessed"] = True
         INCIDENT_STATE["source_provenance"][symbol] = _source_record(
             source_results[symbol]
