@@ -1,7 +1,7 @@
 {
   "manifest_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V1",
   "version": 1,
-  "status": "AUTHORIZED_FOR_FIRST_DEVELOPMENT_EXECUTION",
+  "status": "FIRST_DEVELOPMENT_EXECUTION_INCIDENT_LOCKED",
   "approved_spec_review_issue": 67,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC",
   "approved_spec_merge_commit": "c15d4089f0ec2cf3cffece88cd6903f93ba6997b",
@@ -11,9 +11,9 @@
   "implementation_candidate_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
   "reviewed_implementation_commit": "ccd825c92208030adf59d9f383aaa8ae806381db",
   "independent_implementation_reviewed": true,
-  "development_execution_authorized": true,
-  "first_empirical_execution_claimed": false,
-  "first_empirical_execution_executed": false,
+  "development_execution_authorized": false,
+  "first_empirical_execution_claimed": true,
+  "first_empirical_execution_executed": true,
   "one_shot_claim_ref": "refs/tags/ams-dep-development-execution-claimed-v1",
   "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1",
   "workflow_trigger": "workflow_dispatch_only",
@@ -38,10 +38,18 @@
     "tests/test_ams_dep_development_source.py": "8e88e931c8149d068bb6a224fa801d736d381f38",
     "tests/test_ams_dep_development_workflow.py": "8be53ce2ba96d497f6dcf9ce3f91297e889f6033"
   },
-  "notes": "Issue #70 independently approved reopening the same two Development execution keys against the unchanged reviewed candidate ccd825c92208030adf59d9f383aaa8ae806381db and fixed review anchor. The one-shot claim remains absent/unconsumed and must be created only by the manual execute workflow. Validation/OOS, strategy P&L, paper trading, live trading, and directed lag diagnostics remain locked.",
+  "notes": "The V1 one-shot execution opportunity is consumed. Run 35834431025 successfully created the durable execution claim at head 969f6aeadda4143b0882b8e9169e3f6dd9c177ed, then failed during SOURCE_BTCUSDT before primary sample or inference with: 1-hour kline timestamp must be on an exact UTC hour boundary. All 53 BTC Development archives were checksum-verified; ETH was not reached. No Validation/OOS, P&L, paper/live trading, or inference result was produced. V1 must not be rerun; independent incident review is required for any recovery/version decision.",
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v1",
   "independent_review_issue": 69,
   "independent_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_IMPLEMENTATION_FREEZE",
   "execution_authorization_review_issue": 70,
-  "execution_authorization_review_decision": "APPROVE_DEVELOPMENT_EXECUTION_AUTHORIZATION"
+  "execution_authorization_review_decision": "APPROVE_DEVELOPMENT_EXECUTION_AUTHORIZATION",
+  "first_empirical_execution_run_id": 35834431025,
+  "first_empirical_execution_run_attempt": 1,
+  "first_empirical_execution_head": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
+  "first_empirical_execution_result": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1_INTEGRITY_FAIL",
+  "first_empirical_execution_failure_stage": "SOURCE_BTCUSDT",
+  "first_empirical_execution_artifact_id": 10738551310,
+  "first_empirical_execution_artifact_zip_sha256": "b947d8a9d73dd05da0455ad8c1fb7ab845f4a187ff56ec99856b385fc0e403c7",
+  "first_empirical_execution_result_json_sha256": "19f53015e725526b8baa8da89fec5cdbf58d7e6f9a1985fcc626309ab0e2cca7"
 }
