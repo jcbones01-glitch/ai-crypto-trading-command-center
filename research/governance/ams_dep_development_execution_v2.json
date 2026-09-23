@@ -6,7 +6,7 @@
   "parent_incident_review_issue": 71,
   "parent_incident_review_decision": "APPROVE_INCIDENT_CLASSIFICATION_AND_PROSPECTIVE_V2_RECOVERY",
   "specification_path": "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V2.md",
-  "specification_git_blob_sha1": "67d0faa19f2c2fb0019c7f1d2e01a62f9d78ed8a",
+  "specification_git_blob_sha1": "9e3a5291276afb626582d8ee57a7277036853b60",
   "empirical_execution_now_authorized": false,
   "parent_v1_incident": {
     "reviewed_candidate": "ccd825c92208030adf59d9f383aaa8ae806381db",
@@ -120,7 +120,19 @@
     "rejected_raw_row_rule": "one or more row-level scanner events, all localized, all frozen event IDs present in manifest, and in-Development events linked to covering Development treatment/exclusion",
     "unlocalized_nonchecksum_event_behavior": "HARD_FAIL",
     "accepted_row_normalizer_exception_behavior": "HARD_FAIL_SCANNER_NORMALIZER_MISMATCH",
-    "broader_exclusion_region_valid_row_drop_allowed": false
+    "broader_exclusion_region_valid_row_drop_allowed": false,
+    "event_physical_row_identity": {
+      "event_source_scope": "ArchiveQualityReport from the exact current archive only",
+      "required_matches": [
+        "event symbol == current symbol",
+        "event archive == current archive filename",
+        "event member == current ZIP member",
+        "event row == current physical CSV row number",
+        "event raw timestamp == current row raw timestamp when event raw timestamp is present"
+      ],
+      "row_number_alone_sufficient": false,
+      "cross_archive_row_number_collision_behavior": "HARD_FAIL_IF_EVENT_SOURCE_IDENTITY_DOES_NOT_MATCH_CURRENT_ARCHIVE_MEMBER_ROW"
+    }
   },
   "raw_row_accounting": {
     "per_archive_equation": "raw_data_rows = normalized_accepted_raw_rows + explicitly_rejected_raw_rows",
@@ -153,7 +165,53 @@
       "rejected_raw_row_records_sha256"
     ],
     "aggregate_counts_and_digests_required": true,
-    "undocumented_row_disappearance_allowed": false
+    "undocumented_row_disappearance_allowed": false,
+    "key_sequence_canonicalization": {
+      "order": "physical nonblank CSV row order exactly as encountered by frozen scanner",
+      "accepted_sequence_order": "filter accepted keys from physical order without resorting",
+      "encoding_expression": "json.dumps(sequence, ensure_ascii=True, separators=(\",\", \":\")).encode(\"ascii\")",
+      "empty_sequence_bytes": "[]",
+      "trailing_newline": false,
+      "external_prefix_suffix": false,
+      "digest": "sha256"
+    },
+    "rejected_record_sequence_canonicalization": {
+      "order": "physical nonblank CSV row order",
+      "record_key_order": "sort_keys=True",
+      "encoding_expression": "json.dumps(records, sort_keys=True, ensure_ascii=True, separators=(\",\", \":\")).encode(\"ascii\")",
+      "empty_sequence_bytes": "[]",
+      "trailing_newline": false,
+      "external_prefix_suffix": false,
+      "digest": "sha256"
+    },
+    "asset_aggregate_canonicalization": {
+      "domain": "AMS_DEP_DEVELOPMENT_V2_RAW_ROW_ACCOUNTING",
+      "version": 2,
+      "kinds": [
+        "ALL_RAW_KEYS",
+        "ACCEPTED_RAW_KEYS",
+        "REJECTED_RAW_RECORDS"
+      ],
+      "archive_order": "exact registered 53-month filename order from 2017-08 through 2021-12",
+      "include_zero_count_archives": true,
+      "archive_record_fields": [
+        "filename",
+        "digest",
+        "count"
+      ],
+      "record_fields": [
+        "domain",
+        "version",
+        "symbol",
+        "kind",
+        "archives"
+      ],
+      "encoding_expression": "json.dumps(record, sort_keys=True, ensure_ascii=True, separators=(\",\", \":\")).encode(\"ascii\")",
+      "trailing_newline": false,
+      "external_prefix_suffix": false,
+      "digest": "sha256",
+      "concatenate_child_hex_digests_directly": false
+    }
   },
   "identity_model": {
     "development_projection_version": "ams-dep-development-projection-v2",
@@ -220,7 +278,27 @@
     "pre_review_executed": false,
     "independent_spec_review_required": true,
     "independent_implementation_review_required": true,
-    "separate_execution_authorization_required": true
+    "separate_execution_authorization_required": true,
+    "review_anchor": {
+      "ref": "refs/heads/ams-dep-development-implementation-reviewed-v2",
+      "absent_before_independent_implementation_approval": true,
+      "created_only_after_exact_candidate_approval": true,
+      "target": "exact independently approved V2 implementation candidate",
+      "normal_authorization_may_delete": false,
+      "normal_authorization_may_recreate": false,
+      "normal_authorization_may_force_update": false,
+      "normal_authorization_may_repoint": false,
+      "required_in_execution_manifest": true,
+      "required_in_implementation_freeze": true,
+      "runtime_must_query_live_github_ref": true,
+      "runtime_equalities": [
+        "live anchor target == V2 freeze implementation candidate",
+        "live anchor target == V2 manifest implementation candidate",
+        "live anchor target == independently reviewed implementation commit"
+      ],
+      "missing_wrong_deleted_repointed_behavior": "HARD_FAIL_BEFORE_V2_CLAIM_OR_SOURCE_ACCESS",
+      "mutable_governance_rebinding_without_anchor_match_allowed": false
+    }
   },
   "inherited_scientific_contract": {
     "v1_specification_blob": "d1d87806933e409ed6155ad4a1b2a5e10a07a346",
@@ -259,7 +337,11 @@
     "no_undocumented_row_disappearance": true,
     "certified_segment_exact_hour_grid": true,
     "v1_claim_cannot_satisfy_v2": true,
-    "no_pr_push_claim_or_source_access": true
+    "no_pr_push_claim_or_source_access": true,
+    "v2_reviewed_candidate_rebind_attack": true,
+    "cross_archive_physical_row_collision": true,
+    "digest_canonicalization_determinism": true,
+    "multiple_events_one_physical_row_counts_once": true
   },
   "artifact_provenance_additions": [
     "parent_v1_run_artifact_claim_and_hashes",
@@ -320,5 +402,8 @@
     "src/research_core/dependent_wild_bootstrap_v2.py",
     "src/research_core/release_gate.py",
     "pyproject.toml"
-  ]
+  ],
+  "revision": 2,
+  "prior_spec_review_issue": 73,
+  "prior_spec_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_IMPLEMENTATION"
 }
