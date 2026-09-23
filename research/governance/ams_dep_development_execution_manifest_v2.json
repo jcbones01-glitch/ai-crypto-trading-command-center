@@ -43,7 +43,7 @@
     "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
     "consumed": true
   },
-  "notes": "V2 implementation candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d is independently approved and externally anchored. Separate execution authorization has not been granted. V2 claim is absent, canonical Development market-data execution remains false, and Validation/OOS/P&L/paper/live/directed-lag permissions remain closed.",
+  "notes": "Replacement V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d is independently approved by Issue #75 and bound by refs/heads/ams-dep-development-implementation-reviewed-v2 at the exact candidate. Execution remains separately locked: development_execution_authorized=false, canonical Development market-data authorization remains false, V2 claim is absent, and all Validation/OOS/P&L/paper/live/directed-lag permissions remain false. A separate execution-authorization review is required before opening either Development execution key.",
   "superseded_implementation_candidate_commit": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "superseded_review_issue": 75,
   "superseded_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
