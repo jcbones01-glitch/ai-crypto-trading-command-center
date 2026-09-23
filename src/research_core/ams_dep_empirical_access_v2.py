@@ -23,10 +23,16 @@ class EmpiricalAccessV2Error(RuntimeError):
         *,
         partial_archive_evidence: tuple = (),
         network_source_access_attempted: bool = False,
+        progressive_normalization_evidence: dict | None = None,
     ):
         super().__init__(message)
         self.partial_archive_evidence = partial_archive_evidence
         self.network_source_access_attempted = network_source_access_attempted
+        self.progressive_normalization_evidence = (
+            None
+            if progressive_normalization_evidence is None
+            else dict(progressive_normalization_evidence)
+        )
 
 
 def _assert_canonical_empirical_release() -> dict:
@@ -66,6 +72,9 @@ def load_development_source(symbol: str) -> DevelopmentSourceV2Result:
             network_source_access_attempted=bool(
                 getattr(exc, "network_source_access_attempted", False)
             ),
+            progressive_normalization_evidence=getattr(
+                exc, "progressive_normalization_evidence", None
+            ),
         ) from exc
     if result.symbol != symbol or result.bundle.symbol != symbol:
         raise EmpiricalAccessV2Error(
@@ -78,7 +87,18 @@ def load_development_source(symbol: str) -> DevelopmentSourceV2Result:
         )
     except PipelineIntegrityError as exc:
         raise EmpiricalAccessV2Error(
-            f"returned Development V2 bundle failed canonical integrity: {exc}"
+            f"returned Development V2 bundle failed canonical integrity: {exc}",
+            partial_archive_evidence=result.archive_evidence,
+            network_source_access_attempted=True,
+            progressive_normalization_evidence={
+                "evidence_status": "COMPLETE_NORMALIZATION_ACCOUNTING",
+                "failure_code": "EMPIRICAL_ACCESS_CANONICAL_VERIFY_FAIL",
+                "failure_stage": "EMPIRICAL_ACCESS_CANONICAL_VERIFY",
+                "completed_archive_accounting": list(result.row_accounting),
+                "completed_archive_count": len(result.row_accounting),
+                "aggregate_accounting":
+                    dict(result.aggregate_row_accounting),
+            },
         ) from exc
     return result
 
