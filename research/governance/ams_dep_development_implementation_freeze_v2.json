@@ -7,13 +7,13 @@
   "approved_spec_merge_commit": "14e15d3a4d542392128bc95f5f1bd67cd7d0d10d",
   "implementation_pr": 74,
   "implementation_candidate_commit": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
-  "reviewed_implementation_commit": null,
+  "reviewed_implementation_commit": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
   "independent_review_required": true,
-  "independent_implementation_reviewed": false,
+  "independent_implementation_reviewed": true,
   "execution_authorized": false,
   "one_shot_claim_created": false,
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v2",
-  "review_anchor_created": false,
+  "review_anchor_created": true,
   "implementation_file_git_blob_sha1": {
     ".github/workflows/ams-dep-development-empirical-v2.yml": "ae81c9e584e3cc98ed51f3bd7b619b1425d57b0e",
     "research/scripts/run_ams_dep_development_empirical_v2.py": "48f8f3beac5e4791ebdaf77bee7f4fa4f3959675",
@@ -77,11 +77,15 @@
     "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
     "consumed": true
   },
-  "notes": "Replacement V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d frozen after exact-candidate offline run 35907343410 passed 58 dedicated tests. Remediation preserves progressive post-claim normalization/source evidence without changing scientific/statistical rules. V2 execution remains unauthorized; review anchor and V2 claim remain absent.",
+  "notes": "Replacement V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d is independently approved and bound by the immutable V2 review anchor. Execution remains unauthorized; V2 claim remains absent; Development market-data authorization remains false; all downstream permissions remain closed.",
   "superseded_implementation_candidate_commit": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "superseded_review_issue": 75,
   "superseded_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
   "supersedes_rejected_candidate": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "prior_review_issue": 75,
-  "prior_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION"
+  "prior_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
+  "review_anchor_sha": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
+  "independent_review_issue": 75,
+  "independent_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_IMPLEMENTATION_FREEZE",
+  "independent_review_comment_id": 5801286827
 }
