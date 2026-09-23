@@ -5,7 +5,7 @@
   "approved_spec_review_issue": 73,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_RECOVERY_SPEC",
   "approved_spec_merge_commit": "14e15d3a4d542392128bc95f5f1bd67cd7d0d10d",
-  "implementation_candidate_commit": null,
+  "implementation_candidate_commit": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "reviewed_implementation_commit": null,
   "independent_implementation_reviewed": false,
   "development_execution_authorized": false,
@@ -15,7 +15,20 @@
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v2",
   "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V2",
   "empirical_bootstrap_root": 2026092201,
-  "implementation_file_git_blob_sha1": {},
+  "implementation_file_git_blob_sha1": {
+    ".github/workflows/ams-dep-development-empirical-v2.yml": "ae81c9e584e3cc98ed51f3bd7b619b1425d57b0e",
+    "research/scripts/run_ams_dep_development_empirical_v2.py": "2d5157a5717b054cc4897919a54e8c79aa15bb81",
+    "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "9351b225015aecf0938cee2980be341a0771926b",
+    "src/research_core/ams_dep_development_source_v2.py": "b553d858dfeb68bf01758c37df427abdfbf76bed",
+    "src/research_core/ams_dep_empirical_access_v2.py": "f494bff251c69ef12098d61331e8c9e09a5dfc1d",
+    "src/research_core/ams_dep_development_execution_lock_v2.py": "a06685c7c55df8a165960bc7df32a6857cd211a6",
+    "tests/test_ams_dep_development_v2_authorized_preflight.py": "7f1bc70dd89c9827385e5fb7b035417bfbaef110",
+    "tests/test_ams_dep_development_v2_execution_lock.py": "0d93d8d591716001fe8caca192ddb78f449a3779",
+    "tests/test_ams_dep_development_v2_normalization.py": "0796c5e7b923ba9385b50bc593697c6d540493e9",
+    "tests/test_ams_dep_development_v2_runner.py": "4823bb4072a1877ca9be045551f3d7e88dab3ac3",
+    "tests/test_ams_dep_development_v2_source.py": "33582e50987242de1b395a8939cf701610ddb6b2",
+    "tests/test_ams_dep_development_v2_workflow.py": "e3b22f78a194ec1d76598a5da630aa3c7fb40e76"
+  },
   "protected_permissions": {
     "validation_or_oos_access_authorized": false,
     "strategy_pnl_authorized": false,
@@ -30,5 +43,5 @@
     "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
     "consumed": true
   },
-  "notes": "V2 implementation is under construction after approved specification review. Execution remains locked; V2 review anchor and V2 claim must remain absent; no V2 empirical source access is authorized."
+  "notes": "Exact V2 candidate db7a7e7608af93df89c5b1ca364551039a9d9cbc is frozen for independent implementation review after offline-only run 35848299882 passed 52 dedicated tests. V2 execution remains locked; reviewed commit is unset, independent review=false, execution authorization=false, V2 review anchor absent, V2 claim absent, and no V2 empirical source access has occurred."
 }
