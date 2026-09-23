@@ -77,7 +77,7 @@
     "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
     "consumed": true
   },
-  "notes": "Replacement V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d is independently approved and bound by the immutable V2 review anchor. Execution remains unauthorized; V2 claim remains absent; Development market-data authorization remains false; all downstream permissions remain closed.",
+  "notes": "Replacement V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d is independently approved and immutably bound by the live V2 review anchor at the exact candidate. Freeze remains execution-unauthorized; the V2 one-shot claim is absent, canonical Development market-data authorization is false, and protected downstream scopes remain closed. Any result-affecting change invalidates this approval.",
   "superseded_implementation_candidate_commit": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "superseded_review_issue": 75,
   "superseded_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
