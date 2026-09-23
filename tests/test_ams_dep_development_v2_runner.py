@@ -7,6 +7,8 @@ from types import SimpleNamespace
 
 import numpy as np
 
+from research_core.ams_dep_development_source_v2 import ArchiveEvidenceV2
+
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "research/scripts/run_ams_dep_development_empirical_v2.py"
 
@@ -138,7 +140,7 @@ def test_v2_runner_has_no_user_controlled_empirical_parameters():
 
 def test_v2_partial_source_record_retains_progressive_row_evidence():
     mod = load_runner()
-    evidence = SimpleNamespace(
+    evidence = ArchiveEvidenceV2(
         symbol="BTCUSDT",
         year=2017,
         month=8,
