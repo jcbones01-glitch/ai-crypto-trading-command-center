@@ -1,12 +1,12 @@
 {
   "freeze_id": "AMS-DEP-DEVELOPMENT-IMPLEMENTATION-FREEZE-V2",
   "version": 2,
-  "status": "REMEDIATION_IN_PROGRESS_UNFROZEN",
+  "status": "FROZEN_FOR_INDEPENDENT_REVIEW",
   "approved_spec_review_issue": 73,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_RECOVERY_SPEC",
   "approved_spec_merge_commit": "14e15d3a4d542392128bc95f5f1bd67cd7d0d10d",
   "implementation_pr": 74,
-  "implementation_candidate_commit": null,
+  "implementation_candidate_commit": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
   "reviewed_implementation_commit": null,
   "independent_review_required": true,
   "independent_implementation_reviewed": false,
@@ -14,7 +14,20 @@
   "one_shot_claim_created": false,
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v2",
   "review_anchor_created": false,
-  "implementation_file_git_blob_sha1": {},
+  "implementation_file_git_blob_sha1": {
+    ".github/workflows/ams-dep-development-empirical-v2.yml": "ae81c9e584e3cc98ed51f3bd7b619b1425d57b0e",
+    "research/scripts/run_ams_dep_development_empirical_v2.py": "48f8f3beac5e4791ebdaf77bee7f4fa4f3959675",
+    "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
+    "src/research_core/ams_dep_development_source_v2.py": "a107c6cffca23540d79d880d5fa0ce781168b0f7",
+    "src/research_core/ams_dep_empirical_access_v2.py": "9850c7a48832fd589aa28435a7f8569b1a511e71",
+    "src/research_core/ams_dep_development_execution_lock_v2.py": "a06685c7c55df8a165960bc7df32a6857cd211a6",
+    "tests/test_ams_dep_development_v2_authorized_preflight.py": "7f1bc70dd89c9827385e5fb7b035417bfbaef110",
+    "tests/test_ams_dep_development_v2_execution_lock.py": "0d93d8d591716001fe8caca192ddb78f449a3779",
+    "tests/test_ams_dep_development_v2_normalization.py": "76266766f21a06b7a129b9682505b58a8de2a009",
+    "tests/test_ams_dep_development_v2_runner.py": "c223682aa0112780fbf0ba3e4a17fdc815c831ac",
+    "tests/test_ams_dep_development_v2_source.py": "d85050f15b3415f2b586fa467bc900752fa5c794",
+    "tests/test_ams_dep_development_v2_workflow.py": "e3b22f78a194ec1d76598a5da630aa3c7fb40e76"
+  },
   "pinned_upstream_git_blob_sha1": {
     "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V1.md": "d1d87806933e409ed6155ad4a1b2a5e10a07a346",
     "research/governance/ams_dep_development_execution_v1.json": "242373518fe136a0a632a1cd0bf26d78a56df19a",
@@ -37,7 +50,18 @@
     "research/governance/ams_dep_development_execution_manifest_v2.json",
     "research/governance/ams_dep_release_gate_v1.json"
   ],
-  "candidate_evidence": null,
+  "candidate_evidence": {
+    "exact_candidate_offline_review_run_id": 35907343410,
+    "exact_candidate_offline_review_run_attempt": 1,
+    "exact_candidate_offline_review_event": "workflow_dispatch",
+    "exact_candidate_offline_review_branch": "ams-dep-development-v2-candidate-v2",
+    "exact_candidate_offline_review_head": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
+    "exact_candidate_offline_review_conclusion": "success",
+    "exact_candidate_offline_tests_passed": 58,
+    "exact_candidate_preflight_job": "skipped",
+    "exact_candidate_execute_job": "skipped",
+    "exact_candidate_offline_marker": "AMS_DEP_DEVELOPMENT_V2_OFFLINE_REVIEW_PASS"
+  },
   "protected_access": {
     "v2_market_data_execution_authorized": false,
     "validation_or_oos_access_authorized": false,
@@ -53,8 +77,11 @@
     "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
     "consumed": true
   },
-  "notes": "Issue #75 rejected the first V2 implementation candidate on progressive post-claim incident provenance only. Freeze is explicitly invalidated/unfrozen while a replacement candidate is prepared. No V2 review anchor or V2 claim exists and all empirical/downstream permissions remain closed.",
+  "notes": "Replacement V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d frozen after exact-candidate offline run 35907343410 passed 58 dedicated tests. Remediation preserves progressive post-claim normalization/source evidence without changing scientific/statistical rules. V2 execution remains unauthorized; review anchor and V2 claim remain absent.",
   "superseded_implementation_candidate_commit": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "superseded_review_issue": 75,
-  "superseded_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION"
+  "superseded_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
+  "supersedes_rejected_candidate": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
+  "prior_review_issue": 75,
+  "prior_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION"
 }
