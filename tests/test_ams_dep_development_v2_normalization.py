@@ -199,7 +199,7 @@ def test_mismatched_event_archive_identity_hard_fails(tmp_path):
     path = _write_zip(
         tmp_path,
         "BTCUSDT-1h-2017-08.zip",
-        [_row(_ts(0)), _row(_ts(1))],
+        [_row(_ts(0))],
     )
     bad = DataQualityEvent(
         symbol="BTCUSDT",
@@ -239,7 +239,7 @@ def test_multiple_events_one_physical_row_counts_once(tmp_path):
     path = _write_zip(
         tmp_path,
         "BTCUSDT-1h-2017-08.zip",
-        [_row(_ts(0))],
+        [_row(_ts(0)), _row(_ts(1))],
     )
     member = "BTCUSDT-1h-2017-08.csv"
     parsed = datetime(2017, 8, 17, 0, tzinfo=timezone.utc).isoformat()
