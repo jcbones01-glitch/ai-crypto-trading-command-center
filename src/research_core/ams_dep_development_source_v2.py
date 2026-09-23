@@ -23,7 +23,9 @@ from .ams_dep_pipeline import (
     verify_certified_bundle,
 )
 from .ams_dep_treatment_aware_normalization_v2 import (
+    TreatmentAwareNormalizationError,
     TreatmentAwareNormalizationResult,
+    complete_normalization_evidence,
     normalize_development_archives,
 )
 from .data_ingestion import (
@@ -64,10 +66,16 @@ class DevelopmentSourceV2Error(RuntimeError):
         *,
         partial_archive_evidence: tuple["ArchiveEvidenceV2", ...] = (),
         network_source_access_attempted: bool = False,
+        progressive_normalization_evidence: dict | None = None,
     ):
         super().__init__(message)
         self.partial_archive_evidence = partial_archive_evidence
         self.network_source_access_attempted = network_source_access_attempted
+        self.progressive_normalization_evidence = (
+            None
+            if progressive_normalization_evidence is None
+            else dict(progressive_normalization_evidence)
+        )
 
 
 @dataclass(frozen=True)
@@ -242,12 +250,19 @@ def _build_treatment_aware_bundle(
         )
     manifest = bind_source_identity(manifest, list(ordered))
 
-    normalized = normalize_development_archives(
-        symbol,
-        ordered,
-        reports,
-        manifest,
-    )
+    try:
+        normalized = normalize_development_archives(
+            symbol,
+            ordered,
+            reports,
+            manifest,
+        )
+    except TreatmentAwareNormalizationError as exc:
+        raise DevelopmentSourceV2Error(
+            f"V2 treatment-aware normalization failed: {exc}",
+            progressive_normalization_evidence=exc.incident_evidence(),
+        ) from exc
+
     raw_identity = source_identity(list(ordered))
     metadata = make_metadata(
         list(normalized.bars),
@@ -269,7 +284,12 @@ def _build_treatment_aware_bundle(
         )
     except PipelineIntegrityError as exc:
         raise DevelopmentSourceV2Error(
-            f"V2 treatment-aware bundle failed canonical verification: {exc}"
+            f"V2 treatment-aware bundle failed canonical verification: {exc}",
+            progressive_normalization_evidence={
+                **complete_normalization_evidence(normalized),
+                "failure_code": "CANONICAL_BUNDLE_VERIFICATION_FAIL",
+                "failure_stage": "CANONICAL_BUNDLE_VERIFICATION",
+            },
         ) from exc
     return bundle, normalized
 
@@ -496,11 +516,26 @@ def acquire_registered_development_source_v2(
             symbol,
             tuple(paths),
         )
-        projection, projection_sha = build_development_projection_v2(
-            bundle,
-            tuple(evidence),
-            normalized,
-        )
+        try:
+            projection, projection_sha = build_development_projection_v2(
+                bundle,
+                tuple(evidence),
+                normalized,
+            )
+        except DevelopmentSourceV2Error as exc:
+            if exc.progressive_normalization_evidence is None:
+                raise DevelopmentSourceV2Error(
+                    str(exc),
+                    partial_archive_evidence=tuple(evidence),
+                    network_source_access_attempted=
+                        network_source_access_attempted,
+                    progressive_normalization_evidence={
+                        **complete_normalization_evidence(normalized),
+                        "failure_code": "DEVELOPMENT_PROJECTION_V2_FAIL",
+                        "failure_stage": "DEVELOPMENT_PROJECTION_V2",
+                    },
+                ) from exc
+            raise
         return DevelopmentSourceV2Result(
             symbol=symbol,
             bundle=bundle,
@@ -519,13 +554,22 @@ def acquire_registered_development_source_v2(
         partial = tuple(evidence)
         shutil.rmtree(root, ignore_errors=True)
         if isinstance(exc, DevelopmentSourceV2Error):
-            if exc.partial_archive_evidence:
+            if (
+                exc.partial_archive_evidence
+                and exc.network_source_access_attempted
+            ):
                 raise
             raise DevelopmentSourceV2Error(
                 str(exc),
-                partial_archive_evidence=partial,
-                network_source_access_attempted=
-                    network_source_access_attempted,
+                partial_archive_evidence=(
+                    exc.partial_archive_evidence or partial
+                ),
+                network_source_access_attempted=bool(
+                    exc.network_source_access_attempted
+                    or network_source_access_attempted
+                ),
+                progressive_normalization_evidence=
+                    exc.progressive_normalization_evidence,
             ) from exc
         raise DevelopmentSourceV2Error(
             f"Development V2 source acquisition failed: "
@@ -533,4 +577,7 @@ def acquire_registered_development_source_v2(
             partial_archive_evidence=partial,
             network_source_access_attempted=
                 network_source_access_attempted,
+            progressive_normalization_evidence=getattr(
+                exc, "progressive_normalization_evidence", None
+            ),
         ) from exc
