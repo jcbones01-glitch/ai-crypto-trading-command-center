@@ -126,7 +126,15 @@ For each expected archive:
 6. if any non-checksum event has `parsed_timestamp is None`, hard-fail the asset as unlocalized/`UNUSABLE`;
 7. open each archive and enumerate the same physical CSV row numbers used by `scan_archive`;
 8. skip blank rows exactly as the scanner does; every remaining row is a `raw_data_row`;
-9. obtain all scanner events whose `event.row` equals that physical row number.
+9. obtain row-level scanner events **only from the `ArchiveQualityReport` produced for that exact archive**;
+10. an event matches a physical row only when all available identity fields agree:
+    - event symbol equals the current symbol;
+    - event archive equals the current archive filename;
+    - event member equals the current ZIP member;
+    - event row equals the current physical CSV row number;
+    - when the event contains a raw timestamp, that raw timestamp equals the current row's raw timestamp.
+
+Row number alone is never a sufficient identity because physical row numbers restart in every archive. An event from one archive/member must never reject a row in another archive/member merely because the row numbers are equal.
 
 ### 6.1 Accepted raw row
 
@@ -140,7 +148,7 @@ If `normalize_row` now raises any exception, V2 must hard-fail with a scanner/no
 
 A raw row with one or more scanner events is rejected from normalized-bar construction only if all of the following hold:
 
-- every event is tied to that exact physical row number;
+- every event matches the exact physical-row identity defined above: symbol, archive, member, physical row number, and raw timestamp where applicable;
 - every event has a non-null `parsed_timestamp`;
 - every event's frozen `event_id(event)` exists in the manifest anomaly-ID set;
 - for any event whose canonical affected hour lies inside Development, that event ID is referenced by the Development treatment/exclusion state covering that affected hour.
@@ -160,7 +168,7 @@ V2 hard-fails rather than dropping data when any of these occur:
 
 - unlocalized non-checksum scanner event;
 - archive/member schema error that cannot be localized;
-- scanner event/row-number mismatch;
+- scanner event/physical-row identity mismatch, including symbol/archive/member/row/raw-timestamp mismatch;
 - scanner anomaly ID missing from the manifest;
 - in-Development localized row event not linked to the corresponding treatment/exclusion state;
 - accepted row that fails strict `normalize_row`;
@@ -197,6 +205,21 @@ Raw-row key canonical text is:
 
 `{archive}|{member}|{physical_row_number}|{raw_timestamp}`.
 
+### 7.1 Frozen digest canonicalization
+
+All new V2 row-accounting SHA-256 identities use one exact byte contract.
+
+For a **per-archive key sequence**:
+
+1. preserve physical nonblank CSV row order exactly as encountered by the frozen scanner;
+2. build the sequence of raw-row key strings in that order;
+3. for the accepted digest, retain only accepted keys **without re-sorting**;
+4. canonical bytes are exactly:
+   `json.dumps(sequence, ensure_ascii=True, separators=(",", ":")).encode("ascii")`;
+5. no trailing newline, prefix, suffix, delimiter outside the JSON encoding, or platform-native line ending is permitted;
+6. the empty sequence is exactly the two ASCII bytes `[]`;
+7. digest = SHA-256 of those exact bytes.
+
 Rejected raw-row canonical record contains exactly:
 
 - symbol;
@@ -208,7 +231,46 @@ Rejected raw-row canonical record contains exactly:
 - sorted frozen anomaly IDs;
 - sorted anomaly types.
 
-Canonical rejected-record digest input is compact sorted-key ASCII JSON for the ordered record list.
+For the **per-archive rejected-record digest**:
+
+1. order records by physical nonblank CSV row order;
+2. keys within each record are serialized with `sort_keys=True`;
+3. list bytes are exactly:
+   `json.dumps(records, sort_keys=True, ensure_ascii=True, separators=(",", ":")).encode("ascii")`;
+4. the empty record list is exactly `[]`;
+5. no trailing newline or external framing is permitted;
+6. digest = SHA-256 of those exact bytes.
+
+For each **asset aggregate digest**, do not hash a concatenation of child hex digests. Construct an explicit domain-separated canonical record:
+
+```
+{
+  "domain": "AMS_DEP_DEVELOPMENT_V2_RAW_ROW_ACCOUNTING",
+  "version": 2,
+  "symbol": SYMBOL,
+  "kind": KIND,
+  "archives": [
+    {
+      "filename": FILENAME,
+      "digest": PER_ARCHIVE_DIGEST,
+      "count": PER_ARCHIVE_COUNT
+    },
+    ...
+  ]
+}
+```
+
+where:
+
+- `KIND` is exactly one of `ALL_RAW_KEYS`, `ACCEPTED_RAW_KEYS`, `REJECTED_RAW_RECORDS`;
+- archive entries are in the exact registered 53-month filename order, 2017-08 through 2021-12;
+- no archive may be omitted, even when its count is zero;
+- canonical aggregate bytes are exactly:
+  `json.dumps(record, sort_keys=True, ensure_ascii=True, separators=(",", ":")).encode("ascii")`;
+- no trailing newline or external framing is permitted;
+- digest = SHA-256 of those exact bytes.
+
+Equivalent logical inputs presented through different dictionary/container iteration orders must therefore produce the same registered digest.
 
 Also emit asset aggregates:
 
@@ -216,7 +278,7 @@ Also emit asset aggregates:
 - total normalized accepted raw rows;
 - total explicitly rejected raw rows;
 - exact equality;
-- aggregate all/accepted/rejected digests.
+- aggregate all/accepted/rejected digests computed exactly as above.
 
 No undocumented row may disappear.
 
@@ -324,6 +386,29 @@ Before V2 implementation review:
 
 Independent V2 implementation review and a separate governance authorization are required before V2 execute mode.
 
+### 12.1 Immutable V2 reviewed-candidate anchor
+
+V2 prospectively requires a distinct external reviewed-candidate binding:
+
+`refs/heads/ams-dep-development-implementation-reviewed-v2`.
+
+Lifecycle:
+
+1. the V2 review-anchor ref must be **absent** while implementation is being developed, frozen, or awaiting independent implementation review;
+2. after—and only after—an independent reviewer approves the exact V2 implementation candidate, governance may create the fixed ref once at exactly that approved candidate SHA;
+3. the normal authorization transition must never delete, recreate, force-update, move, or repoint this ref;
+4. V2 implementation freeze and V2 execution manifest must both contain the exact anchor-ref string;
+5. before authorization/source access, the V2 runtime execution lock must query the actual GitHub ref and require its live target to equal:
+   - the implementation candidate in the V2 freeze;
+   - the implementation candidate in the V2 execution manifest;
+   - the independently reviewed implementation commit;
+6. candidate/freeze/manifest equality without the live external anchor is insufficient;
+7. missing, deleted, wrong-target, or repointed V2 anchor hard-fails before V2 claim creation or source access.
+
+A later descendant may not change result-affecting implementation and then rebind mutable V2 governance JSON to redefine the reviewed candidate. If the live anchor remains on the actually reviewed candidate, such rebinding must fail authorization.
+
+Any legitimate need to change the reviewed V2 implementation requires a new prospective candidate, another independent implementation review, and a separately versioned/approved anchor transition; the existing reviewed-candidate binding may not be silently rewritten.
+
 ## 13. V2 artifact requirements
 
 In addition to all inherited V1 artifact/provenance fields, V2 must include:
@@ -369,7 +454,11 @@ Synthetic ZIP fixtures must cover at minimum:
 15. caller cannot override source URL/root/months/checksum/symbol/timeframe;
 16. V1 claim cannot satisfy V2 execution;
 17. V2 claim cannot be created by PR/push CI;
-18. no Validation/OOS/P&L/trading path is introduced.
+18. no Validation/OOS/P&L/trading path is introduced;
+19. **V2 reviewed-candidate rebind attack**: mutable V2 manifest/freeze are rebound to another candidate while `refs/heads/ams-dep-development-implementation-reviewed-v2` remains on the independently reviewed candidate; authorization must fail before claim/source access;
+20. **cross-archive physical-row collision**: two synthetic archives contain the same physical row number but only one archive/member has an anomaly; the event from archive A must never reject archive B's row;
+21. **digest canonicalization determinism**: equivalent key/record inputs supplied through different dictionary/container iteration orders must produce byte-identical registered per-archive and asset-aggregate digests;
+22. **multiple events on one physical row**: two or more localized scanner events on one exact physical row must yield one rejected raw-row count with all sorted event IDs/types bound into its single canonical rejected record.
 
 The test design must exercise the generalized treatment-aware contract, not only the exact V1 exception string.
 
