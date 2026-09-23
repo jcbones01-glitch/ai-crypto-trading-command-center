@@ -1,14 +1,14 @@
 {
   "manifest_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V2",
   "version": 2,
-  "status": "IMPLEMENTATION_APPROVED_EXECUTION_LOCKED",
+  "status": "AUTHORIZED_FOR_FIRST_DEVELOPMENT_V2_EXECUTION",
   "approved_spec_review_issue": 73,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_RECOVERY_SPEC",
   "approved_spec_merge_commit": "14e15d3a4d542392128bc95f5f1bd67cd7d0d10d",
   "implementation_candidate_commit": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
   "reviewed_implementation_commit": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
   "independent_implementation_reviewed": true,
-  "development_execution_authorized": false,
+  "development_execution_authorized": true,
   "first_empirical_execution_claimed": false,
   "first_empirical_execution_executed": false,
   "one_shot_claim_ref": "refs/tags/ams-dep-development-execution-claimed-v2",
@@ -43,7 +43,7 @@
     "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
     "consumed": true
   },
-  "notes": "Replacement V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d is independently approved by Issue #75 and bound by refs/heads/ams-dep-development-implementation-reviewed-v2 at the exact candidate. Execution remains separately locked: development_execution_authorized=false, canonical Development market-data authorization remains false, V2 claim is absent, and all Validation/OOS/P&L/paper/live/directed-lag permissions remain false. A separate execution-authorization review is required before opening either Development execution key.",
+  "notes": "Issue #77 approved the governance-only two-key authorization for the independently reviewed V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d. This manifest is now authorized for the first Development V2 execution, while the V2 one-shot claim remains absent and first execution remains false. The V2 review anchor remains fixed at the reviewed candidate. Validation/OOS, strategy P&L, paper/live trading, and directed-lag diagnostics remain false. Authorization alone does not consume the one-shot opportunity; the later explicit execute workflow must pass preflight and atomically create the durable V2 claim before any source access.",
   "superseded_implementation_candidate_commit": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "superseded_review_issue": 75,
   "superseded_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
@@ -53,5 +53,8 @@
   "review_anchor_sha": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
   "independent_review_issue": 75,
   "independent_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_IMPLEMENTATION_FREEZE",
-  "independent_review_comment_id": 5801286827
+  "independent_review_comment_id": 5801286827,
+  "execution_authorization_review_issue": 77,
+  "execution_authorization_review_decision": "APPROVE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
+  "execution_authorization_review_comment_id": 5801450640
 }
