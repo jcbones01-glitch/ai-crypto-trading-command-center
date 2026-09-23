@@ -1,0 +1,34 @@
+{
+  "manifest_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V2",
+  "version": 2,
+  "status": "DRAFT_LOCKED",
+  "approved_spec_review_issue": 73,
+  "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_RECOVERY_SPEC",
+  "approved_spec_merge_commit": "14e15d3a4d542392128bc95f5f1bd67cd7d0d10d",
+  "implementation_candidate_commit": null,
+  "reviewed_implementation_commit": null,
+  "independent_implementation_reviewed": false,
+  "development_execution_authorized": false,
+  "first_empirical_execution_claimed": false,
+  "first_empirical_execution_executed": false,
+  "one_shot_claim_ref": "refs/tags/ams-dep-development-execution-claimed-v2",
+  "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v2",
+  "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V2",
+  "empirical_bootstrap_root": 2026092201,
+  "implementation_file_git_blob_sha1": {},
+  "protected_permissions": {
+    "validation_or_oos_access_authorized": false,
+    "strategy_pnl_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "directed_cross_asset_lagged_diagnostics_authorized": false
+  },
+  "parent_v1_incident": {
+    "run_id": 35834431025,
+    "artifact_id": 10738551310,
+    "claim_ref": "refs/tags/ams-dep-development-execution-claimed-v1",
+    "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
+    "consumed": true
+  },
+  "notes": "V2 implementation is under construction after approved specification review. Execution remains locked; V2 review anchor and V2 claim must remain absent; no V2 empirical source access is authorized."
+}
