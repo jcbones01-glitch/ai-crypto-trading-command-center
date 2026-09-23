@@ -265,11 +265,15 @@ def _source_record(result) -> dict:
 
 def _partial_source_record(symbol: str, exc: Exception) -> dict:
     evidence = tuple(getattr(exc, "partial_archive_evidence", ()))
+    progressive = getattr(
+        exc, "progressive_normalization_evidence", None
+    )
     return {
         "status": "PARTIAL_SOURCE_FAILURE",
         "symbol": symbol,
         "completed_archive_count": len(evidence),
         "archive_evidence": [asdict(value) for value in evidence],
+        "progressive_normalization_evidence": progressive,
     }
 
 
