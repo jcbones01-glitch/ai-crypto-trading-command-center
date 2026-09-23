@@ -1,0 +1,169 @@
+name: AMS-DEP Development Empirical V1
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'offline_review runs only frozen offline tests; execute consumes the one-shot opportunity after authorization'
+        required: true
+        default: offline_review
+        type: choice
+        options:
+          - offline_review
+          - execute
+      confirmation:
+        description: 'For execute mode only, type AMS_DEP_DEVELOPMENT_EMPIRICAL_V1'
+        required: false
+        type: string
+
+concurrency:
+  group: ams-dep-development-empirical-v1
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - name: Checkout exact workflow commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up frozen Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+
+      - name: Install development dependencies
+        run: python -m pip install -e '.[dev]'
+
+      - name: Run state-agnostic Development implementation tests
+        run: |
+          python -m pytest -q \
+            tests/test_ams_dep_development_authorized_preflight.py \
+            tests/test_ams_dep_development_source.py \
+            tests/test_ams_dep_development_execution_lock.py \
+            tests/test_ams_dep_development_runner.py \
+            tests/test_ams_dep_development_workflow.py
+
+      - name: Confirm offline-review mode cannot consume claim or source
+        if: inputs.mode == 'offline_review'
+        run: |
+          echo "AMS_DEP_DEVELOPMENT_OFFLINE_REVIEW_PASS"
+          echo "No execution preflight, claim creation, empirical seed, or source adapter is invoked in offline_review mode."
+
+  preflight:
+    if: inputs.mode == 'execute'
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      claim_ref: ${{ steps.claim.outputs.claim_ref }}
+      claim_sha: ${{ steps.claim.outputs.claim_sha }}
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - name: Require exact Development confirmation
+        run: |
+          test "${{ inputs.confirmation }}" = "AMS_DEP_DEVELOPMENT_EMPIRICAL_V1"
+
+      - name: Checkout exact execution commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up frozen Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+
+      - name: Install development dependencies
+        run: python -m pip install -e '.[dev]'
+
+      - name: Verify reviewed anchor, frozen authority, and absence of claim
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python -m research_core.ams_dep_development_execution_lock preflight \
+            --repository "$GITHUB_REPOSITORY" \
+            --sha "$GITHUB_SHA" \
+            --confirmation "${{ inputs.confirmation }}"
+
+      - name: Atomically create durable Development execution claim
+        id: claim
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python -m research_core.ams_dep_development_execution_lock claim \
+            --repository "$GITHUB_REPOSITORY" \
+            --sha "$GITHUB_SHA" \
+            --confirmation "${{ inputs.confirmation }}" \
+            --github-output "$GITHUB_OUTPUT"
+
+  execute:
+    if: inputs.mode == 'execute'
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    permissions:
+      contents: read
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      GITHUB_TOKEN: ${{ github.token }}
+      AMS_DEP_DEVELOPMENT_CLAIM_REF: ${{ needs.preflight.outputs.claim_ref }}
+      AMS_DEP_DEVELOPMENT_CLAIM_SHA: ${{ needs.preflight.outputs.claim_sha }}
+      AMS_DEP_DEVELOPMENT_CONFIRMATION_VERIFIED: 'true'
+    steps:
+      - name: Checkout exact claimed commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up frozen Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+
+      - name: Install frozen research dependencies
+        run: python -m pip install -e '.[research]'
+
+      - name: Reverify review anchor, execution lock, and durable GitHub claim
+        run: |
+          python - <<'PY'
+          from research_core.ams_dep_development_execution_lock import (
+              assert_claim_environment,
+              assert_development_execution_allowed,
+          )
+          authority = assert_development_execution_allowed()
+          claim = assert_claim_environment(authority['executing_sha'])
+          print('AMS_DEP_DEVELOPMENT_AUTHORITY_REVERIFIED')
+          print('REVIEW_ANCHOR', authority['review_anchor']['ref'], authority['review_anchor']['sha'])
+          print('CLAIM_REF', claim['ref'])
+          print('CLAIM_SHA', claim['sha'])
+          PY
+
+      - name: Run first frozen Development empirical execution
+        run: python research/scripts/run_ams_dep_development_empirical_v1.py
+
+      - name: Upload Development empirical evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ams-dep-development-empirical-v1
+          path: research/experiments/ams_dep_development_empirical_v1/
+          if-no-files-found: error
+          retention-days: 90
