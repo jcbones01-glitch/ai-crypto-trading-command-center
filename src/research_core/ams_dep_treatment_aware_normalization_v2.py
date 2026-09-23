@@ -363,17 +363,37 @@ def _row_events(
             or event.archive != archive_name
             or event.member != member
         ):
+            ids, types, parsed = _event_evidence((event,))
             raise TreatmentAwareNormalizationError(
                 "scanner event physical-row identity mismatch",
                 failure_code="SCANNER_EVENT_PHYSICAL_ROW_IDENTITY_MISMATCH",
+                failing_row={
+                    "archive": archive_name,
+                    "member": member,
+                    "physical_row_number": row_number,
+                    "raw_timestamp": raw_timestamp,
+                },
+                anomaly_ids=ids,
+                anomaly_types=types,
+                parsed_timestamps=parsed,
             )
         if (
             event.raw_timestamp is not None
             and event.raw_timestamp != raw_timestamp
         ):
+            ids, types, parsed = _event_evidence((event,))
             raise TreatmentAwareNormalizationError(
                 "scanner event raw-timestamp mismatch",
                 failure_code="SCANNER_EVENT_RAW_TIMESTAMP_MISMATCH",
+                failing_row={
+                    "archive": archive_name,
+                    "member": member,
+                    "physical_row_number": row_number,
+                    "raw_timestamp": raw_timestamp,
+                },
+                anomaly_ids=ids,
+                anomaly_types=types,
+                parsed_timestamps=parsed,
             )
         matches.append(event)
     return tuple(matches)
@@ -398,18 +418,48 @@ def _validate_report_scope(
     ]
     if manifest_unusable:
         ids, types, parsed = _event_evidence(manifest_unusable)
+        first_row_event = next(
+            (event for event in manifest_unusable if event.row is not None),
+            None,
+        )
+        failing_row = (
+            {
+                "archive": path.name,
+                "member": member,
+                "physical_row_number": first_row_event.row,
+                "raw_timestamp": first_row_event.raw_timestamp,
+            }
+            if first_row_event is not None
+            else None
+        )
         raise TreatmentAwareNormalizationError(
             "unlocalized scanner event makes source unusable",
             failure_code="UNLOCALIZED_SCANNER_EVENT",
+            failing_row=failing_row,
             anomaly_ids=ids,
             anomaly_types=types,
             parsed_timestamps=parsed,
         )
     for event in report.events:
         if event.member is not None and event.member != member:
+            ids, types, parsed = _event_evidence((event,))
+            failing_row = (
+                {
+                    "archive": path.name,
+                    "member": member,
+                    "physical_row_number": event.row,
+                    "raw_timestamp": event.raw_timestamp,
+                }
+                if event.row is not None
+                else None
+            )
             raise TreatmentAwareNormalizationError(
                 "scanner event member mismatch",
                 failure_code="SCANNER_EVENT_MEMBER_MISMATCH",
+                failing_row=failing_row,
+                anomaly_ids=ids,
+                anomaly_types=types,
+                parsed_timestamps=parsed,
             )
 
 
