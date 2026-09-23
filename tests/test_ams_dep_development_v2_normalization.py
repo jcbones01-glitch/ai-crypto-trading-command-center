@@ -7,6 +7,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
 
+import research_core.ams_dep_treatment_aware_normalization_v2 as norm
 from research_core.ams_dep_treatment_aware_normalization_v2 import (
     TreatmentAwareNormalizationError,
     asset_aggregate_sha256,
@@ -313,3 +314,107 @@ def test_archive_order_is_part_of_aggregate_identity():
     ) != asset_aggregate_sha256(
         "BTCUSDT", "ALL_RAW_KEYS", list(reversed(first))
     )
+
+
+def test_completed_archive_accounting_survives_later_archive_failure(tmp_path):
+    first = _write_zip(
+        tmp_path,
+        "BTCUSDT-1h-2017-08.zip",
+        [_row(_ts(0)), _row(_ts(1))],
+    )
+    second = _write_zip(
+        tmp_path,
+        "BTCUSDT-1h-2017-09.zip",
+        [_row(_ts(2, 28))],
+    )
+    r1 = scan_archive(first, "BTCUSDT", checksum_verified=True)
+    r2_real = scan_archive(second, "BTCUSDT", checksum_verified=True)
+    manifest = _manifest("BTCUSDT", [r1, r2_real])
+    # Remove the known row-level event only from the normalization input,
+    # forcing a scanner/normalizer mismatch in archive 2.
+    r2_lied = ArchiveQualityReport(
+        symbol=r2_real.symbol,
+        archive=r2_real.archive,
+        rows_processed=r2_real.rows_processed,
+        events=(),
+        checksum_verified=r2_real.checksum_verified,
+        valid_timestamps=r2_real.valid_timestamps,
+    )
+    with pytest.raises(TreatmentAwareNormalizationError) as info:
+        normalize_development_archives(
+            "BTCUSDT", [first, second], [r1, r2_lied], manifest
+        )
+    evidence = info.value.incident_evidence()
+    assert evidence["failure_code"] == "SCANNER_NORMALIZER_MISMATCH"
+    assert evidence["completed_archive_count"] == 1
+    completed = evidence["completed_archive_accounting"][0]
+    assert completed["filename"] == first.name
+    assert completed["accounting_equal"] is True
+    current = evidence["current_archive_progress"]
+    assert current["filename"] == second.name
+    assert current["processed_raw_data_rows"] == 1
+    assert current["normalized_accepted_raw_rows"] == 0
+    assert current["explicitly_rejected_raw_rows"] == 0
+    assert current["unresolved_raw_rows"] == 1
+
+
+def test_mid_archive_failure_records_exact_row_and_progress(tmp_path):
+    path = _write_zip(
+        tmp_path,
+        "BTCUSDT-1h-2017-08.zip",
+        [_row(_ts(0)), _row(_ts(1, 28)), _row(_ts(2))],
+    )
+    real = scan_archive(path, "BTCUSDT", checksum_verified=True)
+    manifest = _manifest("BTCUSDT", [real])
+    lied = ArchiveQualityReport(
+        symbol=real.symbol,
+        archive=real.archive,
+        rows_processed=real.rows_processed,
+        events=(),
+        checksum_verified=real.checksum_verified,
+        valid_timestamps=real.valid_timestamps,
+    )
+    with pytest.raises(TreatmentAwareNormalizationError) as info:
+        normalize_development_archives(
+            "BTCUSDT", [path], [lied], manifest
+        )
+    evidence = info.value.incident_evidence()
+    assert evidence["failure_code"] == "SCANNER_NORMALIZER_MISMATCH"
+    assert evidence["failing_row"] == {
+        "archive": path.name,
+        "member": "BTCUSDT-1h-2017-08.csv",
+        "physical_row_number": 2,
+        "raw_timestamp": _ts(1, 28),
+    }
+    current = evidence["current_archive_progress"]
+    assert current["processed_raw_data_rows"] == 2
+    assert current["normalized_accepted_raw_rows"] == 1
+    assert current["explicitly_rejected_raw_rows"] == 0
+    assert current["unresolved_raw_rows"] == 1
+
+
+def test_treatment_linkage_failure_retains_anomaly_evidence(
+    monkeypatch, tmp_path
+):
+    path = _write_zip(
+        tmp_path,
+        "BTCUSDT-1h-2017-08.zip",
+        [_row(_ts(0)), _row(_ts(1, 28)), _row(_ts(2))],
+    )
+    report = scan_archive(path, "BTCUSDT", checksum_verified=True)
+    manifest = _manifest("BTCUSDT", [report])
+    monkeypatch.setattr(
+        norm,
+        "_event_linked_to_development_treatment",
+        lambda event, manifest: False,
+    )
+    with pytest.raises(TreatmentAwareNormalizationError) as info:
+        normalize_development_archives(
+            "BTCUSDT", [path], [report], manifest
+        )
+    evidence = info.value.incident_evidence()
+    assert evidence["failure_code"] == "DEVELOPMENT_TREATMENT_LINKAGE_MISSING"
+    assert evidence["failing_row"]["physical_row_number"] == 2
+    assert evidence["anomaly_types"] == ["NON_ALIGNED_TIMESTAMP"]
+    assert len(evidence["anomaly_ids"]) == 1
+    assert evidence["parsed_timestamps"]
