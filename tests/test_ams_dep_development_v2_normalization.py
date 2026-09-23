@@ -199,7 +199,7 @@ def test_mismatched_event_archive_identity_hard_fails(tmp_path):
     path = _write_zip(
         tmp_path,
         "BTCUSDT-1h-2017-08.zip",
-        [_row(_ts(0))],
+        [_row(_ts(0)), _row(_ts(1))],
     )
     bad = DataQualityEvent(
         symbol="BTCUSDT",
@@ -249,9 +249,11 @@ def test_multiple_events_one_physical_row_counts_once(tmp_path):
             timeframe="1h",
             archive=path.name,
             member=member,
-            row=1,
-            raw_timestamp=_ts(0),
-            parsed_timestamp=parsed,
+            row=2,
+            raw_timestamp=_ts(1),
+            parsed_timestamp=datetime(
+                2017, 8, 17, 1, tzinfo=timezone.utc
+            ).isoformat(),
             anomaly_type=kind,
             validation_rule="synthetic",
             severity="ERROR",
@@ -263,10 +265,12 @@ def test_multiple_events_one_physical_row_counts_once(tmp_path):
     report = ArchiveQualityReport(
         symbol="BTCUSDT",
         archive=path.name,
-        rows_processed=1,
+        rows_processed=2,
         events=events,
         checksum_verified=True,
-        valid_timestamps=(),
+        valid_timestamps=(
+            datetime(2017, 8, 17, 0, tzinfo=timezone.utc),
+        ),
     )
     manifest = _manifest("BTCUSDT", [report])
     result = normalize_development_archives(
@@ -275,6 +279,7 @@ def test_multiple_events_one_physical_row_counts_once(tmp_path):
     account = result.archive_accounting[0]
     assert account.explicitly_rejected_raw_rows == 1
     rejected = account.rejected_raw_rows[0]
+    assert rejected.physical_row_number == 2
     assert rejected.sorted_anomaly_types == (
         "INVALID_OHLC",
         "INVALID_VOLUME",
