@@ -1,13 +1,13 @@
 {
   "manifest_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V2",
   "version": 2,
-  "status": "DRAFT_LOCKED",
+  "status": "IMPLEMENTATION_APPROVED_EXECUTION_LOCKED",
   "approved_spec_review_issue": 73,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_RECOVERY_SPEC",
   "approved_spec_merge_commit": "14e15d3a4d542392128bc95f5f1bd67cd7d0d10d",
   "implementation_candidate_commit": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
-  "reviewed_implementation_commit": null,
-  "independent_implementation_reviewed": false,
+  "reviewed_implementation_commit": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
+  "independent_implementation_reviewed": true,
   "development_execution_authorized": false,
   "first_empirical_execution_claimed": false,
   "first_empirical_execution_executed": false,
@@ -43,11 +43,15 @@
     "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
     "consumed": true
   },
-  "notes": "Replacement V2 candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d is frozen for independent re-review after exact-candidate offline run 35907343410 passed 58 dedicated tests. V2 execution remains locked; reviewed commit unset, independent review=false, execution authorization=false, V2 review anchor absent, V2 claim absent, and no V2 empirical source access occurred.",
+  "notes": "V2 implementation candidate 8538332bb20cbd47a0250c86686d367c4aa0aa2d is independently approved and externally anchored. Separate execution authorization has not been granted. V2 claim is absent, canonical Development market-data execution remains false, and Validation/OOS/P&L/paper/live/directed-lag permissions remain closed.",
   "superseded_implementation_candidate_commit": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "superseded_review_issue": 75,
   "superseded_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
   "supersedes_rejected_candidate": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "prior_review_issue": 75,
-  "prior_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION"
+  "prior_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V2_EXECUTION_AUTHORIZATION",
+  "review_anchor_sha": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
+  "independent_review_issue": 75,
+  "independent_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_IMPLEMENTATION_FREEZE",
+  "independent_review_comment_id": 5801286827
 }
