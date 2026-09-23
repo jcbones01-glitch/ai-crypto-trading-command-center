@@ -430,14 +430,15 @@ def normalize_archive_with_treatment(
     try:
         _validate_report_scope(path, symbol, report, member)
     except TreatmentAwareNormalizationError as exc:
-        raise _enrich_current_failure(
+        _enrich_current_failure(
             exc,
             path=path,
             member=member,
             all_keys=all_keys,
             accepted_keys=accepted_keys,
             rejected_rows=rejected_rows,
-        ) from exc
+        )
+        raise
 
     manifest_ids = set(manifest.anomaly_ids)
 
@@ -525,7 +526,7 @@ def normalize_archive_with_treatment(
                     units.append(raw.timestamp_unit)
                     accepted_keys.append(key)
                 except TreatmentAwareNormalizationError as exc:
-                    raise _enrich_current_failure(
+                    _enrich_current_failure(
                         exc,
                         path=path,
                         member=member,
@@ -535,7 +536,8 @@ def normalize_archive_with_treatment(
                         row_number=row_number,
                         raw_timestamp=raw_timestamp,
                         events=events,
-                    ) from exc
+                    )
+                    raise
 
     try:
         if len(all_keys) != report.rows_processed:
@@ -554,14 +556,15 @@ def normalize_archive_with_treatment(
                 failure_code="RAW_ROW_ACCOUNTING_MISMATCH",
             )
     except TreatmentAwareNormalizationError as exc:
-        raise _enrich_current_failure(
+        _enrich_current_failure(
             exc,
             path=path,
             member=member,
             all_keys=all_keys,
             accepted_keys=accepted_keys,
             rejected_rows=rejected_rows,
-        ) from exc
+        )
+        raise
 
     rejected_records = [value.to_record() for value in rejected_rows]
     accounting = ArchiveRowAccounting(
@@ -669,7 +672,8 @@ def normalize_development_archives(
                 )
             )
         except TreatmentAwareNormalizationError as exc:
-            raise _attach_completed(exc, accounting) from exc
+            _attach_completed(exc, accounting)
+            raise
         bars.extend(archive_bars)
         units.update(archive_units)
         accounting.append(archive_accounting)
