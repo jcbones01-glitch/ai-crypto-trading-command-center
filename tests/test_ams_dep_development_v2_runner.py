@@ -134,3 +134,56 @@ def test_v2_runner_has_no_user_controlled_empirical_parameters():
         "--live",
     ):
         assert forbidden not in text
+
+
+def test_v2_partial_source_record_retains_progressive_row_evidence():
+    mod = load_runner()
+    evidence = SimpleNamespace(
+        symbol="BTCUSDT",
+        year=2017,
+        month=8,
+        filename="BTCUSDT-1h-2017-08.zip",
+        official_url="https://data.binance.vision/example.zip",
+        official_checksum_sha256="a" * 64,
+        local_zip_sha256="a" * 64,
+        parent_v1_btc_checksum_sha256="a" * 64,
+        parent_v1_checksum_continuity_pass=True,
+    )
+    progressive = {
+        "evidence_status": "PARTIAL_PROGRESSIVE_NOT_FINAL",
+        "failure_code": "SCANNER_NORMALIZER_MISMATCH",
+        "completed_archive_accounting": [
+            {
+                "filename": "BTCUSDT-1h-2017-08.zip",
+                "raw_data_rows": 10,
+            }
+        ],
+        "current_archive_progress": {
+            "filename": "BTCUSDT-1h-2017-09.zip",
+            "processed_raw_data_rows": 4,
+            "normalized_accepted_raw_rows": 3,
+            "explicitly_rejected_raw_rows": 0,
+            "unresolved_raw_rows": 1,
+        },
+        "failing_row": {
+            "archive": "BTCUSDT-1h-2017-09.zip",
+            "member": "BTCUSDT-1h-2017-09.csv",
+            "physical_row_number": 4,
+            "raw_timestamp": "1500000000000",
+        },
+        "anomaly_ids": [],
+        "anomaly_types": [],
+        "parsed_timestamps": [],
+    }
+    exc = RuntimeError("injected")
+    exc.partial_archive_evidence = (evidence,)
+    exc.progressive_normalization_evidence = progressive
+    record = mod._partial_source_record("BTCUSDT", exc)
+    assert record["status"] == "PARTIAL_SOURCE_FAILURE"
+    assert record["progressive_normalization_evidence"] == progressive
+    assert (
+        record["progressive_normalization_evidence"]["failing_row"][
+            "physical_row_number"
+        ]
+        == 4
+    )
