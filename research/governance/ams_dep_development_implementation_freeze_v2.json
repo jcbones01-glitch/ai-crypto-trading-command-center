@@ -1,11 +1,12 @@
 {
   "freeze_id": "AMS-DEP-DEVELOPMENT-IMPLEMENTATION-FREEZE-V2",
   "version": 2,
-  "status": "DRAFT_UNFROZEN",
+  "status": "FROZEN_FOR_INDEPENDENT_REVIEW",
   "approved_spec_review_issue": 73,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V2_RECOVERY_SPEC",
   "approved_spec_merge_commit": "14e15d3a4d542392128bc95f5f1bd67cd7d0d10d",
-  "implementation_candidate_commit": null,
+  "implementation_pr": 74,
+  "implementation_candidate_commit": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
   "reviewed_implementation_commit": null,
   "independent_review_required": true,
   "independent_implementation_reviewed": false,
@@ -13,7 +14,20 @@
   "one_shot_claim_created": false,
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v2",
   "review_anchor_created": false,
-  "implementation_file_git_blob_sha1": {},
+  "implementation_file_git_blob_sha1": {
+    ".github/workflows/ams-dep-development-empirical-v2.yml": "ae81c9e584e3cc98ed51f3bd7b619b1425d57b0e",
+    "research/scripts/run_ams_dep_development_empirical_v2.py": "2d5157a5717b054cc4897919a54e8c79aa15bb81",
+    "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "9351b225015aecf0938cee2980be341a0771926b",
+    "src/research_core/ams_dep_development_source_v2.py": "b553d858dfeb68bf01758c37df427abdfbf76bed",
+    "src/research_core/ams_dep_empirical_access_v2.py": "f494bff251c69ef12098d61331e8c9e09a5dfc1d",
+    "src/research_core/ams_dep_development_execution_lock_v2.py": "a06685c7c55df8a165960bc7df32a6857cd211a6",
+    "tests/test_ams_dep_development_v2_authorized_preflight.py": "7f1bc70dd89c9827385e5fb7b035417bfbaef110",
+    "tests/test_ams_dep_development_v2_execution_lock.py": "0d93d8d591716001fe8caca192ddb78f449a3779",
+    "tests/test_ams_dep_development_v2_normalization.py": "0796c5e7b923ba9385b50bc593697c6d540493e9",
+    "tests/test_ams_dep_development_v2_runner.py": "4823bb4072a1877ca9be045551f3d7e88dab3ac3",
+    "tests/test_ams_dep_development_v2_source.py": "33582e50987242de1b395a8939cf701610ddb6b2",
+    "tests/test_ams_dep_development_v2_workflow.py": "e3b22f78a194ec1d76598a5da630aa3c7fb40e76"
+  },
   "pinned_upstream_git_blob_sha1": {
     "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V1.md": "d1d87806933e409ed6155ad4a1b2a5e10a07a346",
     "research/governance/ams_dep_development_execution_v1.json": "242373518fe136a0a632a1cd0bf26d78a56df19a",
@@ -31,13 +45,37 @@
     "docs/AMS_DEP_V2_NUMERICAL_CONTRACT.md": "95e0129e4fc38a5125a945514f43e2a8e670ea1c",
     "research/governance/ams_dep_v2_freeze_manifest.json": "cfa1408c4705cd07e0ddf4a0d731faa131dff947"
   },
+  "allowed_post_candidate_paths": [
+    "research/governance/ams_dep_development_implementation_freeze_v2.json",
+    "research/governance/ams_dep_development_execution_manifest_v2.json",
+    "research/governance/ams_dep_release_gate_v1.json"
+  ],
+  "candidate_evidence": {
+    "exact_candidate_offline_review_run_id": 35848299882,
+    "exact_candidate_offline_review_run_attempt": 1,
+    "exact_candidate_offline_review_event": "workflow_dispatch",
+    "exact_candidate_offline_review_branch": "ams-dep-development-v2-candidate-v1",
+    "exact_candidate_offline_review_head": "db7a7e7608af93df89c5b1ca364551039a9d9cbc",
+    "exact_candidate_offline_review_conclusion": "success",
+    "exact_candidate_offline_tests_passed": 52,
+    "exact_candidate_preflight_job": "skipped",
+    "exact_candidate_execute_job": "skipped",
+    "exact_candidate_offline_marker": "AMS_DEP_DEVELOPMENT_V2_OFFLINE_REVIEW_PASS"
+  },
   "protected_access": {
-    "market_data_execution_authorized": false,
+    "v2_market_data_execution_authorized": false,
     "validation_or_oos_access_authorized": false,
     "strategy_pnl_authorized": false,
     "paper_trading_authorized": false,
     "live_trading_authorized": false,
     "directed_cross_asset_lagged_diagnostics_authorized": false
   },
-  "notes": "Draft placeholder only. Must be replaced prospectively with exact candidate and pins before independent implementation review."
+  "parent_v1_incident": {
+    "run_id": 35834431025,
+    "artifact_id": 10738551310,
+    "claim_ref": "refs/tags/ams-dep-development-execution-claimed-v1",
+    "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
+    "consumed": true
+  },
+  "notes": "Exact V2 implementation candidate frozen after successful exact-candidate offline-only CI. No V2 preflight, V2 claim creation, empirical seed, source adapter, or market-data access ran. Freeze is for independent implementation review only; V2 execution remains unauthorized."
 }
