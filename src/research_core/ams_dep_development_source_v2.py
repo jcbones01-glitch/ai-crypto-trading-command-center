@@ -340,11 +340,10 @@ def build_development_projection_v2(
         item.to_record(include_rejected_rows=False)
         for item in normalized.archive_accounting
     ]
-    rejected_records = [
-        rejected.to_record()
+    rejected_record_count = sum(
+        item.explicitly_rejected_raw_rows
         for item in normalized.archive_accounting
-        for rejected in item.rejected_raw_rows
-    ]
+    )
 
     record = {
         "projection_version": PROJECTION_VERSION,
@@ -375,10 +374,11 @@ def build_development_projection_v2(
         "raw_row_accounting_per_archive": accounting_records,
         "raw_row_accounting_aggregate":
             dict(normalized.aggregate_accounting),
-        "rejected_raw_row_record_count": len(rejected_records),
-        "rejected_raw_row_records_sha256": _canonical_sha256(
-            {"records": rejected_records}
-        ),
+        "rejected_raw_row_record_count": rejected_record_count,
+        "rejected_raw_row_records_sha256":
+            normalized.aggregate_accounting[
+                "rejected_raw_row_records_sha256"
+            ],
         "btc_parent_incident_checksum_continuity_pass":
             (
                 all(
