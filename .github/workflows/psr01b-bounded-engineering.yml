@@ -41,3 +41,5 @@ jobs:
       - run: pip install -e '.[dev,psr01b]'
       - name: Verify PSR-01B synthetic numerical core only
         run: python -m pytest -q tests/test_psr01b_core.py tests/test_psr01b_features.py tests/test_psr01b_ta.py tests/test_psr01b_egarch.py tests/test_psr01b_model.py tests/test_psr01b_matrix.py tests/test_psr01b_benchmarks.py tests/test_psr01b_preflight.py
+      - name: Full repository regression suite
+        run: python -m pytest -q
