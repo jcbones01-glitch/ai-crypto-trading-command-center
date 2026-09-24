@@ -1,6 +1,6 @@
 # PSR-01B — Bounded Development-Only Cost-Aware BTC Mechanism Replication Specification V1
 
-**Status:** REVISION 2 — REMEDIATED AFTER INDEPENDENT REVIEW — PENDING RE-REVIEW — NO IMPLEMENTATION OR P&L AUTHORIZED  
+**Status:** REVISION 3 — SECOND REMEDIATION — PENDING RE-REVIEW — NO IMPLEMENTATION OR P&L AUTHORIZED  
 **Parent source review:** Issue #86 — `PSR01_SOURCE_IDENTITY_UNRESOLVED`  
 **Parent design review:** Issue #88 — `APPROVE_PSR01B_BOUNDED_DESIGN_DRAFTING`  
 **Machine registration:** `research/governance/psr01b_bounded_spec_v1.json`
@@ -59,6 +59,44 @@ The source universe is exactly:
 The exact 49 archive SHA-256 pins are frozen in the machine registration. They are inherited from the already-audited Development BTC parent checksum map.
 
 No PSR-01B source adapter may request, stage, inspect, hash, summarize, or otherwise expose a timestamp >= `2022-01-01T00:00:00Z`.
+
+## 3.1 Exact raw-row treatment and normalization
+
+The 49 archive hashes alone are not the row-level data contract. Before PAPER_FILL or PROJECT_GAP_PRESERVING is constructed, PSR-01B must reuse the already-audited AMS-DEP V2 treatment-aware normalization stack **without modification**.
+
+The following repository blobs are immutable inputs to PSR-01B:
+
+- `src/research_core/ams_dep_treatment_aware_normalization_v2.py` — blob `8c257290ff04e726b53cafa433596311dcec32c4`;
+- `src/research_core/data_quality.py` — blob `a8251c4288013d8264a85bb4cda44007459e1adf`;
+- `src/research_core/data_quality_treatment_v2.py` — blob `f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19`;
+- `src/research_core/data_ingestion.py` — blob `bbed81b3ffed215b04dc162368ef9866a4753875`;
+- `src/research_core/archive_security.py` — blob `cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b`;
+- `src/research_core/data_interfaces.py` — blob `579b27b515d25ce69d565208416a88506286e534`.
+
+Their authority is inherited from `research/governance/ams_dep_development_execution_v3.json`, blob `946dea1c852cd8a23d26d3a90ba99e88db5779a2`.
+
+Before any archive is opened for empirical PSR-01B execution, runtime preflight must verify every listed Git blob SHA-1 and the upstream registration blob. Any mismatch hard-fails before source read.
+
+The exact raw-row pipeline is:
+
+1. verify each archive byte stream against its registered SHA-256;
+2. in lexicographic archive order call the pinned `scan_archive(path,"BTCUSDT",checksum_verified=True)`;
+3. build one pinned treatment manifest from exactly those 49 reports with research bounds `[2017-12-01T00:00:00Z, 2022-01-01T00:00:00Z)`;
+4. call the pinned `normalize_development_archives("BTCUSDT", paths, reports, manifest)`;
+5. use only the accepted normalized `MarketBar` rows returned by that function inside the registered source interval.
+
+A raw physical row counts as observed only if that inherited scanner/normalizer accepts it. Explicitly localized treated anomalies are rejected exactly as the inherited contract specifies.
+
+No PSR-01B code may:
+
+- round or snap timestamps;
+- interpolate or resample;
+- repair OHLCV;
+- repair duplicate/order defects;
+- skip arbitrary parser/normalizer exceptions;
+- create synthetic bars before the two missing-data arms diverge.
+
+A **missing hour** is therefore an hourly label inside the registered interval absent from the accepted normalized timestamp set after this exact treatment. PAPER_FILL and PROJECT_GAP_PRESERVING begin only after that accepted-row set is frozen.
 
 ## 4. Walk-forward folds
 
@@ -175,6 +213,31 @@ Window-specific first-valid indices inside a segment are:
 - recursive MACD exists earlier but cannot enter a deployed row before the global `j>=336` rule.
 
 The global `j>=336` rule is controlling even when a shorter-window feature becomes mathematically available earlier.
+
+### 6.3 Position and return accounting across a preserved gap
+
+PROJECT_GAP_PRESERVING never carries a trading position across an interval for which market returns are deliberately absent.
+
+Whenever an accepted-bar contiguous test segment ends and a later segment exists in the same fold:
+
+1. after the final valid pre-gap market return is realized, force every strategy and benchmark position to cash at that final accepted close;
+2. charge `c × abs(0-previous_position)` to that final valid pre-gap evaluation return record;
+3. keep position exactly zero throughout the missing interval and the subsequent feature-recovery interval;
+4. impute no market return during those omitted hours;
+5. at the first post-gap model-eligible evaluation origin, set `previous_position=0`.
+
+Therefore:
+
+- BASELINE_SIGN resumes from cash using its ordinary desired-position rule;
+- COST_AWARE resumes from cash and uses `previous_position=0` in its threshold turnover term;
+- BUY_AND_HOLD re-enters long from cash at the first post-gap model-eligible origin and pays the ordinary entry cost;
+- MOMENTUM_24H stays flat until both its 24-contiguous-hour signal history and the common model-origin eligibility are available, then applies its rule from cash.
+
+Forced gap exits and later re-entries count in turnover and completed-trade accounting. A forced gap exit may complete a trade.
+
+If the position is already flat, the forced-liquidation cost is zero.
+
+If a segment end is also the fold end, apply only the ordinary fold terminal liquidation once; never double-charge both a gap exit and a fold exit.
 
 ## 7. Feature tier
 
@@ -302,11 +365,13 @@ For each candidate/block:
 - compute `scipy.stats.spearmanr`;
 - any nonfinite correlation, including a constant candidate, => ineligible for that block.
 
-A candidate must be eligible in all four blocks.
+For each selection group `g`, first construct the **common four-block eligible set** `E_g`: candidates in that group that are eligible in all four training blocks.
 
-Within each block rank by descending absolute Spearman correlation, using ASCII lexical canonical feature name as tie-break. Average ordinal rank across the four blocks. Lowest average rank wins; final ties are lexical.
+If `E_g` is empty, the fold hard-fails.
 
-If a selection group has no candidate eligible in all four blocks, the fold hard-fails.
+Then, within each block, rank **only candidates in `E_g`** by descending absolute Spearman correlation, using ASCII lexical canonical feature name as tie-break. Do not rank against block-local candidates that fail eligibility in another block.
+
+Average the four ordinal ranks for each candidate in `E_g`. Lowest average rank wins; exact average-rank ties are broken by ASCII lexical canonical name.
 
 ### 7.7 Exact deployed column order
 
@@ -662,39 +727,56 @@ For each missing-data arm define paired hourly differential:
 
 `d_t = r_t(COST_AWARE)-r_t(BASELINE_SIGN)`.
 
-Primary statistic: pooled arithmetic mean differential.
+The descriptive **all-record mean** uses every registered evaluation record, including records in short contiguous segments.
 
-Primary requested block length: 168 hours.
+Primary inferential block length is exactly 168 hours. Secondary diagnostic block lengths are exactly 24 and 72 hours. Bootstrap draws are exactly 10,000.
 
-Secondary requested block lengths: 24 and 72 hours.
+### 15.1 Fixed-block inference universe
 
-Bootstrap draws: exactly 10,000.
+For a requested block length `L`, a contiguous evaluation segment is eligible for bootstrap inference **only if `n >= 2L`**.
 
-### 15.1 Segment-respecting circular algorithm
+Segments with `n < 2L`:
 
-Segments are processed in registered fold order and then ascending segment-start timestamp.
+- remain in descriptive strategy returns, Sharpe, turnover, trade count, and the all-record differential mean;
+- are excluded from that block-length bootstrap p-value and CI;
+- are never shortened to a smaller block length;
+- are never dropped selectively based on their returns.
 
-For a segment of length `n>=1` and requested block length `L`:
+At least **two** inference-eligible segments are required for an arm/block-length result. Otherwise inference for that arm/block is `UNAVAILABLE`. An unavailable primary 168-hour inference means PSR-01B cannot pass.
 
-- `L_eff=min(L,n)`;
-- draw `ceil(n/L_eff)` independent start indices uniformly from integers `0,...,n-1`, with replacement;
-- each block contains indices `(start+j) mod n` for `j=0,...,L_eff-1`;
-- concatenate blocks;
-- retain exactly the first `n` sampled observations.
+For the 168-hour primary test, the inference universe therefore contains only segments with `n>=336`.
 
-Thus a segment shorter than 168, 72, or 24 hours is **not dropped** and does **not** use a block longer than itself. Its effective block length equals its segment length.
+Report both:
 
-Resample every nonempty segment independently back to its own original length, then concatenate sampled segments in registered order.
+1. the all-record observed mean differential; and
+2. the 168-hour inference-universe observed mean differential.
+
+Both must be positive for a replication pass.
+
+### 15.2 Exact circular fixed-block algorithm
+
+For every inference-eligible segment of length `n`:
+
+- keep block length exactly `L`;
+- draw `ceil(n/L)` independent start indices uniformly from `{0,...,n-1}`, with replacement;
+- a block starting at `s` contains indices `(s+j) mod n` for `j=0,...,L-1`;
+- concatenate blocks and retain exactly the first `n` sampled observations.
+
+Process segments in registered fold order, then ascending segment-start timestamp.
+
+Resample each eligible segment independently back to its original length and concatenate sampled segments in that same order. The pooled bootstrap statistic is the observation-weighted arithmetic mean over this fixed inference universe.
 
 No block may cross a fold or continuity-gap boundary.
 
-RNG is:
+RNG is exactly:
 
 `numpy.random.Generator(numpy.random.PCG64(registered_seed))`.
 
-### 15.2 Null test and interval
+### 15.3 Null test and interval
 
-For the one-sided primary test, subtract the observed **pooled differential mean** from every observed differential before applying the registered sampled indices.
+Let `mu_inf` be the observed arithmetic mean over the inference universe.
+
+For the one-sided primary null bootstrap, subtract `mu_inf` from every differential observation in that inference universe before applying the sampled indices.
 
 Alternative:
 
@@ -702,15 +784,17 @@ Alternative:
 
 Raw p-value:
 
-`(1 + count(centered_bootstrap_mean >= observed_mean))/10001`.
+`(1 + count(centered_bootstrap_mean >= mu_inf))/10001`.
 
-Use the **same sampled indices** on uncentered paired strategy returns to generate complementary Sharpe-difference evidence and the uncentered statistic distribution.
+Use the identical sampled indices on uncentered paired strategy returns in the same inference universe for complementary Sharpe-difference evidence.
 
 The 95% percentile interval is exactly:
 
-`np.quantile(draws,[0.025,0.975],method='linear')`.
+`np.quantile(uncentered_inference_mean_draws,[0.025,0.975],method='linear')`.
 
-Sharpe-difference evidence is reported but is not itself an additional mandatory inferential gate.
+Sharpe-difference bootstrap evidence is reported but is not an additional mandatory inferential gate.
+
+The all-record cost-aware versus baseline Sharpe difference remains the pass-direction metric.
 
 ## 16. Multiple testing
 
@@ -747,11 +831,13 @@ Return:
 
 only if **all** of the following hold in both missing-data arms:
 
-1. observed mean cost-aware minus baseline net return > 0;
-2. Holm-adjusted primary 168h one-sided p-value <= 0.05;
-3. cost-aware turnover < baseline turnover;
-4. cost-aware completed trades >= 20;
-5. cost-aware Sharpe − baseline Sharpe > 0.
+1. all-record observed mean cost-aware minus baseline net return > 0;
+2. primary 168h inference-universe observed mean differential > 0;
+3. at least two 168h-inference-eligible contiguous segments (each `n>=336`) exist;
+4. Holm-adjusted primary 168h one-sided p-value <= 0.05;
+5. cost-aware turnover < baseline turnover under all registered fold/gap liquidations;
+6. cost-aware completed trades >= 20;
+7. all-record cost-aware Sharpe − baseline Sharpe > 0.
 
 Otherwise:
 
