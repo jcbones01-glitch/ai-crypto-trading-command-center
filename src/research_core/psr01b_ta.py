@@ -290,7 +290,11 @@ def spearman_block_correlation(feature: Sequence[float], target: Sequence[float]
     finite = np.isfinite(x) & np.isfinite(y)
     if int(np.count_nonzero(finite)) < 100:
         return None
-    corr = float(spearmanr(x[finite], y[finite]).statistic)
+    xf = x[finite]
+    yf = y[finite]
+    if np.all(xf == xf[0]) or np.all(yf == yf[0]):
+        return None
+    corr = float(spearmanr(xf, yf).statistic)
     return corr if np.isfinite(corr) else None
 
 
