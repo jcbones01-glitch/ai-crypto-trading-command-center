@@ -1,12 +1,12 @@
 {
   "freeze_id": "AMS-DEP-DEVELOPMENT-IMPLEMENTATION-FREEZE-V3",
   "version": 3,
-  "status": "DRAFT_LOCKED",
+  "status": "FROZEN_FOR_INDEPENDENT_REVIEW",
   "approved_spec_review_issue": 80,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V3_RECOVERY_SPEC",
   "approved_spec_merge_commit": "8a0d211683217cb3c84ce0cda205fc7872b7cd1e",
   "implementation_pr": 81,
-  "implementation_candidate_commit": null,
+  "implementation_candidate_commit": "2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2",
   "reviewed_implementation_commit": null,
   "independent_review_required": true,
   "independent_implementation_reviewed": false,
@@ -14,14 +14,56 @@
   "one_shot_claim_created": false,
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v3",
   "review_anchor_created": false,
-  "implementation_file_git_blob_sha1": {},
-  "pinned_upstream_git_blob_sha1": {},
+  "implementation_file_git_blob_sha1": {
+    ".github/workflows/ams-dep-development-empirical-v3.yml": "3fecb2ae8e3ca47105ac9e7ea14f83490d6615a1",
+    "research/scripts/run_ams_dep_development_empirical_v3.py": "eaabca6837d69c95b5524a75cdc5274975b4f7ea",
+    "src/research_core/ams_dep_source_coverage_v3.py": "2269d51d75434a87ce2276b4087de5d46d13e78d",
+    "src/research_core/ams_dep_development_source_v3.py": "b5d24e469fc22b3e76b99c18b95dfb78b25ceec5",
+    "src/research_core/ams_dep_empirical_access_v3.py": "0440203a4433da54917039577386fedb08281b0e",
+    "src/research_core/ams_dep_development_execution_lock_v3.py": "d592ba3836a8e1272f89f5e17bafbd06f8b59e8b",
+    "tests/test_ams_dep_development_v3_authorized_preflight.py": "2170a148086993eecc56bc62a1b22b19919c85f5",
+    "tests/test_ams_dep_development_v3_execution_lock.py": "3db039183d481cb3ec9b6c484feb9820058edc71",
+    "tests/test_ams_dep_development_v3_coverage.py": "e4aafc00874991fcb8fcdf6e0f7be7249cb3cd8c",
+    "tests/test_ams_dep_development_v3_runner.py": "a575ef496224943a906961fb36264c795038f34b",
+    "tests/test_ams_dep_development_v3_source.py": "a70d4d2c82e12b7484b26f85a6505b2dc280ce25",
+    "tests/test_ams_dep_development_v3_workflow.py": "ef05cf1047af660262ebdf3b1c91028322765077"
+  },
+  "pinned_upstream_git_blob_sha1": {
+    "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V2.md": "9e3a5291276afb626582d8ee57a7277036853b60",
+    "research/governance/ams_dep_development_execution_v2.json": "51dbee9be141a4ba0c50f3ba4089f1bf4a9206b0",
+    "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
+    "research/scripts/run_ams_dep_development_empirical_v2.py": "48f8f3beac5e4791ebdaf77bee7f4fa4f3959675",
+    "src/research_core/data_quality.py": "a8251c4288013d8264a85bb4cda44007459e1adf",
+    "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+    "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+    "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9",
+    "src/research_core/archive_security.py": "cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b",
+    "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534",
+    "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
+    "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+    "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+    "src/research_core/dependent_wild_bootstrap_v2.py": "4e77f4576b85a4a35c3738d71e9b49315dd4f248",
+    "src/research_core/release_gate.py": "14f283025fd217bbf5b5a248e3dac9ad38c4fb81",
+    "docs/AMS_DEP_V2_NUMERICAL_CONTRACT.md": "95e0129e4fc38a5125a945514f43e2a8e670ea1c",
+    "research/governance/ams_dep_v2_freeze_manifest.json": "cfa1408c4705cd07e0ddf4a0d731faa131dff947"
+  },
   "allowed_post_candidate_paths": [
     "research/governance/ams_dep_development_implementation_freeze_v3.json",
     "research/governance/ams_dep_development_execution_manifest_v3.json",
     "research/governance/ams_dep_release_gate_v1.json"
   ],
-  "candidate_evidence": null,
+  "candidate_evidence": {
+    "exact_candidate_offline_review_run_id": 36027977973,
+    "exact_candidate_offline_review_run_attempt": 1,
+    "exact_candidate_offline_review_event": "workflow_dispatch",
+    "exact_candidate_offline_review_branch": "ams-dep-development-v3-candidate-v2",
+    "exact_candidate_offline_review_head": "2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2",
+    "exact_candidate_offline_review_conclusion": "success",
+    "exact_candidate_offline_tests_passed": 64,
+    "exact_candidate_preflight_job": "skipped",
+    "exact_candidate_execute_job": "skipped",
+    "exact_candidate_offline_marker": "AMS_DEP_DEVELOPMENT_V3_OFFLINE_REVIEW_PASS"
+  },
   "protected_access": {
     "v3_market_data_execution_authorized": false,
     "validation_or_oos_access_authorized": false,
@@ -30,5 +72,5 @@
     "live_trading_authorized": false,
     "directed_cross_asset_lagged_diagnostics_authorized": false
   },
-  "notes": "Prior V3 candidate 2fcf59194a1b6625a066a6526f4fd3b1753f7ff6 was rejected for mandatory offline-regression evidence gaps. This file is reset to DRAFT_LOCKED while a replacement candidate is built. No V3 fixed ref exists."
+  "notes": "Replacement candidate 2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2 is frozen solely for focused independent implementation re-review. Run 36027977973 passed 64 offline/synthetic tests; preflight and execute were skipped. The prior candidate 2fcf59194a1b6625a066a6526f4fd3b1753f7ff6 remains superseded. V3 review anchor and claim remain absent."
 }
