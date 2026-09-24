@@ -1,0 +1,67 @@
+{
+  "gate_id": "PSR01-SOURCE-IDENTITY",
+  "version": 1,
+  "status": "SOURCE_IDENTITY_UNRESOLVED",
+  "review_issue": 86,
+  "review_decision": "PSR01_SOURCE_IDENTITY_UNRESOLVED",
+  "review_comment_id": 5819520257,
+  "paper": {
+    "title": "Machine Learning-Based Bitcoin Trading Under Transaction Costs: Evidence From Walk-Forward Forecasting",
+    "authors": [
+      "Andrei Bysik",
+      "Robert Ślepaczuk"
+    ],
+    "year": 2026,
+    "arxiv": "2606.00060v1"
+  },
+  "claimed_source": {
+    "provider": "Binance public REST API",
+    "instrument_description": "BTC/USDT USD-margined futures contract",
+    "frequency": "1h",
+    "raw_start": "2017-12-01T00:00:00Z",
+    "raw_end": "2026-01-01T00:00:00Z"
+  },
+  "source_conflict": {
+    "binance_futures_documented_launch": "2019-09",
+    "first_documented_product": "BTCUSDT USDT-margined perpetual",
+    "exact_prelaunch_source_resolved": false,
+    "spot_substitution_counts_as_exact_replication": false
+  },
+  "core_mechanism_preserved": {
+    "forecast_target": "next-hour log return",
+    "train_months": 12,
+    "validation_months": 3,
+    "test_months": 3,
+    "step_months": 3,
+    "test_folds": 27,
+    "first_bounded_model": "XGBoost",
+    "loss": "MSE",
+    "selector": "validation loss-best",
+    "position_mode": "long-only",
+    "transaction_cost_per_unit_turnover": 0.001,
+    "lambda": 2,
+    "execution_filter": "abs(forecast) > lambda * c * abs(desired_position - previous_position)"
+  },
+  "unresolved_reproducibility_items": [
+    "exact source endpoint/product and pre-2019 instrument identity",
+    "exact 15 OHLCV feature definitions",
+    "exact six lagged-return lags",
+    "mapping of 94 TA candidates into 10 selection groups",
+    "random seeds and Optuna sampler state",
+    "full package/runtime versions",
+    "post-selection XGBoost retraining and early-stopping behavior",
+    "execution timing/latency beyond bar-close accounting"
+  ],
+  "protected_scope": {
+    "empirical_pnl_authorized": false,
+    "ams_dep_validation_or_oos_access_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "leverage_authorized": false,
+    "derivatives_execution_authorized": false
+  },
+  "allowed_next_steps": [
+    "obtain author/code/data clarification",
+    "draft separately reviewed bounded declared-deviation replication proposal"
+  ]
+}
