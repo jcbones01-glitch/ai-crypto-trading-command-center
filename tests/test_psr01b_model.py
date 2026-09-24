@@ -104,42 +104,37 @@ def frozen_params(n_estimators=1000):
     }
 
 
+class FakeDMatrix:
+    def __init__(self, data, label=None):
+        self.data = np.asarray(data, dtype=float)
+        self.label = None if label is None else np.asarray(label, dtype=float)
+
+
 class FakeBooster:
-    def __init__(self, rounds):
+    def __init__(self, rounds, prediction_value=0.0):
         self.rounds = rounds
+        self.prediction_value = prediction_value
 
     def num_boosted_rounds(self):
         return self.rounds
 
-
-class FakeTuningRegressor:
-    created = []
-
-    def __init__(self, **kwargs):
-        self.kwargs = kwargs
-        self.fit_args = None
-        self._rounds = 120
-        type(self).created.append(self)
-
-    def fit(self, X, y, eval_set=None, verbose=None):
-        self.fit_args = (np.array(X), np.array(y), eval_set, verbose)
-        return self
-
-    def evals_result(self):
-        # exact tie at iterations 1 and 2 -> smallest iteration 1 must win
-        return {"validation_0": {"rmse": [1.0, 0.5, 0.5, 0.7]}}
-
-    def get_booster(self):
-        return FakeBooster(self._rounds)
-
-    def predict(self, X, iteration_range=None):
-        assert iteration_range == (0, 2)
-        return np.zeros(len(X))
+    def predict(self, dmatrix, iteration_range=None):
+        if iteration_range is not None:
+            assert iteration_range == (0, 2)
+        return np.full(len(dmatrix.data), self.prediction_value, dtype=float)
 
 
-def test_tuning_trial_fixed_params_eval_set_tie_rule_and_early_stop(monkeypatch):
-    FakeTuningRegressor.created.clear()
-    monkeypatch.setattr(modelmod, "XGBRegressor", FakeTuningRegressor)
+def test_tuning_trial_native_params_eval_set_tie_rule_and_early_stop(monkeypatch):
+    calls = []
+
+    def fake_train(params, dtrain, **kwargs):
+        calls.append((params, dtrain, kwargs))
+        kwargs["evals_result"]["validation_0"] = {"rmse": [1.0, 0.5, 0.5, 0.7]}
+        return FakeBooster(120)
+
+    monkeypatch.setattr(modelmod.xgb, "DMatrix", FakeDMatrix)
+    monkeypatch.setattr(modelmod.xgb, "train", fake_train)
+
     Xtr = np.arange(40.0).reshape(20, 2)
     Xva = np.arange(12.0).reshape(6, 2)
     ytr = np.linspace(-1, 1, 20)
@@ -155,16 +150,22 @@ def test_tuning_trial_fixed_params_eval_set_tie_rule_and_early_stop(monkeypatch)
         trial_number=7,
         hyperparameters=frozen_params(1000),
     )
-    reg = FakeTuningRegressor.created[-1]
-    assert reg.kwargs["objective"] == "reg:squarederror"
-    assert reg.kwargs["tree_method"] == "hist"
-    assert reg.kwargs["n_jobs"] == 1
-    assert reg.kwargs["eval_metric"] == "rmse"
-    assert reg.kwargs["early_stopping_rounds"] == 50
-    assert reg.kwargs["random_state"] == trial_seed("PAPER_FILL", 2, 7)
-    assert len(reg.fit_args[2]) == 1
-    np.testing.assert_array_equal(reg.fit_args[2][0][0], Xva)
-    np.testing.assert_array_equal(reg.fit_args[2][0][1], yva)
+    params, dtrain, kwargs = calls[-1]
+    assert params["objective"] == "reg:squarederror"
+    assert params["tree_method"] == "hist"
+    assert params["nthread"] == 1
+    assert params["seed"] == trial_seed("PAPER_FILL", 2, 7)
+    assert params["eval_metric"] == "rmse"
+    assert "n_estimators" not in params
+    assert kwargs["num_boost_round"] == 1000
+    assert kwargs["early_stopping_rounds"] == 50
+    assert kwargs["verbose_eval"] is False
+    assert len(kwargs["evals"]) == 1
+    assert kwargs["evals"][0][1] == "validation_0"
+    np.testing.assert_array_equal(kwargs["evals"][0][0].data, Xva)
+    np.testing.assert_array_equal(kwargs["evals"][0][0].label, yva)
+    np.testing.assert_array_equal(dtrain.data, Xtr)
+    np.testing.assert_array_equal(dtrain.label, ytr)
     assert out.best_iteration == 1
     assert out.early_stopped
     assert out.final_n_estimators == 2
@@ -172,12 +173,12 @@ def test_tuning_trial_fixed_params_eval_set_tie_rule_and_early_stop(monkeypatch)
 
 
 def test_no_early_stop_final_estimator_count_is_sampled_count(monkeypatch):
-    class NoStop(FakeTuningRegressor):
-        def __init__(self, **kwargs):
-            super().__init__(**kwargs)
-            self._rounds = kwargs["n_estimators"]
+    def fake_train(params, dtrain, **kwargs):
+        kwargs["evals_result"]["validation_0"] = {"rmse": [1.0, 0.5, 0.5, 0.7]}
+        return FakeBooster(kwargs["num_boost_round"])
 
-    monkeypatch.setattr(modelmod, "XGBRegressor", NoStop)
+    monkeypatch.setattr(modelmod.xgb, "DMatrix", FakeDMatrix)
+    monkeypatch.setattr(modelmod.xgb, "train", fake_train)
     out = fit_tuning_trial(
         X_train=np.arange(20.0).reshape(10, 2),
         y_train_standardized=np.linspace(-1, 1, 10),
@@ -217,7 +218,6 @@ def test_tune_fold_executes_exactly_50_sequential_seeded_trials(monkeypatch):
         trial_number = kwargs["trial_number"]
         hp = kwargs["hyperparameters"]
         calls.append(trial_number)
-        # deterministic finite objective based on sampled settings
         mse = (
             (float(hp["max_depth"]) - 3.0) ** 2
             + float(hp["learning_rate"])
@@ -266,27 +266,20 @@ def test_tune_fold_executes_exactly_50_sequential_seeded_trials(monkeypatch):
     assert a.selected.params == b.selected.params
 
 
-class FakeFinalRegressor:
-    created = []
+def test_final_refit_combines_eligible_rows_restandardizes_and_inverts(monkeypatch):
+    calls = []
 
-    def __init__(self, **kwargs):
-        self.kwargs = kwargs
-        self.train_y = None
-        type(self).created.append(self)
+    class FinalBooster(FakeBooster):
+        def predict(self, dmatrix, iteration_range=None):
+            return np.array([-1.0, 0.0, 1.0], dtype=float)[: len(dmatrix.data)]
 
-    def fit(self, X, y, verbose=None):
-        self.train_y = np.asarray(y, dtype=float)
-        self.train_X = np.asarray(X, dtype=float)
-        return self
+    def fake_train(params, dtrain, **kwargs):
+        calls.append((params, dtrain, kwargs))
+        return FinalBooster(kwargs["num_boost_round"])
 
-    def predict(self, X):
-        # deterministic standardized forecasts
-        return np.array([-1.0, 0.0, 1.0], dtype=float)[: len(X)]
+    monkeypatch.setattr(modelmod.xgb, "DMatrix", FakeDMatrix)
+    monkeypatch.setattr(modelmod.xgb, "train", fake_train)
 
-
-def test_final_refit_combines_original_eligible_rows_restandardizes_and_inverts(monkeypatch):
-    FakeFinalRegressor.created.clear()
-    monkeypatch.setattr(modelmod, "XGBRegressor", FakeFinalRegressor)
     selected = TrialOutcome(
         7,
         frozen_params(),
@@ -317,24 +310,26 @@ def test_final_refit_combines_original_eligible_rows_restandardizes_and_inverts(
         X_test=Xte,
         selection=selection,
     )
-    reg = FakeFinalRegressor.created[-1]
-    assert "early_stopping_rounds" not in reg.kwargs
-    assert reg.kwargs["n_estimators"] == 13
-    assert reg.kwargs["random_state"] == final_seed(
+    params, dcombined, kwargs = calls[-1]
+    assert kwargs["num_boost_round"] == 13
+    assert "early_stopping_rounds" not in kwargs
+    assert params["nthread"] == 1
+    assert params["seed"] == final_seed(
         "PROJECT_GAP_PRESERVING", 4, 7
     )
     combined = np.r_[ytr, yva]
     mean = np.mean(combined)
     std = np.std(combined, ddof=0)
-    np.testing.assert_allclose(reg.train_y, (combined - mean) / std)
-    np.testing.assert_allclose(out.forecasts_raw, np.array([-1.0, 0.0, 1.0]) * std + mean)
+    np.testing.assert_allclose(dcombined.label, (combined - mean) / std)
+    np.testing.assert_allclose(
+        out.forecasts_raw,
+        np.array([-1.0, 0.0, 1.0]) * std + mean,
+    )
     assert out.combined_scale.mean == pytest.approx(mean)
     assert out.combined_scale.std == pytest.approx(std)
 
 
-def test_real_pinned_xgboost_synthetic_smoke():
-    # One real-library smoke test verifies the integration surface.  Data are
-    # entirely synthetic and tiny; no market observations are used.
+def test_real_pinned_native_xgboost_synthetic_smoke():
     rng = np.random.default_rng(12345)
     Xtr = rng.normal(size=(80, 4))
     beta = np.array([0.3, -0.2, 0.1, 0.05])
