@@ -7,13 +7,13 @@
   "approved_spec_merge_commit": "8a0d211683217cb3c84ce0cda205fc7872b7cd1e",
   "implementation_pr": 81,
   "implementation_candidate_commit": "2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2",
-  "reviewed_implementation_commit": null,
+  "reviewed_implementation_commit": "2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2",
   "independent_review_required": true,
-  "independent_implementation_reviewed": false,
+  "independent_implementation_reviewed": true,
   "execution_authorized": false,
   "one_shot_claim_created": false,
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v3",
-  "review_anchor_created": false,
+  "review_anchor_created": true,
   "implementation_file_git_blob_sha1": {
     ".github/workflows/ams-dep-development-empirical-v3.yml": "3fecb2ae8e3ca47105ac9e7ea14f83490d6615a1",
     "research/scripts/run_ams_dep_development_empirical_v3.py": "eaabca6837d69c95b5524a75cdc5274975b4f7ea",
@@ -72,5 +72,9 @@
     "live_trading_authorized": false,
     "directed_cross_asset_lagged_diagnostics_authorized": false
   },
-  "notes": "Replacement candidate 2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2 is frozen solely for focused independent implementation re-review. Run 36027977973 passed 64 offline/synthetic tests; preflight and execute were skipped. The prior candidate 2fcf59194a1b6625a066a6526f4fd3b1753f7ff6 remains superseded. V3 review anchor and claim remain absent."
+  "notes": "Exact replacement candidate 2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2 is independently approved and immutably bound by refs/heads/ams-dep-development-implementation-reviewed-v3. This freeze remains the immutable implementation-review record and does not itself authorize execution. V3 execution authorization and one-shot claim creation remain separate future gates.",
+  "review_anchor_sha": "2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2",
+  "independent_review_issue": 82,
+  "independent_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V3_IMPLEMENTATION_FREEZE",
+  "independent_review_comment_id": 5818379082
 }
