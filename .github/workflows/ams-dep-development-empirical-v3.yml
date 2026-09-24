@@ -50,7 +50,7 @@ jobs:
           python -m pytest -q \
             tests/test_ams_dep_development_v3_authorized_preflight.py \
             tests/test_ams_dep_development_v3_execution_lock.py \
-            tests/test_ams_dep_development_v3_normalization.py \
+            tests/test_ams_dep_development_v3_coverage.py \
             tests/test_ams_dep_development_v3_source.py \
             tests/test_ams_dep_development_v3_runner.py \
             tests/test_ams_dep_development_v3_workflow.py
