@@ -1,6 +1,6 @@
 # PSR-01B — Bounded Development-Only Cost-Aware BTC Mechanism Replication Specification V1
 
-**Status:** PROPOSED FOR INDEPENDENT SPECIFICATION REVIEW — NO IMPLEMENTATION OR P&L AUTHORIZED  
+**Status:** REVISION 2 — REMEDIATED AFTER INDEPENDENT REVIEW — PENDING RE-REVIEW — NO IMPLEMENTATION OR P&L AUTHORIZED  
 **Parent source review:** Issue #86 — `PSR01_SOURCE_IDENTITY_UNRESOLVED`  
 **Parent design review:** Issue #88 — `APPROVE_PSR01B_BOUNDED_DESIGN_DRAFTING`  
 **Machine registration:** `research/governance/psr01b_bounded_spec_v1.json`
@@ -87,7 +87,28 @@ Fold schedule:
 | 10 | 2020-04-01 → 2021-04-01 | 2021-04-01 → 2021-07-01 | 2021-07-01 → 2021-10-01 |
 | 11 | 2020-07-01 → 2021-07-01 | 2021-07-01 → 2021-10-01 | 2021-10-01 → 2022-01-01 |
 
-The held-out test union is the only empirical evaluation series.
+### 4.1 Exact endpoint eligibility
+
+Binance kline timestamps are treated as UTC **bar-open labels**. A bar labeled `t` represents `[t,t+1h)`.
+
+For any registered split `[S,E)`, a forecast origin `t` is eligible **if and only if**:
+
+- `S <= t < E`; and
+- the target bar label `t+1h` also satisfies `S <= t+1h < E`.
+
+Therefore the last possible origin on a complete hourly grid is `E-2h`. The origin `E-1h` is excluded because its target bar belongs to the next split.
+
+This same half-open endpoint rule governs:
+
+- training targets;
+- validation loss;
+- held-out test forecasts and evaluation returns;
+- feature-selection correlations inside each three-month selection block;
+- benchmark evaluation records.
+
+The final fold may not retain any origin whose target bar label is `>= 2022-01-01T00:00:00Z`.
+
+For final XGBoost refitting, the combined train+validation dataset is the union of rows that were independently eligible under the original train split and the original validation split. A boundary-crossing row excluded earlier is not restored merely because the two windows are later combined.
 
 ## 5. Forecast target and timing
 
@@ -104,6 +125,16 @@ This is an **idealized paper-accounting timing convention**. It is not a claim t
 ## 6. Two mandatory missing-data arms
 
 Both arms must be implemented and reported. Neither may be dropped after outcomes are known.
+
+A **contiguous segment** is a maximal sequence of accepted bar-open labels spaced by exactly one hour.
+
+Within a segment, the first bar has zero-based index `j=0` and counts as contiguous hour 1. At bar index `j`, exactly `j` one-hour transitions have been observed since the segment began.
+
+The global feature-origin eligibility rule is:
+
+`j >= 336`.
+
+Thus the first deployable origin after a gap is the **337th bar** of the new contiguous segment. This guarantees 336 complete one-hour transitions for the longest return/change-based features.
 
 ### 6.1 PAPER_FILL
 
@@ -126,53 +157,66 @@ No synthetic bar is created.
 
 No target or feature may cross a continuity gap.
 
-Rolling state resets at every gap.
+At every gap:
 
-A row is feature-eligible only after at least 336 contiguous valid hours are available after the most recent gap.
+- all rolling windows are discarded;
+- RSI and ATR Wilder state are discarded;
+- price EMAs and MACD signal EMA are discarded;
+- OBV state is discarded;
+- MFI loses its predecessor;
+- lagged-return state is discarded;
+- EGARCH latent histories are discarded and restarted under Section 8.
 
-EGARCH state is also reset at a gap as defined below.
+Window-specific first-valid indices inside a segment are:
+
+- ROC(`w`) and lag return(`k`): `j>=w` or `j>=k`;
+- distance-to-SMA(`w`), Bollinger(`w`), VWAP(`w`), OBV slope(`w`): `j>=w-1`;
+- RSI(`w`), ATR(`w`), rolling return std(`w`), MFI(`w`): `j>=w`;
+- recursive MACD exists earlier but cannot enter a deployed row before the global `j>=336` rule.
+
+The global `j>=336` rule is controlling even when a shorter-window feature becomes mathematically available earlier.
 
 ## 7. Feature tier
 
 The first PSR-01B experiment uses exactly one feature tier:
 
-`OHLCV + TA + EGARCH`
+`OHLCV + TA + EGARCH`.
 
-This corresponds to 28 deployed predictors:
+The deployed vector contains exactly 28 columns:
 
 - 15 OHLCV-derived predictors;
 - 10 selected TA-related predictors;
 - 3 EGARCH predictors.
 
-Because the manuscript does not publish enough detail to reconstruct all 28 inputs exactly, the missing definitions below are **project-defined declared deviations**. They must never be represented as author-supplied definitions.
+The manuscript does not publish enough detail to reconstruct all 28 inputs exactly. Every project-specified definition below is therefore a **declared reconstruction**, not an author-supplied formula.
 
 ### 7.1 Warm-up
 
-For every fold, feature construction begins exactly 744 hours before the fold's training start.
-
-Only training-window rows enter fitting or feature selection.
+For every fold, source feature construction may begin exactly 744 hours before the fold's training start. Only rows inside the registered training window enter model fitting or feature selection.
 
 ### 7.2 Fifteen OHLCV-derived predictors
 
-The 15 predictors are frozen as:
+Input domain: `O,H,L,C` must be finite and strictly positive and `V` must be finite and non-negative. Violation hard-fails.
 
-1. `RET_1 = log(C_t/C_(t-1))`
-2. `OPEN_GAP = log(O_t/C_(t-1))`
-3. `HIGH_PREVCLOSE = log(H_t/C_(t-1))`
-4. `LOW_PREVCLOSE = log(L_t/C_(t-1))`
+The 15 columns are exactly:
+
+1. `RET_1 = log(C_t/C_{t-1})`
+2. `OPEN_GAP = log(O_t/C_{t-1})`
+3. `HIGH_PREVCLOSE = log(H_t/C_{t-1})`
+4. `LOW_PREVCLOSE = log(L_t/C_{t-1})`
 5. `CLOSE_OPEN = log(C_t/O_t)`
 6. `HIGH_LOW = log(H_t/L_t)`
-7. close location in the bar;
-8. body fraction of bar range;
-9. upper-wick fraction;
-10. lower-wick fraction;
-11. `log1p(volume)`;
-12. one-hour log volume change using `V+1`;
-13. volume / 24-hour mean volume − 1;
-14. `log1p(close × volume)`;
-15. one-hour log change in typical price `(H+L+C)/3`.
+7. `CLOSE_LOCATION = (2C_t-H_t-L_t)/(H_t-L_t)`
+8. `BODY_FRAC = (C_t-O_t)/(H_t-L_t)`
+9. `UPPER_WICK_FRAC = (H_t-max(O_t,C_t))/(H_t-L_t)`
+10. `LOWER_WICK_FRAC = (min(O_t,C_t)-L_t)/(H_t-L_t)`
+11. `LOG_VOLUME = log(1+V_t)`
+12. `LOG_VOLUME_CHANGE = log((V_t+1)/(V_{t-1}+1))`
+13. `VOLUME_SMA24_RATIO = V_t/mean(V_{t-23},...,V_t)-1`
+14. `LOG_DOLLAR_VOLUME = log(1+C_tV_t)`
+15. `TYPICAL_RETURN_1 = log(TP_t/TP_{t-1})`, with `TP_t=(H_t+L_t+C_t)/3`.
 
-For zero-range bars, range-normalized bar-shape variables equal zero.
+For columns 7–10, if `H_t=L_t`, the feature equals zero. For column 13, if the 24-hour volume mean is zero, the feature equals zero.
 
 No predictor scaling is applied for XGBoost.
 
@@ -180,9 +224,9 @@ No predictor scaling is applied for XGBoost.
 
 Windows are exactly:
 
-`{3, 6, 12, 24, 48, 72, 168, 336}` hours.
+`{3,6,12,24,48,72,168,336}` hours.
 
-Indicator families:
+Indicator families are:
 
 - RSI;
 - ROC;
@@ -196,157 +240,300 @@ Indicator families:
 - OBV slope;
 - MFI.
 
-Six return lags are:
+Six lagged returns are:
 
-`{1, 2, 3, 6, 12, 24}` hours.
+`{1,2,3,6,12,24}` hours.
 
-The resulting candidate pool is exactly 94 features.
+Therefore the candidate pool is exactly `11×8+6=94`.
 
-### 7.4 Ten reconstruction selection groups
+### 7.4 Exact recursive and rolling formulas
 
-The manuscript states that 94 candidates are mapped into 10 configured groups but does not disclose that mapping. PSR-01B freezes the following reconstruction before outcomes:
+**RSI(`w`).** Let `delta_j=C_j-C_{j-1}`. At `j=w`, seed average gain and loss as the arithmetic means of the first `w` positive/negative changes. For `j>w`, use Wilder recursion `avg_j=(avg_{j-1}(w-1)+current_j)/w`. RSI is 100 when loss is zero but gain positive, 50 when both are zero, otherwise `100-100/(1+gain/loss)`. A gap requires a fresh `w`-change seed.
 
-1. RSI;
-2. ROC;
-3. distance-to-SMA;
-4. MACD + MACD histogram;
-5. ATR ratio + rolling standard deviation;
-6. Bollinger position;
-7. VWAP deviation;
-8. OBV slope;
-9. MFI;
-10. lagged returns.
+**ROC(`w`).** `C_t/C_{t-w}-1`.
 
-Exactly one candidate is selected from each group.
+**Distance to SMA(`w`).** `C_t/mean(C_{t-w+1},...,C_t)-1`.
 
-### 7.5 Training-only feature selection
+**MACD(`w`).** Within each segment, for span `s`, initialize `EMA_s(0)=C_0`, then recurse `EMA_s(j)=alpha_s C_j+(1-alpha_s)EMA_s(j-1)` with `alpha_s=2/(s+1)`. Slow span is `w`; fast span is `max(2,floor(w/2))`. `rawMACD=EMA_fast-EMA_slow`. Feature = `rawMACD/C_t`.
 
-The 12-month training window is divided into four consecutive three-calendar-month blocks.
+**MACD histogram(`w`).** Signal span is `max(2,floor(w/3))`. Initialize `signal_0=rawMACD_0`, then apply the same unadjusted recursive EMA formula to raw MACD. Feature = `(rawMACD-signal)/C_t`. A gap resets all three EMAs.
 
-Within each block:
+**ATR ratio(`w`).** For `j>=1`, `TR_j=max(H_j-L_j,|H_j-C_{j-1}|,|L_j-C_{j-1}|)`. At `j=w`, seed ATR as `mean(TR_1,...,TR_w)`; then use Wilder recursion. Feature = `ATR/C_t`. A gap requires a fresh seed.
 
-- use only rows whose predictor and aligned next-hour target are in that block;
-- require at least 100 finite aligned rows for candidate eligibility;
-- rank eligible candidates by descending absolute Spearman correlation with the next-hour return;
-- resolve equal correlations by lexical feature name.
+**Rolling std(`w`).** Population standard deviation (`ddof=0`) of the latest `w` one-hour log returns.
 
-Average each candidate's ordinal rank across the four blocks.
+**Bollinger position(`w`).** Let `SMA` and population close standard deviation `SD` use the latest `w` closes. Feature = `(C_t-SMA)/(2SD)`, or zero when `SD=0`.
 
-The candidate with the lowest average rank wins its group; final ties are lexical.
+**VWAP deviation(`w`).** `VWAP=sum(TP_kV_k)/sum(V_k)` over the latest `w` bars. Feature = `C_t/VWAP-1`; zero when total volume is zero.
 
-If a group has no candidate eligible in all four blocks, the fold hard-fails.
+**OBV slope(`w`).** At segment start `OBV_0=0`. For `j>=1`, `OBV_j=OBV_{j-1}+sign(C_j-C_{j-1})V_j`, with `sign(0)=0`. Regress the latest `w` OBV observations on integer `x=0,...,w-1` by OLS with intercept. Divide slope by `max(mean(volume over the same w bars),1e-12)`.
 
-### 7.6 Indicator formulas
+**MFI(`w`).** Raw flow is `TP_jV_j`. For `j>=1`, classify it positive when `TP_j>TP_{j-1}`, negative when lower, neither when equal. At `j>=w`, sum the latest `w` classified flows. MFI is 100 when negative flow is zero but positive flow is nonzero, 50 when both are zero, otherwise `100-100/(1+positive/negative)`. Feature = MFI/100. A gap removes the predecessor and requires `w` new changes.
 
-The machine registration freezes the exact formulas.
+**Lag return(`k`).** `log(C_t/C_{t-k})` for `k∈{1,2,3,6,12,24}`.
 
-Key project choices include:
+### 7.5 Ten reconstruction groups
 
-- Wilder RSI and ATR;
-- MACD fast span `max(2,floor(w/2))`, slow span `w`, signal span `max(2,floor(w/3))`;
-- population standard deviations, `ddof=0`, for rolling feature calculations;
-- OLS slope for OBV;
-- deterministic zero-denominator behavior;
-- causal resets at gaps.
+Exactly one feature is selected from each group, in this registered order:
+
+1. `MOM_RSI`: RSI
+2. `MOM_ROC`: ROC
+3. `TREND_SMA`: distance-to-SMA
+4. `TREND_MACD`: MACD + MACD histogram
+5. `VOL_ATR_STD`: ATR ratio + rolling std
+6. `VOL_BB`: Bollinger position
+7. `PRICE_VOLUME_VWAP`: VWAP deviation
+8. `VOLUME_OBV`: OBV slope
+9. `VOLUME_MFI`: MFI
+10. `RETURN_LAGS`: lagged returns
+
+Canonical candidate names are `FAMILY__W{hours}` and `LAG_RETURN__K{hours}`.
+
+### 7.6 Training-only selection
+
+Divide the 12-month training window into four consecutive three-calendar-month blocks.
+
+Within each block, a correlation row is permitted only when both origin `t` and target bar label `t+1h` lie in that same block.
+
+For each candidate/block:
+
+- retain pairwise finite candidate/target pairs;
+- fewer than 100 pairs => candidate ineligible for that block;
+- compute `scipy.stats.spearmanr`;
+- any nonfinite correlation, including a constant candidate, => ineligible for that block.
+
+A candidate must be eligible in all four blocks.
+
+Within each block rank by descending absolute Spearman correlation, using ASCII lexical canonical feature name as tie-break. Average ordinal rank across the four blocks. Lowest average rank wins; final ties are lexical.
+
+If a selection group has no candidate eligible in all four blocks, the fold hard-fails.
+
+### 7.7 Exact deployed column order
+
+The XGBoost matrix columns are exactly:
+
+1–15. the OHLCV columns in Section 7.2 order;  
+16. `SELECTED__MOM_RSI`;  
+17. `SELECTED__MOM_ROC`;  
+18. `SELECTED__TREND_SMA`;  
+19. `SELECTED__TREND_MACD`;  
+20. `SELECTED__VOL_ATR_STD`;  
+21. `SELECTED__VOL_BB`;  
+22. `SELECTED__PRICE_VOLUME_VWAP`;  
+23. `SELECTED__VOLUME_OBV`;  
+24. `SELECTED__VOLUME_MFI`;  
+25. `SELECTED__RETURN_LAGS`;  
+26. `EGARCH_SIGMA_NEXT`;  
+27. `EGARCH_LOG_SIGMA_NEXT`;  
+28. `EGARCH_Z_CURRENT`.
+
+No dictionary/object iteration order may substitute for this contract.
 
 ## 8. EGARCH
 
-Candidate orders are exactly:
+PSR-01B uses a project-defined exact segmented EGARCH contract to prevent hidden state propagation across gaps.
 
-- (1,1,1);
-- (2,1,1);
-- (1,1,2);
-- (2,1,2).
+Candidate orders, evaluated in this exact order, are:
 
-Use:
+1. (1,1,1)
+2. (2,1,1)
+3. (1,1,2)
+4. (2,1,2)
 
-- constant conditional mean;
-- Student-t innovations;
-- training returns in percentage units, `100 × log return`;
-- lowest training AIC;
-- lexicographic order tie-break.
+Returns are `y_t=100×log(C_t/C_{t-1})`.
 
-Output predictors:
+For EGARCH(`p,o,q`):
 
-1. conditional volatility;
-2. log conditional volatility;
-3. standardized residual.
+`h_t = omega + sum_i alpha_i a_{t-i} + sum_j gamma_j z_{t-j} + sum_k beta_k h_{t-k}`
 
-Parameters are fit only on training and held fixed through validation/test.
+`sigma_t = exp(h_t/2)`
 
-No validation/test EGARCH refit is permitted.
+`z_t = (y_t-mu)/sigma_t`
 
-For PROJECT_GAP_PRESERVING, EGARCH recursion resets at a gap to the fitted unconditional log-variance proxy with standardized residual zero; no residual or variance state may propagate across the missing interval.
+`a_t = |z_t|-m_nu`.
+
+The standardized Student-t absolute-moment constant is:
+
+`m_nu = 2 sqrt(nu-2) Gamma((nu+1)/2) / ((nu-1)sqrt(pi)Gamma(nu/2))`.
+
+The standardized Student-t log-density is:
+
+`log f(z)=lgamma((nu+1)/2)-lgamma(nu/2)-0.5log(pi(nu-2))-((nu+1)/2)log(1+z^2/(nu-2))`.
+
+Observation log likelihood is:
+
+`log f(z_t)-0.5h_t`.
+
+### 8.1 Exact reset
+
+Require `0<=beta_k<=0.999` and `sum beta_k<=0.999`.
+
+Define:
+
+`h_bar = omega/(1-sum beta_k)`.
+
+At every independent segment start, all pre-segment `q` log-variance lags equal `h_bar`, all pre-segment centered absolute-shock lags equal 0, and all pre-segment signed standardized-residual lags equal 0.
+
+A nonfinite reset, nonpositive denominator, or overflow hard-fails that order.
+
+### 8.2 Segmented training likelihood
+
+PAPER_FILL has one continuous filled training segment.
+
+PROJECT_GAP_PRESERVING maximizes one **joint likelihood with one shared parameter vector**, equal to the sum of log likelihoods over all maximal contiguous training-return segments. Each segment resets independently under Section 8.1. Latent state never propagates across a missing interval.
+
+Only training-split returns enter the likelihood.
+
+Optimization is deterministic:
+
+- `scipy.optimize.minimize`;
+- method `SLSQP`;
+- one start only;
+- `maxiter=5000`;
+- `ftol=1e-10`;
+- `disp=False`.
+
+Initial values:
+
+- `mu` = arithmetic mean of eligible training `y`;
+- total beta = 0.90, split equally across `q`;
+- each alpha = `0.05/p`;
+- each gamma = 0;
+- `omega = log(population_variance(y,ddof=0))×(1-0.90)`;
+- `nu=8`.
+
+Bounds:
+
+- `mu ∈ [-1000,1000]`;
+- `omega ∈ [-20,20]`;
+- each alpha/gamma `∈[-2,2]`;
+- each beta `∈[0,0.999]`;
+- `nu∈[2.05,200]`;
+- inequality: `0.999-sum(beta)>=0`.
+
+Optimizer failure, nonfinite objective/parameters, or invalid recursion makes that order unavailable. If all four orders are unavailable, the fold hard-fails.
+
+For a successful order:
+
+`AIC=2k-2LL`, with `k=3+p+o+q`.
+
+Lowest finite AIC wins; exact ties use the registered order above.
+
+### 8.3 Exact causal update
+
+For each observed return `y_t`:
+
+1. compute `h_t` using only pre-`y_t` histories;
+2. observe `y_t`;
+3. compute `z_t` and `a_t`;
+4. update histories so `h_{t+1}` can be computed.
+
+At forecast origin `t`, after `C_t` is complete, the three deployed features are:
+
+- `EGARCH_SIGMA_NEXT = exp(h_{t+1}/2)`;
+- `EGARCH_LOG_SIGMA_NEXT = h_{t+1}/2`;
+- `EGARCH_Z_CURRENT = z_t`.
+
+Therefore no `y_{t+1}` information enters the feature vector.
+
+Parameters are fit on training only. After fitting, replay training from a training-start reset, then carry state causally through validation and test with parameters fixed. Do not reset at train/validation or validation/test boundaries; reset only at an actual continuity gap.
 
 ## 9. XGBoost and model selection
 
-Only XGBoost is allowed.
+Only XGBoost, MSE, and validation loss-best selection are allowed.
 
-Only MSE is allowed.
-
-Only validation loss-best selection is allowed.
-
-Optuna uses TPE with exactly 50 trials per fold and no pruner.
-
-Search ranges are frozen to the paper's reported ranges:
-
-- max depth: integer 2–4;
-- learning rate: log-uniform 0.005–0.03;
-- estimators: integer 1000–2500;
-- min child weight: 10–40;
-- subsample: 0.60–0.90;
-- column sample by tree: 0.60–0.90;
-- L1: log-uniform 1e-4–0.05;
-- L2: log-uniform 1–40.
-
-Fixed XGBoost settings include:
-
-- `reg:squarederror`;
-- histogram tree method;
-- one thread;
-- early-stopping patience 50.
-
-### 9.1 Target standardization
+Target standardization uses arithmetic mean and **population standard deviation (`ddof=0`)**.
 
 During tuning:
 
-- compute training target mean/std from training only;
+- calculate mean/std on training target only;
 - standardize training target;
-- evaluate validation MSE in that same training scale.
+- validation uses the same training mean/std.
 
 For final refit:
 
-- recompute target mean/std from combined train+validation;
-- retrain on combined train+validation;
-- inverse-transform test forecasts back to raw log-return units before any trading rule is applied.
+- recompute mean/std with `ddof=0` on the union of rows independently eligible in original train and validation splits;
+- inverse-transform test forecasts to raw log-return units.
 
-A zero target standard deviation hard-fails.
+Zero or nonfinite std hard-fails.
 
-### 9.2 Final retraining
+### 9.1 Optuna
 
-After the winning trial is chosen:
+Use exactly:
 
-- preserve its hyperparameters;
-- set final estimator count to `best_iteration + 1`;
+`TPESampler(seed=derived_optuna_seed, multivariate=False, group=False, constant_liar=False)`
+
+and `NopPruner()`.
+
+Create one minimization study and execute exactly 50 trials sequentially with `n_jobs=1`.
+
+Suggestion calls occur in this exact order and use these exact names:
+
+1. `max_depth`: int 2–4 inclusive
+2. `learning_rate`: log float 0.005–0.03
+3. `n_estimators`: int 1000–2500 inclusive
+4. `min_child_weight`: float 10–40
+5. `subsample`: float 0.60–0.90
+6. `colsample_bytree`: float 0.60–0.90
+7. `reg_alpha`: log float 1e-4–0.05
+8. `reg_lambda`: log float 1–40
+
+Exactly equal finite objective values are resolved by smallest `trial.number`.
+
+### 9.2 XGBoost
+
+Fixed settings include:
+
+- `objective='reg:squarederror'`;
+- `tree_method='hist'`;
+- CPU execution;
+- `n_jobs=1`;
+- `random_state=derived_seed`;
+- `eval_metric='rmse'`;
+- early stopping patience 50.
+
+No additional uncontrolled RNG is allowed.
+
+During tuning, the evaluation set is exactly the registered validation matrix and standardized validation target.
+
+The monitored metric is validation RMSE.
+
+If multiple boosting iterations attain the same minimum recorded RMSE, the **smallest iteration** is the selected best iteration.
+
+The Optuna objective is validation MSE computed from predictions using trees `0..best_iteration` inclusive.
+
+### 9.3 Final retraining
+
+After winning-trial selection:
+
+- preserve winning hyperparameters;
+- final estimator count = `best_iteration+1`;
 - if early stopping never triggered, use the sampled estimator count;
+- recompute target scaling on combined eligible train+validation;
 - retrain once on combined train+validation;
-- do not early-stop final refit;
+- no early stopping in final refit;
+- use the registered final-refit random seed;
 - apply once to held-out test.
 
 ## 10. Forecast identity firewall
 
-For each missing-data arm and fold, exactly one final forecast vector is generated.
+For each missing-data arm/fold, exactly one final forecast vector is generated.
 
-Its SHA-256 must be recorded.
+BASELINE_SIGN and COST_AWARE must consume the same vector. No execution-rule-specific tuning, fitting, feature selection, or RNG path is permitted.
 
-Both:
+The vector is strictly sorted by forecast-origin bar-open timestamp and contains no duplicate timestamps or nonfinite forecasts.
 
-- BASELINE_SIGN; and
-- COST_AWARE
+Canonical forecast bytes are:
 
-must consume the exact same forecast-vector bytes/logical values.
+- ASCII prefix `PSR01B_FORECAST_VECTOR_V1\0`;
+- unsigned 64-bit little-endian row count;
+- for each row, `struct.pack('<qd', timestamp_unix_seconds, forecast_float64)`.
 
-The execution rules may not trigger separate tuning, feature selection, refitting, or hyperparameter selection.
+The timestamp is signed int64 Unix seconds for the UTC bar-open label. Forecast is IEEE-754 float64 little-endian in raw log-return units.
+
+Forecast identity is `SHA256(payload)`.
+
+Both execution rules must record the same hash for an arm/fold.
 
 ## 11. Trading rules
 
@@ -422,86 +609,135 @@ In the gap-preserving arm, remain flat until 24 contiguous prior hours are avail
 
 ## 14. Performance metrics
 
-Use the paper's definitions.
-
-For finite evaluation returns `r_t`:
+For any registered return sequence, all returns must be finite and `1+r_t>0`.
 
 `ARC = prod(1+r_t)^(8760/N)-1`.
 
-`ASD = sqrt(8760) × sample_std(r_t, ddof=1)`.
+`ASD = sqrt(8760)×sample_std(r_t,ddof=1)`.
 
-Annual risk-free rate:
+Annual risk-free rate is `0.042`.
 
-`r_f = 0.042`.
+`Sharpe=(ARC-0.042)/ASD`.
 
-Sharpe:
+For each fold:
 
-`(ARC - 0.042) / ASD`.
+- `fold_total_return=prod(1+r_t)-1`;
+- `fold_ARC=prod(1+r_t)^(8760/N_fold)-1`;
+- `fold_ASD=sqrt(8760)×sample_std(r_t,ddof=1)`;
+- `fold_Sharpe=(fold_ARC-0.042)/fold_ASD`.
 
-Also report maximum drawdown, turnover, completed-trade count, fold-level returns, and fold-level Sharpe.
+If fold or consolidated ASD is zero/nonfinite, Sharpe is unavailable; an experiment cannot pass a condition that requires its sign.
 
-For PROJECT_GAP_PRESERVING, `N` is the number of finite accepted evaluation-return records. Missing/gap rows are not silently inserted as zero returns.
+### 14.1 Maximum drawdown
+
+Set `E_0=1`.
+
+For each registered net return:
+
+`E_j=E_{j-1}(1+r_j)`.
+
+Costs are already embedded in `r_j`.
+
+Running peak:
+
+`P_j=max(E_0,...,E_j)`.
+
+Drawdown:
+
+`D_j=E_j/P_j-1`.
+
+Maximum drawdown:
+
+`MDD=min_j D_j`, a non-positive number.
+
+For consolidated statistics, concatenate fold return records in registered fold order and **carry equity across fold boundaries**. Do not reset wealth between folds even though positions reset to cash. Terminal liquidation costs are already inside the last return record of each fold.
+
+Consolidated total return is `prod(1+r_t)-1`.
+
+For PROJECT_GAP_PRESERVING, `N` is the number of accepted finite evaluation-return records; gap rows are not inserted as zero.
 
 ## 15. Primary inferential test
 
-Primary differential:
+For each missing-data arm define paired hourly differential:
 
-`d_t = r_t(COST_AWARE) - r_t(BASELINE_SIGN)`.
+`d_t = r_t(COST_AWARE)-r_t(BASELINE_SIGN)`.
 
-Primary statistic:
+Primary statistic: pooled arithmetic mean differential.
 
-mean hourly net-return differential.
+Primary requested block length: 168 hours.
 
-Primary block length:
+Secondary requested block lengths: 24 and 72 hours.
 
-168 hours.
+Bootstrap draws: exactly 10,000.
 
-Bootstrap replications:
+### 15.1 Segment-respecting circular algorithm
 
-10,000.
+Segments are processed in registered fold order and then ascending segment-start timestamp.
 
-The 24-hour and 72-hour block lengths are secondary robustness diagnostics only.
+For a segment of length `n>=1` and requested block length `L`:
 
-### 15.1 Segment-respecting bootstrap
+- `L_eff=min(L,n)`;
+- draw `ceil(n/L_eff)` independent start indices uniformly from integers `0,...,n-1`, with replacement;
+- each block contains indices `(start+j) mod n` for `j=0,...,L_eff-1`;
+- concatenate blocks;
+- retain exactly the first `n` sampled observations.
 
-Bootstrap blocks may not cross:
+Thus a segment shorter than 168, 72, or 24 hours is **not dropped** and does **not** use a block longer than itself. Its effective block length equals its segment length.
 
-- fold boundaries; or
-- continuity gaps.
+Resample every nonempty segment independently back to its own original length, then concatenate sampled segments in registered order.
 
-Each registered contiguous fold/segment is circularly block-resampled independently back to its original length.
+No block may cross a fold or continuity-gap boundary.
 
-Resampled segments are then concatenated in the registered fold/segment order.
+RNG is:
 
-For the one-sided primary test, center the observed differential by subtracting its observed pooled mean before resampling.
+`numpy.random.Generator(numpy.random.PCG64(registered_seed))`.
+
+### 15.2 Null test and interval
+
+For the one-sided primary test, subtract the observed **pooled differential mean** from every observed differential before applying the registered sampled indices.
 
 Alternative:
 
-`mean(COST_AWARE − BASELINE_SIGN) > 0`.
+`mean(COST_AWARE-BASELINE_SIGN)>0`.
 
 Raw p-value:
 
-`(1 + # bootstrap centered means >= observed mean) / 10001`.
+`(1 + count(centered_bootstrap_mean >= observed_mean))/10001`.
 
-A 95% percentile interval from uncentered paired bootstrap draws is also reported.
+Use the **same sampled indices** on uncentered paired strategy returns to generate complementary Sharpe-difference evidence and the uncentered statistic distribution.
 
-Sharpe-difference bootstrap evidence is complementary, not a mandatory pass gate.
+The 95% percentile interval is exactly:
+
+`np.quantile(draws,[0.025,0.975],method='linear')`.
+
+Sharpe-difference evidence is reported but is not itself an additional mandatory inferential gate.
 
 ## 16. Multiple testing
 
-There are exactly two primary hypotheses:
-
-1. PAPER_FILL mean differential;
-2. PROJECT_GAP_PRESERVING mean differential.
-
-Apply Holm step-down correction across these two raw one-sided p-values at alpha 0.05.
-
-Registered tie-break order:
+There are exactly two primary raw p-values, in registered order:
 
 1. PAPER_FILL;
 2. PROJECT_GAP_PRESERVING.
 
-The 24h/72h robustness diagnostics are not added to the primary family and cannot rescue failure at 168h.
+Apply Holm step-down at alpha 0.05.
+
+Let `m=2`. Sort raw p-values ascending, resolving exact ties by registered arm order.
+
+At sorted rank `j=0,...,m-1` compute:
+
+`s_j=(m-j)p_j`.
+
+Then:
+
+`adjusted_j=min(1,max(s_0,...,s_j))`.
+
+Map adjusted values back to registered arm order.
+
+Reject iff `adjusted_p<=0.05`.
+
+A nonfinite raw p-value hard-fails; no pass classification is available.
+
+The 24h and 72h robustness diagnostics are outside the primary Holm family and cannot rescue a 168h failure.
 
 ## 17. Replication decision
 
@@ -535,7 +771,7 @@ A failure closes this registered experiment. It may not be rescued inside PSR-01
 - missing-data arms;
 - bootstrap family.
 
-Any such change requires a new registered experiment.
+Any such change requires a new registered experiment. More generally, **any registered analytic field changed after empirical outcome observation constitutes a new experiment and cannot amend PSR-01B.**
 
 ## 18. Stochastic reproducibility
 
