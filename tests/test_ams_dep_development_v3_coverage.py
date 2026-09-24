@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from datetime import timedelta
+from datetime import datetime, timedelta
 from decimal import Decimal
+import hashlib
+import json
 
 import pytest
 
@@ -246,17 +248,93 @@ def test_lossless_vectors_round_trip_and_validate_digests():
         "BTCUSDT", base, observed, ("BTCUSDT-1h-2017-08.zip",)
     )
     evidence = audit.evidence
-    accepted = evidence["accepted_normalized_timestamp_vector_exact"]
-    missing = evidence["missing_coverage_hour_vector_exact"]
-    assert timestamp_vector_sha256(tuple(accepted)) == (
+    payload_record = {
+        "accepted": evidence["accepted_normalized_timestamp_vector_exact"],
+        "missing": evidence["missing_coverage_hour_vector_exact"],
+        "base_segments": evidence["base_certified_segment_records_exact"],
+        "gaps": evidence["coverage_gap_intervals_exact"],
+        "final_segments": evidence["final_certified_segments_exact"],
+        "boundaries": evidence["adjacent_archive_boundary_records_exact"],
+    }
+    payload = json.dumps(
+        payload_record,
+        sort_keys=True,
+        ensure_ascii=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    payload_sha256 = hashlib.sha256(payload).hexdigest()
+
+    restored = json.loads(payload.decode("ascii"))
+    reencoded = json.dumps(
+        restored,
+        sort_keys=True,
+        ensure_ascii=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    assert hashlib.sha256(reencoded).hexdigest() == payload_sha256
+
+    def expand_segments(records):
+        values = []
+        for record in records:
+            cursor = datetime.fromisoformat(record["start"])
+            end = datetime.fromisoformat(record["end"])
+            while cursor < end:
+                values.append(cursor.isoformat())
+                cursor += timedelta(hours=1)
+        return values
+
+    def coalesce_hours(values):
+        if not values:
+            return []
+        parsed = [datetime.fromisoformat(value) for value in values]
+        result = []
+        start = previous = parsed[0]
+        for current in parsed[1:]:
+            if current == previous + timedelta(hours=1):
+                previous = current
+                continue
+            result.append(
+                {
+                    "start": start.isoformat(),
+                    "end": (previous + timedelta(hours=1)).isoformat(),
+                }
+            )
+            start = previous = current
+        result.append(
+            {
+                "start": start.isoformat(),
+                "end": (previous + timedelta(hours=1)).isoformat(),
+            }
+        )
+        return result
+
+    reconstructed_b = expand_segments(restored["base_segments"])
+    accepted_set = set(restored["accepted"])
+    reconstructed_m = [
+        value for value in reconstructed_b if value not in accepted_set
+    ]
+    reconstructed_c = [
+        value for value in reconstructed_b if value in accepted_set
+    ]
+    assert reconstructed_m == restored["missing"]
+    assert [
+        {"start": item["start"], "end": item["end"]}
+        for item in restored["gaps"]
+    ] == coalesce_hours(reconstructed_m)
+    assert restored["final_segments"] == coalesce_hours(reconstructed_c)
+
+    assert timestamp_vector_sha256(tuple(restored["accepted"])) == (
         evidence["accepted_timestamp_vector_sha256"]
     )
-    assert timestamp_vector_sha256(tuple(missing)) == (
+    assert timestamp_vector_sha256(tuple(restored["missing"])) == (
         evidence["missing_coverage_hour_vector_sha256"]
     )
-    assert record_sequence_sha256(
-        evidence["final_certified_segments_exact"]
-    ) == evidence["final_certified_segments_sha256"]
+    assert record_sequence_sha256(restored["final_segments"]) == (
+        evidence["final_certified_segments_sha256"]
+    )
+    assert record_sequence_sha256(restored["boundaries"]) == (
+        evidence["adjacent_archive_boundary_records_sha256"]
+    )
 
 
 def test_adjacent_archive_boundary_has_exactly_one_record_and_is_accounted():
@@ -287,6 +365,14 @@ def test_adjacent_archive_boundary_has_exactly_one_record_and_is_accounted():
     assert record["right_expected_hour"] == _iso(boundary)
     assert record["right"]["v3_coverage_excluded"] is True
     assert record["boundary_fully_accounted"] is True
+    assert audit.evidence["accepted_normalized_timestamp_vector_exact"] == [
+        _iso(boundary - timedelta(hours=1)),
+        _iso(boundary + timedelta(hours=1)),
+    ]
+    assert audit.evidence["missing_coverage_hour_vector_exact"] == [
+        _iso(boundary - timedelta(hours=2)),
+        _iso(boundary),
+    ]
 
 
 def test_unaccounted_adjacent_archive_boundary_fails_closed():
@@ -305,23 +391,73 @@ def test_unaccounted_adjacent_archive_boundary_fails_closed():
     assert info.value.failure_code == BOUNDARY_UNACCOUNTED_CODE
 
 
-def test_coverage_manifest_identity_is_deterministic():
+def test_coverage_manifest_identity_is_deterministic_under_adversarial_order():
     t0 = DEVELOPMENT_START
-    base = _base_manifest((_segment(t0, 4),))
-    observed = (t0, t0 + timedelta(hours=2), t0 + timedelta(hours=3))
+    exclusion_a = Exclusion(
+        _iso(t0 + timedelta(hours=1)),
+        _iso(t0 + timedelta(hours=2)),
+        ("scan-a",),
+        "base exclusion a",
+    )
+    exclusion_b = Exclusion(
+        _iso(t0 + timedelta(hours=4)),
+        _iso(t0 + timedelta(hours=5)),
+        ("scan-b",),
+        "base exclusion b",
+    )
+    segments = (
+        _segment(t0, 1),
+        _segment(t0 + timedelta(hours=2), 2),
+        _segment(t0 + timedelta(hours=5), 2),
+    )
+    base_forward = _base_manifest(
+        segments,
+        exclusions=(exclusion_a, exclusion_b),
+        anomaly_ids=("scan-a", "scan-b"),
+    )
+    base_reversed = _base_manifest(
+        tuple(reversed(segments)),
+        exclusions=(exclusion_b, exclusion_a),
+        anomaly_ids=("scan-a", "scan-b"),
+    )
+    observed = (
+        t0,
+        t0 + timedelta(hours=2),
+        t0 + timedelta(hours=5),
+        t0 + timedelta(hours=6),
+    )
     first = audit_development_source_coverage_v3(
-        "BTCUSDT", base, observed, ("BTCUSDT-1h-2017-08.zip",)
+        "BTCUSDT", base_forward, observed, ("BTCUSDT-1h-2017-08.zip",)
     )
     second = audit_development_source_coverage_v3(
-        "BTCUSDT", base, tuple(observed), ("BTCUSDT-1h-2017-08.zip",)
+        "BTCUSDT", base_reversed, observed, ("BTCUSDT-1h-2017-08.zip",)
     )
-    assert (
-        first.final_manifest.to_record_without_identity()
-        == second.final_manifest.to_record_without_identity()
+    first_record = first.final_manifest.to_record_without_identity()
+    second_record = second.final_manifest.to_record_without_identity()
+    first_bytes = json.dumps(
+        first_record,
+        sort_keys=True,
+        ensure_ascii=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    second_bytes = json.dumps(
+        second_record,
+        sort_keys=True,
+        ensure_ascii=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    assert first_bytes == second_bytes
+    assert first.final_manifest.dataset_identity == (
+        second.final_manifest.dataset_identity
     )
-    assert (
-        first.final_manifest.dataset_identity
-        == second.final_manifest.dataset_identity
+    assert first.evidence["coverage_gap_intervals_exact"] == (
+        second.evidence["coverage_gap_intervals_exact"]
+    )
+    assert first.evidence["missing_coverage_hour_vector_sha256"] == (
+        second.evidence["missing_coverage_hour_vector_sha256"]
+    )
+    assert first.evidence["final_certified_segments_sha256"] == (
+        second.evidence["final_certified_segments_sha256"]
     )
 
 
