@@ -101,7 +101,7 @@ def test_v3_failure_artifact_has_no_repair_flags():
     mod = load_runner()
     mod._reset_incident_state()
     failure = mod._failure_result(RuntimeError("injected"))
-    assert failure["version"] == 2
+    assert failure["version"] == 3
     assert failure["timestamp_rounding_used"] is False
     assert failure["interpolation_used"] is False
     assert failure["synthetic_bar_used"] is False
@@ -148,8 +148,8 @@ def test_v3_partial_source_record_retains_progressive_row_evidence():
         official_url="https://data.binance.vision/example.zip",
         official_checksum_sha256="a" * 64,
         local_zip_sha256="a" * 64,
-        parent_v1_btc_checksum_sha256="a" * 64,
-        parent_v1_checksum_continuity_pass=True,
+        parent_btc_checksum_sha256="a" * 64,
+        parent_checksum_continuity_pass=True,
     )
     progressive = {
         "evidence_status": "PARTIAL_PROGRESSIVE_NOT_FINAL",
@@ -189,3 +189,59 @@ def test_v3_partial_source_record_retains_progressive_row_evidence():
         ]
         == 4
     )
+
+
+def test_v3_parent_v2_incident_is_immutable_provenance():
+    mod = load_runner()
+    assert mod.PARENT_V2 == {
+        "run_id": 35909778426,
+        "artifact_id": 10772389334,
+        "claim_ref": "refs/tags/ams-dep-development-execution-claimed-v2",
+        "claim_target": "f925897a5ef5ab1e34ecaa087b87ee07f779eb56",
+        "review_anchor_ref":
+            "refs/heads/ams-dep-development-implementation-reviewed-v2",
+        "reviewed_candidate":
+            "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
+        "artifact_zip_sha256":
+            "a37dbd7b2a6e31ba69a51c4f43c911aa844044b3852c07fb94151dd600390979",
+        "result_json_sha256":
+            "251c84d2090f510c80d91932e720648fa19fe26812741cc5018042c763fde144",
+    }
+
+
+def test_v3_partial_source_record_retains_progressive_coverage_evidence():
+    mod = load_runner()
+    evidence = ArchiveEvidenceV3(
+        symbol="BTCUSDT",
+        year=2017,
+        month=8,
+        filename="BTCUSDT-1h-2017-08.zip",
+        official_url="https://data.binance.vision/example.zip",
+        official_checksum_sha256="a" * 64,
+        local_zip_sha256="a" * 64,
+        parent_btc_checksum_sha256="a" * 64,
+        parent_checksum_continuity_pass=True,
+    )
+    coverage = {
+        "evidence_status": "COMPLETE_SOURCE_COVERAGE_AUDIT",
+        "accepted_normalized_timestamp_vector_exact": [
+            "2017-08-17T00:00:00+00:00"
+        ],
+        "missing_coverage_hour_vector_exact": [],
+    }
+    exc = RuntimeError("injected")
+    exc.partial_archive_evidence = (evidence,)
+    exc.progressive_normalization_evidence = {
+        "evidence_status": "COMPLETE_NORMALIZATION_ACCOUNTING"
+    }
+    exc.progressive_coverage_evidence = coverage
+    record = mod._partial_source_record("BTCUSDT", exc)
+    assert record["progressive_coverage_evidence"] == coverage
+
+
+def test_v3_failure_result_includes_both_parent_incidents():
+    mod = load_runner()
+    mod._reset_incident_state()
+    failure = mod._failure_result(RuntimeError("injected"))
+    assert failure["parent_v1_incident"] == mod.PARENT_V1
+    assert failure["parent_v2_incident"] == mod.PARENT_V2
