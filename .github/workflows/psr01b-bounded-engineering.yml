@@ -4,7 +4,9 @@ on:
     branches: [psr-01b-bounded-implementation]
     paths:
       - 'src/research_core/psr01b_core.py'
+      - 'src/research_core/psr01b_features.py'
       - 'tests/test_psr01b_core.py'
+      - 'tests/test_psr01b_features.py'
       - '.github/workflows/psr01b-bounded-engineering.yml'
   workflow_dispatch:
 permissions:
@@ -25,4 +27,4 @@ jobs:
           python-version: '3.12.14'
       - run: pip install -e '.[dev]'
       - name: Verify PSR-01B synthetic numerical core only
-        run: python -m pytest -q tests/test_psr01b_core.py
+        run: python -m pytest -q tests/test_psr01b_core.py tests/test_psr01b_features.py
