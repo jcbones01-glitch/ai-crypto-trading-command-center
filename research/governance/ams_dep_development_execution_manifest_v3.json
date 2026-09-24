@@ -1,0 +1,42 @@
+{
+  "manifest_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V3",
+  "version": 3,
+  "status": "DRAFT_LOCKED",
+  "approved_spec_review_issue": 80,
+  "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V3_RECOVERY_SPEC",
+  "approved_spec_merge_commit": "8a0d211683217cb3c84ce0cda205fc7872b7cd1e",
+  "implementation_candidate_commit": null,
+  "reviewed_implementation_commit": null,
+  "independent_implementation_reviewed": false,
+  "development_execution_authorized": false,
+  "first_empirical_execution_claimed": false,
+  "first_empirical_execution_executed": false,
+  "one_shot_claim_ref": "refs/tags/ams-dep-development-execution-claimed-v3",
+  "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v3",
+  "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V3",
+  "empirical_bootstrap_root": 2026092201,
+  "implementation_file_git_blob_sha1": {},
+  "protected_permissions": {
+    "validation_or_oos_access_authorized": false,
+    "strategy_pnl_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "directed_cross_asset_lagged_diagnostics_authorized": false
+  },
+  "parent_v1_incident": {
+    "run_id": 35834431025,
+    "artifact_id": 10738551310,
+    "claim_ref": "refs/tags/ams-dep-development-execution-claimed-v1",
+    "claim_target": "969f6aeadda4143b0882b8e9169e3f6dd9c177ed",
+    "consumed": true
+  },
+  "parent_v2_incident": {
+    "run_id": 35909778426,
+    "artifact_id": 10772389334,
+    "claim_ref": "refs/tags/ams-dep-development-execution-claimed-v2",
+    "claim_target": "f925897a5ef5ab1e34ecaa087b87ee07f779eb56",
+    "reviewed_candidate": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
+    "consumed": true
+  },
+  "notes": "V3 is implementation-stage only. No reviewed candidate exists, no V3 review anchor or claim exists, and Development execution remains unauthorized. Only offline/synthetic implementation work inside the approved V3 surface is permitted."
+}
