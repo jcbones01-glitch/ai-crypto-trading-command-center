@@ -1,0 +1,942 @@
+{
+  "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+  "version": 1,
+  "status": "REVISION_4_GOVERNANCE_METADATA_REMEDIATED_PENDING_FINAL_REREVIEW",
+  "parent_source_review_issue": 86,
+  "parent_source_decision": "PSR01_SOURCE_IDENTITY_UNRESOLVED",
+  "parent_design_review_issue": 88,
+  "parent_design_review_decision": "APPROVE_PSR01B_BOUNDED_DESIGN_DRAFTING",
+  "parent_design_review_comment_id": 5820578750,
+  "claim_boundary": {
+    "scientific_claim": "BOUNDED_DECLARED_DEVIATION_MECHANISM_REPLICATION",
+    "exact_replication_claim_allowed": false,
+    "paper_futures_performance_reproduction_claim_allowed": false
+  },
+  "authorization": {
+    "implementation_authorized": false,
+    "empirical_forecast_generation_authorized": false,
+    "strategy_pnl_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "leverage_authorized": false,
+    "derivatives_execution_authorized": false,
+    "ams_dep_validation_or_oos_access_authorized": false
+  },
+  "source": {
+    "provider": "Binance Public Data",
+    "market": "spot",
+    "symbol": "BTCUSDT",
+    "timeframe": "1h",
+    "timezone": "UTC",
+    "archive_type": "monthly klines ZIP",
+    "url_pattern": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-{YYYY}-{MM}.zip",
+    "raw_start": "2017-12-01T00:00:00Z",
+    "modelling_start": "2018-01-01T00:00:00Z",
+    "hard_end_exclusive": "2022-01-01T00:00:00Z",
+    "prohibited_timestamp_gte": "2022-01-01T00:00:00Z",
+    "archive_count": 49,
+    "archive_sha256": {
+      "BTCUSDT-1h-2017-12.zip": "9b86b43c9a649065cc1e7f3b8fe4825e614d9e8ca43808b74a0efe96465bd90c",
+      "BTCUSDT-1h-2018-01.zip": "b649198039645124717f334443ae550d1060661ee03c5fb605cf067fab26dc85",
+      "BTCUSDT-1h-2018-02.zip": "4e040b57a38af99b1f86efb12d95aed406b575af67b8038831523ff6362225d1",
+      "BTCUSDT-1h-2018-03.zip": "a3f45f20d28eab88292d1baac72402ebf59f4462d0bb834288f69b59a65cbf5f",
+      "BTCUSDT-1h-2018-04.zip": "d0fe439f2afab8677e423c9748bc96ef9694b8d60bf8a59790fd776d8ed18d87",
+      "BTCUSDT-1h-2018-05.zip": "a365154fb49c29060df5f5b6a79181e4e667ca1bac049df26a067faa634ffa62",
+      "BTCUSDT-1h-2018-06.zip": "20894cb34d1049cbdd93df83be5f218c6ae1b5ca27b689b1b076ac5bc809fb81",
+      "BTCUSDT-1h-2018-07.zip": "29610f0bb84011e494b83881584d1eb2d3a61c5801ee51ebea7c1c4e6a9b4210",
+      "BTCUSDT-1h-2018-08.zip": "cad3b2b11aefa082a07ae3d8f11dfd6ee5018702dfd3986277151b66ae002991",
+      "BTCUSDT-1h-2018-09.zip": "d8109c9f64af195fb9babf498f84ece9e7ac471618977202dcf710461e124d00",
+      "BTCUSDT-1h-2018-10.zip": "959094f6d37e7cae75951cea30fdc3d5b1eb9de58a6cf1ce40f0e49d0adfb79b",
+      "BTCUSDT-1h-2018-11.zip": "a75aba58d80b798809e47819990fad71418c0982be1c4643b5a0490e0f86bd91",
+      "BTCUSDT-1h-2018-12.zip": "c5f05f2966529220add51dc1ee66ab7408ae787179f96c288e4f6ff021f51edd",
+      "BTCUSDT-1h-2019-01.zip": "41cb84ccff03d5372f22e7502a1c563dd7b3b15347fe086b16daa98aced7a179",
+      "BTCUSDT-1h-2019-02.zip": "fc054507a0f33b54bcc2f292243b8caa765927572e92731283f42498c64dc4e6",
+      "BTCUSDT-1h-2019-03.zip": "2c4a969908c2570299052b4faf27b4a39561b1043babc7a65a846a6a65abaa2e",
+      "BTCUSDT-1h-2019-04.zip": "d37e1150e8f4556a22cb2ed98d9b6eefe7b5df3be9f06587e273baea2bbf960e",
+      "BTCUSDT-1h-2019-05.zip": "ddffd71adc100760d31ab5ea0fb8d8ccf5f3c80a06a31808a024324b4a693799",
+      "BTCUSDT-1h-2019-06.zip": "079b0071aaf0642d3608bca3ee14e50e394550176da3e4029d22761e288466e8",
+      "BTCUSDT-1h-2019-07.zip": "f45beec30a4812d42b8eb3a34da3f75e5dee0433032a06ba57ff48644ee7c2f9",
+      "BTCUSDT-1h-2019-08.zip": "50b058b5774190b577f1bc45767aeb33f4e947dc00e8d143f6c4afa0f5a3cd34",
+      "BTCUSDT-1h-2019-09.zip": "2aaaf6e4d0455b889225ca1cfde23a15e2359850f803bc9998df30ac1bbef63f",
+      "BTCUSDT-1h-2019-10.zip": "d44a2b3e463683c8bfc61c2f15f156665dc3dd3835e69c2ea3b49a518ca14b43",
+      "BTCUSDT-1h-2019-11.zip": "63572600e87350f1d5679049a44e8338cf7b692d0c67220dc316267a91af108b",
+      "BTCUSDT-1h-2019-12.zip": "87267b84d9f0e64ec94799d62de6730825c6a44f154ada5ed8c2dd267df78481",
+      "BTCUSDT-1h-2020-01.zip": "4ef7fa698b6821493f4c8317bc616d48bcdf5951d32fe6e40aaa7608886e51ca",
+      "BTCUSDT-1h-2020-02.zip": "0189065a1b789825448530cb3fdddcefa45ca13b0a6bca181f358c72d3a6d5e6",
+      "BTCUSDT-1h-2020-03.zip": "cc36c481c31ef93115d96b5a7045ec2ef737e5339546d6688cb1f677526c6787",
+      "BTCUSDT-1h-2020-04.zip": "4f08d13c81cadf8d5fc7afcd0924d084d2f81c7d004323812e7508ad135f89e7",
+      "BTCUSDT-1h-2020-05.zip": "1559b30329851938a54e6782cd28dcbf34ec27a6cc82132250db9a357f4eaf5a",
+      "BTCUSDT-1h-2020-06.zip": "2ccf45a7307e09dec1fd3622d54057e7e44371bf70a8be1030687f654341799e",
+      "BTCUSDT-1h-2020-07.zip": "378b83c163c8d315075189b039b027d705c3ae225461f04c1226569a4edfcb99",
+      "BTCUSDT-1h-2020-08.zip": "3b4fbdfe798389a1317e333772f176bce711856d87e68c1b77f09631b0cf4b84",
+      "BTCUSDT-1h-2020-09.zip": "46f236c7cd38d72d4a37e80a45e357e7bec48bc89cc6a36c0c17ceb92ce8d101",
+      "BTCUSDT-1h-2020-10.zip": "72fe011922ace0851a44ffa51327d75545212a7e8179867d514a5934ce93a6e0",
+      "BTCUSDT-1h-2020-11.zip": "c3f3548fd082f0fa63d2138a5aca3b572729f6351de8a20c895a80acd3ae395b",
+      "BTCUSDT-1h-2020-12.zip": "c880c8e76e2dbcbed04bc1ddd549949a94a4314520dc1f1becbd881453aa5ede",
+      "BTCUSDT-1h-2021-01.zip": "a2fa12bec12d942e58dbc7fb223973bd2173dfccf8e09edc501bda40b3c3638e",
+      "BTCUSDT-1h-2021-02.zip": "8cd20f5058dc7585cfa874a3ab0e5fd0096f369c182d8fda80dc16495050e018",
+      "BTCUSDT-1h-2021-03.zip": "748783e9715835dd334fbc0cbbff0518962ebbcbe0430acb65f2f506193bad2d",
+      "BTCUSDT-1h-2021-04.zip": "e5a33803814e6771c4c85e8f2e28e90e46d40f14ca3180a8c10c305cf07fab74",
+      "BTCUSDT-1h-2021-05.zip": "728503d417904afff17b403e66f74c18ed0067d3f8e4215130c8a97180c9fccc",
+      "BTCUSDT-1h-2021-06.zip": "9ea9585cf2c938044d2d1b613f451ff9482bd7d2a38da2c9d22cf0c9f00f65ac",
+      "BTCUSDT-1h-2021-07.zip": "993a88728e31b4c4e6f3b28442ab251de5ee434fe06865e1b57063a4f91fc8d9",
+      "BTCUSDT-1h-2021-08.zip": "5cadb462255761842326a2c4b5fe2a91c8a2135c3ba6dd5f0969877f0722f4be",
+      "BTCUSDT-1h-2021-09.zip": "0d344f8ab39d910c148b89fada91256afcb3e8b20eb812ebc158ac8ac527ea07",
+      "BTCUSDT-1h-2021-10.zip": "8065fe2ddd9992398b49fb76e83a60e51392e1ecd4b46c438c075d3e5f6e2291",
+      "BTCUSDT-1h-2021-11.zip": "64d376e949c3518c3b526cac41322114a2e7287395e9089f0da34e25079c2940",
+      "BTCUSDT-1h-2021-12.zip": "b01133a69b22aa7904742a06a892ff3811152377f61e23977051a937afe2fbaa"
+    },
+    "pin_provenance": {
+      "upstream_path": "research/governance/ams_dep_development_execution_v3.json",
+      "upstream_blob_sha1": "946dea1c852cd8a23d26d3a90ba99e88db5779a2",
+      "rule": "exact BTC parent checksum pins for 2017-12 through 2021-12"
+    },
+    "row_treatment_contract": {
+      "mode": "IMMUTABLE_INHERITANCE_OF_AUDITED_AMS_DEP_V2_TREATMENT_AWARE_NORMALIZER",
+      "upstream_registration_path": "research/governance/ams_dep_development_execution_v3.json",
+      "upstream_registration_blob_sha1": "946dea1c852cd8a23d26d3a90ba99e88db5779a2",
+      "required_blob_sha1": {
+        "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
+        "src/research_core/data_quality.py": "a8251c4288013d8264a85bb4cda44007459e1adf",
+        "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+        "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+        "src/research_core/archive_security.py": "cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b",
+        "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534",
+        "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
+        "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+        "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+        "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
+      },
+      "pre_source_read_requirement": "At execution preflight, Git blob SHA-1 of every required_blob_sha1 path and upstream registration must equal the registered value; any mismatch HARD_FAIL before archive read.",
+      "exact_pipeline": [
+        "verify each of the 49 archive bytes against the registered archive SHA-256 before scanner use",
+        "for each archive in lexicographic filename order call pinned data_quality.scan_archive(path,'BTCUSDT',checksum_verified=True)",
+        "build exactly one pinned data_quality_treatment_v2.build_manifest('BTCUSDT', reports, research_start=2017-12-01T00:00:00Z, research_end=2022-01-01T00:00:00Z)",
+        "call pinned ams_dep_treatment_aware_normalization_v2.normalize_development_archives('BTCUSDT', paths, reports, manifest)",
+        "use only returned accepted normalized MarketBar rows with 2017-12-01T00:00:00Z <= timestamp < 2022-01-01T00:00:00Z as the observed PSR01B source rows"
+      ],
+      "accepted_row_definition": "A raw physical row is accepted only if the inherited scanner/treatment-aware normalizer accepts it. Explicitly localized treated anomalous rows are rejected exactly as the inherited normalizer specifies.",
+      "timestamp_contract": "pinned normalize_row/parse_timestamp only; exact UTC-hour timestamp required; milliseconds or microseconds accepted only under pinned parser rules",
+      "scanner_classification_changes_allowed": false,
+      "timestamp_rounding_allowed": false,
+      "timestamp_snapping_allowed": false,
+      "interpolation_allowed": false,
+      "resampling_allowed": false,
+      "pre_arm_synthetic_bars_allowed": false,
+      "ohlcv_repair_allowed": false,
+      "arbitrary_exception_skip_allowed": false,
+      "duplicate_or_order_repair_allowed": false,
+      "missing_hour_definition": "an hourly bar label in the registered source interval that is absent from the accepted normalized timestamp set after the inherited row treatment",
+      "arm_boundary": "PAPER_FILL and PROJECT_GAP_PRESERVING are constructed only after the exact inherited normalization is complete; neither arm may change raw-row acceptance/rejection.",
+      "import_dependency_closure": {
+        "root": "src/research_core/ams_dep_treatment_aware_normalization_v2.py",
+        "direct_dependency_requiring_closure": "src/research_core/ams_dep_pipeline.py",
+        "project_local_modules_loaded_by_ams_dep_pipeline": [
+          "src/research_core/data_ingestion.py",
+          "src/research_core/data_interfaces.py",
+          "src/research_core/data_quality.py",
+          "src/research_core/data_quality_treatment_v2.py",
+          "src/research_core/dependence_statistics.py",
+          "src/research_core/market_state.py",
+          "src/research_core/source_identity.py"
+        ],
+        "transitive_project_local_modules_loaded_by_those": [
+          "src/research_core/archive_security.py"
+        ],
+        "closure_rule": "Every project-local module in required_blob_sha1 that is imported on the normalization import path must match its registered Git blob SHA-1 before source read. No unpinned project-local import may be introduced into this closure at implementation time.",
+        "constants_assertion": {
+          "expression": "ams_dep_pipeline.DEVELOPMENT_START == datetime(2017,8,17,tzinfo=UTC) AND ams_dep_pipeline.DEVELOPMENT_END == datetime(2022,1,1,tzinfo=UTC)",
+          "required": true,
+          "timing": "pre-source-read after successful pinned imports",
+          "failure": "HARD_FAIL"
+        },
+        "environment_dependencies": "Python and numpy/scipy versions remain governed by runtime_contract; standard-library modules are governed by the pinned Python runtime."
+      }
+    }
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "train_start": "2018-01-01T00:00:00Z",
+      "train_end_validation_start": "2019-01-01T00:00:00Z",
+      "validation_end_test_start": "2019-04-01T00:00:00Z",
+      "test_end": "2019-07-01T00:00:00Z"
+    },
+    {
+      "fold": 2,
+      "train_start": "2018-04-01T00:00:00Z",
+      "train_end_validation_start": "2019-04-01T00:00:00Z",
+      "validation_end_test_start": "2019-07-01T00:00:00Z",
+      "test_end": "2019-10-01T00:00:00Z"
+    },
+    {
+      "fold": 3,
+      "train_start": "2018-07-01T00:00:00Z",
+      "train_end_validation_start": "2019-07-01T00:00:00Z",
+      "validation_end_test_start": "2019-10-01T00:00:00Z",
+      "test_end": "2020-01-01T00:00:00Z"
+    },
+    {
+      "fold": 4,
+      "train_start": "2018-10-01T00:00:00Z",
+      "train_end_validation_start": "2019-10-01T00:00:00Z",
+      "validation_end_test_start": "2020-01-01T00:00:00Z",
+      "test_end": "2020-04-01T00:00:00Z"
+    },
+    {
+      "fold": 5,
+      "train_start": "2019-01-01T00:00:00Z",
+      "train_end_validation_start": "2020-01-01T00:00:00Z",
+      "validation_end_test_start": "2020-04-01T00:00:00Z",
+      "test_end": "2020-07-01T00:00:00Z"
+    },
+    {
+      "fold": 6,
+      "train_start": "2019-04-01T00:00:00Z",
+      "train_end_validation_start": "2020-04-01T00:00:00Z",
+      "validation_end_test_start": "2020-07-01T00:00:00Z",
+      "test_end": "2020-10-01T00:00:00Z"
+    },
+    {
+      "fold": 7,
+      "train_start": "2019-07-01T00:00:00Z",
+      "train_end_validation_start": "2020-07-01T00:00:00Z",
+      "validation_end_test_start": "2020-10-01T00:00:00Z",
+      "test_end": "2021-01-01T00:00:00Z"
+    },
+    {
+      "fold": 8,
+      "train_start": "2019-10-01T00:00:00Z",
+      "train_end_validation_start": "2020-10-01T00:00:00Z",
+      "validation_end_test_start": "2021-01-01T00:00:00Z",
+      "test_end": "2021-04-01T00:00:00Z"
+    },
+    {
+      "fold": 9,
+      "train_start": "2020-01-01T00:00:00Z",
+      "train_end_validation_start": "2021-01-01T00:00:00Z",
+      "validation_end_test_start": "2021-04-01T00:00:00Z",
+      "test_end": "2021-07-01T00:00:00Z"
+    },
+    {
+      "fold": 10,
+      "train_start": "2020-04-01T00:00:00Z",
+      "train_end_validation_start": "2021-04-01T00:00:00Z",
+      "validation_end_test_start": "2021-07-01T00:00:00Z",
+      "test_end": "2021-10-01T00:00:00Z"
+    },
+    {
+      "fold": 11,
+      "train_start": "2020-07-01T00:00:00Z",
+      "train_end_validation_start": "2021-07-01T00:00:00Z",
+      "validation_end_test_start": "2021-10-01T00:00:00Z",
+      "test_end": "2022-01-01T00:00:00Z"
+    }
+  ],
+  "feature_contract": {
+    "feature_tier": "OHLCV+TA+EGARCH",
+    "paper_feature_count_target": 28,
+    "warmup_hours_before_each_train_start": 744,
+    "predictor_scaling": "NONE_FOR_XGBOOST_PROJECT_RECONSTRUCTION",
+    "target_standardization": {
+      "tuning": "z-score using training target mean/std only; validation loss in that training scale",
+      "final_refit": "recompute target mean/std on combined train+validation; inverse-transform test forecasts to raw log-return units",
+      "zero_std_behavior": "HARD_FAIL"
+    },
+    "ohlcv_reconstruction": {
+      "status": "PROJECT_DEFINED_DECLARED_DEVIATION",
+      "count": 15,
+      "features": [
+        "RET_1=log(C_t/C_{t-1})",
+        "OPEN_GAP=log(O_t/C_{t-1})",
+        "HIGH_PREVCLOSE=log(H_t/C_{t-1})",
+        "LOW_PREVCLOSE=log(L_t/C_{t-1})",
+        "CLOSE_OPEN=log(C_t/O_t)",
+        "HIGH_LOW=log(H_t/L_t)",
+        "CLOSE_LOCATION=(2*C_t-H_t-L_t)/(H_t-L_t); 0 iff H_t==L_t",
+        "BODY_FRAC=(C_t-O_t)/(H_t-L_t); 0 iff H_t==L_t",
+        "UPPER_WICK_FRAC=(H_t-max(O_t,C_t))/(H_t-L_t); 0 iff H_t==L_t",
+        "LOWER_WICK_FRAC=(min(O_t,C_t)-L_t)/(H_t-L_t); 0 iff H_t==L_t",
+        "LOG_VOLUME=log1p(V_t)",
+        "LOG_VOLUME_CHANGE=log((V_t+1)/(V_{t-1}+1))",
+        "VOLUME_SMA24_RATIO=V_t/mean(V_{t-23},...,V_t)-1; 0 iff the mean denominator is 0",
+        "LOG_DOLLAR_VOLUME=log1p(C_t*V_t)",
+        "TYPICAL_RETURN_1=log(TP_t/TP_{t-1}), TP_t=(H_t+L_t+C_t)/3"
+      ],
+      "input_domain": "O,H,L,C must be finite and strictly positive; V must be finite and >=0; violation HARD_FAIL"
+    },
+    "ta_reconstruction": {
+      "status": "PROJECT_DEFINED_DECLARED_DEVIATION",
+      "windows_hours": [
+        3,
+        6,
+        12,
+        24,
+        48,
+        72,
+        168,
+        336
+      ],
+      "return_lags_hours": [
+        1,
+        2,
+        3,
+        6,
+        12,
+        24
+      ],
+      "indicator_families": [
+        "RSI",
+        "ROC",
+        "DIST_SMA",
+        "MACD",
+        "MACD_HIST",
+        "ATR_RATIO",
+        "ROLL_STD",
+        "BB_POS",
+        "VWAP_DEV",
+        "OBV_SLOPE",
+        "MFI"
+      ],
+      "candidate_count": 94,
+      "selection_group_count": 10,
+      "groups": {
+        "MOM_RSI": [
+          "RSI"
+        ],
+        "MOM_ROC": [
+          "ROC"
+        ],
+        "TREND_SMA": [
+          "DIST_SMA"
+        ],
+        "TREND_MACD": [
+          "MACD",
+          "MACD_HIST"
+        ],
+        "VOL_ATR_STD": [
+          "ATR_RATIO",
+          "ROLL_STD"
+        ],
+        "VOL_BB": [
+          "BB_POS"
+        ],
+        "PRICE_VOLUME_VWAP": [
+          "VWAP_DEV"
+        ],
+        "VOLUME_OBV": [
+          "OBV_SLOPE"
+        ],
+        "VOLUME_MFI": [
+          "MFI"
+        ],
+        "RETURN_LAGS": [
+          "LAG_RETURN"
+        ]
+      },
+      "selected_per_group": 1,
+      "selected_total": 10,
+      "selection_blocks": "four consecutive three-calendar-month blocks of the 12-month training window",
+      "ranking": "within each block sort by descending absolute Spearman correlation with aligned next-hour return; lexical feature-name tie break; average ordinal rank across four blocks; lowest average rank wins; lexical tie break",
+      "eligibility": "candidate must have >=100 finite aligned rows in every block or is ineligible; group with no eligible candidate HARD_FAIL",
+      "formulas": {
+        "RSI": "For segment changes delta_j=C_j-C_{j-1}. At j=w seed avg_gain=mean(max(delta_1..delta_w,0)) and avg_loss=mean(max(-delta_1..-delta_w,0)); for j>w use Wilder recursion avg=(prev*(w-1)+current)/w. RSI=100 if avg_loss=0<avg_gain; 50 if avg_loss=avg_gain=0; otherwise 100-100/(1+avg_gain/avg_loss). Gap resets and requires a new w-change seed.",
+        "ROC": "C_t/C_{t-w}-1; valid j>=w",
+        "DIST_SMA": "C_t/mean(C_{t-w+1},...,C_t)-1; valid j>=w-1",
+        "MACD": "Within each segment use unadjusted recursive EMA_s(0)=C_0 and EMA_s(j)=alpha_s*C_j+(1-alpha_s)*EMA_s(j-1), alpha_s=2/(s+1). slow span=w; fast span=max(2,floor(w/2)). raw_MACD_j=EMA_fast(j)-EMA_slow(j). feature=raw_MACD_j/C_j.",
+        "MACD_HIST": "signal span=max(2,floor(w/3)); signal_0=raw_MACD_0; signal_j=alpha_sig*raw_MACD_j+(1-alpha_sig)*signal_{j-1}; feature=(raw_MACD_j-signal_j)/C_j. Gap resets both price EMAs and signal EMA at the new segment first bar.",
+        "ATR_RATIO": "TR_j=max(H_j-L_j,abs(H_j-C_{j-1}),abs(L_j-C_{j-1})) for j>=1. At j=w seed ATR=mean(TR_1..TR_w); for j>w ATR_j=(ATR_{j-1}*(w-1)+TR_j)/w. feature=ATR_j/C_j. Gap resets and requires a new w-TR seed.",
+        "ROLL_STD": "population std ddof=0 of log(C_k/C_{k-1}) for k=j-w+1..j; requires w returns and j>=w",
+        "BB_POS": "SMA=mean(C_{j-w+1}..C_j), SD=population std ddof=0 over the same w closes; feature=(C_j-SMA)/(2*SD), or 0 iff SD=0",
+        "VWAP_DEV": "TP_k=(H_k+L_k+C_k)/3; VWAP=sum(TP_k*V_k)/sum(V_k) for k=j-w+1..j; feature=C_j/VWAP-1, or 0 iff sum(V)=0",
+        "OBV_SLOPE": "At a segment start OBV_0=0. For j>=1, OBV_j=OBV_{j-1}+sign(C_j-C_{j-1})*V_j with sign(0)=0. Over the last w OBV observations regress OBV on integer x=0..w-1 by OLS with intercept; slope divided by max(mean(V over same w bars),1e-12).",
+        "MFI": "TP_j=(H_j+L_j+C_j)/3 and raw_flow_j=TP_j*V_j. For j>=1 classify flow positive if TP_j>TP_{j-1}, negative if TP_j<TP_{j-1}, and neither if equal. At j>=w sum classified raw flows over changes j-w+1..j. MFI=100 if negative=0<positive; 50 if both sums zero; otherwise 100-100/(1+positive/negative). Feature=MFI/100. Gap resets predecessor and requires w new changes.",
+        "LAG_RETURN": "log(C_t/C_{t-k}) for k in [1,2,3,6,12,24]; valid j>=k"
+      },
+      "spearman_nonfinite_rule": "For each candidate/block use pairwise finite candidate/target rows. Fewer than 100 pairs => ineligible. Compute scipy.stats.spearmanr on those pairs. Any nonfinite correlation (including a constant candidate) => ineligible for that block. Candidate must be eligible in all four blocks; otherwise it is excluded. If a selection group has no candidate eligible in all four blocks => HARD_FAIL.",
+      "selection_block_endpoint_rule": "Within each 3-calendar-month block [S,E), correlation rows must satisfy S<=origin t<E and S<=t+1h<E.",
+      "feature_name_tie_break": "ASCII lexical ascending on the exact canonical feature names generated as FAMILY__W{hours} or LAG_RETURN__K{hours}.",
+      "rank_universe": {
+        "scope": "WITHIN_SELECTION_GROUP_COMMON_FOUR_BLOCK_ELIGIBLE_SET",
+        "construction": "For each selection group g, first compute E_g as candidates in that group that satisfy the finite-pair and finite-Spearman eligibility rules in all four training blocks.",
+        "empty_behavior": "If E_g is empty, fold HARD_FAIL.",
+        "per_block_ranking": "Within each block, rank only candidates in E_g by descending absolute Spearman correlation, ASCII lexical canonical feature name tie-break.",
+        "aggregation": "Average each E_g candidate's four ordinal ranks; lowest average rank wins; ASCII lexical canonical name breaks exact average-rank ties.",
+        "prohibited_alternative": "Do not rank against block-local candidates that later fail another block."
+      }
+    },
+    "egarch": {
+      "status": "PROJECT_DEFINED_EXACT_SEGMENTED_EGARCH_CONTRACT",
+      "paper_orders": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          2,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          2
+        ],
+        [
+          2,
+          1,
+          2
+        ]
+      ],
+      "order_evaluation_sequence": [
+        "1,1,1",
+        "2,1,1",
+        "1,1,2",
+        "2,1,2"
+      ],
+      "input_return_units": "y_t=100*log(C_t/C_{t-1})",
+      "mean": "constant mu",
+      "innovations": "standardized Student-t with nu>2",
+      "recursion": "h_t=omega+sum_i alpha_i*a_{t-i}+sum_j gamma_j*z_{t-j}+sum_k beta_k*h_{t-k}; sigma_t=exp(h_t/2); z_t=(y_t-mu)/sigma_t; a_t=abs(z_t)-m_nu",
+      "standardized_t_abs_mean": "m_nu=2*sqrt(nu-2)*Gamma((nu+1)/2)/((nu-1)*sqrt(pi)*Gamma(nu/2))",
+      "standardized_t_log_density": "log f(z)=lgamma((nu+1)/2)-lgamma(nu/2)-0.5*log(pi*(nu-2))-((nu+1)/2)*log(1+z^2/(nu-2))",
+      "observation_log_likelihood": "log f(z_t)-0.5*h_t",
+      "reset": {
+        "beta_constraint": "0<=beta_k<=0.999 and sum(beta_k)<=0.999",
+        "h_bar": "omega/(1-sum(beta_k))",
+        "pre_segment_h_lags": "all q lags equal h_bar",
+        "pre_segment_centered_abs_shock_lags": "all p lags equal 0",
+        "pre_segment_signed_z_lags": "all o lags equal 0",
+        "invalid_reset": "nonfinite h_bar, denominator<=0, or exp(h_bar) overflow => order fit HARD_FAIL"
+      },
+      "training_estimation": {
+        "PAPER_FILL": "one contiguous training return segment under the filled grid",
+        "PROJECT_GAP_PRESERVING": "sum the log likelihood over all maximal contiguous training return segments under one shared parameter vector; reset all latent histories independently at each segment start; never concatenate state across a gap",
+        "training_returns": "only returns whose return endpoint bar label is inside the training split; no validation target enters likelihood",
+        "optimizer": "scipy.optimize.minimize method=SLSQP, one deterministic start, maxiter=5000, ftol=1e-10, disp=false",
+        "initial_parameters": {
+          "mu": "finite arithmetic mean of all eligible training y_t",
+          "beta_total": 0.9,
+          "beta_each": "0.90/q",
+          "alpha_each": "0.05/p",
+          "gamma_each": 0,
+          "omega": "log(population_variance(y,ddof=0))*(1-0.90)",
+          "nu": 8
+        },
+        "bounds": {
+          "mu": [
+            -1000,
+            1000
+          ],
+          "omega": [
+            -20,
+            20
+          ],
+          "alpha_each": [
+            -2,
+            2
+          ],
+          "gamma_each": [
+            -2,
+            2
+          ],
+          "beta_each": [
+            0,
+            0.999
+          ],
+          "nu": [
+            2.05,
+            200
+          ]
+        },
+        "inequality_constraint": "0.999-sum(beta_k)>=0",
+        "failure": "optimizer non-success, nonfinite objective/parameters, or invalid recursion => that order unavailable; all four unavailable => fold HARD_FAIL"
+      },
+      "aic": "AIC=2*k-2*LL where k=3+p+o+q (mu,omega,nu,alpha,gamma,beta). Lowest finite AIC wins; exact tie uses registered order_evaluation_sequence.",
+      "temporal_update": "For each return y_t, compute h_t from histories available before y_t, then observe y_t and compute z_t and a_t, then compute/update the history used for h_{t+1}. At forecast origin t after C_t is complete, deployed features are sigma_{t+1}=exp(h_{t+1}/2), log_sigma_{t+1}=h_{t+1}/2, and z_t. Thus no y_{t+1} enters features.",
+      "replay": "After fitting on training only, replay training from a training-start reset to establish state; carry state causally through validation and test with fixed parameters, resetting only at an actual continuity gap. Do not reset at train/validation or validation/test boundaries.",
+      "validation_test_refit": false,
+      "output_features": [
+        "EGARCH_SIGMA_NEXT",
+        "EGARCH_LOG_SIGMA_NEXT",
+        "EGARCH_Z_CURRENT"
+      ]
+    },
+    "contiguity_and_initialization": {
+      "segment_definition": "maximal sequence of accepted bar labels separated by exactly 1 hour",
+      "first_bar_index": 0,
+      "first_bar_counts_as_contiguous_hour": 1,
+      "transition_count_at_bar_index_j": "j",
+      "global_feature_origin_eligibility": "bar index j must be >= 336, so the first eligible origin is the 337th bar of a contiguous segment",
+      "reason": "this guarantees 336 one-hour transitions for the longest return/change-based windows",
+      "gap_behavior": "all recursive and rolling feature state is discarded at a gap and rebuilt from the next segment start",
+      "window_first_valid_index": {
+        "ROC_w": "j>=w",
+        "LAG_RETURN_k": "j>=k",
+        "DIST_SMA_w": "j>=w-1",
+        "ROLL_STD_w_returns": "j>=w",
+        "BB_POS_w_close": "j>=w-1",
+        "VWAP_DEV_w": "j>=w-1",
+        "OBV_SLOPE_w": "j>=w-1",
+        "RSI_w": "j>=w",
+        "ATR_RATIO_w": "j>=w",
+        "MFI_w": "j>=w",
+        "MACD_w": "recursive value exists from j=0 but cannot enter a deployed row before global j>=336"
+      }
+    },
+    "deployed_feature_order": [
+      "RET_1",
+      "OPEN_GAP",
+      "HIGH_PREVCLOSE",
+      "LOW_PREVCLOSE",
+      "CLOSE_OPEN",
+      "HIGH_LOW",
+      "CLOSE_LOCATION",
+      "BODY_FRAC",
+      "UPPER_WICK_FRAC",
+      "LOWER_WICK_FRAC",
+      "LOG_VOLUME",
+      "LOG_VOLUME_CHANGE",
+      "VOLUME_SMA24_RATIO",
+      "LOG_DOLLAR_VOLUME",
+      "TYPICAL_RETURN_1",
+      "SELECTED__MOM_RSI",
+      "SELECTED__MOM_ROC",
+      "SELECTED__TREND_SMA",
+      "SELECTED__TREND_MACD",
+      "SELECTED__VOL_ATR_STD",
+      "SELECTED__VOL_BB",
+      "SELECTED__PRICE_VOLUME_VWAP",
+      "SELECTED__VOLUME_OBV",
+      "SELECTED__VOLUME_MFI",
+      "SELECTED__RETURN_LAGS",
+      "EGARCH_SIGMA_NEXT",
+      "EGARCH_LOG_SIGMA_NEXT",
+      "EGARCH_Z_CURRENT"
+    ],
+    "deployed_feature_count": 28,
+    "warmup_state_contract": {
+      "warmup_hours": 744,
+      "warmup_start_formula": "fold_train_start - 744 hours",
+      "mandatory_artificial_state_boundary": true,
+      "earlier_source_state_may_propagate": false,
+      "rule": "For each arm/fold, all OHLCV-derived predecessor state, rolling windows, RSI/ATR Wilder state, EMA/MACD state, OBV state, MFI predecessor, and lag state are initialized/rebuilt using only bars at or after warmup_start. No state from an earlier accepted bar may enter the fold.",
+      "propagation": "After warmup_start, state propagates causally through train, validation, and test without reset at split boundaries; PROJECT_GAP_PRESERVING additionally resets at actual continuity gaps; PAPER_FILL uses its filled grid.",
+      "first_fold_check": "for fold 1, warmup_start is exactly 2017-12-01T00:00:00Z",
+      "markdown_must_match": true,
+      "authoritative_sentence": "warmup_start = train_start - 744h is a mandatory artificial state boundary. No OHLCV/TA rolling or recursive state from a timestamp earlier than warmup_start may propagate into the fold."
+    }
+  },
+  "model_contract": {
+    "model": "XGBoost regressor",
+    "loss": "MSE only",
+    "selector": "validation loss-best only",
+    "optuna": {
+      "sampler": "TPE",
+      "trials_per_fold": 50,
+      "pruner": "NONE",
+      "sampler_defaults": "pinned Optuna version defaults except explicit seed",
+      "objective": "validation MSE on target standardized with training mean/std",
+      "execution": {
+        "study_direction": "minimize",
+        "n_jobs": 1,
+        "sampler_constructor": "optuna.samplers.TPESampler(seed=derived_optuna_seed, multivariate=False, group=False, constant_liar=False)",
+        "pruner_constructor": "optuna.pruners.NopPruner()",
+        "suggestion_call_order": [
+          "max_depth",
+          "learning_rate",
+          "n_estimators",
+          "min_child_weight",
+          "subsample",
+          "colsample_bytree",
+          "reg_alpha",
+          "reg_lambda"
+        ],
+        "suggestion_names_exact": true,
+        "trial_tie_break": "smallest trial.number among exactly equal finite validation-MSE objectives"
+      }
+    },
+    "search_space": {
+      "max_depth": {
+        "type": "int",
+        "low": 2,
+        "high": 4,
+        "inclusive": true
+      },
+      "learning_rate": {
+        "type": "float_log",
+        "low": 0.005,
+        "high": 0.03
+      },
+      "n_estimators": {
+        "type": "int",
+        "low": 1000,
+        "high": 2500,
+        "inclusive": true
+      },
+      "min_child_weight": {
+        "type": "float",
+        "low": 10,
+        "high": 40
+      },
+      "subsample": {
+        "type": "float",
+        "low": 0.6,
+        "high": 0.9
+      },
+      "colsample_bytree": {
+        "type": "float",
+        "low": 0.6,
+        "high": 0.9
+      },
+      "reg_alpha": {
+        "type": "float_log",
+        "low": 0.0001,
+        "high": 0.05
+      },
+      "reg_lambda": {
+        "type": "float_log",
+        "low": 1,
+        "high": 40
+      }
+    },
+    "fixed_params": {
+      "objective": "reg:squarederror",
+      "tree_method": "hist",
+      "n_jobs": 1,
+      "early_stopping_rounds": 50,
+      "random_state": "derived per-trial or final-refit seed as specified in stochastic_contract",
+      "eval_metric": "rmse"
+    },
+    "final_refit": {
+      "data": "combined train+validation",
+      "hyperparameters": "selected trial hyperparameters unchanged",
+      "n_estimators": "selected trial best_iteration + 1; if no early stop, selected sampled n_estimators",
+      "early_stopping": "NONE during final refit",
+      "test_use": "exactly once after final refit"
+    },
+    "target_standardization": {
+      "tuning": "training-only arithmetic mean and population std ddof=0; standardize y=(y-mean)/std; validation uses that same training mean/std",
+      "final_refit": "combined train+validation arithmetic mean and population std ddof=0 over the union of rows independently eligible in the original train and validation splits; inverse-transform test forecasts to raw log-return units",
+      "zero_or_nonfinite_std_behavior": "HARD_FAIL"
+    },
+    "early_stopping": {
+      "eval_set": "exactly [(X_validation,y_validation_standardized)]",
+      "monitored_metric": "validation rmse",
+      "early_stopping_rounds": 50,
+      "best_iteration_tie_rule": "smallest boosting iteration attaining the minimum recorded validation RMSE",
+      "optuna_objective": "validation MSE computed from predictions using trees [0,best_iteration] inclusive; MSE is arithmetic mean squared error",
+      "no_validation_rows": "HARD_FAIL"
+    }
+  },
+  "forecast_identity": {
+    "one_forecast_vector_per_arm_fold": true,
+    "baseline_and_cost_aware_must_use_identical_forecast_vector": true,
+    "required_forecast_vector_sha256": true,
+    "execution_rule_specific_tuning_or_refit_allowed": false,
+    "serialization": {
+      "version": "PSR01B_FORECAST_VECTOR_V1",
+      "sort_order": "strict ascending forecast-origin bar timestamp",
+      "timestamp_encoding": "signed int64 little-endian Unix seconds for the UTC bar-open timestamp",
+      "forecast_encoding": "IEEE-754 float64 little-endian raw log-return forecast",
+      "row_bytes": "struct.pack('<qd', timestamp_unix_seconds, forecast)",
+      "payload": "prefix_bytes + uint64 little-endian row_count + concatenated row_bytes",
+      "finite_required": true,
+      "duplicate_timestamp_allowed": false,
+      "hash": "SHA256(payload)",
+      "prefix_bytes": {
+        "ascii": "PSR01B_FORECAST_VECTOR_V1",
+        "terminator_hex": "00",
+        "exact_rule": "UTF-8/ASCII bytes for PSR01B_FORECAST_VECTOR_V1 followed by exactly one NUL byte 0x00; not the two printable characters backslash and zero"
+      },
+      "synthetic_fixture_required": true
+    }
+  },
+  "missing_data_arms": {
+    "order": [
+      "PAPER_FILL",
+      "PROJECT_GAP_PRESERVING"
+    ],
+    "PAPER_FILL": {
+      "grid": "complete hourly grid",
+      "missing_bar": "O=H=L=C=previous accepted close; V=0",
+      "synthetic_flag_required": true,
+      "leading_gap_without_previous_close": "HARD_FAIL"
+    },
+    "PROJECT_GAP_PRESERVING": {
+      "synthetic_bars_allowed": false,
+      "cross_gap_target_or_feature_allowed": false,
+      "rolling_state_reset_at_gap": true,
+      "minimum_contiguous_feature_history_hours": 336,
+      "trading_gap_contract": {
+        "position_carry_across_gap_allowed": false,
+        "trigger": "whenever a test-period accepted-bar contiguous segment ends and a later accepted-bar segment exists within the same fold",
+        "forced_liquidation": "After the final valid pre-gap held market return, force every strategy/benchmark position to 0 at that final accepted close. Charge c*abs(0-previous_position) to that final valid pre-gap evaluation return record.",
+        "no_position_or_return_during_gap": "After liquidation, position is 0 throughout the missing interval and feature-recovery interval. No market return is imputed or earned for omitted hours.",
+        "restart": "At the first post-gap model-eligible evaluation origin, previous_position=0. BASELINE_SIGN and COST_AWARE apply their normal rule from cash. COST_AWARE therefore uses previous_position=0 in its threshold turnover term.",
+        "benchmark_restart": "BUY_AND_HOLD re-enters long from cash at the first post-gap model-eligible evaluation origin and pays c. MOMENTUM_24H remains flat until its own 24 contiguous-history condition and the common model-origin eligibility are both satisfied, then applies its ordinary desired-position rule from cash.",
+        "accounting": "Forced gap liquidations and later re-entries count in turnover and completed-trade accounting. A forced gap liquidation can complete a trade.",
+        "fold_terminal_precedence": "If a segment end is also the fold end, apply only the ordinary fold terminal liquidation once; do not double-charge a gap liquidation.",
+        "zero_position": "If the strategy/benchmark is already flat at the pre-gap close, liquidation cost is zero."
+      }
+    },
+    "selective_arm_reporting_allowed": false
+  },
+  "trading_accounting": {
+    "mode": "LONG_ONLY",
+    "transaction_cost_per_unit_turnover": 0.001,
+    "lambda": 2,
+    "desired_position": "1 iff raw-unit forecast > 0 else 0",
+    "cost_aware_update": "abs(forecast) > lambda*c*abs(desired_position-previous_position)",
+    "net_return": "position_t*(exp(realized_log_return_t+1)-1) - c*abs(position_t-previous_position)",
+    "timing": "features through completed close t -> forecast r_(t+1) -> idealized position at close t -> earn close-to-close t to t+1; not a live zero-latency execution claim",
+    "fold_initial_position": 0,
+    "fold_position_inheritance": false,
+    "terminal_liquidation": {
+      "forced": true,
+      "target_position": 0,
+      "charged_cost": true,
+      "cost_applied_to": "final test return record after last held next-hour market return"
+    },
+    "turnover": "sum abs(position_t-previous_position) including forced terminal liquidation",
+    "completed_trade": "one long episode beginning with 0->1 and ending with 1->0; forced terminal liquidation may complete the final episode",
+    "PROJECT_GAP_PRESERVING_gap_behavior": "Use missing_data_arms.PROJECT_GAP_PRESERVING.trading_gap_contract for BASELINE_SIGN and COST_AWARE."
+  },
+  "benchmarks": {
+    "BUY_AND_HOLD": {
+      "fold_start": "enter long at first eligible test forecast origin from cash",
+      "hold": 1,
+      "cost": 0.001,
+      "terminal_liquidation": true
+    },
+    "MOMENTUM_24H": {
+      "desired_position": "1 iff cumulative log return over previous 24 contiguous completed hours >0 else 0",
+      "cost": 0.001,
+      "cost_aware_filter": false,
+      "gap_arm": "flat until 24 contiguous prior hours available after a gap",
+      "fold_initial_position": 0,
+      "terminal_liquidation": true,
+      "signal_history": "may use contiguous causal bars before the test start, including validation history, but never a future/test target; the evaluation origin itself must be in the registered test-origin set"
+    },
+    "role": "contextual only; not primary PSR01B success gate",
+    "evaluation_origin_set": "exactly the same registered eligible test-origin timestamps used by the model forecast vector for that missing-data arm/fold; every origin obeys split_endpoint_contract",
+    "PROJECT_GAP_PRESERVING_gap_behavior": "Use the registered forced-liquidation/flat/re-entry contract; BUY_AND_HOLD must not silently hold through an omitted gap."
+  },
+  "metrics": {
+    "ARC": "prod(1+r_t)^(8760/N)-1 over finite evaluation returns",
+    "ASD": "sqrt(8760)*sample_std(r_t,ddof=1)",
+    "risk_free_annual": 0.042,
+    "SHARPE": "(ARC-0.042)/ASD",
+    "max_drawdown": "For any registered return sequence, set E_0=1 and E_j=E_{j-1}*(1+r_j). Costs are already embedded in r_j. Running peak P_j=max(E_0..E_j). Drawdown D_j=E_j/P_j-1. MDD=min_j D_j (non-positive). For consolidated statistics concatenate fold return records in registered fold order and carry equity across folds; do not reset equity between folds. Any nonfinite return or 1+r_j<=0 => metric HARD_FAIL.",
+    "trade_count": "completed trades as PSR01B definition",
+    "gap_arm_N": "number of finite accepted hourly evaluation-return records; excluded gap rows are not replaced with zero",
+    "consolidated_total_return": "prod(1+r_t)-1 over the concatenated registered evaluation sequence",
+    "fold_total_return": "within each fold, prod(1+r_t)-1 over that fold's registered finite evaluation returns",
+    "fold_ARC": "within each fold, prod(1+r_t)^(8760/N_fold)-1",
+    "fold_ASD": "sqrt(8760)*sample_std(r_t,ddof=1) using that fold's N_fold records",
+    "fold_SHARPE": "(fold_ARC-0.042)/fold_ASD; zero or nonfinite ASD => Sharpe unavailable and experiment cannot pass a criterion requiring its sign",
+    "consolidated_equity_reset_between_folds": false
+  },
+  "inference": {
+    "primary_comparison": "COST_AWARE - BASELINE_SIGN",
+    "primary_statistic": "mean hourly net-return differential",
+    "arms_in_family": [
+      "PAPER_FILL",
+      "PROJECT_GAP_PRESERVING"
+    ],
+    "block_bootstrap": {
+      "type": "paired circular block bootstrap of differential series",
+      "primary_block_hours": 168,
+      "robustness_block_hours": [
+        24,
+        72
+      ],
+      "replications": 10000,
+      "resampling_boundary": "never cross fold boundary or gap-defined contiguous segment; resample circular blocks independently within each segment to its original length, then concatenate in registered fold/segment order",
+      "null_centering": "subtract observed segment-pooled differential mean before primary p-value resampling",
+      "one_sided_alternative": "mean(COST_AWARE-BASELINE_SIGN)>0",
+      "p_value": "(1 + count(centered_bootstrap_mean >= observed_inference_mean))/(10000+1)",
+      "confidence_interval": "np.quantile(uncentered inference-universe bootstrap mean draws,[0.025,0.975],method='linear')",
+      "sharpe_difference": "computed on same uncentered inference-universe bootstrap draws as complementary evidence; descriptive all-record Sharpe remains the success-direction metric",
+      "algorithm": {
+        "segment_order": "registered fold order, then ascending contiguous-segment start timestamp",
+        "requested_block_length": "L is exactly the registered requested block length (168 primary; 24 or 72 diagnostic)",
+        "inferential_segment_eligibility": "a contiguous evaluation segment enters bootstrap inference iff n >= 2*L",
+        "short_segment_policy": "segments with n < 2*L are excluded from that block-length inference universe, are never resampled, and cannot contribute to its p-value or CI; they remain in all descriptive performance, turnover, trade-count, and all-record mean calculations",
+        "minimum_inference_support": "at least 2 inferentially eligible segments are required for a block length; otherwise that arm/block inference is UNAVAILABLE and PSR01B cannot pass a criterion requiring it",
+        "blocks_per_eligible_segment": "ceil(n/L)",
+        "start_sampling": "for each block draw an independent integer start uniformly from {0,...,n-1}, with replacement, using the registered NumPy Generator/seed stream",
+        "block_indices": "(start+j) mod n for j=0,...,L-1",
+        "segment_draw": "concatenate sampled blocks and retain the first n observations exactly",
+        "replicate": "resample every inferentially eligible segment independently back to its original length, then concatenate sampled segments in registered order; compute the observation-weighted pooled arithmetic mean",
+        "observed_inference_mean": "arithmetic mean over exactly the same concatenated inferentially eligible observations used by the bootstrap",
+        "centered_test": "subtract the observed_inference_mean from every differential observation in the inference universe before applying the sampled indices",
+        "uncentered_ci_and_sharpe": "apply the identical sampled indices to uncentered paired strategy return records in the same inference universe",
+        "draws": 10000,
+        "rng": "numpy.random.Generator(numpy.random.PCG64(seed_from_registered_SeedSequence_path))",
+        "no_cross_boundary": true
+      },
+      "primary_observed_means": {
+        "all_record_mean": "reported over all registered evaluation records, including segments too short for primary inference",
+        "inference_universe_mean": "reported over only segments with n>=336 for L=168",
+        "success_requirement": "both all_record_mean and inference_universe_mean must be >0 in each missing-data arm"
+      }
+    },
+    "multiplicity": {
+      "method": "Holm step-down",
+      "alpha": 0.05,
+      "family_size": 2,
+      "order": [
+        "PAPER_FILL",
+        "PROJECT_GAP_PRESERVING"
+      ],
+      "tie_break": "registered arm order",
+      "applies_to": "two primary 168h one-sided mean-difference p-values only",
+      "robustness_blocks": "reported separately; not success gates",
+      "algorithm": "Let m=2. Sort raw p-values ascending with registered arm order as exact tie-break. For sorted rank j=0..m-1 compute s_j=(m-j)*p_j. adjusted_sorted_j=min(1,max(s_0,...,s_j)). Map adjusted values back to registered arm order. Reject iff adjusted_p<=0.05.",
+      "nonfinite_raw_p": "HARD_FAIL; no pass classification"
+    }
+  },
+  "success_semantics": {
+    "pass_token": "BOUNDED_H2_REPLICATION",
+    "fail_token": "BOUNDED_H2_NOT_REPLICATED",
+    "pass_requires_all": [
+      "all-record observed mean net-return differential > 0 in both missing-data arms",
+      "primary 168h inference-universe observed mean net-return differential > 0 in both missing-data arms",
+      "at least 2 primary-inference-eligible contiguous evaluation segments (n>=336 each) exist in each arm",
+      "Holm-adjusted primary 168h one-sided p-value <= 0.05 in both arms",
+      "cost-aware turnover < baseline turnover in both arms using all registered evaluation records and forced gap/fold liquidations",
+      "cost-aware completed trades >= 20 in both arms",
+      "all-record cost-aware Sharpe - baseline Sharpe > 0 in both arms"
+    ],
+    "note": "The paper itself applies a >=20-trade minimum for formal interpretation; PSR01B defines trade operationally as a completed long episode.",
+    "no_rescue_after_fail": true,
+    "forbidden_rescue": [
+      "change lambda",
+      "change cost",
+      "change feature tier",
+      "change reconstruction definitions",
+      "change model",
+      "change selector",
+      "change fold dates",
+      "drop missing-data arm",
+      "change bootstrap family"
+    ],
+    "any_post_outcome_change": "Any change to any registered analytic field after empirical outcome observation constitutes a new experiment and cannot amend PSR-01B."
+  },
+  "stochastic_contract": {
+    "model_root": 2026092401,
+    "bootstrap_root": 2026092402,
+    "seed_engine": "numpy.random.SeedSequence(coordinates).generate_state(1,dtype=np.uint32)[0] converted to Python int",
+    "arm_indices": {
+      "PAPER_FILL": 0,
+      "PROJECT_GAP_PRESERVING": 1
+    },
+    "optuna_seed_path": "[model_root,1,arm_index,fold_index]",
+    "xgboost_trial_seed_path": "[model_root,2,arm_index,fold_index,trial_index]",
+    "xgboost_final_seed_path": "[model_root,3,arm_index,fold_index,selected_trial_index]",
+    "bootstrap_seed_path": "[bootstrap_root,block_hours,arm_index]",
+    "all_threads": 1,
+    "xgboost_seed_parameter": "random_state",
+    "uncontrolled_rng_allowed": false
+  },
+  "runtime_contract": {
+    "os_runner": "ubuntu-24.04",
+    "python": "3.12.14",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pandas": "3.0.6",
+    "xgboost": "3.4.1",
+    "optuna": "5.0.0",
+    "arch": "8.0.0",
+    "statsmodels": "0.15.0",
+    "env": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    }
+  },
+  "future_governance": {
+    "specification_revision": 4,
+    "specification_review_issue": 90,
+    "specification_review_status": "PENDING_FINAL_GOVERNANCE_ONLY_REREVIEW",
+    "specification_review_satisfaction_rule": "An APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION decision in Issue #90 at the exact current revision-4 candidate head satisfies the PSR-01B specification-review requirement.",
+    "next_step_before_specification_approval": "Independent governance-only re-review of this exact revision-4 candidate head in Issue #90.",
+    "next_step_after_specification_approval": "Bounded PSR-01B code implementation plus synthetic/offline tests only.",
+    "additional_specification_review_required_after_exact_head_approval": false,
+    "implementation_scope_after_specification_approval": [
+      "implement only the frozen PSR-01B specification",
+      "run synthetic/offline tests only",
+      "prepare an implementation-freeze record for independent review"
+    ],
+    "empirical_source_execution_authorized_after_specification_approval": false,
+    "empirical_forecast_generation_authorized_after_specification_approval": false,
+    "empirical_pnl_authorized_after_specification_approval": false,
+    "offline_synthetic_tests_before_empirical_claim": true,
+    "implementation_freeze_required": true,
+    "independent_implementation_review_required": true,
+    "reviewed_candidate_anchor_required": true,
+    "separate_execution_authorization_required": true,
+    "manual_confirmation_required": true,
+    "one_shot_claim_before_psr01b_source_read_or_forecast_generation": true,
+    "failure_after_claim_consumes_attempt": true,
+    "later_execution_sequence": [
+      "bounded implementation",
+      "synthetic/offline tests",
+      "implementation freeze",
+      "independent implementation review",
+      "reviewed-candidate anchor",
+      "separate execution authorization",
+      "manual confirmation",
+      "one-shot execution claim",
+      "only then Development source read/model execution"
+    ]
+  },
+  "revision": 4,
+  "split_endpoint_contract": {
+    "bar_timestamp_semantics": "Binance kline open timestamp in UTC labels bar [t,t+1h)",
+    "target_definition": "r_(t+1)=log(C_(t+1)/C_t), where C_t is the close of the bar labeled t",
+    "split_half_open_rule": "for any split [S,E), an origin t is eligible iff S <= t < E AND S <= t+1h < E",
+    "equivalent_last_origin": "E-2h on a complete hourly grid",
+    "boundary_crossing_target_allowed": false,
+    "applies_to": [
+      "training targets",
+      "validation loss",
+      "test forecasts and evaluation returns",
+      "feature-selection correlations within each three-month selection block",
+      "benchmark evaluation records"
+    ],
+    "final_source_boundary": "no origin may be retained if its target bar label is >= 2022-01-01T00:00:00Z",
+    "final_refit_rows": "union of rows independently eligible under the original train split and original validation split; no row crossing the train/validation or validation/test boundary is restored"
+  },
+  "independent_reviews": [
+    {
+      "issue": 90,
+      "reviewed_head": "0cc7877029d679f67e11a4012951f39dfff6eb68",
+      "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+      "decision_comment_id": 5820773445
+    },
+    {
+      "issue": 90,
+      "reviewed_head": "91da8ccd59c73288c337f153e7cfdaa5733cebc8",
+      "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+      "decision_comment_id": 5821038522
+    },
+    {
+      "issue": 90,
+      "reviewed_head": "9ad61d31f4b6aa5bf92385d9f96c73bebc1d3c47",
+      "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+      "decision_comment_id": 5821218608
+    },
+    {
+      "issue": 90,
+      "reviewed_head": "56766898aad905d0d0a440c03853f834d7d69b57",
+      "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+      "decision_comment_id": 5821432055,
+      "finding_scope": "GOVERNANCE_METADATA_ONLY",
+      "substantive_scientific_findings_resolved": true
+    }
+  ]
+}
