@@ -201,7 +201,7 @@ def test_spearman_requires_100_finite_pairs_and_rejects_constant_candidate():
 
 def test_common_four_block_universe_is_built_before_ranking():
     correlations = {
-        "A": (0.9, 0.1, 0.9, 0.1),
+        "A": (0.9, 0.1, 0.1, 0.1),
         "B": (0.8, 0.8, 0.8, 0.8),
         # C would rank first in some blocks but is ineligible in block 4,
         # so it must be excluded from every block's rank universe.
