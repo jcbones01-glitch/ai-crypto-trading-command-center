@@ -1,7 +1,7 @@
 {
   "registration_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V3",
   "version": 3,
-  "revision": 1,
+  "revision": 2,
   "status": "PROPOSED_FOR_INDEPENDENT_REVIEW",
   "empirical_execution_now_authorized": false,
   "parent_incident_review_issue": 78,
@@ -37,7 +37,7 @@
     "consumed": true
   },
   "specification_path": "docs/AMS_DEP_DEVELOPMENT_EMPIRICAL_EXECUTION_SPEC_V3.md",
-  "specification_git_blob_sha1": "6415459e21cfe20500510539af9f0a0a39023fc1",
+  "specification_git_blob_sha1": "19080803f5a589812970b5d00a0fa2f824c11583",
   "exact_source_universe": {
     "symbols": [
       "BTCUSDT",
@@ -143,7 +143,18 @@
     "coverage_gaps_become_continuity_breaks": true,
     "base_exclusions_may_be_removed_or_shortened": false,
     "final_grid_self_check_required": true,
-    "unchanged_canonical_verifier_required": true
+    "unchanged_canonical_verifier_required": true,
+    "empty_final_certification_behavior": {
+      "conditions": [
+        "C == empty set",
+        "final certified segment count == 0"
+      ],
+      "failure_code": "EMPTY_FINAL_DEVELOPMENT_CERTIFICATION",
+      "stage": "V3_SOURCE_COVERAGE_CERTIFICATION",
+      "must_fail_before_canonical_verifier": true,
+      "must_fail_before_primary_sample": true,
+      "empirical_result": false
+    }
   },
   "coverage_gap_id_canonicalization": {
     "record_fields": [
@@ -164,30 +175,77 @@
       "accepted_normalized_row_count",
       "accepted_first_timestamp",
       "accepted_last_timestamp",
+      "accepted_normalized_timestamp_vector_exact",
       "accepted_timestamp_vector_sha256",
+      "base_certified_segment_records_exact",
       "base_certified_hour_count",
       "base_certified_hour_vector_sha256",
       "missing_coverage_hour_count",
+      "missing_coverage_hour_vector_exact",
       "missing_coverage_hour_vector_sha256",
-      "coverage_gap_intervals",
-      "coverage_gap_ids",
+      "coverage_gap_intervals_exact",
+      "coverage_gap_ids_exact",
       "final_certified_hour_count",
       "final_certified_hour_vector_sha256",
-      "final_certified_segments",
+      "final_certified_segments_exact",
       "final_certified_segments_sha256",
+      "base_exclusion_count_and_hash",
+      "added_coverage_exclusion_count_and_hash",
+      "final_exclusion_count_and_hash",
+      "adjacent_archive_boundary_records_exact",
+      "adjacent_archive_boundary_records_sha256",
       "base_treatment_manifest_identity",
       "final_coverage_aware_manifest_identity"
     ],
     "timestamp_sequence_serialization": "json.dumps(sequence, ensure_ascii=True, separators=(\",\", \":\")).encode(\"ascii\")",
     "record_sequence_serialization": "json.dumps(records, sort_keys=True, ensure_ascii=True, separators=(\",\", \":\")).encode(\"ascii\")",
-    "failure_evidence_must_distinguish_partial_from_complete": true
+    "failure_evidence_must_distinguish_partial_from_complete": true,
+    "lossless_vectors_required": true,
+    "digest_only_is_sufficient": false,
+    "round_trip_reconstruction_required": true,
+    "boundary_record_contract": {
+      "records_per_complete_asset": 52,
+      "exactly_one_per_adjacent_registered_archive_pair": true,
+      "order": "REGISTERED_ADJACENT_ARCHIVE_PAIR_ORDER",
+      "fields": [
+        "left_archive",
+        "right_archive",
+        "boundary_timestamp",
+        "left_expected_hour",
+        "right_expected_hour",
+        "left.inside_development",
+        "left.observed_accepted",
+        "left.base_certified",
+        "left.base_excluded",
+        "left.v3_coverage_excluded",
+        "left.final_certified",
+        "left.fully_accounted",
+        "right.inside_development",
+        "right.observed_accepted",
+        "right.base_certified",
+        "right.base_excluded",
+        "right.v3_coverage_excluded",
+        "right.final_certified",
+        "right.fully_accounted",
+        "boundary_fully_accounted"
+      ],
+      "inside_development_fully_accounted_rule": "base_excluded OR (base_certified AND (observed_accepted OR v3_coverage_excluded))",
+      "outside_development_fully_accounted_rule": "inside_development == false",
+      "boundary_rule": "left.fully_accounted AND right.fully_accounted",
+      "all_reached_boundaries_must_pass": true,
+      "failure_code": "ARCHIVE_BOUNDARY_COVERAGE_UNACCOUNTED"
+    }
   },
   "projection": {
     "version": "ams-dep-development-projection-v3",
     "coverage_audit_version": "AMS_DEP_DEVELOPMENT_SOURCE_COVERAGE_V3",
     "validation_oos_helper_objects_authoritative": false,
     "coverage_overlay_only_removes_base_certification": true,
-    "no_market_bar_created_or_modified": true
+    "no_market_bar_created_or_modified": true,
+    "exact_accepted_timestamp_vector_required": true,
+    "exact_missing_coverage_hour_vector_required": true,
+    "exact_base_certified_segment_records_required": true,
+    "exact_adjacent_archive_boundary_records_required": true
   },
   "statistical_contract": {
     "empirical_bootstrap_root": 2026092201,
@@ -306,5 +364,86 @@
     "explicit manual execute dispatch",
     "atomic V3 one-shot claim",
     "Development source access/execution"
+  ],
+  "prior_spec_review_issue": 80,
+  "prior_spec_review_decision": "REQUIRE_CHANGES_BEFORE_DEVELOPMENT_V3_IMPLEMENTATION",
+  "prior_spec_review_comment_id": 5810382902,
+  "coverage_aware_manifest_compatibility": {
+    "top_level_anomaly_ids": "COPY_BASE_MANIFEST_EXACT_ORDER_UNCHANGED",
+    "coverage_gap_ids_in_top_level_anomaly_ids": false,
+    "coverage_aware_manifest_constructed_after_v2_row_normalization": true,
+    "coverage_aware_manifest_may_feed_back_into_v2_row_rejection": false,
+    "added_coverage_affected_region": {
+      "start": "gap.start",
+      "end": "gap.end",
+      "anomaly_ids": "EXACT_SINGLETON_TUPLE_OF_COVERAGE_GAP_ID",
+      "reason": "BASE_CERTIFIED_HOUR_ABSENT_FROM_ACCEPTED_NORMALIZED_SOURCE"
+    },
+    "added_coverage_exclusion": {
+      "start": "gap.start",
+      "end": "gap.end",
+      "anomaly_ids": "EXACT_SINGLETON_TUPLE_OF_COVERAGE_GAP_ID",
+      "reason": "BASE_CERTIFIED_HOUR_ABSENT_FROM_ACCEPTED_NORMALIZED_SOURCE"
+    },
+    "added_coverage_continuity_break": {
+      "start": "gap.start",
+      "end": "gap.end",
+      "anomaly_ids": "EXACT_SINGLETON_TUPLE_OF_COVERAGE_GAP_ID",
+      "reason": "BASE_CERTIFIED_HOUR_ABSENT_FROM_ACCEPTED_NORMALIZED_SOURCE"
+    },
+    "preserve_all_base_interval_records_exactly": true,
+    "coverage_record_order": "(start,end,coverage_gap_id)",
+    "final_interval_collection_order": "(start,end,reason,anomaly_ids)",
+    "final_certified_segment_order": "(start,end)",
+    "non_development_partitions": "UNCHANGED_NON_AUTHORITATIVE",
+    "identity_rule": "recompute_treatment_manifest_identity on deterministic compatibility record",
+    "equivalent_inputs_require_byte_identical_record": true
+  },
+  "artifact_incident_evidence": {
+    "completed_normalization_requires_exact_accepted_timestamp_vector": true,
+    "completed_missing_set_requires_exact_missing_hour_vector": true,
+    "base_certified_segment_records_required": true,
+    "boundary_records_required_for_every_reached_adjacent_pair": true,
+    "completed_coverage_audit_failure_may_retain_digest_without_vector": false,
+    "timestamp_only_no_ohlcv_requirement": true,
+    "canonical_verifier_failure_requires_complete_lossless_coverage_evidence": true
+  },
+  "required_offline_regressions": [
+    "leading unsupported hours become coverage gaps without synthetic bars",
+    "trailing unsupported hours become coverage gaps",
+    "cross-archive missing hour is caught",
+    "internal base-certified missing hour is caught",
+    "base-excluded missing hour is not duplicated as V3 gap",
+    "V2 row treatment semantics remain unchanged",
+    "valid rows inside base exclusions remain normalized but uncertified",
+    "coverage overlay only removes base certification",
+    "coverage overlay never adds certification",
+    "final segments equal maximal contiguous runs of B intersect O",
+    "final segments pass exact hourly-grid checks",
+    "unchanged canonical verifier accepts correct V3 synthetic bundle",
+    "unchanged canonical verifier rejects corrupted final segment metadata",
+    "accepted first/last timestamp evidence exact",
+    "coverage digests deterministic across container iteration order",
+    "coverage gaps do not alter V2 raw-row accounting totals",
+    "V1 and V2 claims cannot authorize V3",
+    "V3 reviewed-candidate rebinding attack fails",
+    "claim precedes staging/network/source access",
+    "manual workflow only; no PR/push/schedule/repository_dispatch/workflow_run empirical trigger",
+    "protected downstream scopes remain absent",
+    "statistical constants and path remain invariant",
+    "post-claim coverage failure preserves progressive evidence",
+    "post-coverage canonical verifier failure preserves complete lossless evidence",
+    "serialize-digest-deserialize reproduces exact accepted and missing timestamp vectors",
+    "leading/trailing/internal/cross-archive fixtures preserve exact vectors",
+    "corrupted overlay still preserves actual accepted timestamp vector in artifact",
+    "exactly one deterministic boundary record per adjacent registered archive pair",
+    "complete 53-archive asset has exactly 52 passing boundary records",
+    "unaccounted archive boundary hard-fails ARCHIVE_BOUNDARY_COVERAGE_UNACCOUNTED",
+    "whole-domain absent hard-fails EMPTY_FINAL_DEVELOPMENT_CERTIFICATION before canonical verification/sample",
+    "whole-domain base-excluded hard-fails EMPTY_FINAL_DEVELOPMENT_CERTIFICATION before sample",
+    "coverage-aware top-level anomaly_ids equals base scanner anomaly_ids exactly",
+    "each added coverage region/exclusion/break has singleton coverage-gap ID",
+    "equivalent base manifest plus gaps produce byte-identical compatibility manifest and identity",
+    "coverage-aware manifest never feeds back into V2 row rejection"
   ]
 }
