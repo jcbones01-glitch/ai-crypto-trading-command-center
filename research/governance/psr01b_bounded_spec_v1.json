@@ -1,7 +1,7 @@
 {
   "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
   "version": 1,
-  "status": "REVISION_3_REMEDIATED_PENDING_REREVIEW",
+  "status": "REVISION_4_NARROW_REMEDIATION_PENDING_REREVIEW",
   "parent_source_review_issue": 86,
   "parent_source_decision": "PSR01_SOURCE_IDENTITY_UNRESOLVED",
   "parent_design_review_issue": 88,
@@ -101,7 +101,11 @@
         "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
         "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
         "src/research_core/archive_security.py": "cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b",
-        "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534"
+        "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534",
+        "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
+        "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+        "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+        "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
       },
       "pre_source_read_requirement": "At execution preflight, Git blob SHA-1 of every required_blob_sha1 path and upstream registration must equal the registered value; any mismatch HARD_FAIL before archive read.",
       "exact_pipeline": [
@@ -123,7 +127,31 @@
       "arbitrary_exception_skip_allowed": false,
       "duplicate_or_order_repair_allowed": false,
       "missing_hour_definition": "an hourly bar label in the registered source interval that is absent from the accepted normalized timestamp set after the inherited row treatment",
-      "arm_boundary": "PAPER_FILL and PROJECT_GAP_PRESERVING are constructed only after the exact inherited normalization is complete; neither arm may change raw-row acceptance/rejection."
+      "arm_boundary": "PAPER_FILL and PROJECT_GAP_PRESERVING are constructed only after the exact inherited normalization is complete; neither arm may change raw-row acceptance/rejection.",
+      "import_dependency_closure": {
+        "root": "src/research_core/ams_dep_treatment_aware_normalization_v2.py",
+        "direct_dependency_requiring_closure": "src/research_core/ams_dep_pipeline.py",
+        "project_local_modules_loaded_by_ams_dep_pipeline": [
+          "src/research_core/data_ingestion.py",
+          "src/research_core/data_interfaces.py",
+          "src/research_core/data_quality.py",
+          "src/research_core/data_quality_treatment_v2.py",
+          "src/research_core/dependence_statistics.py",
+          "src/research_core/market_state.py",
+          "src/research_core/source_identity.py"
+        ],
+        "transitive_project_local_modules_loaded_by_those": [
+          "src/research_core/archive_security.py"
+        ],
+        "closure_rule": "Every project-local module in required_blob_sha1 that is imported on the normalization import path must match its registered Git blob SHA-1 before source read. No unpinned project-local import may be introduced into this closure at implementation time.",
+        "constants_assertion": {
+          "expression": "ams_dep_pipeline.DEVELOPMENT_START == datetime(2017,8,17,tzinfo=UTC) AND ams_dep_pipeline.DEVELOPMENT_END == datetime(2022,1,1,tzinfo=UTC)",
+          "required": true,
+          "timing": "pre-source-read after successful pinned imports",
+          "failure": "HARD_FAIL"
+        },
+        "environment_dependencies": "Python and numpy/scipy versions remain governed by runtime_contract; standard-library modules are governed by the pinned Python runtime."
+      }
     }
   },
   "folds": [
@@ -495,7 +523,9 @@
       "earlier_source_state_may_propagate": false,
       "rule": "For each arm/fold, all OHLCV-derived predecessor state, rolling windows, RSI/ATR Wilder state, EMA/MACD state, OBV state, MFI predecessor, and lag state are initialized/rebuilt using only bars at or after warmup_start. No state from an earlier accepted bar may enter the fold.",
       "propagation": "After warmup_start, state propagates causally through train, validation, and test without reset at split boundaries; PROJECT_GAP_PRESERVING additionally resets at actual continuity gaps; PAPER_FILL uses its filled grid.",
-      "first_fold_check": "for fold 1, warmup_start is exactly 2017-12-01T00:00:00Z"
+      "first_fold_check": "for fold 1, warmup_start is exactly 2017-12-01T00:00:00Z",
+      "markdown_must_match": true,
+      "authoritative_sentence": "warmup_start = train_start - 744h is a mandatory artificial state boundary. No OHLCV/TA rolling or recursive state from a timestamp earlier than warmup_start may propagate into the fold."
     }
   },
   "model_contract": {
@@ -838,7 +868,7 @@
     "manual_confirmation_token_to_be_defined_after_implementation_review": true,
     "failure_after_claim_consumes_attempt": true
   },
-  "revision": 3,
+  "revision": 4,
   "split_endpoint_contract": {
     "bar_timestamp_semantics": "Binance kline open timestamp in UTC labels bar [t,t+1h)",
     "target_definition": "r_(t+1)=log(C_(t+1)/C_t), where C_t is the close of the bar labeled t",
@@ -867,6 +897,12 @@
       "reviewed_head": "91da8ccd59c73288c337f153e7cfdaa5733cebc8",
       "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
       "decision_comment_id": 5821038522
+    },
+    {
+      "issue": 90,
+      "reviewed_head": "9ad61d31f4b6aa5bf92385d9f96c73bebc1d3c47",
+      "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+      "decision_comment_id": null
     }
   ]
 }
