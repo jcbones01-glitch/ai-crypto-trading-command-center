@@ -1,0 +1,28 @@
+name: PSR-01B Bounded Engineering
+on:
+  push:
+    branches: [psr-01b-bounded-implementation]
+    paths:
+      - 'src/research_core/psr01b_core.py'
+      - 'tests/test_psr01b_core.py'
+      - '.github/workflows/psr01b-bounded-engineering.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[dev]'
+      - name: Verify PSR-01B synthetic numerical core only
+        run: python -m pytest -q tests/test_psr01b_core.py
