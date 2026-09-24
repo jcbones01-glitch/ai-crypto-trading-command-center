@@ -6,7 +6,7 @@ missing-data arm; this module performs no archive or network I/O.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import calendar
 import math
 from typing import Mapping, Sequence
@@ -262,16 +262,6 @@ def compute_ta_candidates(arm: ArmBars) -> TACandidateResult:
 
     target = np.full(n, np.nan, dtype=np.float64)
     for i in range(n - 1):
-        if (
-            arm.segment_ids[i + 1] == arm.segment_ids[i]
-            and arm.segment_indices[i + 1] == arm.segment_indices[i] + 1
-            and arm.bars[i + 1].timestamp - arm.bars[i].timestamp
-            == np.timedelta64(1, "h").astype("timedelta64[us]").astype(object)
-        ):
-            target[i] = math.log(float(arm.bars[i + 1].close) / float(arm.bars[i].close))
-    # Avoid datetime/numpy timedelta portability assumptions by a second exact pass.
-    from datetime import timedelta
-    for i in range(n - 1):
         contiguous = (
             arm.segment_ids[i + 1] == arm.segment_ids[i]
             and arm.segment_indices[i + 1] == arm.segment_indices[i] + 1
@@ -371,7 +361,7 @@ def select_four_block_features(
         for start, end in blocks:
             mask = np.array(
                 [
-                    start <= stamp < end and start <= stamp.replace() + __import__("datetime").timedelta(hours=1) < end
+                    start <= stamp < end and start <= stamp + timedelta(hours=1) < end
                     for stamp in stamps
                 ],
                 dtype=bool,
