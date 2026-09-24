@@ -1,7 +1,7 @@
 {
   "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
   "version": 1,
-  "status": "PROPOSED_FOR_INDEPENDENT_SPEC_REVIEW",
+  "status": "REVISED_AFTER_INDEPENDENT_REVIEW_PENDING_REREVIEW",
   "parent_source_review_issue": 86,
   "parent_source_decision": "PSR01_SOURCE_IDENTITY_UNRESOLVED",
   "parent_design_review_issue": 88,
@@ -185,22 +185,23 @@
       "status": "PROJECT_DEFINED_DECLARED_DEVIATION",
       "count": 15,
       "features": [
-        "RET_1=log(C_t/C_t-1)",
-        "OPEN_GAP=log(O_t/C_t-1)",
-        "HIGH_PREVCLOSE=log(H_t/C_t-1)",
-        "LOW_PREVCLOSE=log(L_t/C_t-1)",
+        "RET_1=log(C_t/C_{t-1})",
+        "OPEN_GAP=log(O_t/C_{t-1})",
+        "HIGH_PREVCLOSE=log(H_t/C_{t-1})",
+        "LOW_PREVCLOSE=log(L_t/C_{t-1})",
         "CLOSE_OPEN=log(C_t/O_t)",
         "HIGH_LOW=log(H_t/L_t)",
-        "CLOSE_LOCATION=(2*C_t-H_t-L_t)/(H_t-L_t), else 0 when H_t==L_t",
-        "BODY_FRAC=(C_t-O_t)/(H_t-L_t), else 0 when H_t==L_t",
-        "UPPER_WICK_FRAC=(H_t-max(O_t,C_t))/(H_t-L_t), else 0 when H_t==L_t",
-        "LOWER_WICK_FRAC=(min(O_t,C_t)-L_t)/(H_t-L_t), else 0 when H_t==L_t",
+        "CLOSE_LOCATION=(2*C_t-H_t-L_t)/(H_t-L_t); 0 iff H_t==L_t",
+        "BODY_FRAC=(C_t-O_t)/(H_t-L_t); 0 iff H_t==L_t",
+        "UPPER_WICK_FRAC=(H_t-max(O_t,C_t))/(H_t-L_t); 0 iff H_t==L_t",
+        "LOWER_WICK_FRAC=(min(O_t,C_t)-L_t)/(H_t-L_t); 0 iff H_t==L_t",
         "LOG_VOLUME=log1p(V_t)",
-        "LOG_VOLUME_CHANGE=log((V_t+1)/(V_t-1+1))",
-        "VOLUME_SMA24_RATIO=V_t/mean(V_t-23..V_t)-1; 0 if denominator==0",
+        "LOG_VOLUME_CHANGE=log((V_t+1)/(V_{t-1}+1))",
+        "VOLUME_SMA24_RATIO=V_t/mean(V_{t-23},...,V_t)-1; 0 iff the mean denominator is 0",
         "LOG_DOLLAR_VOLUME=log1p(C_t*V_t)",
-        "TYPICAL_RETURN_1=log(TP_t/TP_t-1), TP=(H+L+C)/3"
-      ]
+        "TYPICAL_RETURN_1=log(TP_t/TP_{t-1}), TP_t=(H_t+L_t+C_t)/3"
+      ],
+      "input_domain": "O,H,L,C must be finite and strictly positive; V must be finite and >=0; violation HARD_FAIL"
     },
     "ta_reconstruction": {
       "status": "PROJECT_DEFINED_DECLARED_DEVIATION",
@@ -277,21 +278,25 @@
       "ranking": "within each block sort by descending absolute Spearman correlation with aligned next-hour return; lexical feature-name tie break; average ordinal rank across four blocks; lowest average rank wins; lexical tie break",
       "eligibility": "candidate must have >=100 finite aligned rows in every block or is ineligible; group with no eligible candidate HARD_FAIL",
       "formulas": {
-        "RSI": "Wilder RSI over w; alpha=1/w; seed with simple mean of first w gains/losses; 100 if avg_loss=0 and avg_gain>0; 50 if both zero",
-        "ROC": "C_t/C_t-w - 1",
-        "DIST_SMA": "C_t/mean(C_t-w+1..C_t)-1",
-        "MACD": "(EMA_fast(C)-EMA_w(C))/C_t; fast=max(2,floor(w/2)); EMA alpha=2/(span+1)",
-        "MACD_HIST": "MACD_raw - EMA_signal(MACD_raw); signal=max(2,floor(w/3)); feature divided by C_t",
-        "ATR_RATIO": "Wilder ATR_w/C_t using true range max(H-L,abs(H-prevC),abs(L-prevC))",
-        "ROLL_STD": "population std (ddof=0) of one-hour log returns over w",
-        "BB_POS": "(C_t-SMA_w)/(2*population_std_w(C)); 0 if std==0",
-        "VWAP_DEV": "C_t/(sum(TP*V)/sum(V))-1 over w; 0 if sum(V)==0",
-        "OBV_SLOPE": "OLS slope of OBV over last w points divided by max(mean(volume over w),1e-12); OBV increments sign(C_t-C_t-1)*V_t",
-        "MFI": "100-100/(1+positive_flow/negative_flow) over w using TP*V; 100 if negative=0<positive; 50 if both zero; feature divided by 100",
-        "LAG_RETURN": "log(C_t/C_t-k) for k in [1,2,3,6,12,24]"
-      }
+        "RSI": "For segment changes delta_j=C_j-C_{j-1}. At j=w seed avg_gain=mean(max(delta_1..delta_w,0)) and avg_loss=mean(max(-delta_1..-delta_w,0)); for j>w use Wilder recursion avg=(prev*(w-1)+current)/w. RSI=100 if avg_loss=0<avg_gain; 50 if avg_loss=avg_gain=0; otherwise 100-100/(1+avg_gain/avg_loss). Gap resets and requires a new w-change seed.",
+        "ROC": "C_t/C_{t-w}-1; valid j>=w",
+        "DIST_SMA": "C_t/mean(C_{t-w+1},...,C_t)-1; valid j>=w-1",
+        "MACD": "Within each segment use unadjusted recursive EMA_s(0)=C_0 and EMA_s(j)=alpha_s*C_j+(1-alpha_s)*EMA_s(j-1), alpha_s=2/(s+1). slow span=w; fast span=max(2,floor(w/2)). raw_MACD_j=EMA_fast(j)-EMA_slow(j). feature=raw_MACD_j/C_j.",
+        "MACD_HIST": "signal span=max(2,floor(w/3)); signal_0=raw_MACD_0; signal_j=alpha_sig*raw_MACD_j+(1-alpha_sig)*signal_{j-1}; feature=(raw_MACD_j-signal_j)/C_j. Gap resets both price EMAs and signal EMA at the new segment first bar.",
+        "ATR_RATIO": "TR_j=max(H_j-L_j,abs(H_j-C_{j-1}),abs(L_j-C_{j-1})) for j>=1. At j=w seed ATR=mean(TR_1..TR_w); for j>w ATR_j=(ATR_{j-1}*(w-1)+TR_j)/w. feature=ATR_j/C_j. Gap resets and requires a new w-TR seed.",
+        "ROLL_STD": "population std ddof=0 of log(C_k/C_{k-1}) for k=j-w+1..j; requires w returns and j>=w",
+        "BB_POS": "SMA=mean(C_{j-w+1}..C_j), SD=population std ddof=0 over the same w closes; feature=(C_j-SMA)/(2*SD), or 0 iff SD=0",
+        "VWAP_DEV": "TP_k=(H_k+L_k+C_k)/3; VWAP=sum(TP_k*V_k)/sum(V_k) for k=j-w+1..j; feature=C_j/VWAP-1, or 0 iff sum(V)=0",
+        "OBV_SLOPE": "At a segment start OBV_0=0. For j>=1, OBV_j=OBV_{j-1}+sign(C_j-C_{j-1})*V_j with sign(0)=0. Over the last w OBV observations regress OBV on integer x=0..w-1 by OLS with intercept; slope divided by max(mean(V over same w bars),1e-12).",
+        "MFI": "TP_j=(H_j+L_j+C_j)/3 and raw_flow_j=TP_j*V_j. For j>=1 classify flow positive if TP_j>TP_{j-1}, negative if TP_j<TP_{j-1}, and neither if equal. At j>=w sum classified raw flows over changes j-w+1..j. MFI=100 if negative=0<positive; 50 if both sums zero; otherwise 100-100/(1+positive/negative). Feature=MFI/100. Gap resets predecessor and requires w new changes.",
+        "LAG_RETURN": "log(C_t/C_{t-k}) for k in [1,2,3,6,12,24]; valid j>=k"
+      },
+      "spearman_nonfinite_rule": "For each candidate/block use pairwise finite candidate/target rows. Fewer than 100 pairs => ineligible. Compute scipy.stats.spearmanr on those pairs. Any nonfinite correlation (including a constant candidate) => ineligible for that block. Candidate must be eligible in all four blocks; otherwise it is excluded. If a selection group has no candidate eligible in all four blocks => HARD_FAIL.",
+      "selection_block_endpoint_rule": "Within each 3-calendar-month block [S,E), correlation rows must satisfy S<=origin t<E and S<=t+1h<E.",
+      "feature_name_tie_break": "ASCII lexical ascending on the exact canonical feature names generated as FAMILY__W{hours} or LAG_RETURN__K{hours}."
     },
     "egarch": {
+      "status": "PROJECT_DEFINED_EXACT_SEGMENTED_EGARCH_CONTRACT",
       "paper_orders": [
         [
           1,
@@ -314,20 +319,133 @@
           2
         ]
       ],
-      "selection": "lowest training-sample AIC; lexicographic (p,o,q) tie break",
-      "mean": "Constant",
-      "innovations": "StudentsT",
-      "input_return_units": "100 * hourly log return",
-      "output_features": [
-        "conditional_volatility",
-        "log_conditional_volatility",
-        "standardized_residual"
+      "order_evaluation_sequence": [
+        "1,1,1",
+        "2,1,1",
+        "1,1,2",
+        "2,1,2"
       ],
-      "parameters_fixed_after_training": true,
+      "input_return_units": "y_t=100*log(C_t/C_{t-1})",
+      "mean": "constant mu",
+      "innovations": "standardized Student-t with nu>2",
+      "recursion": "h_t=omega+sum_i alpha_i*a_{t-i}+sum_j gamma_j*z_{t-j}+sum_k beta_k*h_{t-k}; sigma_t=exp(h_t/2); z_t=(y_t-mu)/sigma_t; a_t=abs(z_t)-m_nu",
+      "standardized_t_abs_mean": "m_nu=2*sqrt(nu-2)*Gamma((nu+1)/2)/((nu-1)*sqrt(pi)*Gamma(nu/2))",
+      "standardized_t_log_density": "log f(z)=lgamma((nu+1)/2)-lgamma(nu/2)-0.5*log(pi*(nu-2))-((nu+1)/2)*log(1+z^2/(nu-2))",
+      "observation_log_likelihood": "log f(z_t)-0.5*h_t",
+      "reset": {
+        "beta_constraint": "0<=beta_k<=0.999 and sum(beta_k)<=0.999",
+        "h_bar": "omega/(1-sum(beta_k))",
+        "pre_segment_h_lags": "all q lags equal h_bar",
+        "pre_segment_centered_abs_shock_lags": "all p lags equal 0",
+        "pre_segment_signed_z_lags": "all o lags equal 0",
+        "invalid_reset": "nonfinite h_bar, denominator<=0, or exp(h_bar) overflow => order fit HARD_FAIL"
+      },
+      "training_estimation": {
+        "PAPER_FILL": "one contiguous training return segment under the filled grid",
+        "PROJECT_GAP_PRESERVING": "sum the log likelihood over all maximal contiguous training return segments under one shared parameter vector; reset all latent histories independently at each segment start; never concatenate state across a gap",
+        "training_returns": "only returns whose return endpoint bar label is inside the training split; no validation target enters likelihood",
+        "optimizer": "scipy.optimize.minimize method=SLSQP, one deterministic start, maxiter=5000, ftol=1e-10, disp=false",
+        "initial_parameters": {
+          "mu": "finite arithmetic mean of all eligible training y_t",
+          "beta_total": 0.9,
+          "beta_each": "0.90/q",
+          "alpha_each": "0.05/p",
+          "gamma_each": 0,
+          "omega": "log(population_variance(y,ddof=0))*(1-0.90)",
+          "nu": 8
+        },
+        "bounds": {
+          "mu": [
+            -1000,
+            1000
+          ],
+          "omega": [
+            -20,
+            20
+          ],
+          "alpha_each": [
+            -2,
+            2
+          ],
+          "gamma_each": [
+            -2,
+            2
+          ],
+          "beta_each": [
+            0,
+            0.999
+          ],
+          "nu": [
+            2.05,
+            200
+          ]
+        },
+        "inequality_constraint": "0.999-sum(beta_k)>=0",
+        "failure": "optimizer non-success, nonfinite objective/parameters, or invalid recursion => that order unavailable; all four unavailable => fold HARD_FAIL"
+      },
+      "aic": "AIC=2*k-2*LL where k=3+p+o+q (mu,omega,nu,alpha,gamma,beta). Lowest finite AIC wins; exact tie uses registered order_evaluation_sequence.",
+      "temporal_update": "For each return y_t, compute h_t from histories available before y_t, then observe y_t and compute z_t and a_t, then compute/update the history used for h_{t+1}. At forecast origin t after C_t is complete, deployed features are sigma_{t+1}=exp(h_{t+1}/2), log_sigma_{t+1}=h_{t+1}/2, and z_t. Thus no y_{t+1} enters features.",
+      "replay": "After fitting on training only, replay training from a training-start reset to establish state; carry state causally through validation and test with fixed parameters, resetting only at an actual continuity gap. Do not reset at train/validation or validation/test boundaries.",
       "validation_test_refit": false,
-      "gap_arm_reset": "at each continuity break reset recursion to fitted unconditional log-variance proxy and standardized residual 0; no cross-gap residual/variance propagation",
-      "paper_fill_arm": "continuous recursion on filled hourly grid"
-    }
+      "output_features": [
+        "EGARCH_SIGMA_NEXT",
+        "EGARCH_LOG_SIGMA_NEXT",
+        "EGARCH_Z_CURRENT"
+      ]
+    },
+    "contiguity_and_initialization": {
+      "segment_definition": "maximal sequence of accepted bar labels separated by exactly 1 hour",
+      "first_bar_index": 0,
+      "first_bar_counts_as_contiguous_hour": 1,
+      "transition_count_at_bar_index_j": "j",
+      "global_feature_origin_eligibility": "bar index j must be >= 336, so the first eligible origin is the 337th bar of a contiguous segment",
+      "reason": "this guarantees 336 one-hour transitions for the longest return/change-based windows",
+      "gap_behavior": "all recursive and rolling feature state is discarded at a gap and rebuilt from the next segment start",
+      "window_first_valid_index": {
+        "ROC_w": "j>=w",
+        "LAG_RETURN_k": "j>=k",
+        "DIST_SMA_w": "j>=w-1",
+        "ROLL_STD_w_returns": "j>=w",
+        "BB_POS_w_close": "j>=w-1",
+        "VWAP_DEV_w": "j>=w-1",
+        "OBV_SLOPE_w": "j>=w-1",
+        "RSI_w": "j>=w",
+        "ATR_RATIO_w": "j>=w",
+        "MFI_w": "j>=w",
+        "MACD_w": "recursive value exists from j=0 but cannot enter a deployed row before global j>=336"
+      }
+    },
+    "deployed_feature_order": [
+      "RET_1",
+      "OPEN_GAP",
+      "HIGH_PREVCLOSE",
+      "LOW_PREVCLOSE",
+      "CLOSE_OPEN",
+      "HIGH_LOW",
+      "CLOSE_LOCATION",
+      "BODY_FRAC",
+      "UPPER_WICK_FRAC",
+      "LOWER_WICK_FRAC",
+      "LOG_VOLUME",
+      "LOG_VOLUME_CHANGE",
+      "VOLUME_SMA24_RATIO",
+      "LOG_DOLLAR_VOLUME",
+      "TYPICAL_RETURN_1",
+      "SELECTED__MOM_RSI",
+      "SELECTED__MOM_ROC",
+      "SELECTED__TREND_SMA",
+      "SELECTED__TREND_MACD",
+      "SELECTED__VOL_ATR_STD",
+      "SELECTED__VOL_BB",
+      "SELECTED__PRICE_VOLUME_VWAP",
+      "SELECTED__VOLUME_OBV",
+      "SELECTED__VOLUME_MFI",
+      "SELECTED__RETURN_LAGS",
+      "EGARCH_SIGMA_NEXT",
+      "EGARCH_LOG_SIGMA_NEXT",
+      "EGARCH_Z_CURRENT"
+    ],
+    "deployed_feature_count": 28
   },
   "model_contract": {
     "model": "XGBoost regressor",
@@ -338,7 +456,25 @@
       "trials_per_fold": 50,
       "pruner": "NONE",
       "sampler_defaults": "pinned Optuna version defaults except explicit seed",
-      "objective": "validation MSE on target standardized with training mean/std"
+      "objective": "validation MSE on target standardized with training mean/std",
+      "execution": {
+        "study_direction": "minimize",
+        "n_jobs": 1,
+        "sampler_constructor": "optuna.samplers.TPESampler(seed=derived_optuna_seed, multivariate=False, group=False, constant_liar=False)",
+        "pruner_constructor": "optuna.pruners.NopPruner()",
+        "suggestion_call_order": [
+          "max_depth",
+          "learning_rate",
+          "n_estimators",
+          "min_child_weight",
+          "subsample",
+          "colsample_bytree",
+          "reg_alpha",
+          "reg_lambda"
+        ],
+        "suggestion_names_exact": true,
+        "trial_tie_break": "smallest trial.number among exactly equal finite validation-MSE objectives"
+      }
     },
     "search_space": {
       "max_depth": {
@@ -388,7 +524,9 @@
       "objective": "reg:squarederror",
       "tree_method": "hist",
       "n_jobs": 1,
-      "early_stopping_rounds": 50
+      "early_stopping_rounds": 50,
+      "random_state": "derived per-trial or final-refit seed as specified in stochastic_contract",
+      "eval_metric": "rmse"
     },
     "final_refit": {
       "data": "combined train+validation",
@@ -396,13 +534,37 @@
       "n_estimators": "selected trial best_iteration + 1; if no early stop, selected sampled n_estimators",
       "early_stopping": "NONE during final refit",
       "test_use": "exactly once after final refit"
+    },
+    "target_standardization": {
+      "tuning": "training-only arithmetic mean and population std ddof=0; standardize y=(y-mean)/std; validation uses that same training mean/std",
+      "final_refit": "combined train+validation arithmetic mean and population std ddof=0 over the union of rows independently eligible in the original train and validation splits; inverse-transform test forecasts to raw log-return units",
+      "zero_or_nonfinite_std_behavior": "HARD_FAIL"
+    },
+    "early_stopping": {
+      "eval_set": "exactly [(X_validation,y_validation_standardized)]",
+      "monitored_metric": "validation rmse",
+      "early_stopping_rounds": 50,
+      "best_iteration_tie_rule": "smallest boosting iteration attaining the minimum recorded validation RMSE",
+      "optuna_objective": "validation MSE computed from predictions using trees [0,best_iteration] inclusive; MSE is arithmetic mean squared error",
+      "no_validation_rows": "HARD_FAIL"
     }
   },
   "forecast_identity": {
     "one_forecast_vector_per_arm_fold": true,
     "baseline_and_cost_aware_must_use_identical_forecast_vector": true,
     "required_forecast_vector_sha256": true,
-    "execution_rule_specific_tuning_or_refit_allowed": false
+    "execution_rule_specific_tuning_or_refit_allowed": false,
+    "serialization": {
+      "version": "PSR01B_FORECAST_VECTOR_V1",
+      "sort_order": "strict ascending forecast-origin bar timestamp",
+      "timestamp_encoding": "signed int64 little-endian Unix seconds for the UTC bar-open timestamp",
+      "forecast_encoding": "IEEE-754 float64 little-endian raw log-return forecast",
+      "row_bytes": "struct.pack('<qd', timestamp_unix_seconds, forecast)",
+      "payload": "ASCII bytes 'PSR01B_FORECAST_VECTOR_V1\\0' + uint64 little-endian row_count + concatenated row_bytes",
+      "finite_required": true,
+      "duplicate_timestamp_allowed": false,
+      "hash": "SHA256(payload)"
+    }
   },
   "missing_data_arms": {
     "order": [
@@ -455,18 +617,26 @@
       "cost_aware_filter": false,
       "gap_arm": "flat until 24 contiguous prior hours available after a gap",
       "fold_initial_position": 0,
-      "terminal_liquidation": true
+      "terminal_liquidation": true,
+      "signal_history": "may use contiguous causal bars before the test start, including validation history, but never a future/test target; the evaluation origin itself must be in the registered test-origin set"
     },
-    "role": "contextual only; not primary PSR01B success gate"
+    "role": "contextual only; not primary PSR01B success gate",
+    "evaluation_origin_set": "exactly the same registered eligible test-origin timestamps used by the model forecast vector for that missing-data arm/fold; every origin obeys split_endpoint_contract"
   },
   "metrics": {
     "ARC": "prod(1+r_t)^(8760/N)-1 over finite evaluation returns",
     "ASD": "sqrt(8760)*sample_std(r_t,ddof=1)",
     "risk_free_annual": 0.042,
     "SHARPE": "(ARC-0.042)/ASD",
-    "max_drawdown": "paper equity-curve definition",
+    "max_drawdown": "For any registered return sequence, set E_0=1 and E_j=E_{j-1}*(1+r_j). Costs are already embedded in r_j. Running peak P_j=max(E_0..E_j). Drawdown D_j=E_j/P_j-1. MDD=min_j D_j (non-positive). For consolidated statistics concatenate fold return records in registered fold order and carry equity across folds; do not reset equity between folds. Any nonfinite return or 1+r_j<=0 => metric HARD_FAIL.",
     "trade_count": "completed trades as PSR01B definition",
-    "gap_arm_N": "number of finite accepted hourly evaluation-return records; excluded gap rows are not replaced with zero"
+    "gap_arm_N": "number of finite accepted hourly evaluation-return records; excluded gap rows are not replaced with zero",
+    "consolidated_total_return": "prod(1+r_t)-1 over the concatenated registered evaluation sequence",
+    "fold_total_return": "within each fold, prod(1+r_t)-1 over that fold's registered finite evaluation returns",
+    "fold_ARC": "within each fold, prod(1+r_t)^(8760/N_fold)-1",
+    "fold_ASD": "sqrt(8760)*sample_std(r_t,ddof=1) using that fold's N_fold records",
+    "fold_SHARPE": "(fold_ARC-0.042)/fold_ASD; zero or nonfinite ASD => Sharpe unavailable and experiment cannot pass a criterion requiring its sign",
+    "consolidated_equity_reset_between_folds": false
   },
   "inference": {
     "primary_comparison": "COST_AWARE - BASELINE_SIGN",
@@ -487,8 +657,25 @@
       "null_centering": "subtract observed segment-pooled differential mean before primary p-value resampling",
       "one_sided_alternative": "mean(COST_AWARE-BASELINE_SIGN)>0",
       "p_value": "(1 + count(bootstrap_centered_mean >= observed_mean))/(10000+1)",
-      "confidence_interval": "95% percentile interval from uncentered paired bootstrap",
-      "sharpe_difference": "computed on same uncentered bootstrap draws as complementary evidence; not a mandatory gate"
+      "confidence_interval": "np.quantile(uncentered_bootstrap_statistic,[0.025,0.975],method='linear')",
+      "sharpe_difference": "computed on same uncentered bootstrap draws as complementary evidence; not a mandatory gate",
+      "algorithm": {
+        "segment_order": "registered fold order, then ascending contiguous-segment start timestamp",
+        "per_segment_length": "n>=1 required",
+        "effective_block_length": "L_eff=min(requested_block_hours,n)",
+        "blocks_per_segment": "ceil(n/L_eff)",
+        "start_sampling": "for each block draw an independent integer start uniformly from {0,...,n-1}, with replacement, using the registered NumPy Generator/seed stream",
+        "block_indices": "(start+j) mod n for j=0,...,L_eff-1",
+        "segment_draw": "concatenate sampled blocks and retain the first n observations exactly",
+        "short_segment_rule": "if n<requested L, set L_eff=n; the block may circularly rotate but never repeats beyond the n retained positions and the segment is never dropped",
+        "replicate": "resample every segment independently to its original length, then concatenate sampled segments in registered order; compute the pooled arithmetic mean",
+        "centered_test": "subtract the observed pooled differential mean from every observed differential before applying the same sampled indices",
+        "uncentered_ci_and_sharpe": "apply the identical sampled indices to the uncentered paired strategy return records",
+        "draws": 10000,
+        "rng": "numpy.random.Generator(numpy.random.PCG64(seed_from_registered_SeedSequence_path))",
+        "empty_segment": "not represented; construction must omit empty segments before bootstrap",
+        "no_cross_boundary": true
+      }
     },
     "multiplicity": {
       "method": "Holm step-down",
@@ -500,7 +687,9 @@
       ],
       "tie_break": "registered arm order",
       "applies_to": "two primary 168h one-sided mean-difference p-values only",
-      "robustness_blocks": "reported separately; not success gates"
+      "robustness_blocks": "reported separately; not success gates",
+      "algorithm": "Let m=2. Sort raw p-values ascending with registered arm order as exact tie-break. For sorted rank j=0..m-1 compute s_j=(m-j)*p_j. adjusted_sorted_j=min(1,max(s_0,...,s_j)). Map adjusted values back to registered arm order. Reject iff adjusted_p<=0.05.",
+      "nonfinite_raw_p": "HARD_FAIL; no pass classification"
     }
   },
   "success_semantics": {
@@ -525,12 +714,13 @@
       "change fold dates",
       "drop missing-data arm",
       "change bootstrap family"
-    ]
+    ],
+    "any_post_outcome_change": "Any change to any registered analytic field after empirical outcome observation constitutes a new experiment and cannot amend PSR-01B."
   },
   "stochastic_contract": {
     "model_root": 2026092401,
     "bootstrap_root": 2026092402,
-    "seed_engine": "numpy.random.SeedSequence -> first uint32",
+    "seed_engine": "numpy.random.SeedSequence(coordinates).generate_state(1,dtype=np.uint32)[0] converted to Python int",
     "arm_indices": {
       "PAPER_FILL": 0,
       "PROJECT_GAP_PRESERVING": 1
@@ -539,7 +729,9 @@
     "xgboost_trial_seed_path": "[model_root,2,arm_index,fold_index,trial_index]",
     "xgboost_final_seed_path": "[model_root,3,arm_index,fold_index,selected_trial_index]",
     "bootstrap_seed_path": "[bootstrap_root,block_hours,arm_index]",
-    "all_threads": 1
+    "all_threads": 1,
+    "xgboost_seed_parameter": "random_state",
+    "uncontrolled_rng_allowed": false
   },
   "runtime_contract": {
     "os_runner": "ubuntu-24.04",
@@ -559,7 +751,7 @@
     }
   },
   "future_governance": {
-    "next_step": "independent specification review",
+    "next_step": "independent re-review of revised specification at exact head",
     "implementation_requires_new_review": true,
     "offline_synthetic_tests_before_empirical_claim": true,
     "reviewed_candidate_anchor_required": true,
@@ -567,5 +759,29 @@
     "one_shot_claim_before_psr01b_source_read_or_forecast_generation": true,
     "manual_confirmation_token_to_be_defined_after_implementation_review": true,
     "failure_after_claim_consumes_attempt": true
+  },
+  "revision": 2,
+  "prior_independent_review": {
+    "issue": 90,
+    "reviewed_head": "0cc7877029d679f67e11a4012951f39dfff6eb68",
+    "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+    "decision_comment_id": 5820773445,
+    "empirical_access_during_remediation": false
+  },
+  "split_endpoint_contract": {
+    "bar_timestamp_semantics": "Binance kline open timestamp in UTC labels bar [t,t+1h)",
+    "target_definition": "r_(t+1)=log(C_(t+1)/C_t), where C_t is the close of the bar labeled t",
+    "split_half_open_rule": "for any split [S,E), an origin t is eligible iff S <= t < E AND S <= t+1h < E",
+    "equivalent_last_origin": "E-2h on a complete hourly grid",
+    "boundary_crossing_target_allowed": false,
+    "applies_to": [
+      "training targets",
+      "validation loss",
+      "test forecasts and evaluation returns",
+      "feature-selection correlations within each three-month selection block",
+      "benchmark evaluation records"
+    ],
+    "final_source_boundary": "no origin may be retained if its target bar label is >= 2022-01-01T00:00:00Z",
+    "final_refit_rows": "union of rows independently eligible under the original train split and original validation split; no row crossing the train/validation or validation/test boundary is restored"
   }
 }
