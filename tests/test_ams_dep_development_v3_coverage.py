@@ -383,3 +383,85 @@ def test_unchanged_canonical_verifier_accepts_correct_overlay_and_rejects_corrup
             bad_bundle,
             registered_identity=bad_manifest.dataset_identity,
         )
+
+
+def test_complete_53_archive_asset_has_exactly_52_boundary_records():
+    names = []
+    year, month = 2017, 8
+    while (year, month) <= (2021, 12):
+        names.append(f"BTCUSDT-1h-{year:04d}-{month:02d}.zip")
+        month += 1
+        if month == 13:
+            year, month = year + 1, 1
+    assert len(names) == 53
+
+    base = _base_manifest(
+        (CertifiedSegment(
+            DEVELOPMENT_START.isoformat(),
+            DEVELOPMENT_END.isoformat(),
+        ),)
+    )
+    observed = []
+    cursor = DEVELOPMENT_START
+    while cursor < DEVELOPMENT_END:
+        observed.append(cursor)
+        cursor += timedelta(hours=1)
+    audit = audit_development_source_coverage_v3(
+        "BTCUSDT", base, observed, tuple(names)
+    )
+    records = audit.evidence["adjacent_archive_boundary_records_exact"]
+    assert len(records) == 52
+    assert all(item["boundary_fully_accounted"] for item in records)
+
+
+def test_boundary_failure_preserves_lossless_timestamp_evidence():
+    t0 = DEVELOPMENT_START
+    base = _base_manifest((_segment(t0, 2),))
+    observed = (t0, t0 + timedelta(hours=1))
+    with pytest.raises(SourceCoverageV3Error) as info:
+        audit_development_source_coverage_v3(
+            "BTCUSDT",
+            base,
+            observed,
+            (
+                "BTCUSDT-1h-2017-08.zip",
+                "BTCUSDT-1h-2017-09.zip",
+            ),
+        )
+    evidence = info.value.coverage_evidence
+    assert evidence["accepted_normalized_timestamp_vector_exact"] == [
+        _iso(t0), _iso(t0 + timedelta(hours=1))
+    ]
+    assert evidence["missing_coverage_hour_vector_exact"] == []
+    assert evidence["failure_code"] == BOUNDARY_UNACCOUNTED_CODE
+
+
+def test_accepted_row_inside_base_exclusion_stays_observed_but_uncertified():
+    t0 = DEVELOPMENT_START
+    exclusion = Exclusion(
+        _iso(t0 + timedelta(hours=1)),
+        _iso(t0 + timedelta(hours=2)),
+        ("scanner-x",),
+        "base exclusion",
+    )
+    base = _base_manifest(
+        (_segment(t0, 1), _segment(t0 + timedelta(hours=2), 1)),
+        exclusions=(exclusion,),
+        anomaly_ids=("scanner-x",),
+    )
+    observed = (
+        t0,
+        t0 + timedelta(hours=1),
+        t0 + timedelta(hours=2),
+    )
+    audit = audit_development_source_coverage_v3(
+        "BTCUSDT", base, observed, ("BTCUSDT-1h-2017-08.zip",)
+    )
+    assert _iso(t0 + timedelta(hours=1)) in (
+        audit.evidence["accepted_normalized_timestamp_vector_exact"]
+    )
+    final = audit.evidence["final_certified_segments_exact"]
+    assert all(
+        not (item["start"] <= _iso(t0 + timedelta(hours=1)) < item["end"])
+        for item in final
+    )
