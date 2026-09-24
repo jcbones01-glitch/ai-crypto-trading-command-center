@@ -588,9 +588,11 @@ BASELINE_SIGN and COST_AWARE must consume the same vector. No execution-rule-spe
 
 The vector is strictly sorted by forecast-origin bar-open timestamp and contains no duplicate timestamps or nonfinite forecasts.
 
+The serialization prefix is the ASCII/UTF-8 bytes for `PSR01B_FORECAST_VECTOR_V1` followed by **exactly one NUL byte `0x00`**. It is not the two printable characters backslash and zero. Offline implementation tests must include a fixed synthetic hash fixture.
+
 Canonical forecast bytes are:
 
-- ASCII prefix `PSR01B_FORECAST_VECTOR_V1\0`;
+- the exact prefix bytes defined above;
 - unsigned 64-bit little-endian row count;
 - for each row, `struct.pack('<qd', timestamp_unix_seconds, forecast_float64)`.
 
