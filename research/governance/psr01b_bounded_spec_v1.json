@@ -611,10 +611,16 @@
       "timestamp_encoding": "signed int64 little-endian Unix seconds for the UTC bar-open timestamp",
       "forecast_encoding": "IEEE-754 float64 little-endian raw log-return forecast",
       "row_bytes": "struct.pack('<qd', timestamp_unix_seconds, forecast)",
-      "payload": "ASCII bytes 'PSR01B_FORECAST_VECTOR_V1\\0' + uint64 little-endian row_count + concatenated row_bytes",
+      "payload": "prefix_bytes + uint64 little-endian row_count + concatenated row_bytes",
       "finite_required": true,
       "duplicate_timestamp_allowed": false,
-      "hash": "SHA256(payload)"
+      "hash": "SHA256(payload)",
+      "prefix_bytes": {
+        "ascii": "PSR01B_FORECAST_VECTOR_V1",
+        "terminator_hex": "00",
+        "exact_rule": "UTF-8/ASCII bytes for PSR01B_FORECAST_VECTOR_V1 followed by exactly one NUL byte 0x00; not the two printable characters backslash and zero"
+      },
+      "synthetic_fixture_required": true
     }
   },
   "missing_data_arms": {
