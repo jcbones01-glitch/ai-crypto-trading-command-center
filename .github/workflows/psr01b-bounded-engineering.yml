@@ -11,7 +11,6 @@ on:
       - 'src/research_core/psr01b_matrix.py'
       - 'src/research_core/psr01b_benchmarks.py'
       - 'src/research_core/psr01b_preflight.py'
-      - 'pyproject.toml'
       - 'tests/test_psr01b_core.py'
       - 'tests/test_psr01b_features.py'
       - 'tests/test_psr01b_ta.py'
@@ -38,7 +37,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12.14'
-      - run: pip install -e '.[dev,psr01b]'
+      - run: pip install -e '.[dev]'
+      - name: Install exact PSR-01B runtime additions
+        run: pip install pandas==3.0.6 xgboost==3.4.1 optuna==5.0.0 arch==8.0.0 statsmodels==0.15.0
       - name: Verify PSR-01B synthetic numerical core only
         run: python -m pytest -q tests/test_psr01b_core.py tests/test_psr01b_features.py tests/test_psr01b_ta.py tests/test_psr01b_egarch.py tests/test_psr01b_model.py tests/test_psr01b_matrix.py tests/test_psr01b_benchmarks.py tests/test_psr01b_preflight.py
       - name: Full repository regression suite
