@@ -1,0 +1,571 @@
+{
+  "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+  "version": 1,
+  "status": "PROPOSED_FOR_INDEPENDENT_SPEC_REVIEW",
+  "parent_source_review_issue": 86,
+  "parent_source_decision": "PSR01_SOURCE_IDENTITY_UNRESOLVED",
+  "parent_design_review_issue": 88,
+  "parent_design_review_decision": "APPROVE_PSR01B_BOUNDED_DESIGN_DRAFTING",
+  "parent_design_review_comment_id": 5820578750,
+  "claim_boundary": {
+    "scientific_claim": "BOUNDED_DECLARED_DEVIATION_MECHANISM_REPLICATION",
+    "exact_replication_claim_allowed": false,
+    "paper_futures_performance_reproduction_claim_allowed": false
+  },
+  "authorization": {
+    "implementation_authorized": false,
+    "empirical_forecast_generation_authorized": false,
+    "strategy_pnl_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "leverage_authorized": false,
+    "derivatives_execution_authorized": false,
+    "ams_dep_validation_or_oos_access_authorized": false
+  },
+  "source": {
+    "provider": "Binance Public Data",
+    "market": "spot",
+    "symbol": "BTCUSDT",
+    "timeframe": "1h",
+    "timezone": "UTC",
+    "archive_type": "monthly klines ZIP",
+    "url_pattern": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-{YYYY}-{MM}.zip",
+    "raw_start": "2017-12-01T00:00:00Z",
+    "modelling_start": "2018-01-01T00:00:00Z",
+    "hard_end_exclusive": "2022-01-01T00:00:00Z",
+    "prohibited_timestamp_gte": "2022-01-01T00:00:00Z",
+    "archive_count": 49,
+    "archive_sha256": {
+      "BTCUSDT-1h-2017-12.zip": "9b86b43c9a649065cc1e7f3b8fe4825e614d9e8ca43808b74a0efe96465bd90c",
+      "BTCUSDT-1h-2018-01.zip": "b649198039645124717f334443ae550d1060661ee03c5fb605cf067fab26dc85",
+      "BTCUSDT-1h-2018-02.zip": "4e040b57a38af99b1f86efb12d95aed406b575af67b8038831523ff6362225d1",
+      "BTCUSDT-1h-2018-03.zip": "a3f45f20d28eab88292d1baac72402ebf59f4462d0bb834288f69b59a65cbf5f",
+      "BTCUSDT-1h-2018-04.zip": "d0fe439f2afab8677e423c9748bc96ef9694b8d60bf8a59790fd776d8ed18d87",
+      "BTCUSDT-1h-2018-05.zip": "a365154fb49c29060df5f5b6a79181e4e667ca1bac049df26a067faa634ffa62",
+      "BTCUSDT-1h-2018-06.zip": "20894cb34d1049cbdd93df83be5f218c6ae1b5ca27b689b1b076ac5bc809fb81",
+      "BTCUSDT-1h-2018-07.zip": "29610f0bb84011e494b83881584d1eb2d3a61c5801ee51ebea7c1c4e6a9b4210",
+      "BTCUSDT-1h-2018-08.zip": "cad3b2b11aefa082a07ae3d8f11dfd6ee5018702dfd3986277151b66ae002991",
+      "BTCUSDT-1h-2018-09.zip": "d8109c9f64af195fb9babf498f84ece9e7ac471618977202dcf710461e124d00",
+      "BTCUSDT-1h-2018-10.zip": "959094f6d37e7cae75951cea30fdc3d5b1eb9de58a6cf1ce40f0e49d0adfb79b",
+      "BTCUSDT-1h-2018-11.zip": "a75aba58d80b798809e47819990fad71418c0982be1c4643b5a0490e0f86bd91",
+      "BTCUSDT-1h-2018-12.zip": "c5f05f2966529220add51dc1ee66ab7408ae787179f96c288e4f6ff021f51edd",
+      "BTCUSDT-1h-2019-01.zip": "41cb84ccff03d5372f22e7502a1c563dd7b3b15347fe086b16daa98aced7a179",
+      "BTCUSDT-1h-2019-02.zip": "fc054507a0f33b54bcc2f292243b8caa765927572e92731283f42498c64dc4e6",
+      "BTCUSDT-1h-2019-03.zip": "2c4a969908c2570299052b4faf27b4a39561b1043babc7a65a846a6a65abaa2e",
+      "BTCUSDT-1h-2019-04.zip": "d37e1150e8f4556a22cb2ed98d9b6eefe7b5df3be9f06587e273baea2bbf960e",
+      "BTCUSDT-1h-2019-05.zip": "ddffd71adc100760d31ab5ea0fb8d8ccf5f3c80a06a31808a024324b4a693799",
+      "BTCUSDT-1h-2019-06.zip": "079b0071aaf0642d3608bca3ee14e50e394550176da3e4029d22761e288466e8",
+      "BTCUSDT-1h-2019-07.zip": "f45beec30a4812d42b8eb3a34da3f75e5dee0433032a06ba57ff48644ee7c2f9",
+      "BTCUSDT-1h-2019-08.zip": "50b058b5774190b577f1bc45767aeb33f4e947dc00e8d143f6c4afa0f5a3cd34",
+      "BTCUSDT-1h-2019-09.zip": "2aaaf6e4d0455b889225ca1cfde23a15e2359850f803bc9998df30ac1bbef63f",
+      "BTCUSDT-1h-2019-10.zip": "d44a2b3e463683c8bfc61c2f15f156665dc3dd3835e69c2ea3b49a518ca14b43",
+      "BTCUSDT-1h-2019-11.zip": "63572600e87350f1d5679049a44e8338cf7b692d0c67220dc316267a91af108b",
+      "BTCUSDT-1h-2019-12.zip": "87267b84d9f0e64ec94799d62de6730825c6a44f154ada5ed8c2dd267df78481",
+      "BTCUSDT-1h-2020-01.zip": "4ef7fa698b6821493f4c8317bc616d48bcdf5951d32fe6e40aaa7608886e51ca",
+      "BTCUSDT-1h-2020-02.zip": "0189065a1b789825448530cb3fdddcefa45ca13b0a6bca181f358c72d3a6d5e6",
+      "BTCUSDT-1h-2020-03.zip": "cc36c481c31ef93115d96b5a7045ec2ef737e5339546d6688cb1f677526c6787",
+      "BTCUSDT-1h-2020-04.zip": "4f08d13c81cadf8d5fc7afcd0924d084d2f81c7d004323812e7508ad135f89e7",
+      "BTCUSDT-1h-2020-05.zip": "1559b30329851938a54e6782cd28dcbf34ec27a6cc82132250db9a357f4eaf5a",
+      "BTCUSDT-1h-2020-06.zip": "2ccf45a7307e09dec1fd3622d54057e7e44371bf70a8be1030687f654341799e",
+      "BTCUSDT-1h-2020-07.zip": "378b83c163c8d315075189b039b027d705c3ae225461f04c1226569a4edfcb99",
+      "BTCUSDT-1h-2020-08.zip": "3b4fbdfe798389a1317e333772f176bce711856d87e68c1b77f09631b0cf4b84",
+      "BTCUSDT-1h-2020-09.zip": "46f236c7cd38d72d4a37e80a45e357e7bec48bc89cc6a36c0c17ceb92ce8d101",
+      "BTCUSDT-1h-2020-10.zip": "72fe011922ace0851a44ffa51327d75545212a7e8179867d514a5934ce93a6e0",
+      "BTCUSDT-1h-2020-11.zip": "c3f3548fd082f0fa63d2138a5aca3b572729f6351de8a20c895a80acd3ae395b",
+      "BTCUSDT-1h-2020-12.zip": "c880c8e76e2dbcbed04bc1ddd549949a94a4314520dc1f1becbd881453aa5ede",
+      "BTCUSDT-1h-2021-01.zip": "a2fa12bec12d942e58dbc7fb223973bd2173dfccf8e09edc501bda40b3c3638e",
+      "BTCUSDT-1h-2021-02.zip": "8cd20f5058dc7585cfa874a3ab0e5fd0096f369c182d8fda80dc16495050e018",
+      "BTCUSDT-1h-2021-03.zip": "748783e9715835dd334fbc0cbbff0518962ebbcbe0430acb65f2f506193bad2d",
+      "BTCUSDT-1h-2021-04.zip": "e5a33803814e6771c4c85e8f2e28e90e46d40f14ca3180a8c10c305cf07fab74",
+      "BTCUSDT-1h-2021-05.zip": "728503d417904afff17b403e66f74c18ed0067d3f8e4215130c8a97180c9fccc",
+      "BTCUSDT-1h-2021-06.zip": "9ea9585cf2c938044d2d1b613f451ff9482bd7d2a38da2c9d22cf0c9f00f65ac",
+      "BTCUSDT-1h-2021-07.zip": "993a88728e31b4c4e6f3b28442ab251de5ee434fe06865e1b57063a4f91fc8d9",
+      "BTCUSDT-1h-2021-08.zip": "5cadb462255761842326a2c4b5fe2a91c8a2135c3ba6dd5f0969877f0722f4be",
+      "BTCUSDT-1h-2021-09.zip": "0d344f8ab39d910c148b89fada91256afcb3e8b20eb812ebc158ac8ac527ea07",
+      "BTCUSDT-1h-2021-10.zip": "8065fe2ddd9992398b49fb76e83a60e51392e1ecd4b46c438c075d3e5f6e2291",
+      "BTCUSDT-1h-2021-11.zip": "64d376e949c3518c3b526cac41322114a2e7287395e9089f0da34e25079c2940",
+      "BTCUSDT-1h-2021-12.zip": "b01133a69b22aa7904742a06a892ff3811152377f61e23977051a937afe2fbaa"
+    },
+    "pin_provenance": {
+      "upstream_path": "research/governance/ams_dep_development_execution_v3.json",
+      "upstream_blob_sha1": "946dea1c852cd8a23d26d3a90ba99e88db5779a2",
+      "rule": "exact BTC parent checksum pins for 2017-12 through 2021-12"
+    }
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "train_start": "2018-01-01T00:00:00Z",
+      "train_end_validation_start": "2019-01-01T00:00:00Z",
+      "validation_end_test_start": "2019-04-01T00:00:00Z",
+      "test_end": "2019-07-01T00:00:00Z"
+    },
+    {
+      "fold": 2,
+      "train_start": "2018-04-01T00:00:00Z",
+      "train_end_validation_start": "2019-04-01T00:00:00Z",
+      "validation_end_test_start": "2019-07-01T00:00:00Z",
+      "test_end": "2019-10-01T00:00:00Z"
+    },
+    {
+      "fold": 3,
+      "train_start": "2018-07-01T00:00:00Z",
+      "train_end_validation_start": "2019-07-01T00:00:00Z",
+      "validation_end_test_start": "2019-10-01T00:00:00Z",
+      "test_end": "2020-01-01T00:00:00Z"
+    },
+    {
+      "fold": 4,
+      "train_start": "2018-10-01T00:00:00Z",
+      "train_end_validation_start": "2019-10-01T00:00:00Z",
+      "validation_end_test_start": "2020-01-01T00:00:00Z",
+      "test_end": "2020-04-01T00:00:00Z"
+    },
+    {
+      "fold": 5,
+      "train_start": "2019-01-01T00:00:00Z",
+      "train_end_validation_start": "2020-01-01T00:00:00Z",
+      "validation_end_test_start": "2020-04-01T00:00:00Z",
+      "test_end": "2020-07-01T00:00:00Z"
+    },
+    {
+      "fold": 6,
+      "train_start": "2019-04-01T00:00:00Z",
+      "train_end_validation_start": "2020-04-01T00:00:00Z",
+      "validation_end_test_start": "2020-07-01T00:00:00Z",
+      "test_end": "2020-10-01T00:00:00Z"
+    },
+    {
+      "fold": 7,
+      "train_start": "2019-07-01T00:00:00Z",
+      "train_end_validation_start": "2020-07-01T00:00:00Z",
+      "validation_end_test_start": "2020-10-01T00:00:00Z",
+      "test_end": "2021-01-01T00:00:00Z"
+    },
+    {
+      "fold": 8,
+      "train_start": "2019-10-01T00:00:00Z",
+      "train_end_validation_start": "2020-10-01T00:00:00Z",
+      "validation_end_test_start": "2021-01-01T00:00:00Z",
+      "test_end": "2021-04-01T00:00:00Z"
+    },
+    {
+      "fold": 9,
+      "train_start": "2020-01-01T00:00:00Z",
+      "train_end_validation_start": "2021-01-01T00:00:00Z",
+      "validation_end_test_start": "2021-04-01T00:00:00Z",
+      "test_end": "2021-07-01T00:00:00Z"
+    },
+    {
+      "fold": 10,
+      "train_start": "2020-04-01T00:00:00Z",
+      "train_end_validation_start": "2021-04-01T00:00:00Z",
+      "validation_end_test_start": "2021-07-01T00:00:00Z",
+      "test_end": "2021-10-01T00:00:00Z"
+    },
+    {
+      "fold": 11,
+      "train_start": "2020-07-01T00:00:00Z",
+      "train_end_validation_start": "2021-07-01T00:00:00Z",
+      "validation_end_test_start": "2021-10-01T00:00:00Z",
+      "test_end": "2022-01-01T00:00:00Z"
+    }
+  ],
+  "feature_contract": {
+    "feature_tier": "OHLCV+TA+EGARCH",
+    "paper_feature_count_target": 28,
+    "warmup_hours_before_each_train_start": 744,
+    "predictor_scaling": "NONE_FOR_XGBOOST_PROJECT_RECONSTRUCTION",
+    "target_standardization": {
+      "tuning": "z-score using training target mean/std only; validation loss in that training scale",
+      "final_refit": "recompute target mean/std on combined train+validation; inverse-transform test forecasts to raw log-return units",
+      "zero_std_behavior": "HARD_FAIL"
+    },
+    "ohlcv_reconstruction": {
+      "status": "PROJECT_DEFINED_DECLARED_DEVIATION",
+      "count": 15,
+      "features": [
+        "RET_1=log(C_t/C_t-1)",
+        "OPEN_GAP=log(O_t/C_t-1)",
+        "HIGH_PREVCLOSE=log(H_t/C_t-1)",
+        "LOW_PREVCLOSE=log(L_t/C_t-1)",
+        "CLOSE_OPEN=log(C_t/O_t)",
+        "HIGH_LOW=log(H_t/L_t)",
+        "CLOSE_LOCATION=(2*C_t-H_t-L_t)/(H_t-L_t), else 0 when H_t==L_t",
+        "BODY_FRAC=(C_t-O_t)/(H_t-L_t), else 0 when H_t==L_t",
+        "UPPER_WICK_FRAC=(H_t-max(O_t,C_t))/(H_t-L_t), else 0 when H_t==L_t",
+        "LOWER_WICK_FRAC=(min(O_t,C_t)-L_t)/(H_t-L_t), else 0 when H_t==L_t",
+        "LOG_VOLUME=log1p(V_t)",
+        "LOG_VOLUME_CHANGE=log((V_t+1)/(V_t-1+1))",
+        "VOLUME_SMA24_RATIO=V_t/mean(V_t-23..V_t)-1; 0 if denominator==0",
+        "LOG_DOLLAR_VOLUME=log1p(C_t*V_t)",
+        "TYPICAL_RETURN_1=log(TP_t/TP_t-1), TP=(H+L+C)/3"
+      ]
+    },
+    "ta_reconstruction": {
+      "status": "PROJECT_DEFINED_DECLARED_DEVIATION",
+      "windows_hours": [
+        3,
+        6,
+        12,
+        24,
+        48,
+        72,
+        168,
+        336
+      ],
+      "return_lags_hours": [
+        1,
+        2,
+        3,
+        6,
+        12,
+        24
+      ],
+      "indicator_families": [
+        "RSI",
+        "ROC",
+        "DIST_SMA",
+        "MACD",
+        "MACD_HIST",
+        "ATR_RATIO",
+        "ROLL_STD",
+        "BB_POS",
+        "VWAP_DEV",
+        "OBV_SLOPE",
+        "MFI"
+      ],
+      "candidate_count": 94,
+      "selection_group_count": 10,
+      "groups": {
+        "MOM_RSI": [
+          "RSI"
+        ],
+        "MOM_ROC": [
+          "ROC"
+        ],
+        "TREND_SMA": [
+          "DIST_SMA"
+        ],
+        "TREND_MACD": [
+          "MACD",
+          "MACD_HIST"
+        ],
+        "VOL_ATR_STD": [
+          "ATR_RATIO",
+          "ROLL_STD"
+        ],
+        "VOL_BB": [
+          "BB_POS"
+        ],
+        "PRICE_VOLUME_VWAP": [
+          "VWAP_DEV"
+        ],
+        "VOLUME_OBV": [
+          "OBV_SLOPE"
+        ],
+        "VOLUME_MFI": [
+          "MFI"
+        ],
+        "RETURN_LAGS": [
+          "LAG_RETURN"
+        ]
+      },
+      "selected_per_group": 1,
+      "selected_total": 10,
+      "selection_blocks": "four consecutive three-calendar-month blocks of the 12-month training window",
+      "ranking": "within each block sort by descending absolute Spearman correlation with aligned next-hour return; lexical feature-name tie break; average ordinal rank across four blocks; lowest average rank wins; lexical tie break",
+      "eligibility": "candidate must have >=100 finite aligned rows in every block or is ineligible; group with no eligible candidate HARD_FAIL",
+      "formulas": {
+        "RSI": "Wilder RSI over w; alpha=1/w; seed with simple mean of first w gains/losses; 100 if avg_loss=0 and avg_gain>0; 50 if both zero",
+        "ROC": "C_t/C_t-w - 1",
+        "DIST_SMA": "C_t/mean(C_t-w+1..C_t)-1",
+        "MACD": "(EMA_fast(C)-EMA_w(C))/C_t; fast=max(2,floor(w/2)); EMA alpha=2/(span+1)",
+        "MACD_HIST": "MACD_raw - EMA_signal(MACD_raw); signal=max(2,floor(w/3)); feature divided by C_t",
+        "ATR_RATIO": "Wilder ATR_w/C_t using true range max(H-L,abs(H-prevC),abs(L-prevC))",
+        "ROLL_STD": "population std (ddof=0) of one-hour log returns over w",
+        "BB_POS": "(C_t-SMA_w)/(2*population_std_w(C)); 0 if std==0",
+        "VWAP_DEV": "C_t/(sum(TP*V)/sum(V))-1 over w; 0 if sum(V)==0",
+        "OBV_SLOPE": "OLS slope of OBV over last w points divided by max(mean(volume over w),1e-12); OBV increments sign(C_t-C_t-1)*V_t",
+        "MFI": "100-100/(1+positive_flow/negative_flow) over w using TP*V; 100 if negative=0<positive; 50 if both zero; feature divided by 100",
+        "LAG_RETURN": "log(C_t/C_t-k) for k in [1,2,3,6,12,24]"
+      }
+    },
+    "egarch": {
+      "paper_orders": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          2,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          2
+        ],
+        [
+          2,
+          1,
+          2
+        ]
+      ],
+      "selection": "lowest training-sample AIC; lexicographic (p,o,q) tie break",
+      "mean": "Constant",
+      "innovations": "StudentsT",
+      "input_return_units": "100 * hourly log return",
+      "output_features": [
+        "conditional_volatility",
+        "log_conditional_volatility",
+        "standardized_residual"
+      ],
+      "parameters_fixed_after_training": true,
+      "validation_test_refit": false,
+      "gap_arm_reset": "at each continuity break reset recursion to fitted unconditional log-variance proxy and standardized residual 0; no cross-gap residual/variance propagation",
+      "paper_fill_arm": "continuous recursion on filled hourly grid"
+    }
+  },
+  "model_contract": {
+    "model": "XGBoost regressor",
+    "loss": "MSE only",
+    "selector": "validation loss-best only",
+    "optuna": {
+      "sampler": "TPE",
+      "trials_per_fold": 50,
+      "pruner": "NONE",
+      "sampler_defaults": "pinned Optuna version defaults except explicit seed",
+      "objective": "validation MSE on target standardized with training mean/std"
+    },
+    "search_space": {
+      "max_depth": {
+        "type": "int",
+        "low": 2,
+        "high": 4,
+        "inclusive": true
+      },
+      "learning_rate": {
+        "type": "float_log",
+        "low": 0.005,
+        "high": 0.03
+      },
+      "n_estimators": {
+        "type": "int",
+        "low": 1000,
+        "high": 2500,
+        "inclusive": true
+      },
+      "min_child_weight": {
+        "type": "float",
+        "low": 10,
+        "high": 40
+      },
+      "subsample": {
+        "type": "float",
+        "low": 0.6,
+        "high": 0.9
+      },
+      "colsample_bytree": {
+        "type": "float",
+        "low": 0.6,
+        "high": 0.9
+      },
+      "reg_alpha": {
+        "type": "float_log",
+        "low": 0.0001,
+        "high": 0.05
+      },
+      "reg_lambda": {
+        "type": "float_log",
+        "low": 1,
+        "high": 40
+      }
+    },
+    "fixed_params": {
+      "objective": "reg:squarederror",
+      "tree_method": "hist",
+      "n_jobs": 1,
+      "early_stopping_rounds": 50
+    },
+    "final_refit": {
+      "data": "combined train+validation",
+      "hyperparameters": "selected trial hyperparameters unchanged",
+      "n_estimators": "selected trial best_iteration + 1; if no early stop, selected sampled n_estimators",
+      "early_stopping": "NONE during final refit",
+      "test_use": "exactly once after final refit"
+    }
+  },
+  "forecast_identity": {
+    "one_forecast_vector_per_arm_fold": true,
+    "baseline_and_cost_aware_must_use_identical_forecast_vector": true,
+    "required_forecast_vector_sha256": true,
+    "execution_rule_specific_tuning_or_refit_allowed": false
+  },
+  "missing_data_arms": {
+    "order": [
+      "PAPER_FILL",
+      "PROJECT_GAP_PRESERVING"
+    ],
+    "PAPER_FILL": {
+      "grid": "complete hourly grid",
+      "missing_bar": "O=H=L=C=previous accepted close; V=0",
+      "synthetic_flag_required": true,
+      "leading_gap_without_previous_close": "HARD_FAIL"
+    },
+    "PROJECT_GAP_PRESERVING": {
+      "synthetic_bars_allowed": false,
+      "cross_gap_target_or_feature_allowed": false,
+      "rolling_state_reset_at_gap": true,
+      "minimum_contiguous_feature_history_hours": 336
+    },
+    "selective_arm_reporting_allowed": false
+  },
+  "trading_accounting": {
+    "mode": "LONG_ONLY",
+    "transaction_cost_per_unit_turnover": 0.001,
+    "lambda": 2,
+    "desired_position": "1 iff raw-unit forecast > 0 else 0",
+    "cost_aware_update": "abs(forecast) > lambda*c*abs(desired_position-previous_position)",
+    "net_return": "position_t*(exp(realized_log_return_t+1)-1) - c*abs(position_t-previous_position)",
+    "timing": "features through completed close t -> forecast r_(t+1) -> idealized position at close t -> earn close-to-close t to t+1; not a live zero-latency execution claim",
+    "fold_initial_position": 0,
+    "fold_position_inheritance": false,
+    "terminal_liquidation": {
+      "forced": true,
+      "target_position": 0,
+      "charged_cost": true,
+      "cost_applied_to": "final test return record after last held next-hour market return"
+    },
+    "turnover": "sum abs(position_t-previous_position) including forced terminal liquidation",
+    "completed_trade": "one long episode beginning with 0->1 and ending with 1->0; forced terminal liquidation may complete the final episode"
+  },
+  "benchmarks": {
+    "BUY_AND_HOLD": {
+      "fold_start": "enter long at first eligible test forecast origin from cash",
+      "hold": 1,
+      "cost": 0.001,
+      "terminal_liquidation": true
+    },
+    "MOMENTUM_24H": {
+      "desired_position": "1 iff cumulative log return over previous 24 contiguous completed hours >0 else 0",
+      "cost": 0.001,
+      "cost_aware_filter": false,
+      "gap_arm": "flat until 24 contiguous prior hours available after a gap",
+      "fold_initial_position": 0,
+      "terminal_liquidation": true
+    },
+    "role": "contextual only; not primary PSR01B success gate"
+  },
+  "metrics": {
+    "ARC": "prod(1+r_t)^(8760/N)-1 over finite evaluation returns",
+    "ASD": "sqrt(8760)*sample_std(r_t,ddof=1)",
+    "risk_free_annual": 0.042,
+    "SHARPE": "(ARC-0.042)/ASD",
+    "max_drawdown": "paper equity-curve definition",
+    "trade_count": "completed trades as PSR01B definition",
+    "gap_arm_N": "number of finite accepted hourly evaluation-return records; excluded gap rows are not replaced with zero"
+  },
+  "inference": {
+    "primary_comparison": "COST_AWARE - BASELINE_SIGN",
+    "primary_statistic": "mean hourly net-return differential",
+    "arms_in_family": [
+      "PAPER_FILL",
+      "PROJECT_GAP_PRESERVING"
+    ],
+    "block_bootstrap": {
+      "type": "paired circular block bootstrap of differential series",
+      "primary_block_hours": 168,
+      "robustness_block_hours": [
+        24,
+        72
+      ],
+      "replications": 10000,
+      "resampling_boundary": "never cross fold boundary or gap-defined contiguous segment; resample circular blocks independently within each segment to its original length, then concatenate in registered fold/segment order",
+      "null_centering": "subtract observed segment-pooled differential mean before primary p-value resampling",
+      "one_sided_alternative": "mean(COST_AWARE-BASELINE_SIGN)>0",
+      "p_value": "(1 + count(bootstrap_centered_mean >= observed_mean))/(10000+1)",
+      "confidence_interval": "95% percentile interval from uncentered paired bootstrap",
+      "sharpe_difference": "computed on same uncentered bootstrap draws as complementary evidence; not a mandatory gate"
+    },
+    "multiplicity": {
+      "method": "Holm step-down",
+      "alpha": 0.05,
+      "family_size": 2,
+      "order": [
+        "PAPER_FILL",
+        "PROJECT_GAP_PRESERVING"
+      ],
+      "tie_break": "registered arm order",
+      "applies_to": "two primary 168h one-sided mean-difference p-values only",
+      "robustness_blocks": "reported separately; not success gates"
+    }
+  },
+  "success_semantics": {
+    "pass_token": "BOUNDED_H2_REPLICATION",
+    "fail_token": "BOUNDED_H2_NOT_REPLICATED",
+    "pass_requires_all": [
+      "observed mean net-return differential > 0 in both missing-data arms",
+      "Holm-adjusted primary 168h one-sided p-value <= 0.05 in both arms",
+      "cost-aware turnover < baseline turnover in both arms",
+      "cost-aware completed trades >= 20 in both arms",
+      "cost-aware Sharpe - baseline Sharpe > 0 in both arms"
+    ],
+    "note": "The paper itself applies a >=20-trade minimum for formal interpretation; PSR01B defines trade operationally as a completed long episode.",
+    "no_rescue_after_fail": true,
+    "forbidden_rescue": [
+      "change lambda",
+      "change cost",
+      "change feature tier",
+      "change reconstruction definitions",
+      "change model",
+      "change selector",
+      "change fold dates",
+      "drop missing-data arm",
+      "change bootstrap family"
+    ]
+  },
+  "stochastic_contract": {
+    "model_root": 2026092401,
+    "bootstrap_root": 2026092402,
+    "seed_engine": "numpy.random.SeedSequence -> first uint32",
+    "arm_indices": {
+      "PAPER_FILL": 0,
+      "PROJECT_GAP_PRESERVING": 1
+    },
+    "optuna_seed_path": "[model_root,1,arm_index,fold_index]",
+    "xgboost_trial_seed_path": "[model_root,2,arm_index,fold_index,trial_index]",
+    "xgboost_final_seed_path": "[model_root,3,arm_index,fold_index,selected_trial_index]",
+    "bootstrap_seed_path": "[bootstrap_root,block_hours,arm_index]",
+    "all_threads": 1
+  },
+  "runtime_contract": {
+    "os_runner": "ubuntu-24.04",
+    "python": "3.12.14",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pandas": "3.0.6",
+    "xgboost": "3.4.1",
+    "optuna": "5.0.0",
+    "arch": "8.0.0",
+    "statsmodels": "0.15.0",
+    "env": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    }
+  },
+  "future_governance": {
+    "next_step": "independent specification review",
+    "implementation_requires_new_review": true,
+    "offline_synthetic_tests_before_empirical_claim": true,
+    "reviewed_candidate_anchor_required": true,
+    "separate_execution_authorization_required": true,
+    "one_shot_claim_before_psr01b_source_read_or_forecast_generation": true,
+    "manual_confirmation_token_to_be_defined_after_implementation_review": true,
+    "failure_after_claim_consumes_attempt": true
+  }
+}
