@@ -70,6 +70,8 @@ class BaseFeatureResult:
 def _utc_hour(value: datetime, name: str) -> datetime:
     if value.tzinfo is None or value.utcoffset() is None:
         raise PSR01BError(f"{name} must be timezone-aware")
+    if value.utcoffset() != timedelta(0):
+        raise PSR01BError(f"{name} must be UTC")
     out = value.astimezone(timezone.utc)
     if out.minute or out.second or out.microsecond:
         raise PSR01BError(f"{name} must be an exact UTC hour")
