@@ -1,0 +1,109 @@
+{
+  "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
+  "version": 1,
+  "status": "FROZEN_FOR_INDEPENDENT_IMPLEMENTATION_REVIEW",
+  "approved_specification": {
+    "issue": 90,
+    "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
+    "approval_comment_id": 5821484000,
+    "exact_approved_head": "16d5193f0c80b5899f5084e76a42917e824e0936",
+    "specification_path": "research/governance/psr01b_bounded_spec_v1.json",
+    "specification_git_blob_sha1": "47c5379eeb4eae8c5890814c92e29b86bfddb23e",
+    "revision": 4
+  },
+  "implementation": {
+    "issue": 91,
+    "pull_request": 92,
+    "branch": "psr-01b-bounded-implementation",
+    "implementation_candidate_commit": "7911b199bb8f3388b6771bb4343c34e66dc1f025",
+    "reviewed_implementation_commit": null,
+    "independent_implementation_review_required": true,
+    "independent_implementation_reviewed": false
+  },
+  "implementation_file_git_blob_sha1": {
+    ".github/workflows/psr01b-bounded-engineering.yml": "2d2d2facefaa5616391880214f2b39c16db88f20",
+    "src/research_core/psr01b_core.py": "995e1c08f68825a8431d9c05042c1758726d993e",
+    "src/research_core/psr01b_features.py": "e9819b4a62a9fc117ead656abc2b6c344c4c0158",
+    "src/research_core/psr01b_ta.py": "88185db2d48bdccc54e080c5d1e5b1d2494b032c",
+    "src/research_core/psr01b_egarch.py": "af2806a9fb9fb25519623a59a682a5689b7601e1",
+    "src/research_core/psr01b_model.py": "812279770dee0c5479f3fb94c81e6abf356712fb",
+    "src/research_core/psr01b_matrix.py": "b255c53bfcdf3ddc094969185515843781238c31",
+    "src/research_core/psr01b_benchmarks.py": "1eb84d0ba14e9d6c430afa7c28b870612cb0f1e9",
+    "src/research_core/psr01b_preflight.py": "5480217f95bfd9eae2d44e2941f1c2e775966bb3",
+    "tests/test_psr01b_core.py": "c74150e48076995742c58cadb6ec9ff1f9298f9e",
+    "tests/test_psr01b_features.py": "c94c43c741eaf4267b60d47a484fce03421508c2",
+    "tests/test_psr01b_ta.py": "e54e629ab4657ea09b05393f5b97766761b1d00b",
+    "tests/test_psr01b_egarch.py": "aac65991effb6747ec3fc154e10a365deff2dfbb",
+    "tests/test_psr01b_model.py": "66779340f681c1a5cb0024def2408055e3993744",
+    "tests/test_psr01b_matrix.py": "4bd84a8c4ec68066a12566892573f888c3d34d4c",
+    "tests/test_psr01b_benchmarks.py": "01e77c3772b9266d5c0c59a4684c8ed263d9f059",
+    "tests/test_psr01b_preflight.py": "33480a46fca47d49c255b1c24c1c05dd8f7e38b9"
+  },
+  "pinned_upstream_git_blob_sha1": {
+    "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
+    "src/research_core/data_quality.py": "a8251c4288013d8264a85bb4cda44007459e1adf",
+    "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+    "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+    "src/research_core/archive_security.py": "cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b",
+    "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534",
+    "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
+    "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+    "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+    "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
+  },
+  "candidate_evidence": {
+    "workflow_run_id": 36057960363,
+    "workflow_event": "push",
+    "branch": "psr-01b-bounded-implementation",
+    "exact_head": "7911b199bb8f3388b6771bb4343c34e66dc1f025",
+    "conclusion": "success",
+    "psr01b_synthetic_suite": "PASS",
+    "inherited_normalization_blob_closure": "PASS",
+    "runtime_pin_verification": "PASS",
+    "repository_regression": "PASS_EXCEPT_EXPLICIT_PREEXISTING_BASELINE_FIXTURE",
+    "preexisting_baseline_exception": {
+      "deselected_test": "tests/test_ams_dep_full_pipeline_runner.py::test_valid_authorized_contract_passes",
+      "reason": "Test is inconsistent with later AMS-DEP release-gate state already present at the exact approved PSR01B specification head; PSR-01B implementation did not modify the test, runner, or release-gate JSON.",
+      "unchanged_blob_sha1": {
+        "research/governance/ams_dep_release_gate_v1.json": "f633b10fadd95e79deee707fac18b5cac5a55bab",
+        "tests/test_ams_dep_full_pipeline_runner.py": "24e5ddfd612e4f47fe326dab8e6ca90858eed2a9",
+        "research/scripts/run_ams_dep_full_pipeline_integrity.py": "75bab7b7346bddea410f31c8f44c281a9e8cba9b"
+      }
+    }
+  },
+  "implementation_notes": {
+    "xgboost_api": "NATIVE_XGBOOST_3_4_1",
+    "rationale": "The frozen runtime pins xgboost==3.4.1 but does not pin scikit-learn. XGBRegressor requires scikit-learn, so the implementation uses xgboost.DMatrix/xgboost.train from the pinned package rather than introducing an unregistered dependency.",
+    "registered_control_mapping": {
+      "n_jobs=1": "nthread=1",
+      "random_state=derived_seed": "seed=the identical derived SeedSequence integer",
+      "n_estimators": "num_boost_round"
+    },
+    "analytic_specification_changed": false
+  },
+  "future_governance": {
+    "reviewed_candidate_anchor_required": true,
+    "separate_execution_authorization_required": true,
+    "manual_confirmation_required": true,
+    "one_shot_execution_claim_required": true,
+    "execution_authorized": false,
+    "reviewed_candidate_anchor_created": false,
+    "one_shot_claim_created": false,
+    "allowed_post_candidate_paths": [
+      "research/governance/psr01b_implementation_freeze_v1.json"
+    ]
+  },
+  "protected_access": {
+    "empirical_binance_archive_access_authorized": false,
+    "empirical_feature_generation_authorized": false,
+    "empirical_model_fit_authorized": false,
+    "empirical_forecast_generation_authorized": false,
+    "empirical_pnl_authorized": false,
+    "validation_or_oos_access_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "leverage_authorized": false,
+    "derivatives_execution_authorized": false
+  },
+  "notes": "This freeze binds the bounded synthetic/offline implementation candidate only. It does not authorize source reads or any empirical PSR-01B execution."
+}
