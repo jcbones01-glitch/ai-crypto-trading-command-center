@@ -51,7 +51,7 @@
     "reviewed_candidate": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
     "consumed": true
   },
-  "notes": "Issue #84 independently accepted the completed V3 artifact as a valid Development-only statistical result. V3 remains consumed and execution remains locked. The accepted result may support scientific interpretation and prospective next-gate design only. It does not authorize Validation/OOS, strategy P&L, paper/live trading, directed cross-asset lag diagnostics, parameter tuning, threshold changes, state-definition changes, lag selection, or another V3 execution.",
+  "notes": "Issue #84 independently accepted the completed V3 artifact as a valid Development-only statistical result. V3 remains consumed and execution remains locked. The accepted result may support scientific interpretation and prospective next-gate design only. It does not authorize Validation/OOS, strategy P&L, paper/live trading, directed cross-asset lag diagnostics, parameter tuning, threshold changes, state-definition changes, lag selection, or another V3 execution. Issue #85 subsequently held the protected Validation replication design because the exact frozen TIME/support geometry is tied to Development calendar years 2017-2021 and cannot be carried unchanged into 2022-2023 Validation. This does not alter the accepted Development V3 result; it prevents protected-sample consumption under a post-result redesign.",
   "implementation_pr": 81,
   "candidate_evidence": {
     "exact_candidate_offline_review_run_id": 36027977973,
@@ -196,5 +196,10 @@
   "result_review_issue": 84,
   "result_review_decision": "ACCEPT_DEVELOPMENT_V3_EMPIRICAL_RESULT",
   "result_review_comment_id": 5818900239,
-  "result_accepted": true
+  "result_accepted": true,
+  "next_gate_design_review_issue": 85,
+  "next_gate_design_review_decision": "HOLD_AMS_DEP_AFTER_DEVELOPMENT_RESULT",
+  "next_gate_design_review_comment_id": 5819430297,
+  "validation_replication_design_approved": false,
+  "validation_hold_reason": "Exact frozen TIME/support geometry is Development-calendar-specific (2017-2021) and cannot be applied unchanged to 2022-2023 Validation."
 }
