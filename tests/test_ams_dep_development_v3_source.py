@@ -228,3 +228,18 @@ def test_v3_registration_retains_v2_normalizer_pin():
     assert inherited["v2_normalizer_git_blob_sha1"] == (
         "8c257290ff04e726b53cafa433596311dcec32c4"
     )
+
+
+def test_v3_imports_the_frozen_v2_treatment_aware_normalizer():
+    assert source.normalize_development_archives.__module__ == (
+        "research_core.ams_dep_treatment_aware_normalization_v2"
+    )
+
+
+def test_coverage_manifest_is_constructed_only_after_v2_row_normalization():
+    text = inspect.getsource(source._build_coverage_aware_bundle)
+    normalize_pos = text.index("normalize_development_archives(")
+    coverage_pos = text.index("audit_development_source_coverage_v3(")
+    bundle_pos = text.index("CertifiedDataBundle(")
+    assert normalize_pos < coverage_pos < bundle_pos
+    assert text.count("normalize_development_archives(") == 1
