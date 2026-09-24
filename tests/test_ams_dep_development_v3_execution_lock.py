@@ -122,6 +122,27 @@ def test_v1_claim_cannot_satisfy_v3_claim_contract(monkeypatch):
         lock.assert_claim_environment(opener=backend)
 
 
+def test_v2_claim_cannot_satisfy_v3_claim_contract(monkeypatch):
+    sha = "c" * 40
+    monkeypatch.setenv("GITHUB_SHA", sha)
+    monkeypatch.setenv("GITHUB_REPOSITORY", "owner/repo")
+    monkeypatch.setenv("GITHUB_TOKEN", "token")
+    monkeypatch.setenv(
+        "AMS_DEP_DEVELOPMENT_V3_CLAIM_REF",
+        "refs/tags/ams-dep-development-execution-claimed-v2",
+    )
+    monkeypatch.setenv("AMS_DEP_DEVELOPMENT_V3_CLAIM_SHA", sha)
+    backend = AtomicFakeGitHub()
+    backend.refs[
+        "refs/tags/ams-dep-development-execution-claimed-v2"
+    ] = sha
+    with pytest.raises(
+        lock.DevelopmentExecutionV3Error,
+        match="V3 claim ref is missing or incorrect",
+    ):
+        lock.assert_claim_environment(opener=backend)
+
+
 def _set_v3_claim_env(monkeypatch, sha):
     monkeypatch.setenv("GITHUB_SHA", sha)
     monkeypatch.setenv("GITHUB_REPOSITORY", "owner/repo")
