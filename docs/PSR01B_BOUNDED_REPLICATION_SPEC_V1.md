@@ -67,15 +67,26 @@ The 49 archive hashes alone are not the row-level data contract. Before PAPER_FI
 The following repository blobs are immutable inputs to PSR-01B:
 
 - `src/research_core/ams_dep_treatment_aware_normalization_v2.py` — blob `8c257290ff04e726b53cafa433596311dcec32c4`;
+- `src/research_core/ams_dep_pipeline.py` — blob `f2c14fffd72369bbf0dc119b8a001dc9193e5975`;
 - `src/research_core/data_quality.py` — blob `a8251c4288013d8264a85bb4cda44007459e1adf`;
 - `src/research_core/data_quality_treatment_v2.py` — blob `f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19`;
 - `src/research_core/data_ingestion.py` — blob `bbed81b3ffed215b04dc162368ef9866a4753875`;
-- `src/research_core/archive_security.py` — blob `cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b`;
-- `src/research_core/data_interfaces.py` — blob `579b27b515d25ce69d565208416a88506286e534`.
+- `src/research_core/data_interfaces.py` — blob `579b27b515d25ce69d565208416a88506286e534`;
+- `src/research_core/dependence_statistics.py` — blob `c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b`;
+- `src/research_core/market_state.py` — blob `0d7a60bf581142bab5439ed93992839105d61e1f`;
+- `src/research_core/source_identity.py` — blob `8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9`;
+- `src/research_core/archive_security.py` — blob `cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b`.
 
 Their authority is inherited from `research/governance/ams_dep_development_execution_v3.json`, blob `946dea1c852cd8a23d26d3a90ba99e88db5779a2`.
 
-Before any archive is opened for empirical PSR-01B execution, runtime preflight must verify every listed Git blob SHA-1 and the upstream registration blob. Any mismatch hard-fails before source read.
+Before any archive is opened for empirical PSR-01B execution, runtime preflight must verify every listed Git blob SHA-1 and the upstream registration blob. This list closes the complete project-local import path loaded when the treatment-aware normalizer imports `ams_dep_pipeline.py`: its direct local imports plus the local transitive `archive_security.py` dependency are all pinned. No new unpinned project-local import may be introduced into this normalization import closure at implementation time. Any mismatch hard-fails before source read.
+
+After the pinned modules import successfully and still before source read, preflight must assert exactly:
+
+- `ams_dep_pipeline.DEVELOPMENT_START == 2017-08-17T00:00:00Z`; and
+- `ams_dep_pipeline.DEVELOPMENT_END == 2022-01-01T00:00:00Z`.
+
+Failure of either constant assertion hard-fails.
 
 The exact raw-row pipeline is:
 
@@ -255,7 +266,7 @@ The manuscript does not publish enough detail to reconstruct all 28 inputs exact
 
 ### 7.1 Warm-up
 
-For every fold, source feature construction may begin exactly 744 hours before the fold's training start. Only rows inside the registered training window enter model fitting or feature selection.
+For every fold, `warmup_start = train_start - 744 hours` is a **mandatory artificial state boundary**. No OHLCV/TA rolling or recursive state from a timestamp earlier than `warmup_start` may propagate into the fold. Only rows inside the registered training window enter model fitting or feature selection.
 
 ### 7.2 Fifteen OHLCV-derived predictors
 
