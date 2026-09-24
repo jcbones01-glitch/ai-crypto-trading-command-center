@@ -10,7 +10,7 @@ from typing import Mapping, Sequence
 
 import numpy as np
 import optuna
-from xgboost import XGBRegressor
+import xgboost as xgb
 
 from .psr01b_core import PSR01BError, seed_from_coordinates
 
@@ -172,9 +172,8 @@ def _xgb_params(
     hyperparameters: Mapping[str, float | int],
     *,
     random_state: int,
-    early_stopping: bool,
     n_estimators_override: int | None = None,
-) -> dict[str, float | int | str]:
+) -> tuple[dict[str, float | int | str], int]:
     required = set(SUGGESTION_ORDER)
     if set(hyperparameters) != required:
         raise PSR01BError("hyperparameter mapping must match frozen search fields exactly")
@@ -185,11 +184,15 @@ def _xgb_params(
     )
     if n_estimators <= 0:
         raise PSR01BError("n_estimators must be positive")
+    # The frozen contract names sklearn-style controls n_jobs/random_state.
+    # Native XGBoost uses their engine equivalents nthread/seed.  This keeps
+    # the exact single-thread and registered SeedSequence value without adding
+    # an unregistered scikit-learn runtime dependency.
     params: dict[str, float | int | str] = {
         "objective": "reg:squarederror",
         "tree_method": "hist",
-        "n_jobs": 1,
-        "random_state": int(random_state),
+        "nthread": 1,
+        "seed": int(random_state),
         "eval_metric": "rmse",
         "max_depth": int(hyperparameters["max_depth"]),
         "learning_rate": float(hyperparameters["learning_rate"]),
@@ -200,13 +203,10 @@ def _xgb_params(
         "reg_alpha": float(hyperparameters["reg_alpha"]),
         "reg_lambda": float(hyperparameters["reg_lambda"]),
     }
-    if early_stopping:
-        params["early_stopping_rounds"] = EARLY_STOPPING_ROUNDS
-    return params
+    return params, n_estimators
 
 
-def _smallest_min_rmse_iteration(model: XGBRegressor) -> int:
-    result = model.evals_result()
+def _smallest_min_rmse_iteration(result: Mapping[str, Mapping[str, Sequence[float]]]) -> int:
     try:
         history = np.asarray(result["validation_0"]["rmse"], dtype=np.float64)
     except Exception as exc:
@@ -241,29 +241,32 @@ def fit_tuning_trial(
         raise PSR01BError("train/validation feature-width mismatch")
 
     seed = trial_seed(arm, fold_index, trial_number)
-    params = _xgb_params(
+    params, sampled_n_estimators = _xgb_params(
         hyperparameters,
         random_state=seed,
-        early_stopping=True,
     )
-    model = XGBRegressor(**params)
-    model.fit(
-        Xtr,
-        ytr,
-        eval_set=[(Xva, yva)],
-        verbose=False,
+    dtrain = xgb.DMatrix(Xtr, label=ytr)
+    dvalidation = xgb.DMatrix(Xva, label=yva)
+    evals_result: dict[str, dict[str, list[float]]] = {}
+    booster = xgb.train(
+        params,
+        dtrain,
+        num_boost_round=sampled_n_estimators,
+        evals=[(dvalidation, "validation_0")],
+        evals_result=evals_result,
+        early_stopping_rounds=EARLY_STOPPING_ROUNDS,
+        verbose_eval=False,
     )
 
-    best_iteration = _smallest_min_rmse_iteration(model)
-    sampled_n_estimators = int(hyperparameters["n_estimators"])
-    boosted_rounds = int(model.get_booster().num_boosted_rounds())
+    best_iteration = _smallest_min_rmse_iteration(evals_result)
+    boosted_rounds = int(booster.num_boosted_rounds())
     early_stopped = boosted_rounds < sampled_n_estimators
     final_n_estimators = (
         best_iteration + 1 if early_stopped else sampled_n_estimators
     )
 
     pred = np.asarray(
-        model.predict(Xva, iteration_range=(0, best_iteration + 1)),
+        booster.predict(dvalidation, iteration_range=(0, best_iteration + 1)),
         dtype=np.float64,
     )
     if pred.shape != yva.shape or not np.isfinite(pred).all():
@@ -384,18 +387,22 @@ def final_refit_and_forecast(
         selection.fold_index,
         selected.trial_number,
     )
-    params = _xgb_params(
+    params, final_rounds = _xgb_params(
         selected.params,
         random_state=seed,
-        early_stopping=False,
         n_estimators_override=selected.final_n_estimators,
     )
-    if "early_stopping_rounds" in params:
-        raise PSR01BError("final refit must not use early stopping")
-    model = XGBRegressor(**params)
-    model.fit(X_combined, y_combined, verbose=False)
+    dcombined = xgb.DMatrix(X_combined, label=y_combined)
+    dtest = xgb.DMatrix(Xte)
+    booster = xgb.train(
+        params,
+        dcombined,
+        num_boost_round=final_rounds,
+        evals=[],
+        verbose_eval=False,
+    )
 
-    standardized = np.asarray(model.predict(Xte), dtype=np.float64)
+    standardized = np.asarray(booster.predict(dtest), dtype=np.float64)
     if standardized.ndim != 1 or len(standardized) != len(Xte):
         raise PSR01BError("invalid final forecast shape")
     forecasts_raw = inverse_target_scale(standardized, combined_scale)
