@@ -1,16 +1,16 @@
 {
   "manifest_id": "AMS-DEP-DEVELOPMENT-EXECUTION-V3",
   "version": 3,
-  "status": "AUTHORIZED_FOR_FIRST_DEVELOPMENT_V3_EXECUTION",
+  "status": "FIRST_DEVELOPMENT_V3_EXECUTION_COMPLETED_LOCKED",
   "approved_spec_review_issue": 80,
   "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V3_RECOVERY_SPEC",
   "approved_spec_merge_commit": "8a0d211683217cb3c84ce0cda205fc7872b7cd1e",
   "implementation_candidate_commit": "2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2",
   "reviewed_implementation_commit": "2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2",
   "independent_implementation_reviewed": true,
-  "development_execution_authorized": true,
-  "first_empirical_execution_claimed": false,
-  "first_empirical_execution_executed": false,
+  "development_execution_authorized": false,
+  "first_empirical_execution_claimed": true,
+  "first_empirical_execution_executed": true,
   "one_shot_claim_ref": "refs/tags/ams-dep-development-execution-claimed-v3",
   "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v3",
   "confirmation_token": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V3",
@@ -51,7 +51,7 @@
     "reviewed_candidate": "8538332bb20cbd47a0250c86686d367c4aa0aa2d",
     "consumed": true
   },
-  "notes": "Issue #82 independently approved exact replacement V3 candidate 2622ec7975fa0c49e3ccca7e4e4f8685c5ecd0a2 after exact-candidate offline run 36027977973 passed 64 tests, and the immutable V3 review anchor binds that exact SHA. Issue #83 independently approved the separate V3 Development execution authorization. The manifest now authorizes only the first Development V3 execution; the V3 one-shot claim remains absent and first execution remains unconsumed. Validation/OOS, strategy P&L, paper/live trading, and directed cross-asset lag diagnostics remain false. The implementation freeze remains execution_authorized=false as the immutable review record.",
+  "notes": "The first authorized Development V3 execution was consumed by run 36032005873 and completed successfully with AMS_DEP_DEVELOPMENT_EMPIRICAL_V3_EXECUTED. Both BTCUSDT and ETHUSDT source/coverage/sample/inference stages completed. The exact leading source-coverage gap was established as 2017-08-17T00:00:00Z to 2017-08-17T04:00:00Z for both assets, with 38,179 final certified hours and 22,099 accepted primary-sample rows per asset. All six 4,999-draw bootstrap slots completed with zero invalid draws; Holm rejected BTC_DEP, BTC_TIME, BTC_STATE, ETH_DEP, and ETH_STATE, while ETH_TIME was not rejected. This is a Development statistical result only: no Validation/OOS, strategy P&L, paper/live trading, or directed-lag analysis was accessed. V3 is consumed and must not be rerun. Independent result review is required before any next-stage decision.",
   "implementation_pr": 81,
   "candidate_evidence": {
     "exact_candidate_offline_review_run_id": 36027977973,
@@ -71,5 +71,126 @@
   "independent_implementation_review_comment_id": 5818379082,
   "execution_authorization_review_issue": 83,
   "execution_authorization_review_decision": "APPROVE_DEVELOPMENT_V3_EXECUTION_AUTHORIZATION",
-  "execution_authorization_review_comment_id": 5818515291
+  "execution_authorization_review_comment_id": 5818515291,
+  "execution_run": {
+    "run_id": 36032005873,
+    "attempt": 1,
+    "event": "workflow_dispatch",
+    "head_sha": "9984c1be10590512d0b3607f353839035e5ad433",
+    "claim_ref": "refs/tags/ams-dep-development-execution-claimed-v3",
+    "claim_sha": "9984c1be10590512d0b3607f353839035e5ad433",
+    "conclusion": "success",
+    "result_classification": "AMS_DEP_DEVELOPMENT_EMPIRICAL_V3_EXECUTED",
+    "artifact_id": 10823436709,
+    "artifact_name": "ams-dep-development-empirical-v3",
+    "artifact_zip_sha256": "4db7b30d4d7609ad3fe8c7c77c336bc994c9ea95f98ec0c32a92d01544ab8252",
+    "result_json_sha256": "c4d93d0b5035f77fa2961812407671d1542fdf68c688bdb0692f398b13e1ecde",
+    "artifact_expires_at": "2026-12-23T17:06:38Z"
+  },
+  "empirical_result_summary": {
+    "source_status": {
+      "BTCUSDT": "COMPLETE",
+      "ETHUSDT": "COMPLETE"
+    },
+    "archives_reached": {
+      "BTCUSDT": 53,
+      "ETHUSDT": 53
+    },
+    "raw_row_accounting": {
+      "BTCUSDT": {
+        "raw_data_rows": 38222,
+        "normalized_accepted_raw_rows": 38179,
+        "explicitly_rejected_raw_rows": 43,
+        "accounting_equal": true
+      },
+      "ETHUSDT": {
+        "raw_data_rows": 38222,
+        "normalized_accepted_raw_rows": 38179,
+        "explicitly_rejected_raw_rows": 43,
+        "accounting_equal": true
+      }
+    },
+    "source_coverage": {
+      "BTCUSDT": {
+        "accepted_first_timestamp": "2017-08-17T04:00:00+00:00",
+        "accepted_last_timestamp": "2021-12-31T23:00:00+00:00",
+        "missing_coverage_hour_count": 4,
+        "coverage_gap_start": "2017-08-17T00:00:00+00:00",
+        "coverage_gap_end": "2017-08-17T04:00:00+00:00",
+        "final_certified_hour_count": 38179,
+        "boundary_record_count": 52
+      },
+      "ETHUSDT": {
+        "accepted_first_timestamp": "2017-08-17T04:00:00+00:00",
+        "accepted_last_timestamp": "2021-12-31T23:00:00+00:00",
+        "missing_coverage_hour_count": 4,
+        "coverage_gap_start": "2017-08-17T00:00:00+00:00",
+        "coverage_gap_end": "2017-08-17T04:00:00+00:00",
+        "final_certified_hour_count": 38179,
+        "boundary_record_count": 52
+      }
+    },
+    "sample": {
+      "BTCUSDT": {
+        "accepted_rows": 22099,
+        "support_pass": true
+      },
+      "ETHUSDT": {
+        "accepted_rows": 22099,
+        "support_pass": true
+      }
+    },
+    "inference": {
+      "requested_draws_per_slot": 4999,
+      "invalid_draws_all_slots": 0,
+      "holm": [
+        {
+          "slot": "BTC_DEP",
+          "raw_p": 0.0002,
+          "adjusted_p": 0.0012,
+          "reject": true
+        },
+        {
+          "slot": "BTC_TIME",
+          "raw_p": 0.0248,
+          "adjusted_p": 0.0496,
+          "reject": true
+        },
+        {
+          "slot": "BTC_STATE",
+          "raw_p": 0.0042,
+          "adjusted_p": 0.021,
+          "reject": true
+        },
+        {
+          "slot": "ETH_DEP",
+          "raw_p": 0.0074,
+          "adjusted_p": 0.0296,
+          "reject": true
+        },
+        {
+          "slot": "ETH_TIME",
+          "raw_p": 0.1296,
+          "adjusted_p": 0.1296,
+          "reject": false
+        },
+        {
+          "slot": "ETH_STATE",
+          "raw_p": 0.008,
+          "adjusted_p": 0.0296,
+          "reject": true
+        }
+      ]
+    },
+    "protected_access": {
+      "market_data_accessed": true,
+      "development_market_outcomes_accessed": true,
+      "validation_or_oos_accessed": false,
+      "strategy_pnl_calculated": false,
+      "paper_trading_authorized": false,
+      "live_trading_authorized": false,
+      "calibration_or_holdout_seed_used": false,
+      "directed_cross_asset_lagged_diagnostics_executed": false
+    }
+  }
 }
