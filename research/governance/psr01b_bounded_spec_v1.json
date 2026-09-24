@@ -1,7 +1,7 @@
 {
   "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
   "version": 1,
-  "status": "REVISION_4_NARROW_REMEDIATION_PENDING_REREVIEW",
+  "status": "REVISION_4_GOVERNANCE_METADATA_REMEDIATED_PENDING_FINAL_REREVIEW",
   "parent_source_review_issue": 86,
   "parent_source_decision": "PSR01_SOURCE_IDENTITY_UNRESOLVED",
   "parent_design_review_issue": 88,
@@ -859,14 +859,40 @@
     }
   },
   "future_governance": {
-    "next_step": "independent re-review of revision 3 at exact head",
-    "implementation_requires_new_review": true,
+    "specification_revision": 4,
+    "specification_review_issue": 90,
+    "specification_review_status": "PENDING_FINAL_GOVERNANCE_ONLY_REREVIEW",
+    "specification_review_satisfaction_rule": "An APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION decision in Issue #90 at the exact current revision-4 candidate head satisfies the PSR-01B specification-review requirement.",
+    "next_step_before_specification_approval": "Independent governance-only re-review of this exact revision-4 candidate head in Issue #90.",
+    "next_step_after_specification_approval": "Bounded PSR-01B code implementation plus synthetic/offline tests only.",
+    "additional_specification_review_required_after_exact_head_approval": false,
+    "implementation_scope_after_specification_approval": [
+      "implement only the frozen PSR-01B specification",
+      "run synthetic/offline tests only",
+      "prepare an implementation-freeze record for independent review"
+    ],
+    "empirical_source_execution_authorized_after_specification_approval": false,
+    "empirical_forecast_generation_authorized_after_specification_approval": false,
+    "empirical_pnl_authorized_after_specification_approval": false,
     "offline_synthetic_tests_before_empirical_claim": true,
+    "implementation_freeze_required": true,
+    "independent_implementation_review_required": true,
     "reviewed_candidate_anchor_required": true,
     "separate_execution_authorization_required": true,
+    "manual_confirmation_required": true,
     "one_shot_claim_before_psr01b_source_read_or_forecast_generation": true,
-    "manual_confirmation_token_to_be_defined_after_implementation_review": true,
-    "failure_after_claim_consumes_attempt": true
+    "failure_after_claim_consumes_attempt": true,
+    "later_execution_sequence": [
+      "bounded implementation",
+      "synthetic/offline tests",
+      "implementation freeze",
+      "independent implementation review",
+      "reviewed-candidate anchor",
+      "separate execution authorization",
+      "manual confirmation",
+      "one-shot execution claim",
+      "only then Development source read/model execution"
+    ]
   },
   "revision": 4,
   "split_endpoint_contract": {
@@ -903,6 +929,14 @@
       "reviewed_head": "9ad61d31f4b6aa5bf92385d9f96c73bebc1d3c47",
       "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
       "decision_comment_id": 5821218608
+    },
+    {
+      "issue": 90,
+      "reviewed_head": "56766898aad905d0d0a440c03853f834d7d69b57",
+      "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+      "decision_comment_id": 5821432055,
+      "finding_scope": "GOVERNANCE_METADATA_ONLY",
+      "substantive_scientific_findings_resolved": true
     }
   ]
 }
