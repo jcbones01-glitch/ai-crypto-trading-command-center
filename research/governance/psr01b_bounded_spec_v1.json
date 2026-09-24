@@ -1,7 +1,7 @@
 {
   "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
   "version": 1,
-  "status": "REVISED_AFTER_INDEPENDENT_REVIEW_PENDING_REREVIEW",
+  "status": "REVISION_3_REMEDIATED_PENDING_REREVIEW",
   "parent_source_review_issue": 86,
   "parent_source_decision": "PSR01_SOURCE_IDENTITY_UNRESOLVED",
   "parent_design_review_issue": 88,
@@ -90,6 +90,40 @@
       "upstream_path": "research/governance/ams_dep_development_execution_v3.json",
       "upstream_blob_sha1": "946dea1c852cd8a23d26d3a90ba99e88db5779a2",
       "rule": "exact BTC parent checksum pins for 2017-12 through 2021-12"
+    },
+    "row_treatment_contract": {
+      "mode": "IMMUTABLE_INHERITANCE_OF_AUDITED_AMS_DEP_V2_TREATMENT_AWARE_NORMALIZER",
+      "upstream_registration_path": "research/governance/ams_dep_development_execution_v3.json",
+      "upstream_registration_blob_sha1": "946dea1c852cd8a23d26d3a90ba99e88db5779a2",
+      "required_blob_sha1": {
+        "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
+        "src/research_core/data_quality.py": "a8251c4288013d8264a85bb4cda44007459e1adf",
+        "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+        "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+        "src/research_core/archive_security.py": "cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b",
+        "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534"
+      },
+      "pre_source_read_requirement": "At execution preflight, Git blob SHA-1 of every required_blob_sha1 path and upstream registration must equal the registered value; any mismatch HARD_FAIL before archive read.",
+      "exact_pipeline": [
+        "verify each of the 49 archive bytes against the registered archive SHA-256 before scanner use",
+        "for each archive in lexicographic filename order call pinned data_quality.scan_archive(path,'BTCUSDT',checksum_verified=True)",
+        "build exactly one pinned data_quality_treatment_v2.build_manifest('BTCUSDT', reports, research_start=2017-12-01T00:00:00Z, research_end=2022-01-01T00:00:00Z)",
+        "call pinned ams_dep_treatment_aware_normalization_v2.normalize_development_archives('BTCUSDT', paths, reports, manifest)",
+        "use only returned accepted normalized MarketBar rows with 2017-12-01T00:00:00Z <= timestamp < 2022-01-01T00:00:00Z as the observed PSR01B source rows"
+      ],
+      "accepted_row_definition": "A raw physical row is accepted only if the inherited scanner/treatment-aware normalizer accepts it. Explicitly localized treated anomalous rows are rejected exactly as the inherited normalizer specifies.",
+      "timestamp_contract": "pinned normalize_row/parse_timestamp only; exact UTC-hour timestamp required; milliseconds or microseconds accepted only under pinned parser rules",
+      "scanner_classification_changes_allowed": false,
+      "timestamp_rounding_allowed": false,
+      "timestamp_snapping_allowed": false,
+      "interpolation_allowed": false,
+      "resampling_allowed": false,
+      "pre_arm_synthetic_bars_allowed": false,
+      "ohlcv_repair_allowed": false,
+      "arbitrary_exception_skip_allowed": false,
+      "duplicate_or_order_repair_allowed": false,
+      "missing_hour_definition": "an hourly bar label in the registered source interval that is absent from the accepted normalized timestamp set after the inherited row treatment",
+      "arm_boundary": "PAPER_FILL and PROJECT_GAP_PRESERVING are constructed only after the exact inherited normalization is complete; neither arm may change raw-row acceptance/rejection."
     }
   },
   "folds": [
@@ -293,7 +327,15 @@
       },
       "spearman_nonfinite_rule": "For each candidate/block use pairwise finite candidate/target rows. Fewer than 100 pairs => ineligible. Compute scipy.stats.spearmanr on those pairs. Any nonfinite correlation (including a constant candidate) => ineligible for that block. Candidate must be eligible in all four blocks; otherwise it is excluded. If a selection group has no candidate eligible in all four blocks => HARD_FAIL.",
       "selection_block_endpoint_rule": "Within each 3-calendar-month block [S,E), correlation rows must satisfy S<=origin t<E and S<=t+1h<E.",
-      "feature_name_tie_break": "ASCII lexical ascending on the exact canonical feature names generated as FAMILY__W{hours} or LAG_RETURN__K{hours}."
+      "feature_name_tie_break": "ASCII lexical ascending on the exact canonical feature names generated as FAMILY__W{hours} or LAG_RETURN__K{hours}.",
+      "rank_universe": {
+        "scope": "WITHIN_SELECTION_GROUP_COMMON_FOUR_BLOCK_ELIGIBLE_SET",
+        "construction": "For each selection group g, first compute E_g as candidates in that group that satisfy the finite-pair and finite-Spearman eligibility rules in all four training blocks.",
+        "empty_behavior": "If E_g is empty, fold HARD_FAIL.",
+        "per_block_ranking": "Within each block, rank only candidates in E_g by descending absolute Spearman correlation, ASCII lexical canonical feature name tie-break.",
+        "aggregation": "Average each E_g candidate's four ordinal ranks; lowest average rank wins; ASCII lexical canonical name breaks exact average-rank ties.",
+        "prohibited_alternative": "Do not rank against block-local candidates that later fail another block."
+      }
     },
     "egarch": {
       "status": "PROJECT_DEFINED_EXACT_SEGMENTED_EGARCH_CONTRACT",
@@ -445,7 +487,16 @@
       "EGARCH_LOG_SIGMA_NEXT",
       "EGARCH_Z_CURRENT"
     ],
-    "deployed_feature_count": 28
+    "deployed_feature_count": 28,
+    "warmup_state_contract": {
+      "warmup_hours": 744,
+      "warmup_start_formula": "fold_train_start - 744 hours",
+      "mandatory_artificial_state_boundary": true,
+      "earlier_source_state_may_propagate": false,
+      "rule": "For each arm/fold, all OHLCV-derived predecessor state, rolling windows, RSI/ATR Wilder state, EMA/MACD state, OBV state, MFI predecessor, and lag state are initialized/rebuilt using only bars at or after warmup_start. No state from an earlier accepted bar may enter the fold.",
+      "propagation": "After warmup_start, state propagates causally through train, validation, and test without reset at split boundaries; PROJECT_GAP_PRESERVING additionally resets at actual continuity gaps; PAPER_FILL uses its filled grid.",
+      "first_fold_check": "for fold 1, warmup_start is exactly 2017-12-01T00:00:00Z"
+    }
   },
   "model_contract": {
     "model": "XGBoost regressor",
@@ -581,7 +632,18 @@
       "synthetic_bars_allowed": false,
       "cross_gap_target_or_feature_allowed": false,
       "rolling_state_reset_at_gap": true,
-      "minimum_contiguous_feature_history_hours": 336
+      "minimum_contiguous_feature_history_hours": 336,
+      "trading_gap_contract": {
+        "position_carry_across_gap_allowed": false,
+        "trigger": "whenever a test-period accepted-bar contiguous segment ends and a later accepted-bar segment exists within the same fold",
+        "forced_liquidation": "After the final valid pre-gap held market return, force every strategy/benchmark position to 0 at that final accepted close. Charge c*abs(0-previous_position) to that final valid pre-gap evaluation return record.",
+        "no_position_or_return_during_gap": "After liquidation, position is 0 throughout the missing interval and feature-recovery interval. No market return is imputed or earned for omitted hours.",
+        "restart": "At the first post-gap model-eligible evaluation origin, previous_position=0. BASELINE_SIGN and COST_AWARE apply their normal rule from cash. COST_AWARE therefore uses previous_position=0 in its threshold turnover term.",
+        "benchmark_restart": "BUY_AND_HOLD re-enters long from cash at the first post-gap model-eligible evaluation origin and pays c. MOMENTUM_24H remains flat until its own 24 contiguous-history condition and the common model-origin eligibility are both satisfied, then applies its ordinary desired-position rule from cash.",
+        "accounting": "Forced gap liquidations and later re-entries count in turnover and completed-trade accounting. A forced gap liquidation can complete a trade.",
+        "fold_terminal_precedence": "If a segment end is also the fold end, apply only the ordinary fold terminal liquidation once; do not double-charge a gap liquidation.",
+        "zero_position": "If the strategy/benchmark is already flat at the pre-gap close, liquidation cost is zero."
+      }
     },
     "selective_arm_reporting_allowed": false
   },
@@ -602,7 +664,8 @@
       "cost_applied_to": "final test return record after last held next-hour market return"
     },
     "turnover": "sum abs(position_t-previous_position) including forced terminal liquidation",
-    "completed_trade": "one long episode beginning with 0->1 and ending with 1->0; forced terminal liquidation may complete the final episode"
+    "completed_trade": "one long episode beginning with 0->1 and ending with 1->0; forced terminal liquidation may complete the final episode",
+    "PROJECT_GAP_PRESERVING_gap_behavior": "Use missing_data_arms.PROJECT_GAP_PRESERVING.trading_gap_contract for BASELINE_SIGN and COST_AWARE."
   },
   "benchmarks": {
     "BUY_AND_HOLD": {
@@ -621,7 +684,8 @@
       "signal_history": "may use contiguous causal bars before the test start, including validation history, but never a future/test target; the evaluation origin itself must be in the registered test-origin set"
     },
     "role": "contextual only; not primary PSR01B success gate",
-    "evaluation_origin_set": "exactly the same registered eligible test-origin timestamps used by the model forecast vector for that missing-data arm/fold; every origin obeys split_endpoint_contract"
+    "evaluation_origin_set": "exactly the same registered eligible test-origin timestamps used by the model forecast vector for that missing-data arm/fold; every origin obeys split_endpoint_contract",
+    "PROJECT_GAP_PRESERVING_gap_behavior": "Use the registered forced-liquidation/flat/re-entry contract; BUY_AND_HOLD must not silently hold through an omitted gap."
   },
   "metrics": {
     "ARC": "prod(1+r_t)^(8760/N)-1 over finite evaluation returns",
@@ -656,25 +720,31 @@
       "resampling_boundary": "never cross fold boundary or gap-defined contiguous segment; resample circular blocks independently within each segment to its original length, then concatenate in registered fold/segment order",
       "null_centering": "subtract observed segment-pooled differential mean before primary p-value resampling",
       "one_sided_alternative": "mean(COST_AWARE-BASELINE_SIGN)>0",
-      "p_value": "(1 + count(bootstrap_centered_mean >= observed_mean))/(10000+1)",
-      "confidence_interval": "np.quantile(uncentered_bootstrap_statistic,[0.025,0.975],method='linear')",
-      "sharpe_difference": "computed on same uncentered bootstrap draws as complementary evidence; not a mandatory gate",
+      "p_value": "(1 + count(centered_bootstrap_mean >= observed_inference_mean))/(10000+1)",
+      "confidence_interval": "np.quantile(uncentered inference-universe bootstrap mean draws,[0.025,0.975],method='linear')",
+      "sharpe_difference": "computed on same uncentered inference-universe bootstrap draws as complementary evidence; descriptive all-record Sharpe remains the success-direction metric",
       "algorithm": {
         "segment_order": "registered fold order, then ascending contiguous-segment start timestamp",
-        "per_segment_length": "n>=1 required",
-        "effective_block_length": "L_eff=min(requested_block_hours,n)",
-        "blocks_per_segment": "ceil(n/L_eff)",
+        "requested_block_length": "L is exactly the registered requested block length (168 primary; 24 or 72 diagnostic)",
+        "inferential_segment_eligibility": "a contiguous evaluation segment enters bootstrap inference iff n >= 2*L",
+        "short_segment_policy": "segments with n < 2*L are excluded from that block-length inference universe, are never resampled, and cannot contribute to its p-value or CI; they remain in all descriptive performance, turnover, trade-count, and all-record mean calculations",
+        "minimum_inference_support": "at least 2 inferentially eligible segments are required for a block length; otherwise that arm/block inference is UNAVAILABLE and PSR01B cannot pass a criterion requiring it",
+        "blocks_per_eligible_segment": "ceil(n/L)",
         "start_sampling": "for each block draw an independent integer start uniformly from {0,...,n-1}, with replacement, using the registered NumPy Generator/seed stream",
-        "block_indices": "(start+j) mod n for j=0,...,L_eff-1",
+        "block_indices": "(start+j) mod n for j=0,...,L-1",
         "segment_draw": "concatenate sampled blocks and retain the first n observations exactly",
-        "short_segment_rule": "if n<requested L, set L_eff=n; the block may circularly rotate but never repeats beyond the n retained positions and the segment is never dropped",
-        "replicate": "resample every segment independently to its original length, then concatenate sampled segments in registered order; compute the pooled arithmetic mean",
-        "centered_test": "subtract the observed pooled differential mean from every observed differential before applying the same sampled indices",
-        "uncentered_ci_and_sharpe": "apply the identical sampled indices to the uncentered paired strategy return records",
+        "replicate": "resample every inferentially eligible segment independently back to its original length, then concatenate sampled segments in registered order; compute the observation-weighted pooled arithmetic mean",
+        "observed_inference_mean": "arithmetic mean over exactly the same concatenated inferentially eligible observations used by the bootstrap",
+        "centered_test": "subtract the observed_inference_mean from every differential observation in the inference universe before applying the sampled indices",
+        "uncentered_ci_and_sharpe": "apply the identical sampled indices to uncentered paired strategy return records in the same inference universe",
         "draws": 10000,
         "rng": "numpy.random.Generator(numpy.random.PCG64(seed_from_registered_SeedSequence_path))",
-        "empty_segment": "not represented; construction must omit empty segments before bootstrap",
         "no_cross_boundary": true
+      },
+      "primary_observed_means": {
+        "all_record_mean": "reported over all registered evaluation records, including segments too short for primary inference",
+        "inference_universe_mean": "reported over only segments with n>=336 for L=168",
+        "success_requirement": "both all_record_mean and inference_universe_mean must be >0 in each missing-data arm"
       }
     },
     "multiplicity": {
@@ -696,11 +766,13 @@
     "pass_token": "BOUNDED_H2_REPLICATION",
     "fail_token": "BOUNDED_H2_NOT_REPLICATED",
     "pass_requires_all": [
-      "observed mean net-return differential > 0 in both missing-data arms",
+      "all-record observed mean net-return differential > 0 in both missing-data arms",
+      "primary 168h inference-universe observed mean net-return differential > 0 in both missing-data arms",
+      "at least 2 primary-inference-eligible contiguous evaluation segments (n>=336 each) exist in each arm",
       "Holm-adjusted primary 168h one-sided p-value <= 0.05 in both arms",
-      "cost-aware turnover < baseline turnover in both arms",
+      "cost-aware turnover < baseline turnover in both arms using all registered evaluation records and forced gap/fold liquidations",
       "cost-aware completed trades >= 20 in both arms",
-      "cost-aware Sharpe - baseline Sharpe > 0 in both arms"
+      "all-record cost-aware Sharpe - baseline Sharpe > 0 in both arms"
     ],
     "note": "The paper itself applies a >=20-trade minimum for formal interpretation; PSR01B defines trade operationally as a completed long episode.",
     "no_rescue_after_fail": true,
@@ -751,7 +823,7 @@
     }
   },
   "future_governance": {
-    "next_step": "independent re-review of revised specification at exact head",
+    "next_step": "independent re-review of revision 3 at exact head",
     "implementation_requires_new_review": true,
     "offline_synthetic_tests_before_empirical_claim": true,
     "reviewed_candidate_anchor_required": true,
@@ -760,14 +832,7 @@
     "manual_confirmation_token_to_be_defined_after_implementation_review": true,
     "failure_after_claim_consumes_attempt": true
   },
-  "revision": 2,
-  "prior_independent_review": {
-    "issue": 90,
-    "reviewed_head": "0cc7877029d679f67e11a4012951f39dfff6eb68",
-    "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
-    "decision_comment_id": 5820773445,
-    "empirical_access_during_remediation": false
-  },
+  "revision": 3,
   "split_endpoint_contract": {
     "bar_timestamp_semantics": "Binance kline open timestamp in UTC labels bar [t,t+1h)",
     "target_definition": "r_(t+1)=log(C_(t+1)/C_t), where C_t is the close of the bar labeled t",
@@ -783,5 +848,19 @@
     ],
     "final_source_boundary": "no origin may be retained if its target bar label is >= 2022-01-01T00:00:00Z",
     "final_refit_rows": "union of rows independently eligible under the original train split and original validation split; no row crossing the train/validation or validation/test boundary is restored"
-  }
+  },
+  "independent_reviews": [
+    {
+      "issue": 90,
+      "reviewed_head": "0cc7877029d679f67e11a4012951f39dfff6eb68",
+      "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+      "decision_comment_id": 5820773445
+    },
+    {
+      "issue": 90,
+      "reviewed_head": "91da8ccd59c73288c337f153e7cfdaa5733cebc8",
+      "decision": "REQUIRE_CHANGES_BEFORE_PSR01B_IMPLEMENTATION",
+      "decision_comment_id": 5821038522
+    }
+  ]
 }
