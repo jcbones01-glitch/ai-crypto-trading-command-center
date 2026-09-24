@@ -1,0 +1,34 @@
+{
+  "freeze_id": "AMS-DEP-DEVELOPMENT-IMPLEMENTATION-FREEZE-V3",
+  "version": 3,
+  "status": "DRAFT_LOCKED",
+  "approved_spec_review_issue": 80,
+  "approved_spec_review_decision": "APPROVE_DEVELOPMENT_EMPIRICAL_V3_RECOVERY_SPEC",
+  "approved_spec_merge_commit": "8a0d211683217cb3c84ce0cda205fc7872b7cd1e",
+  "implementation_pr": null,
+  "implementation_candidate_commit": null,
+  "reviewed_implementation_commit": null,
+  "independent_review_required": true,
+  "independent_implementation_reviewed": false,
+  "execution_authorized": false,
+  "one_shot_claim_created": false,
+  "review_anchor_ref": "refs/heads/ams-dep-development-implementation-reviewed-v3",
+  "review_anchor_created": false,
+  "implementation_file_git_blob_sha1": {},
+  "pinned_upstream_git_blob_sha1": {},
+  "allowed_post_candidate_paths": [
+    "research/governance/ams_dep_development_implementation_freeze_v3.json",
+    "research/governance/ams_dep_development_execution_manifest_v3.json",
+    "research/governance/ams_dep_release_gate_v1.json"
+  ],
+  "candidate_evidence": null,
+  "protected_access": {
+    "v3_market_data_execution_authorized": false,
+    "validation_or_oos_access_authorized": false,
+    "strategy_pnl_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "directed_cross_asset_lagged_diagnostics_authorized": false
+  },
+  "notes": "Draft V3 freeze placeholder. It is not a frozen candidate and cannot authorize execution."
+}
