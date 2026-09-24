@@ -308,6 +308,21 @@ Otherwise it is:
 
 `VALID`.
 
+### 11.6 Empty final certification is a source-integrity failure
+
+V3 must hard-fail **before** constructing/passing a bundle to the canonical verifier when either:
+
+- `C` is empty; or
+- the final certified-segment count is zero.
+
+Required deterministic failure code:
+
+`EMPTY_FINAL_DEVELOPMENT_CERTIFICATION`.
+
+This is a source/certification integrity failure. It must occur before primary-sample construction and must never be represented as an empirical AMS-DEP result, support failure, p-value result, or statistical outcome.
+
+A base manifest whose Development certification is entirely excluded also triggers this rule because it yields no usable final certified Development interval.
+
 ## 12. Coverage-aware manifest construction
 
 V3 may introduce a new versioned helper module to create a **coverage-aware manifest record** from:
@@ -329,13 +344,7 @@ The helper must preserve:
 - all base exclusions;
 - all non-Development helper partition objects as non-authoritative provenance only.
 
-It may add:
-
-- coverage-gap IDs;
-- coverage affected regions;
-- coverage exclusions;
-- coverage continuity breaks;
-- final coverage-aware Development certified segments.
+It may add only the coverage-certification records frozen below and the final coverage-aware Development certified segments.
 
 The global `certified_segments` used by the existing cross-asset common-certification helper must equal the final coverage-aware Development certified segments.
 
@@ -351,7 +360,36 @@ The new helper must not modify:
 - `data_quality_treatment_v2.py`;
 - `ams_dep_pipeline.py`.
 
-### 12.1 Compatibility field rule
+### 12.1 Frozen legacy-manifest representation of V3 coverage IDs
+
+The legacy `ResearchTreatmentManifest` schema was designed around scanner `DataQualityEvent` identities. V3 coverage-gap IDs are **not** scanner anomaly/event IDs.
+
+The following compatibility mapping is therefore mandatory and removes implementation discretion:
+
+1. the coverage-aware manifest's top-level `anomaly_ids` tuple is copied **byte-for-byte and order-for-order from the bound base manifest**;
+2. **no V3 coverage-gap ID may be appended to top-level `anomaly_ids`**;
+3. every added V3 coverage `AffectedRegion` carries:
+   - `start = gap.start`;
+   - `end = gap.end`;
+   - `anomaly_ids = (COVERAGE_GAP_ID,)` exactly one singleton tuple;
+   - `reason = "BASE_CERTIFIED_HOUR_ABSENT_FROM_ACCEPTED_NORMALIZED_SOURCE"`;
+4. every added V3 coverage `Exclusion` carries the exact same start/end, exact same singleton `anomaly_ids`, and exact same reason;
+5. every added V3 coverage `ContinuityBreak` carries the exact same start/end, exact same singleton `anomaly_ids`, and exact same reason;
+6. V3 coverage IDs never enter, alter, or satisfy V2 row-rejection/event-ID checks. The coverage-aware manifest is created **only after** V2-style row normalization is complete and is never fed back into treatment-aware row classification/rejection;
+7. all base `AffectedRegion`, `Exclusion`, and `ContinuityBreak` records are preserved exactly;
+8. added coverage records are ordered by:
+   `(start, end, coverage_gap_id)`;
+9. each final global collection is formed by stable canonical ordering of the union:
+   `(start, end, reason, anomaly_ids)`;
+10. the Development partition's exclusions use that same deterministic final exclusion order;
+11. final certified segments are ordered by `(start, end)`;
+12. non-Development helper partitions remain unchanged and non-authoritative.
+
+The coverage-gap IDs themselves remain losslessly available in the V3 coverage evidence/projection even though they do not appear in the legacy top-level scanner `anomaly_ids` tuple.
+
+Equivalent base manifests plus equivalent coverage gaps presented through different container/dictionary iteration orders must therefore produce byte-identical `to_record_without_identity()` records and the same recomputed manifest identity.
+
+### 12.2 Compatibility version rule
 
 The existing manifest's frozen treatment-protocol and normalization-version fields remain unchanged because V3 does not redefine raw-row anomaly treatment or raw normalization.
 
@@ -363,7 +401,7 @@ V3 coverage semantics are separately and explicitly versioned through:
 - the V3 projection;
 - the V3 coverage evidence record.
 
-This compatibility choice must be independently reviewed before implementation.
+This compatibility choice is now frozen prospectively by the exact mapping in Section 12.1.
 
 ## 13. Canonical verifier remains unchanged
 
@@ -401,17 +439,22 @@ This avoids changing the research partition merely because the V2 incident sugge
 
 V3 must emit deterministic source-coverage evidence for each asset.
 
-Required fields:
+Required fields are **lossless timestamp/provenance evidence**, not digest-only summaries.
+
+For every reached asset emit:
 
 - registered Development start/end;
 - accepted normalized row count;
 - accepted first timestamp;
 - accepted last timestamp;
-- accepted timestamp-vector SHA-256;
+- the **exact complete ordered accepted normalized timestamp vector `O`**;
+- accepted timestamp-vector SHA-256, which must validate the stored `O` vector;
+- the **exact complete ordered base-certified segment records** used to construct `B`;
 - base certified-hour count;
 - base certified-hour-vector SHA-256;
 - V3 missing-coverage hour count;
-- V3 missing-coverage-hour-vector SHA-256;
+- the **exact complete ordered missing-coverage-hour vector `M`**;
+- V3 missing-coverage-hour-vector SHA-256, which must validate the stored `M` vector;
 - complete ordered coverage-gap interval records;
 - complete coverage-gap IDs;
 - final certified-hour count;
@@ -421,8 +464,12 @@ Required fields:
 - preserved base exclusion count/hash;
 - added coverage exclusion count/hash;
 - final exclusion count/hash;
+- the **exact complete ordered adjacent-archive boundary coverage record set** defined in Section 15.1;
+- adjacent-archive-boundary record SHA-256;
 - base treatment-manifest identity;
 - final coverage-aware manifest identity.
+
+The artifact must store the exact vectors/records themselves. Digests are integrity checks over those stored values and are never a substitute for them.
 
 Timestamp-vector bytes are exactly the compact ASCII JSON encoding of ordered UTC ISO-8601 timestamp strings:
 
@@ -433,6 +480,72 @@ Record-list bytes use:
 `json.dumps(records, sort_keys=True, ensure_ascii=True, separators=(",", ":")).encode("ascii")`.
 
 No trailing newline or external framing is permitted.
+
+### 15.1 Deterministic adjacent-archive boundary evidence
+
+For each reached asset and each adjacent pair in the exact registered 53-archive order, V3 must emit **exactly one** boundary record. A fully reached 53-archive asset therefore has exactly 52 records.
+
+For left archive `L`, right archive `R`, and canonical month boundary `T` (the first UTC hour belonging to `R`), the record contains exactly:
+
+```
+{
+  "left_archive": L,
+  "right_archive": R,
+  "boundary_timestamp": T,
+  "left_expected_hour": T_MINUS_1H,
+  "right_expected_hour": T,
+  "left": {
+    "inside_development": BOOL,
+    "observed_accepted": BOOL,
+    "base_certified": BOOL,
+    "base_excluded": BOOL,
+    "v3_coverage_excluded": BOOL,
+    "final_certified": BOOL,
+    "fully_accounted": BOOL
+  },
+  "right": {
+    "inside_development": BOOL,
+    "observed_accepted": BOOL,
+    "base_certified": BOOL,
+    "base_excluded": BOOL,
+    "v3_coverage_excluded": BOOL,
+    "final_certified": BOOL,
+    "fully_accounted": BOOL
+  },
+  "boundary_fully_accounted": BOOL
+}
+```
+
+For an hour inside Development:
+
+`fully_accounted` is true only when either:
+
+- it is inside a preserved base exclusion; or
+- it is base-certified and is either observed accepted or V3-coverage-excluded.
+
+For an hour outside Development, `fully_accounted=true` only when `inside_development=false`; it contributes no certification claim.
+
+`boundary_fully_accounted = left.fully_accounted AND right.fully_accounted`.
+
+Every reached boundary record must have `boundary_fully_accounted=true`; otherwise V3 hard-fails with:
+
+`ARCHIVE_BOUNDARY_COVERAGE_UNACCOUNTED`.
+
+Boundary records are ordered exactly by the registered adjacent archive-pair order and serialized with the record-list byte contract above.
+
+These records are timestamp/provenance evidence only. They contain no OHLCV values, coefficients, p-values, P&L, Validation/OOS values, or trading output.
+
+### 15.2 Lossless reconstruction requirement
+
+The stored base certified-segment records must be sufficient to reconstruct `B` exactly.
+
+The stored accepted timestamp vector must reconstruct `O` exactly.
+
+The stored missing timestamp vector must equal the independently recomputed `B - O` exactly.
+
+The stored coverage-gap records must equal the maximal contiguous coalescing of that stored/recomputed `M`.
+
+A serialize → digest → deserialize → recompute audit must reproduce the exact stored vectors, counts, gap records, boundary records, and digests without market-data reacquisition.
 
 ## 16. V2 row accounting remains controlling
 
@@ -465,10 +578,11 @@ It inherits V2 projection evidence and additionally binds:
 - base manifest identity;
 - final coverage-aware manifest identity;
 - accepted first/last timestamp;
-- accepted timestamp-vector digest;
-- base-certified grid count/digest;
-- missing-coverage count/digest;
+- exact complete accepted normalized timestamp vector and its digest;
+- exact complete base-certified segment records plus base-certified grid count/digest;
+- exact complete missing-coverage-hour vector plus missing-coverage count/digest;
 - full deterministic coverage-gap records/IDs;
+- exact complete adjacent-archive boundary records plus their digest;
 - final certified-hour count/digest;
 - final certified segment records/digest;
 - preserved-base-exclusion and added-coverage-exclusion identities;
@@ -598,16 +712,21 @@ Success and post-claim failure artifacts must include:
 - sample/numerical/inference provenance as stages are reached;
 - no-repair booleans.
 
-If failure occurs during coverage audit, preserve:
+If failure occurs during coverage audit, preserve, whenever normalization has completed:
 
-- accepted normalized first/last timestamp if known;
+- accepted normalized first/last timestamp;
 - processed accepted timestamp count;
-- accepted timestamp-vector digest through the deterministic completed normalization stage;
+- the **exact complete accepted normalized timestamp vector**;
+- its timestamp-vector digest;
+- the exact complete base-certified segment records used to construct `B`;
+- the exact complete missing-hour vector constructed up to the deterministic failure stage when that vector is complete;
 - base manifest identity;
 - exact failure code/stage;
-- any complete coverage-gap records constructed before failure.
+- any complete coverage-gap records and archive-boundary records constructed before failure.
 
-If coverage audit completes but canonical verification fails, preserve the **complete** coverage evidence and final manifest/segment records.
+If coverage audit completes but canonical verification fails, preserve the **complete lossless coverage evidence** from Section 15, including the exact accepted vector, exact `M` vector, base segments, all 52 boundary records for a fully reached asset, final manifest/segment records, and all validating digests.
+
+A post-claim artifact may never retain only a digest when the corresponding timestamp vector/record sequence had already been deterministically completed in memory.
 
 ## 23. Required synthetic/offline regressions
 
@@ -638,7 +757,17 @@ At minimum tests must prove:
 21. no Validation/OOS/P&L/paper/live/directed-lag path is introduced;
 22. V3 statistical constants/path remain byte/behavior equivalent to V2 except provenance/source-certification integration;
 23. post-claim coverage-audit failure preserves progressive evidence;
-24. post-coverage canonical-verifier failure preserves complete coverage evidence.
+24. post-coverage canonical-verifier failure preserves complete coverage evidence;
+25. serialize → digest → deserialize round trip reproduces the exact accepted normalized timestamp vector and exact missing-coverage-hour vector;
+26. leading, trailing, internal, and cross-archive fixtures preserve their exact accepted/missing timestamp vectors in evidence;
+27. a deliberately corrupted coverage overlay that is rejected by the canonical verifier still preserves the actual accepted timestamp vector needed for diagnosis;
+28. every adjacent registered archive pair has exactly one deterministic boundary record; a complete 53-archive asset has exactly 52, all with `boundary_fully_accounted=true`;
+29. a deliberately unaccounted adjacent-archive boundary hard-fails with `ARCHIVE_BOUNDARY_COVERAGE_UNACCOUNTED`;
+30. a whole-domain-absent fixture produces `C = ∅` and hard-fails with `EMPTY_FINAL_DEVELOPMENT_CERTIFICATION` before canonical verification/primary-sample construction;
+31. a whole-domain-base-excluded fixture likewise hard-fails at the V3 coverage/certification stage before primary-sample construction;
+32. coverage-aware manifest top-level `anomaly_ids` remains exactly the base scanner tuple, while each added coverage region/exclusion/break carries exactly one singleton coverage-gap ID;
+33. equivalent base manifest + equivalent coverage gaps supplied through different container/dictionary orders produce byte-identical coverage-aware manifest records and identical manifest identity;
+34. the coverage-aware manifest is never passed back into V2 row-rejection/event-ID logic.
 
 ## 24. Bounded future V3 implementation surface
 
