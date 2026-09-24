@@ -513,17 +513,6 @@ def _boundary_records(
             ),
         }
         records.append(record)
-        if not record["boundary_fully_accounted"]:
-            evidence = {
-                "evidence_status": "PARTIAL_COVERAGE_AUDIT",
-                "failure_code": BOUNDARY_UNACCOUNTED_CODE,
-                "adjacent_archive_boundary_records_exact": records,
-            }
-            raise SourceCoverageV3Error(
-                "adjacent archive boundary is not fully accounted",
-                failure_code=BOUNDARY_UNACCOUNTED_CODE,
-                coverage_evidence=evidence,
-            )
     return tuple(records)
 
 
@@ -604,10 +593,43 @@ def audit_development_source_coverage_v3(
 
     gaps = _coalesce_missing(symbol, missing)
     final_segments = _segments_from_hours(final)
+    core_evidence = {
+        "evidence_status": "PARTIAL_COVERAGE_AUDIT",
+        "accepted_normalized_row_count": len(accepted_strings),
+        "accepted_first_timestamp":
+            accepted_strings[0] if accepted_strings else None,
+        "accepted_last_timestamp":
+            accepted_strings[-1] if accepted_strings else None,
+        "accepted_normalized_timestamp_vector_exact":
+            list(accepted_strings),
+        "accepted_timestamp_vector_sha256":
+            timestamp_vector_sha256(accepted_strings),
+        "base_certified_segment_records_exact": base_segment_records,
+        "base_certified_hour_count": len(base_hours),
+        "base_certified_hour_vector_sha256":
+            timestamp_vector_sha256(tuple(_iso(x) for x in base_hours)),
+        "missing_coverage_hour_count": len(missing_strings),
+        "missing_coverage_hour_vector_exact": list(missing_strings),
+        "missing_coverage_hour_vector_sha256":
+            timestamp_vector_sha256(missing_strings),
+        "coverage_gap_intervals_exact":
+            [item.to_record() for item in gaps],
+        "coverage_gap_ids_exact":
+            [item.coverage_gap_id for item in gaps],
+        "final_certified_hour_count": len(final_strings),
+        "final_certified_hour_vector_sha256":
+            timestamp_vector_sha256(final_strings),
+        "final_certified_segments_exact":
+            _interval_records(final_segments),
+    }
     if not final_segments:
         raise SourceCoverageV3Error(
             "V3 final certified segment collection is empty",
             failure_code=EMPTY_CERTIFICATION_CODE,
+            coverage_evidence={
+                **core_evidence,
+                "failure_code": EMPTY_CERTIFICATION_CODE,
+            },
         )
 
     # Independent V3 exact-grid self-check before the canonical verifier.
@@ -626,6 +648,10 @@ def audit_development_source_coverage_v3(
             raise SourceCoverageV3Error(
                 "V3 final certified segment hourly grid mismatch",
                 failure_code="V3_FINAL_CERTIFIED_GRID_MISMATCH",
+                coverage_evidence={
+                    **core_evidence,
+                    "failure_code": "V3_FINAL_CERTIFIED_GRID_MISMATCH",
+                },
             )
 
     coverage_manifest = _build_coverage_manifest(
@@ -635,21 +661,57 @@ def audit_development_source_coverage_v3(
         raise SourceCoverageV3Error(
             "coverage-aware top-level anomaly_ids changed",
             failure_code="COVERAGE_TOP_LEVEL_ANOMALY_IDS_CHANGED",
+            coverage_evidence={
+                **core_evidence,
+                "failure_code": "COVERAGE_TOP_LEVEL_ANOMALY_IDS_CHANGED",
+            },
         )
 
-    boundary_records = _boundary_records(
-        archive_filenames,
-        observed=accepted_set,
-        base_hours=base_set,
-        base_exclusions=base_development.exclusions,
-        missing=set(missing),
-        final_hours=set(final),
-    )
+    try:
+        boundary_records = _boundary_records(
+            archive_filenames,
+            observed=accepted_set,
+            base_hours=base_set,
+            base_exclusions=base_development.exclusions,
+            missing=set(missing),
+            final_hours=set(final),
+        )
+    except SourceCoverageV3Error as exc:
+        if exc.coverage_evidence is None:
+            exc.coverage_evidence = {
+                **core_evidence,
+                "failure_code": exc.failure_code,
+            }
+        raise
+
+    boundary_evidence = {
+        **core_evidence,
+        "adjacent_archive_boundary_records_exact":
+            list(boundary_records),
+        "adjacent_archive_boundary_records_sha256":
+            record_sequence_sha256(boundary_records),
+    }
+    if any(
+        not item["boundary_fully_accounted"]
+        for item in boundary_records
+    ):
+        raise SourceCoverageV3Error(
+            "adjacent archive boundary is not fully accounted",
+            failure_code=BOUNDARY_UNACCOUNTED_CODE,
+            coverage_evidence={
+                **boundary_evidence,
+                "failure_code": BOUNDARY_UNACCOUNTED_CODE,
+            },
+        )
 
     if len(archive_filenames) == 53 and len(boundary_records) != 52:
         raise SourceCoverageV3Error(
             "complete asset must contain exactly 52 boundary records",
             failure_code="ARCHIVE_BOUNDARY_RECORD_COUNT_MISMATCH",
+            coverage_evidence={
+                **boundary_evidence,
+                "failure_code": "ARCHIVE_BOUNDARY_RECORD_COUNT_MISMATCH",
+            },
         )
 
     gap_records = [item.to_record() for item in gaps]
