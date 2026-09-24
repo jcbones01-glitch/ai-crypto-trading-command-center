@@ -196,7 +196,6 @@ def _xgb_params(
         "eval_metric": "rmse",
         "max_depth": int(hyperparameters["max_depth"]),
         "learning_rate": float(hyperparameters["learning_rate"]),
-        "n_estimators": n_estimators,
         "min_child_weight": float(hyperparameters["min_child_weight"]),
         "subsample": float(hyperparameters["subsample"]),
         "colsample_bytree": float(hyperparameters["colsample_bytree"]),
