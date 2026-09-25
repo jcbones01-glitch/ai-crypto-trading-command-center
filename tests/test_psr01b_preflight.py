@@ -10,6 +10,7 @@ from research_core.psr01b_preflight import (
     EXPECTED_DEVELOPMENT_END,
     EXPECTED_DEVELOPMENT_START,
     EXPECTED_RUNTIME,
+    EXPECTED_THREAD_ENV,
     ROOT,
     load_registration,
     verify_archive_digest_metadata,
@@ -20,6 +21,7 @@ from research_core.psr01b_preflight import (
     verify_pre_source_read_contract,
     verify_upstream_registration_blob_metadata,
     verify_runtime_versions,
+    verify_thread_environment,
     verify_timestamp_boundary_metadata,
 )
 
@@ -83,6 +85,18 @@ def test_import_closure_fails_on_any_blob_or_path_drift():
 def test_exact_pinned_runtime_versions_are_installed_on_registered_runner():
     observed = verify_runtime_versions(runner_label="ubuntu-24.04")
     assert observed == EXPECTED_RUNTIME
+
+
+def test_registered_thread_environment_is_exact_and_fail_closed():
+    assert verify_thread_environment(EXPECTED_THREAD_ENV) == EXPECTED_THREAD_ENV
+    broken = dict(EXPECTED_THREAD_ENV)
+    broken["OMP_NUM_THREADS"] = "2"
+    with pytest.raises(PSR01BError, match="thread environment mismatch"):
+        verify_thread_environment(broken)
+
+
+def test_ci_process_uses_registered_thread_environment():
+    assert verify_thread_environment() == EXPECTED_THREAD_ENV
 
 
 def test_timestamp_boundary_fixture_rejects_post_2022_and_non_hour_rows():

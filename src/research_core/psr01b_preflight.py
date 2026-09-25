@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import importlib.metadata
 import json
+import os
 import platform
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,6 +32,12 @@ EXPECTED_RUNTIME = {
     "statsmodels": "0.15.0",
 }
 EXPECTED_RUNNER = "ubuntu-24.04"
+EXPECTED_THREAD_ENV = {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+}
 EXPECTED_DEVELOPMENT_START = datetime(2017, 8, 17, tzinfo=timezone.utc)
 EXPECTED_DEVELOPMENT_END = datetime(2022, 1, 1, tzinfo=timezone.utc)
 
@@ -47,12 +54,7 @@ def load_registration(path: Path = REGISTRATION_PATH) -> dict:
     if data.get("runtime_contract") != {
         "os_runner": EXPECTED_RUNNER,
         **EXPECTED_RUNTIME,
-        "env": {
-            "OPENBLAS_NUM_THREADS": "1",
-            "OMP_NUM_THREADS": "1",
-            "MKL_NUM_THREADS": "1",
-            "NUMEXPR_NUM_THREADS": "1",
-        },
+        "env": dict(EXPECTED_THREAD_ENV),
     }:
         raise PSR01BError("PSR-01B runtime contract drift")
     return data
@@ -80,6 +82,19 @@ def verify_runtime_versions(*, runner_label: str) -> dict[str, str]:
             f"PSR-01B runtime version mismatch: observed={observed}"
         )
     return observed
+
+
+def verify_thread_environment(
+    environ: Mapping[str, str] | None = None,
+) -> dict[str, str]:
+    """Fail closed unless every registered single-thread environment pin matches."""
+    source = os.environ if environ is None else environ
+    observed = {key: source.get(key) for key in EXPECTED_THREAD_ENV}
+    if observed != EXPECTED_THREAD_ENV:
+        raise PSR01BError(
+            f"PSR-01B thread environment mismatch: observed={observed}"
+        )
+    return dict(EXPECTED_THREAD_ENV)
 
 
 def verify_archive_inventory(

@@ -56,6 +56,7 @@ from .psr01b_preflight import (
     verify_archive_inventory,
     verify_pre_source_read_contract,
     verify_runtime_versions,
+    verify_thread_environment,
     verify_timestamp_boundary_metadata,
 )
 from .psr01b_ta import compute_ta_candidates, select_four_block_features
@@ -67,6 +68,23 @@ SOURCE_END = datetime(2022, 1, 1, tzinfo=UTC)
 PRIMARY_BLOCK_HOURS = 168
 ROBUSTNESS_BLOCK_HOURS = (24, 72)
 ARM_INDEX = {"PAPER_FILL": 0, "PROJECT_GAP_PRESERVING": 1}
+FREEZE_PATH = ROOT / "research/governance/psr01b_implementation_freeze_v1.json"
+APPROVED_SPEC_HEAD = "16d5193f0c80b5899f5084e76a42917e824e0936"
+APPROVED_SPEC_BLOB_SHA1 = "47c5379eeb4eae8c5890814c92e29b86bfddb23e"
+EXECUTION_ID = "PSR01B_REGISTERED_ONE_SHOT_V1"
+EXPECTED_FOLD_ROWS = (
+    (1, "2018-01-01T00:00:00Z", "2019-01-01T00:00:00Z", "2019-04-01T00:00:00Z", "2019-07-01T00:00:00Z"),
+    (2, "2018-04-01T00:00:00Z", "2019-04-01T00:00:00Z", "2019-07-01T00:00:00Z", "2019-10-01T00:00:00Z"),
+    (3, "2018-07-01T00:00:00Z", "2019-07-01T00:00:00Z", "2019-10-01T00:00:00Z", "2020-01-01T00:00:00Z"),
+    (4, "2018-10-01T00:00:00Z", "2019-10-01T00:00:00Z", "2020-01-01T00:00:00Z", "2020-04-01T00:00:00Z"),
+    (5, "2019-01-01T00:00:00Z", "2020-01-01T00:00:00Z", "2020-04-01T00:00:00Z", "2020-07-01T00:00:00Z"),
+    (6, "2019-04-01T00:00:00Z", "2020-04-01T00:00:00Z", "2020-07-01T00:00:00Z", "2020-10-01T00:00:00Z"),
+    (7, "2019-07-01T00:00:00Z", "2020-07-01T00:00:00Z", "2020-10-01T00:00:00Z", "2021-01-01T00:00:00Z"),
+    (8, "2019-10-01T00:00:00Z", "2020-10-01T00:00:00Z", "2021-01-01T00:00:00Z", "2021-04-01T00:00:00Z"),
+    (9, "2020-01-01T00:00:00Z", "2021-01-01T00:00:00Z", "2021-04-01T00:00:00Z", "2021-07-01T00:00:00Z"),
+    (10, "2020-04-01T00:00:00Z", "2021-04-01T00:00:00Z", "2021-07-01T00:00:00Z", "2021-10-01T00:00:00Z"),
+    (11, "2020-07-01T00:00:00Z", "2021-07-01T00:00:00Z", "2021-10-01T00:00:00Z", "2022-01-01T00:00:00Z"),
+)
 
 
 @dataclass(frozen=True)
@@ -102,6 +120,12 @@ class FoldExecution:
             "egarch_aic": self.egarch_aic,
             "selected_trial_index": self.selected_trial_index,
             "final_model_seed": self.final_model_seed,
+            "fold_metrics": {
+                "BASELINE_SIGN": _fold_metric_record(self.baseline_segments),
+                "COST_AWARE": _fold_metric_record(self.cost_aware_segments),
+                "BUY_AND_HOLD": _fold_metric_record(self.buy_hold_segments),
+                "MOMENTUM_24H": _fold_metric_record(self.momentum_segments),
+            },
         }
 
 
@@ -119,6 +143,19 @@ def _registered_folds(registration: Mapping[str, Any]) -> tuple[dict[str, Any], 
     raw = registration.get("folds")
     if not isinstance(raw, list) or len(raw) != 11:
         raise PSR01BError("PSR-01B must contain exactly 11 registered folds")
+    observed_rows = tuple(
+        (
+            int(item.get("fold", -1)),
+            item.get("train_start"),
+            item.get("train_end_validation_start"),
+            item.get("validation_end_test_start"),
+            item.get("test_end"),
+        )
+        for item in raw
+    )
+    if observed_rows != EXPECTED_FOLD_ROWS:
+        raise PSR01BError("registered PSR-01B fold dates/order drift")
+
     out: list[dict[str, Any]] = []
     for expected_number, item in enumerate(raw, start=1):
         if int(item.get("fold", -1)) != expected_number:
@@ -153,6 +190,143 @@ def _git_blob_sha1(path: str) -> str:
         raise PSR01BError(f"cannot compute Git blob identity: {path}") from exc
 
 
+def _git_head_sha() -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            text=True,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise PSR01BError("cannot determine execution checkout HEAD") from exc
+
+
+def load_implementation_freeze(path: Path = FREEZE_PATH) -> dict[str, Any]:
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PSR01BError("cannot load PSR-01B implementation freeze") from exc
+    if data.get("freeze_id") != "PSR01B-IMPLEMENTATION-FREEZE-V1":
+        raise PSR01BError("unexpected PSR-01B implementation freeze identity")
+    return data
+
+
+def verify_frozen_execution_identity(
+    *,
+    runner_label: str,
+    freeze: Mapping[str, Any] | None = None,
+    environ: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
+    """Verify the exact frozen one-shot execution identity before source bytes."""
+    registration = load_registration()
+    folds = _registered_folds(registration)
+    frozen = dict(load_implementation_freeze() if freeze is None else freeze)
+
+    approved = frozen.get("approved_specification") or {}
+    expected_approved = {
+        "issue": 90,
+        "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
+        "approval_comment_id": 5821484000,
+        "exact_approved_head": APPROVED_SPEC_HEAD,
+        "specification_path": "research/governance/psr01b_bounded_spec_v1.json",
+        "specification_git_blob_sha1": APPROVED_SPEC_BLOB_SHA1,
+        "revision": 4,
+    }
+    if approved != expected_approved:
+        raise PSR01BError("approved revision-4 specification identity drift")
+    observed_spec_blob = _git_blob_sha1(approved["specification_path"])
+    if observed_spec_blob != APPROVED_SPEC_BLOB_SHA1:
+        raise PSR01BError("approved revision-4 specification blob mismatch")
+
+    implementation = frozen.get("implementation") or {}
+    candidate = implementation.get("implementation_candidate_commit")
+    reviewed = implementation.get("reviewed_implementation_commit")
+    if not isinstance(candidate, str) or len(candidate) != 40:
+        raise PSR01BError("frozen implementation candidate identity missing")
+    if implementation.get("independent_implementation_reviewed") is not True:
+        raise PSR01BError("independent implementation review is not approved")
+    if reviewed != candidate:
+        raise PSR01BError("reviewed implementation identity does not equal frozen candidate")
+
+    expected_implementation_blobs = frozen.get("implementation_file_git_blob_sha1") or {}
+    if not expected_implementation_blobs:
+        raise PSR01BError("frozen implementation blob inventory missing")
+    observed_implementation_blobs = {
+        str(path): _git_blob_sha1(str(path))
+        for path in expected_implementation_blobs
+    }
+    if observed_implementation_blobs != expected_implementation_blobs:
+        raise PSR01BError("frozen PSR-01B implementation blob mismatch")
+
+    row_contract = registration["source"]["row_treatment_contract"]
+    expected_upstream_blobs = frozen.get("pinned_upstream_git_blob_sha1") or {}
+    if expected_upstream_blobs != row_contract["required_blob_sha1"]:
+        raise PSR01BError("freeze/upstream normalization blob contract mismatch")
+    observed_upstream_blobs = {
+        str(path): _git_blob_sha1(str(path))
+        for path in expected_upstream_blobs
+    }
+    observed_upstream_registration = _git_blob_sha1(
+        row_contract["upstream_registration_path"]
+    )
+    verify_pre_source_read_contract(
+        observed_upstream_blobs,
+        observed_upstream_registration,
+        registration,
+    )
+
+    runtime = verify_runtime_versions(runner_label=runner_label)
+    thread_env = verify_thread_environment(environ)
+    future = frozen.get("future_governance") or {}
+    for flag in (
+        "reviewed_candidate_anchor_created",
+        "execution_authorized",
+        "one_shot_claim_created",
+    ):
+        if future.get(flag) is not True:
+            raise PSR01BError(f"PSR-01B governance gate not satisfied: {flag}")
+
+    freeze_blob = None
+    if freeze is None:
+        freeze_blob = _git_blob_sha1(
+            str(FREEZE_PATH.relative_to(ROOT)).replace("\\", "/")
+        )
+
+    return {
+        "execution_identity": EXECUTION_ID,
+        "registration_id": registration["registration_id"],
+        "registration_revision": int(registration["revision"]),
+        "approved_specification_head": APPROVED_SPEC_HEAD,
+        "approved_specification_git_blob_sha1": observed_spec_blob,
+        "implementation_candidate_commit": candidate,
+        "reviewed_implementation_commit": reviewed,
+        "execution_checkout_head": _git_head_sha(),
+        "implementation_freeze_git_blob_sha1": freeze_blob,
+        "observed_implementation_file_git_blob_sha1": observed_implementation_blobs,
+        "observed_upstream_git_blob_sha1": observed_upstream_blobs,
+        "upstream_registration_path": row_contract["upstream_registration_path"],
+        "observed_upstream_registration_git_blob_sha1": observed_upstream_registration,
+        "runtime_versions": runtime,
+        "thread_environment": thread_env,
+        "registered_folds": [
+            {
+                "fold": int(fold["fold"]),
+                "train_start": fold["train_start"].isoformat().replace("+00:00", "Z"),
+                "validation_start": fold["validation_start"].isoformat().replace("+00:00", "Z"),
+                "test_start": fold["test_start"].isoformat().replace("+00:00", "Z"),
+                "test_end": fold["test_end"].isoformat().replace("+00:00", "Z"),
+            }
+            for fold in folds
+        ],
+        "governance": {
+            "independent_implementation_reviewed": True,
+            "reviewed_candidate_anchor_created": True,
+            "execution_authorized": True,
+            "one_shot_claim_created": True,
+        },
+    }
+
+
 def _sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -166,6 +340,7 @@ def normalize_registered_source(
     *,
     runner_label: str,
     source_read_authorized: bool = False,
+    evidence_out: dict[str, Any] | None = None,
 ) -> tuple[MarketBar, ...]:
     """Execute the exact registered source-normalization sequence.
 
@@ -228,6 +403,16 @@ def normalize_registered_source(
         [int(bar.timestamp.astimezone(UTC).timestamp()) for bar in bars],
         registration,
     )
+    if evidence_out is not None:
+        evidence_out.clear()
+        evidence_out.update(
+            {
+                "archive_sha256": dict(observed_sha256),
+                "normalized_row_count": len(bars),
+                "first_timestamp": bars[0].timestamp.astimezone(UTC).isoformat().replace("+00:00", "Z"),
+                "last_timestamp": bars[-1].timestamp.astimezone(UTC).isoformat().replace("+00:00", "Z"),
+            }
+        )
     return bars
 
 
@@ -506,6 +691,29 @@ def _concat_segments(segments: Sequence[np.ndarray]) -> np.ndarray:
     return np.concatenate([np.asarray(segment, dtype=np.float64) for segment in segments])
 
 
+def _fold_metric_record(segments: Sequence[np.ndarray]) -> dict[str, Any]:
+    metrics = performance_metrics(_concat_segments(segments))
+    total_return = float(metrics["total_return"])
+    arc = float(metrics["ARC"])
+    if not np.isfinite(total_return) or not np.isfinite(arc):
+        raise PSR01BError("nonfinite registered fold return metric")
+    asd_raw = metrics["ASD"]
+    sharpe_raw = metrics["SHARPE"]
+    asd = None
+    if asd_raw is not None and np.isfinite(float(asd_raw)):
+        asd = float(asd_raw)
+    sharpe = None
+    if sharpe_raw is not None and np.isfinite(float(sharpe_raw)):
+        sharpe = float(sharpe_raw)
+    return {
+        "N": int(metrics["N"]),
+        "fold_total_return": total_return,
+        "fold_ARC": arc,
+        "fold_ASD": asd,
+        "fold_SHARPE": sharpe,
+    }
+
+
 def _bootstrap_record(result) -> dict[str, Any]:
     return asdict(result)
 
@@ -623,6 +831,39 @@ def run_from_normalized_bars(
         "arms": arm_records,
         "success_token": decision,
     }
+
+
+def execute_registered_one_shot(
+    archive_paths: Sequence[Path],
+    *,
+    result_path: Path,
+    runner_label: str,
+    source_read_authorized: bool = False,
+) -> dict[str, Any]:
+    """Single identity-locked source -> experiment -> result-writing entry path.
+
+    This function does not grant execution authority.  It remains inert unless
+    a future reviewed governance state is present in the freeze and the caller
+    also supplies the explicit source-read confirmation.
+    """
+    if source_read_authorized is not True:
+        raise PSR01BError("PSR-01B empirical source read is not authorized")
+
+    provenance = verify_frozen_execution_identity(runner_label=runner_label)
+    source_evidence: dict[str, Any] = {}
+    bars = normalize_registered_source(
+        archive_paths,
+        runner_label=runner_label,
+        source_read_authorized=True,
+        evidence_out=source_evidence,
+    )
+    result = run_from_normalized_bars(bars)
+    result["provenance"] = {
+        **provenance,
+        "source": source_evidence,
+    }
+    write_result_json(Path(result_path), result)
+    return result
 
 
 def write_result_json(path: Path, result: Mapping[str, Any]) -> None:
