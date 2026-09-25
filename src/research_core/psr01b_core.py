@@ -47,6 +47,9 @@ class BootstrapResult:
     eligible_segments: int
     p_value: float | None
     ci_95: tuple[float, float] | None
+    sharpe_difference_available: bool
+    observed_inference_sharpe_difference: float | None
+    sharpe_difference_ci_95: tuple[float, float] | None
 
 
 def seed_from_coordinates(*coordinates: int) -> int:
@@ -266,7 +269,17 @@ def paired_segment_bootstrap(
 
     all_record_mean = float(np.mean(np.concatenate(all_diffs)))
     if len(eligible) < 2:
-        return BootstrapResult(False, all_record_mean, None, len(eligible), None, None)
+        return BootstrapResult(
+            False,
+            all_record_mean,
+            None,
+            len(eligible),
+            None,
+            None,
+            False,
+            None,
+            None,
+        )
 
     observed_diffs = np.concatenate([c - b for b, c in eligible])
     observed_mean = float(np.mean(observed_diffs))
@@ -274,21 +287,65 @@ def paired_segment_bootstrap(
         np.random.PCG64(seed_from_coordinates(BOOTSTRAP_ROOT, block_hours, arm_index))
     )
 
+    observed_baseline = np.concatenate([b for b, _ in eligible])
+    observed_cost_aware = np.concatenate([c for _, c in eligible])
+    observed_baseline_metrics = performance_metrics(observed_baseline)
+    observed_cost_aware_metrics = performance_metrics(observed_cost_aware)
+    observed_baseline_sharpe = observed_baseline_metrics["SHARPE"]
+    observed_cost_aware_sharpe = observed_cost_aware_metrics["SHARPE"]
+    observed_sharpe_difference = None
+    if observed_baseline_sharpe is not None and observed_cost_aware_sharpe is not None:
+        observed_sharpe_difference = float(observed_cost_aware_sharpe - observed_baseline_sharpe)
+
     centered_draws = np.empty(draws, dtype=np.float64)
     uncentered_draws = np.empty(draws, dtype=np.float64)
+    sharpe_difference_draws = np.full(draws, np.nan, dtype=np.float64)
+    sharpe_available = observed_sharpe_difference is not None
+
     for rep in range(draws):
         centered_parts: list[np.ndarray] = []
-        raw_parts: list[np.ndarray] = []
+        raw_diff_parts: list[np.ndarray] = []
+        raw_baseline_parts: list[np.ndarray] = []
+        raw_cost_aware_parts: list[np.ndarray] = []
         for b, c in eligible:
             d = c - b
             idx = _circular_indices(rng, len(d), block_hours)
             centered_parts.append((d - observed_mean)[idx])
-            raw_parts.append(d[idx])
+            raw_diff_parts.append(d[idx])
+            # Revision-4 requires identical sampled indices on the uncentered
+            # paired strategy return records for complementary Sharpe evidence.
+            raw_baseline_parts.append(b[idx])
+            raw_cost_aware_parts.append(c[idx])
+
         centered_draws[rep] = np.mean(np.concatenate(centered_parts))
-        uncentered_draws[rep] = np.mean(np.concatenate(raw_parts))
+        uncentered_draws[rep] = np.mean(np.concatenate(raw_diff_parts))
+
+        if sharpe_available:
+            baseline_draw = np.concatenate(raw_baseline_parts)
+            cost_aware_draw = np.concatenate(raw_cost_aware_parts)
+            baseline_metrics = performance_metrics(baseline_draw)
+            cost_aware_metrics = performance_metrics(cost_aware_draw)
+            baseline_sharpe = baseline_metrics["SHARPE"]
+            cost_aware_sharpe = cost_aware_metrics["SHARPE"]
+            if baseline_sharpe is None or cost_aware_sharpe is None:
+                sharpe_available = False
+            else:
+                sharpe_difference_draws[rep] = float(cost_aware_sharpe - baseline_sharpe)
 
     p_value = float((1 + np.count_nonzero(centered_draws >= observed_mean)) / (draws + 1))
     q = np.quantile(uncentered_draws, [0.025, 0.975], method="linear")
+
+    sharpe_ci = None
+    if sharpe_available and np.isfinite(sharpe_difference_draws).all():
+        sharpe_q = np.quantile(
+            sharpe_difference_draws,
+            [0.025, 0.975],
+            method="linear",
+        )
+        sharpe_ci = (float(sharpe_q[0]), float(sharpe_q[1]))
+    else:
+        sharpe_available = False
+
     return BootstrapResult(
         True,
         all_record_mean,
@@ -296,6 +353,9 @@ def paired_segment_bootstrap(
         len(eligible),
         p_value,
         (float(q[0]), float(q[1])),
+        bool(sharpe_available),
+        observed_sharpe_difference if sharpe_available else None,
+        sharpe_ci,
     )
 
 
