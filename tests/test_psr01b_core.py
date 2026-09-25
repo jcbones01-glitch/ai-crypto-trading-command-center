@@ -245,3 +245,32 @@ def test_success_requires_all_seven_conditions_in_both_arms():
     failed = {k: dict(v) for k, v in arms.items()}
     failed["PROJECT_GAP_PRESERVING"]["cost_aware_completed_trades"] = 19
     assert classify_success(failed) == "BOUNDED_H2_NOT_REPLICATED"
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("inference_universe_mean", None),
+        ("primary_p_value", None),
+        ("cost_aware_sharpe", None),
+        ("baseline_sharpe", None),
+    ],
+)
+def test_success_classifier_unavailable_required_evidence_fails_closed(field, value):
+    arms = {
+        "PAPER_FILL": _passing_arm(0.01),
+        "PROJECT_GAP_PRESERVING": _passing_arm(0.02),
+    }
+    arms["PAPER_FILL"][field] = value
+    assert classify_success(arms) == "BOUNDED_H2_NOT_REPLICATED"
+
+
+def test_success_classifier_insufficient_primary_segments_fails_closed_before_p_value_cast():
+    arms = {
+        "PAPER_FILL": _passing_arm(0.01),
+        "PROJECT_GAP_PRESERVING": _passing_arm(0.02),
+    }
+    arms["PAPER_FILL"]["eligible_primary_segments"] = 1
+    arms["PAPER_FILL"]["primary_p_value"] = None
+    arms["PAPER_FILL"]["inference_universe_mean"] = None
+    assert classify_success(arms) == "BOUNDED_H2_NOT_REPLICATED"
