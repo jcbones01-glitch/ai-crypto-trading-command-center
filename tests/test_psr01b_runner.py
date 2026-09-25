@@ -85,11 +85,12 @@ def _ready_freeze_fixture():
     frozen["implementation"]["independent_implementation_reviewed"] = True
     frozen["future_governance"]["reviewed_candidate_anchor_created"] = True
     frozen["future_governance"]["execution_authorized"] = True
+    frozen["future_governance"]["manual_confirmation_created"] = True
     frozen["future_governance"]["one_shot_claim_created"] = True
     return frozen
 
 
-def test_empirical_source_entry_point_is_inert_without_explicit_authorization(monkeypatch):
+def test_direct_empirical_source_normalization_is_disabled(monkeypatch):
     touched = []
 
     def forbidden(*args, **kwargs):
@@ -97,13 +98,31 @@ def test_empirical_source_entry_point_is_inert_without_explicit_authorization(mo
         raise AssertionError("source bytes must not be touched")
 
     monkeypatch.setattr(runner, "_sha256_file", forbidden)
-    with pytest.raises(PSR01BError, match="not authorized"):
+    with pytest.raises(PSR01BError, match="direct PSR-01B source normalization is disabled"):
         runner.normalize_registered_source(
             [],
             runner_label="ubuntu-24.04",
-            source_read_authorized=False,
         )
     assert touched == []
+
+
+def test_one_shot_entry_fails_on_current_unapproved_freeze_before_source_bytes(monkeypatch, tmp_path):
+    touched = []
+
+    def forbidden(*args, **kwargs):
+        touched.append(True)
+        raise AssertionError("source bytes must not be touched")
+
+    monkeypatch.setattr(runner, "_sha256_file", forbidden)
+    with pytest.raises(PSR01BError, match="independent implementation review is not approved"):
+        runner.execute_registered_one_shot(
+            [],
+            result_path=tmp_path / "forbidden.json",
+            runner_label="ubuntu-24.04",
+            source_read_authorized=True,
+        )
+    assert touched == []
+    assert not (tmp_path / "forbidden.json").exists()
 
 
 def test_registered_source_pipeline_order_is_frozen_without_real_empirical_reads(tmp_path, monkeypatch):
@@ -177,10 +196,9 @@ def test_registered_source_pipeline_order_is_frozen_without_real_empirical_reads
 
     monkeypatch.setattr(runner, "normalize_development_archives", fake_normalize)
 
-    out = runner.normalize_registered_source(
+    out = runner._normalize_registered_source(
         list(reversed(paths)),
         runner_label="ubuntu-24.04",
-        source_read_authorized=True,
     )
     assert out == bars
     assert events[:2] == ["runtime", "pre_source"]
@@ -412,6 +430,7 @@ def test_execution_identity_lock_records_exact_provenance_and_fails_on_blob_drif
     assert provenance["reviewed_implementation_commit"] == "a" * 40
     assert len(provenance["registered_folds"]) == 11
     assert provenance["thread_environment"] == env
+    assert provenance["governance"]["manual_confirmation_created"] is True
     assert provenance["implementation_freeze_git_blob_sha1"] is None
 
     broken = copy.deepcopy(frozen)
@@ -423,6 +442,11 @@ def test_execution_identity_lock_records_exact_provenance_and_fails_on_blob_drif
             freeze=broken,
             environ=env,
         )
+
+
+def test_experiment_runner_does_not_accept_caller_registration_override():
+    with pytest.raises(TypeError):
+        runner.run_from_normalized_bars([], registration={"folds": []})
 
 
 def test_registered_fold_dates_and_order_fail_closed_on_drift():

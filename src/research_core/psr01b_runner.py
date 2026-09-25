@@ -281,6 +281,7 @@ def verify_frozen_execution_identity(
     for flag in (
         "reviewed_candidate_anchor_created",
         "execution_authorized",
+        "manual_confirmation_created",
         "one_shot_claim_created",
     ):
         if future.get(flag) is not True:
@@ -322,6 +323,7 @@ def verify_frozen_execution_identity(
             "independent_implementation_reviewed": True,
             "reviewed_candidate_anchor_created": True,
             "execution_authorized": True,
+            "manual_confirmation_created": True,
             "one_shot_claim_created": True,
         },
     }
@@ -335,22 +337,20 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def normalize_registered_source(
+def normalize_registered_source(*args, **kwargs):
+    """Direct empirical normalization is disabled; use execute_registered_one_shot."""
+    raise PSR01BError(
+        "direct PSR-01B source normalization is disabled; use registered one-shot entry"
+    )
+
+
+def _normalize_registered_source(
     archive_paths: Sequence[Path],
     *,
     runner_label: str,
-    source_read_authorized: bool = False,
     evidence_out: dict[str, Any] | None = None,
 ) -> tuple[MarketBar, ...]:
-    """Execute the exact registered source-normalization sequence.
-
-    This function is intentionally inert unless a later governance layer passes
-    source_read_authorized=True.  That boolean is not itself an authorization;
-    the future reviewed execution/claim gate must control it.
-    """
-    if source_read_authorized is not True:
-        raise PSR01BError("PSR-01B empirical source read is not authorized")
-
+    """Internal source-normalization stage for the identity-locked one-shot path."""
     registration = load_registration()
     verify_runtime_versions(runner_label=runner_label)
 
@@ -720,15 +720,13 @@ def _bootstrap_record(result) -> dict[str, Any]:
 
 def run_from_normalized_bars(
     normalized_bars: Sequence[MarketBar],
-    *,
-    registration: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Run the complete registered PSR-01B experiment from normalized bars.
 
     This function contains no source acquisition.  It is the result-affecting
     orchestration path exercised synthetically before any empirical source gate.
     """
-    reg = dict(load_registration() if registration is None else registration)
+    reg = load_registration()
     folds = _registered_folds(reg)
     bars = tuple(normalized_bars)
     if not bars:
@@ -851,10 +849,9 @@ def execute_registered_one_shot(
 
     provenance = verify_frozen_execution_identity(runner_label=runner_label)
     source_evidence: dict[str, Any] = {}
-    bars = normalize_registered_source(
+    bars = _normalize_registered_source(
         archive_paths,
         runner_label=runner_label,
-        source_read_authorized=True,
         evidence_out=source_evidence,
     )
     result = run_from_normalized_bars(bars)
