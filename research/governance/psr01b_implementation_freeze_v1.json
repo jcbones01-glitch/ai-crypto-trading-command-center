@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "FROZEN_REMEDIATION_ROUND_2_CANDIDATE_FOR_INDEPENDENT_IMPLEMENTATION_REREVIEW",
+  "status": "FROZEN_REMEDIATION_ROUND_3_CANDIDATE_FOR_INDEPENDENT_IMPLEMENTATION_REREVIEW",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -15,14 +15,14 @@
     "issue": 91,
     "pull_request": 92,
     "branch": "psr-01b-bounded-implementation",
-    "implementation_candidate_commit": "692c9b60ee2221fd812e153316ed61d44adc93e3",
+    "implementation_candidate_commit": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
     "reviewed_implementation_commit": null,
     "independent_implementation_review_required": true,
     "independent_implementation_reviewed": false,
-    "superseded_candidate_commit": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0"
+    "superseded_candidate_commit": "692c9b60ee2221fd812e153316ed61d44adc93e3"
   },
   "implementation_file_git_blob_sha1": {
-    ".github/workflows/psr01b-bounded-engineering.yml": "d9e3825d262929d564d03b3607b77d85f451ee0d",
+    ".github/workflows/psr01b-bounded-engineering.yml": "e6dabc1ff28dbc83af0fcb86a2462e0cdde53aba",
     "src/research_core/psr01b_core.py": "2b98cd2d49983bdd703ff448b00b7114faabe3c1",
     "src/research_core/psr01b_features.py": "e9819b4a62a9fc117ead656abc2b6c344c4c0158",
     "src/research_core/psr01b_ta.py": "1936d62b2d62e38ceab91118e2e6214b3338af11",
@@ -30,8 +30,8 @@
     "src/research_core/psr01b_model.py": "812279770dee0c5479f3fb94c81e6abf356712fb",
     "src/research_core/psr01b_matrix.py": "b255c53bfcdf3ddc094969185515843781238c31",
     "src/research_core/psr01b_benchmarks.py": "1eb84d0ba14e9d6c430afa7c28b870612cb0f1e9",
-    "src/research_core/psr01b_preflight.py": "c4de2b4282418308d49f0e679c405dadef8bd03a",
-    "src/research_core/psr01b_runner.py": "ad2baeee6ad09aba981274da1d5d3a13c8b4e7ec",
+    "src/research_core/psr01b_preflight.py": "68f97417ecb2045b44ccfa333777bca23882c26b",
+    "src/research_core/psr01b_runner.py": "4d826395106e9a35c2c34bf8b8a9402d6fb4b6d1",
     "tests/test_psr01b_core.py": "8dcd00b5f357c2e7e02f0d2d14b5c26f55f27b2c",
     "tests/test_psr01b_features.py": "c94c43c741eaf4267b60d47a484fce03421508c2",
     "tests/test_psr01b_ta.py": "0c8ea9bff6a703f050355836aaae022b79083dbf",
@@ -39,8 +39,8 @@
     "tests/test_psr01b_model.py": "66779340f681c1a5cb0024def2408055e3993744",
     "tests/test_psr01b_matrix.py": "4bd84a8c4ec68066a12566892573f888c3d34d4c",
     "tests/test_psr01b_benchmarks.py": "01e77c3772b9266d5c0c59a4684c8ed263d9f059",
-    "tests/test_psr01b_preflight.py": "7cbaf261f8c559e44f5bb17868f82019073765a0",
-    "tests/test_psr01b_runner.py": "cf3eebb154e207355d1fe8fa393973b3123bce8c"
+    "tests/test_psr01b_preflight.py": "8cec5c95622d3c28bfcc849da980035f02e7a3c8",
+    "tests/test_psr01b_runner.py": "caeea466e2eed3505892da2cbf4cfa213631d7ef"
   },
   "pinned_upstream_git_blob_sha1": {
     "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
@@ -55,14 +55,25 @@
     "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
   },
   "candidate_evidence": {
-    "workflow_run_id": 36182053386,
+    "workflow_run_id": 36193142708,
     "workflow_event": "push",
     "branch": "psr-01b-bounded-implementation",
-    "exact_head": "692c9b60ee2221fd812e153316ed61d44adc93e3",
+    "exact_head": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
     "conclusion": "success",
     "psr01b_synthetic_suite": "PASS",
-    "inherited_normalization_blob_closure": "PASS",
+    "unmocked_synthetic_end_to_end": "PASS",
+    "unmocked_arms": [
+      "PAPER_FILL",
+      "PROJECT_GAP_PRESERVING"
+    ],
+    "gap_preserving_reset_recovery_fixture": "PASS",
+    "fold_metric_serialization": "PASS",
+    "frozen_one_shot_entry_and_provenance": "PASS",
+    "registered_fold_schedule_lock": "PASS",
     "runtime_pin_verification": "PASS",
+    "thread_environment_pin_verification": "PASS",
+    "inherited_normalization_blob_closure": "PASS",
+    "pre_source_upstream_registration_pin": "PASS",
     "repository_regression": "PASS_EXCEPT_EXPLICIT_PREEXISTING_BASELINE_FIXTURE",
     "preexisting_baseline_exception": {
       "deselected_test": "tests/test_ams_dep_full_pipeline_runner.py::test_valid_authorized_contract_passes",
@@ -73,9 +84,12 @@
         "research/scripts/run_ams_dep_full_pipeline_integrity.py": "75bab7b7346bddea410f31c8f44c281a9e8cba9b"
       }
     },
-    "psr01b_runner_integration_suite": "PASS",
-    "pre_source_upstream_registration_pin": "PASS",
-    "fail_closed_unavailable_success_classification": "PASS"
+    "intermediate_successful_run": {
+      "workflow_run_id": 36192815250,
+      "exact_head": "5a0531093a97be9bc6928c64a3772574012dea4f",
+      "conclusion": "success",
+      "status": "SUPERSEDED_BY_FINAL_HARDENED_CANDIDATE"
+    }
   },
   "implementation_notes": {
     "xgboost_api": "NATIVE_XGBOOST_3_4_1",
@@ -97,7 +111,8 @@
     "one_shot_claim_created": false,
     "allowed_post_candidate_paths": [
       "research/governance/psr01b_implementation_freeze_v1.json"
-    ]
+    ],
+    "manual_confirmation_created": false
   },
   "protected_access": {
     "empirical_binance_archive_access_authorized": false,
@@ -111,30 +126,33 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "Remediation-round-2 candidate 692c9b60ee2221fd812e153316ed61d44adc93e3 addresses the independent Issue #93 blockers entirely with synthetic/offline changes. Workflow 36182053386 succeeded at the exact candidate head, including the PSR-specific suite with the end-to-end runner integration tests and the repository regression suite subject only to the unchanged documented AMS-DEP baseline fixture exception. This freeze does not authorize empirical source reads, forecasts, P&L, Validation/OOS, paper trading, live trading, leverage, or derivatives execution.",
+  "notes": "Remediation-round-3 candidate 1174d56361fdef928f19a21dcf4e24a8f8caf828 addresses exactly the three latest external Issue #93 blockers with synthetic/offline-only changes: preservation of registered fold-level metrics, an identity-locked single one-shot execution entry/provenance path that remains governance-disabled, and unmocked real-component synthetic end-to-end CI for both registered missing-data arms including a preserved gap. Exact-candidate workflow 36193142708 succeeded. The approved revision-4 specification blob remains unchanged. This freeze does not authorize empirical source reads, forecasts, P&L, Validation/OOS, reviewed-candidate anchoring, manual confirmation, a one-shot execution claim, paper/live trading, leverage, or derivatives execution.",
   "remediation": {
     "originating_review_issue": 93,
     "review_decision": "REQUIRE_CHANGES_BEFORE_PSR01B_EXECUTION",
-    "superseded_candidate": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0",
-    "replacement_candidate": "692c9b60ee2221fd812e153316ed61d44adc93e3",
+    "superseded_candidate": "692c9b60ee2221fd812e153316ed61d44adc93e3",
+    "replacement_candidate": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
     "changes": [
       {
-        "finding": "upstream AMS-DEP registration blob was not verified by the pre-source-read contract",
-        "implementation": "psr01b_preflight now verifies the registered upstream registration Git blob SHA-1 in the same fail-closed pre-source contract as the import-closure blobs and inherited Development boundaries",
-        "tests": "synthetic/current-tree tests verify the exact pin and prove upstream-registration drift hard-fails"
+        "finding": "R1 — registered fold_total_return, fold_ARC, fold_ASD, and fold_SHARPE were not persisted in the one-shot fold records",
+        "implementation": "FoldExecution.record now persists registered fold metrics for BASELINE_SIGN, COST_AWARE, BUY_AND_HOLD, and MOMENTUM_24H using the already-frozen performance_metrics formulas; unavailable ASD/Sharpe serialize as null rather than NaN",
+        "tests": "synthetic tests compare fold metrics to the frozen metric implementation, verify unavailable semantics, and require allow_nan=False JSON serialization"
       },
       {
-        "finding": "success classification raised on unavailable required inference or Sharpe evidence instead of failing closed",
-        "implementation": "classify_success now returns BOUNDED_H2_NOT_REPLICATED when primary inference support/evidence or a required Sharpe sign input is unavailable, while still hard-failing structurally missing fields",
-        "tests": "explicit synthetic regression tests cover unavailable inference-universe mean, primary p-value, required Sharpe values, and insufficient primary segment support"
+        "finding": "R2 — actual one-shot execution entry path/provenance was not fully frozen and could be bypassed or caller-substituted",
+        "implementation": "execute_registered_one_shot is the single empirical source→normalization→registered experiment→result-writing entry; direct source normalization is disabled, run_from_normalized_bars no longer accepts a caller registration override, exact 11-fold dates/order are hard-locked, approved spec and frozen implementation/upstream blobs are verified, exact runtime/thread env are checked, and result provenance records the observed identities; current governance state remains fail-closed",
+        "tests": "synthetic tests verify identity/provenance capture, implementation-blob drift failure, fold-schedule drift failure, caller-registration rejection, direct-normalization rejection, and current unapproved freeze failure before source bytes"
       },
       {
-        "finding": "result-affecting end-to-end PSR-01B orchestration was not frozen or independently reviewable",
-        "implementation": "new psr01b_runner freezes source/preflight sequence, zero-based fold/trial indexing, 11-fold x 2-arm execution order, EGARCH training-return extraction, feature/model wiring, contiguous evaluation-segment ordering, identical-origin benchmarks, forecast hashes, 168/24/72 bootstrap order, and machine-readable success wiring",
-        "tests": "synthetic integration tests cover source-call ordering without empirical reads, gap-segment EGARCH extraction, one-fold component wiring, and complete 11x2 orchestration/bootstrap ordering"
+        "finding": "R3 — orchestration coverage relied on mocked integration tests rather than an unmocked real-component synthetic path",
+        "implementation": "dedicated bounded CI now runs real PSR-01B components through _run_arm_fold for PAPER_FILL and PROJECT_GAP_PRESERVING, including real feature construction/selection, EGARCH, Optuna/XGBoost, evaluation segmentation, benchmarks, accounting, bootstrap/classification/output serialization, and a deliberate synthetic test-period gap",
+        "tests": "exact-candidate CI run 36193142708 completed the dedicated unmocked end-to-end step successfully and verifies deterministic PAPER_FILL reproducibility plus gap-preserving segmentation/reset/recovery behavior"
       }
     ],
     "analytic_specification_changed": false,
-    "empirical_data_accessed": false
+    "approved_specification_blob_unchanged": "47c5379eeb4eae8c5890814c92e29b86bfddb23e",
+    "empirical_data_accessed": false,
+    "validation_or_oos_accessed": false,
+    "empirical_execution_authorized": false
   }
 }
