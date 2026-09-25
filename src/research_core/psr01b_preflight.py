@@ -9,6 +9,7 @@ from __future__ import annotations
 import importlib.metadata
 import json
 import platform
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
 
@@ -30,6 +31,8 @@ EXPECTED_RUNTIME = {
     "statsmodels": "0.15.0",
 }
 EXPECTED_RUNNER = "ubuntu-24.04"
+EXPECTED_DEVELOPMENT_START = datetime(2017, 8, 17, tzinfo=timezone.utc)
+EXPECTED_DEVELOPMENT_END = datetime(2022, 1, 1, tzinfo=timezone.utc)
 
 
 def load_registration(path: Path = REGISTRATION_PATH) -> dict:
@@ -150,3 +153,29 @@ def verify_timestamp_boundary_metadata(
         if previous is not None and value <= previous:
             raise PSR01BError("PSR-01B timestamps must be strictly increasing")
         previous = value
+
+
+def verify_development_boundary_constants(pipeline_module=None) -> tuple[datetime, datetime]:
+    """Assert the registered inherited Development boundaries before source read."""
+    if pipeline_module is None:
+        from . import ams_dep_pipeline as pipeline_module
+
+    start = getattr(pipeline_module, "DEVELOPMENT_START", None)
+    end = getattr(pipeline_module, "DEVELOPMENT_END", None)
+    if start != EXPECTED_DEVELOPMENT_START or end != EXPECTED_DEVELOPMENT_END:
+        raise PSR01BError(
+            "AMS-DEP Development boundary constants do not match PSR-01B registration"
+        )
+    return start, end
+
+
+def verify_import_closure_and_development_boundaries(
+    observed_git_blob_sha1: Mapping[str, str],
+    registration: Mapping,
+    *,
+    pipeline_module=None,
+) -> tuple[dict[str, str], tuple[datetime, datetime]]:
+    """Verify pinned import closure first, then assert inherited boundaries."""
+    blobs = verify_import_closure_blob_metadata(observed_git_blob_sha1, registration)
+    boundaries = verify_development_boundary_constants(pipeline_module)
+    return blobs, boundaries
