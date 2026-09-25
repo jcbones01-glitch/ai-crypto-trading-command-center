@@ -17,6 +17,8 @@ from research_core.psr01b_preflight import (
     verify_development_boundary_constants,
     verify_import_closure_and_development_boundaries,
     verify_import_closure_blob_metadata,
+    verify_pre_source_read_contract,
+    verify_upstream_registration_blob_metadata,
     verify_runtime_versions,
     verify_timestamp_boundary_metadata,
 )
@@ -156,6 +158,69 @@ def test_import_closure_then_boundary_assertion_is_combined_pre_source_gate():
     with pytest.raises(PSR01BError, match="pinned import blob mismatch"):
         verify_import_closure_and_development_boundaries(
             broken_blobs,
+            reg,
+            pipeline_module=bad_boundaries,
+        )
+
+
+def test_upstream_registration_blob_matches_registered_pin():
+    reg = load_registration()
+    row_contract = reg["source"]["row_treatment_contract"]
+    path = row_contract["upstream_registration_path"]
+    expected = row_contract["upstream_registration_blob_sha1"]
+    observed = subprocess.check_output(
+        ["git", "hash-object", "--", path],
+        cwd=ROOT,
+        text=True,
+    ).strip()
+    assert observed == expected
+    assert verify_upstream_registration_blob_metadata(observed, reg) == expected
+
+
+def test_upstream_registration_blob_drift_hard_fails():
+    reg = load_registration()
+    with pytest.raises(PSR01BError, match="upstream registration blob mismatch"):
+        verify_upstream_registration_blob_metadata("0" * 40, reg)
+
+
+def test_complete_pre_source_contract_checks_closure_upstream_then_boundaries():
+    reg = load_registration()
+    row_contract = reg["source"]["row_treatment_contract"]
+    observed = {
+        path: subprocess.check_output(
+            ["git", "hash-object", "--", path],
+            cwd=ROOT,
+            text=True,
+        ).strip()
+        for path in row_contract["required_blob_sha1"]
+    }
+    upstream = subprocess.check_output(
+        ["git", "hash-object", "--", row_contract["upstream_registration_path"]],
+        cwd=ROOT,
+        text=True,
+    ).strip()
+    good = SimpleNamespace(
+        DEVELOPMENT_START=EXPECTED_DEVELOPMENT_START,
+        DEVELOPMENT_END=EXPECTED_DEVELOPMENT_END,
+    )
+    blobs, verified_upstream, boundaries = verify_pre_source_read_contract(
+        observed,
+        upstream,
+        reg,
+        pipeline_module=good,
+    )
+    assert blobs == row_contract["required_blob_sha1"]
+    assert verified_upstream == row_contract["upstream_registration_blob_sha1"]
+    assert boundaries == (EXPECTED_DEVELOPMENT_START, EXPECTED_DEVELOPMENT_END)
+
+    bad_boundaries = SimpleNamespace(
+        DEVELOPMENT_START=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        DEVELOPMENT_END=EXPECTED_DEVELOPMENT_END,
+    )
+    with pytest.raises(PSR01BError, match="upstream registration blob mismatch"):
+        verify_pre_source_read_contract(
+            observed,
+            "0" * 40,
             reg,
             pipeline_module=bad_boundaries,
         )
