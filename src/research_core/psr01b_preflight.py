@@ -129,6 +129,22 @@ def verify_import_closure_blob_metadata(
     return observed
 
 
+def verify_upstream_registration_blob_metadata(
+    observed_git_blob_sha1: str,
+    registration: Mapping,
+) -> str:
+    """Verify the pinned upstream AMS-DEP registration blob before source read."""
+    row_contract = ((registration.get("source") or {}).get("row_treatment_contract") or {})
+    expected = row_contract.get("upstream_registration_blob_sha1")
+    path = row_contract.get("upstream_registration_path")
+    if not isinstance(expected, str) or len(expected) != 40 or not isinstance(path, str) or not path:
+        raise PSR01BError("registered upstream normalization registration pin is missing")
+    observed = str(observed_git_blob_sha1)
+    if observed != expected:
+        raise PSR01BError(f"PSR-01B pinned upstream registration blob mismatch: {path}")
+    return observed
+
+
 def verify_timestamp_boundary_metadata(
     unix_seconds: Sequence[int],
     registration: Mapping,
@@ -175,7 +191,30 @@ def verify_import_closure_and_development_boundaries(
     *,
     pipeline_module=None,
 ) -> tuple[dict[str, str], tuple[datetime, datetime]]:
-    """Verify pinned import closure first, then assert inherited boundaries."""
+    """Backward-compatible closure+boundary check used by existing tests."""
     blobs = verify_import_closure_blob_metadata(observed_git_blob_sha1, registration)
     boundaries = verify_development_boundary_constants(pipeline_module)
     return blobs, boundaries
+
+
+def verify_pre_source_read_contract(
+    observed_git_blob_sha1: Mapping[str, str],
+    observed_upstream_registration_blob_sha1: str,
+    registration: Mapping,
+    *,
+    pipeline_module=None,
+) -> tuple[dict[str, str], str, tuple[datetime, datetime]]:
+    """Fail closed on every revision-4 pinned identity before any archive read.
+
+    Order is deliberate: verify the complete project-local import closure, then
+    the pinned upstream registration blob, then the inherited Development
+    boundary constants.  Callers must complete this function before opening any
+    registered archive bytes.
+    """
+    blobs = verify_import_closure_blob_metadata(observed_git_blob_sha1, registration)
+    upstream = verify_upstream_registration_blob_metadata(
+        observed_upstream_registration_blob_sha1,
+        registration,
+    )
+    boundaries = verify_development_boundary_constants(pipeline_module)
+    return blobs, upstream, boundaries
