@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "FROZEN_REMEDIATION_ROUND_3_CANDIDATE_FOR_INDEPENDENT_IMPLEMENTATION_REREVIEW",
+  "status": "INDEPENDENTLY_APPROVED_REVIEW_ANCHORED_EXECUTION_LOCKED",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -16,9 +16,9 @@
     "pull_request": 92,
     "branch": "psr-01b-bounded-implementation",
     "implementation_candidate_commit": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
-    "reviewed_implementation_commit": null,
+    "reviewed_implementation_commit": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
     "independent_implementation_review_required": true,
-    "independent_implementation_reviewed": false,
+    "independent_implementation_reviewed": true,
     "superseded_candidate_commit": "692c9b60ee2221fd812e153316ed61d44adc93e3"
   },
   "implementation_file_git_blob_sha1": {
@@ -107,7 +107,7 @@
     "manual_confirmation_required": true,
     "one_shot_execution_claim_required": true,
     "execution_authorized": false,
-    "reviewed_candidate_anchor_created": false,
+    "reviewed_candidate_anchor_created": true,
     "one_shot_claim_created": false,
     "allowed_post_candidate_paths": [
       "research/governance/psr01b_implementation_freeze_v1.json"
@@ -126,7 +126,7 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "Remediation-round-3 candidate 1174d56361fdef928f19a21dcf4e24a8f8caf828 addresses exactly the three latest external Issue #93 blockers with synthetic/offline-only changes: preservation of registered fold-level metrics, an identity-locked single one-shot execution entry/provenance path that remains governance-disabled, and unmocked real-component synthetic end-to-end CI for both registered missing-data arms including a preserved gap. Exact-candidate workflow 36193142708 succeeded. The approved revision-4 specification blob remains unchanged. This freeze does not authorize empirical source reads, forecasts, P&L, Validation/OOS, reviewed-candidate anchoring, manual confirmation, a one-shot execution claim, paper/live trading, leverage, or derivatives execution.",
+  "notes": "Candidate 1174d56361fdef928f19a21dcf4e24a8f8caf828 was independently approved in Issue #93 and is now immutably anchored by refs/heads/psr-01b-bounded-implementation-reviewed-v1. This governance update authorizes no empirical source access or execution. Separate execution authorization, manual confirmation, and one-shot claim remain mandatory future gates; Validation/OOS, paper/live trading, leverage, and derivatives remain unauthorized.",
   "remediation": {
     "originating_review_issue": 93,
     "review_decision": "REQUIRE_CHANGES_BEFORE_PSR01B_EXECUTION",
@@ -154,5 +154,20 @@
     "empirical_data_accessed": false,
     "validation_or_oos_accessed": false,
     "empirical_execution_authorized": false
-  }
+  },
+  "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v1",
+  "review_anchor_sha": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
+  "independent_review_issue": 93,
+  "independent_review_decision": "APPROVE_PSR01B_IMPLEMENTATION_FREEZE",
+  "independent_review_comment_id": 5840614782,
+  "independent_review_external_reviewer": "Claude",
+  "independent_review_scope": "synthetic/offline only; no empirical Binance BTCUSDT archive, empirical feature/model/forecast/P&L, Validation/OOS, or repository modification by reviewer",
+  "residual_nonblocking_review_notes": [
+    "Execution authorization must bind any future execution checkout to the reviewed candidate plus explicitly allowed governance-only changes.",
+    "Future execution workflow should precheck the result output path is writable and unclaimed before consuming the one-shot attempt.",
+    "No all-11-fold x 2-arm real-component aggregation run has been performed in CI; current unmocked CI covers a real fold in both arms plus gap/reset/reproducibility behavior.",
+    "PAPER_FILL warmup-start exact-bar hard-fail is retained exactly as registered.",
+    "Fold and trial seed indices are prospectively fixed as 0-based.",
+    "Reviewer local Python 3.12.3 correctly failed the pinned Python 3.12.14 runtime gate; exact-candidate CI used Python 3.12.14."
+  ]
 }
