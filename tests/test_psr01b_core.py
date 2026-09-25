@@ -6,6 +6,7 @@ import struct
 import numpy as np
 import pytest
 
+import research_core.psr01b_core as coremod
 from research_core.psr01b_core import (
     BOOTSTRAP_ROOT,
     FORECAST_PREFIX,
@@ -138,6 +139,11 @@ def test_bootstrap_excludes_short_segments_and_is_deterministic():
     assert a.all_record_mean == pytest.approx(expected_all)
     assert a.p_value == pytest.approx(1 / 65)
     assert a.ci_95 == pytest.approx((0.001, 0.001))
+    # Constant strategy-return vectors make Sharpe complementary evidence
+    # unavailable rather than silently inventing a value.
+    assert not a.sharpe_difference_available
+    assert a.observed_inference_sharpe_difference is None
+    assert a.sharpe_difference_ci_95 is None
     assert seed_from_coordinates(BOOTSTRAP_ROOT, 24, 0) != seed_from_coordinates(
         BOOTSTRAP_ROOT, 24, 1
     )
@@ -155,6 +161,64 @@ def test_bootstrap_unavailable_with_fewer_than_two_inference_segments():
     assert out.eligible_segments == 1
     assert out.p_value is None
     assert out.ci_95 is None
+    assert not out.sharpe_difference_available
+    assert out.observed_inference_sharpe_difference is None
+    assert out.sharpe_difference_ci_95 is None
+
+
+def test_bootstrap_sharpe_uses_identical_paired_sample_indices(monkeypatch):
+    # L=24 requires n>=48.  Two eligible synthetic segments are used.
+    n = 48
+    x = np.arange(n, dtype=float)
+    baseline = [
+        1e-5 * np.sin(x / 3.0),
+        1e-5 * np.cos(x / 4.0),
+    ]
+    cost_aware = [
+        baseline[0] + 2e-6 * np.sin(x / 5.0) + 5e-7,
+        baseline[1] + 2e-6 * np.cos(x / 6.0) + 5e-7,
+    ]
+
+    calls = []
+
+    def fixed_indices(rng, length, block_length):
+        assert length == n
+        assert block_length == 24
+        calls.append((length, block_length))
+        # Deliberately repeat a subset so the bootstrap Sharpe differs from the
+        # observed value.  The implementation must apply this one index vector
+        # to baseline and cost-aware returns together.
+        return np.tile(np.arange(24), 2)
+
+    monkeypatch.setattr(coremod, "_circular_indices", fixed_indices)
+    out = paired_segment_bootstrap(
+        baseline,
+        cost_aware,
+        block_hours=24,
+        arm_index=0,
+        draws=1,
+    )
+
+    # One index draw per segment, not separate RNG/index draws for each strategy.
+    assert calls == [(n, 24), (n, 24)]
+    assert out.sharpe_difference_available
+
+    idx = np.tile(np.arange(24), 2)
+    sampled_b = np.concatenate([segment[idx] for segment in baseline])
+    sampled_c = np.concatenate([segment[idx] for segment in cost_aware])
+    expected = (
+        performance_metrics(sampled_c)["SHARPE"]
+        - performance_metrics(sampled_b)["SHARPE"]
+    )
+    assert out.sharpe_difference_ci_95 == pytest.approx((expected, expected))
+
+    observed_b = np.concatenate(baseline)
+    observed_c = np.concatenate(cost_aware)
+    observed_expected = (
+        performance_metrics(observed_c)["SHARPE"]
+        - performance_metrics(observed_b)["SHARPE"]
+    )
+    assert out.observed_inference_sharpe_difference == pytest.approx(observed_expected)
 
 
 def _passing_arm(p):
