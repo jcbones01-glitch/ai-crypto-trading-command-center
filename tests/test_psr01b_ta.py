@@ -253,7 +253,7 @@ def test_full_four_calendar_block_selector_uses_registered_groups_and_returns_10
         CANDIDATE_FAMILIES,
         matrix,
         target,
-        np.zeros(n, dtype=bool),
+        np.ones(n, dtype=bool),
     )
     result = select_four_block_features(
         arm,
@@ -275,6 +275,87 @@ def test_full_four_calendar_block_selector_uses_registered_groups_and_returns_10
             if family in allowed
         )
         assert result.selected_by_group[group] == names[0]
+
+
+
+def test_training_gap_first_336_transitions_cannot_influence_feature_selection():
+    train_start = datetime(2020, 1, 1, tzinfo=UTC)
+    train_end = datetime(2021, 1, 1, tzinfo=UTC)
+
+    # Synthetic training observations include a real gap inside Q1 and separate
+    # contiguous segments in each later quarter. Every block still has >100
+    # globally eligible rows after the registered 336-transition rebuild.
+    chunks = [
+        hourly_bars(datetime(2020, 1, 1, tzinfo=UTC), 400, offset=0.0),
+        hourly_bars(datetime(2020, 1, 17, 17, tzinfo=UTC), 500, offset=20.0),
+        hourly_bars(datetime(2020, 4, 1, tzinfo=UTC), 500, offset=40.0),
+        hourly_bars(datetime(2020, 7, 1, tzinfo=UTC), 500, offset=60.0),
+        hourly_bars(datetime(2020, 10, 1, tzinfo=UTC), 500, offset=80.0),
+    ]
+    observed = [item for chunk in chunks for item in chunk]
+    arm = construct_missing_data_arm(
+        observed,
+        arm="PROJECT_GAP_PRESERVING",
+        interval_start=train_start,
+        interval_end_exclusive=train_end,
+    )
+    deployable = np.asarray(arm.segment_indices) >= 336
+
+    # Confirm the post-gap recovery interval exists and is globally forbidden.
+    second_segment = np.flatnonzero(np.asarray(arm.segment_ids) == 1)
+    assert len(second_segment) >= 337
+    assert not deployable[second_segment[:336]].any()
+    assert deployable[second_segment[336]]
+
+    rng = np.random.default_rng(20260925)
+    n = len(arm.bars)
+    target = rng.normal(size=n)
+    matrix = np.column_stack(
+        [
+            target + rng.normal(scale=0.05 + 0.001 * i, size=n)
+            for i in range(len(CANDIDATE_NAMES))
+        ]
+    )
+    original = TACandidateResult(
+        CANDIDATE_NAMES,
+        CANDIDATE_FAMILIES,
+        matrix,
+        target,
+        deployable,
+    )
+
+    # Change only globally forbidden rows enough that they would materially alter
+    # correlations if the selector accidentally used them.
+    altered_matrix = matrix.copy()
+    forbidden = ~deployable
+    altered_matrix[forbidden] = rng.normal(
+        loc=0.0,
+        scale=1000.0,
+        size=(int(np.count_nonzero(forbidden)), len(CANDIDATE_NAMES)),
+    )
+    altered = TACandidateResult(
+        CANDIDATE_NAMES,
+        CANDIDATE_FAMILIES,
+        altered_matrix,
+        target,
+        deployable,
+    )
+
+    a = select_four_block_features(
+        arm,
+        original,
+        train_start=train_start,
+        train_end=train_end,
+    )
+    b = select_four_block_features(
+        arm,
+        altered,
+        train_start=train_start,
+        train_end=train_end,
+    )
+
+    assert a.selected_names == b.selected_names
+    assert a.block_correlations == b.block_correlations
 
 
 def test_selector_hard_fails_when_any_group_has_no_four_block_eligible_candidate():
