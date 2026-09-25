@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "FROZEN_FOR_INDEPENDENT_IMPLEMENTATION_REVIEW",
+  "status": "FROZEN_REPLACEMENT_CANDIDATE_FOR_INDEPENDENT_IMPLEMENTATION_REREVIEW",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -15,29 +15,30 @@
     "issue": 91,
     "pull_request": 92,
     "branch": "psr-01b-bounded-implementation",
-    "implementation_candidate_commit": "7911b199bb8f3388b6771bb4343c34e66dc1f025",
+    "implementation_candidate_commit": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0",
     "reviewed_implementation_commit": null,
     "independent_implementation_review_required": true,
-    "independent_implementation_reviewed": false
+    "independent_implementation_reviewed": false,
+    "superseded_candidate_commit": "7911b199bb8f3388b6771bb4343c34e66dc1f025"
   },
   "implementation_file_git_blob_sha1": {
     ".github/workflows/psr01b-bounded-engineering.yml": "2d2d2facefaa5616391880214f2b39c16db88f20",
-    "src/research_core/psr01b_core.py": "995e1c08f68825a8431d9c05042c1758726d993e",
+    "src/research_core/psr01b_core.py": "7fab3a46f3e6a4e5eefcac5afad1aa197a7e788d",
     "src/research_core/psr01b_features.py": "e9819b4a62a9fc117ead656abc2b6c344c4c0158",
-    "src/research_core/psr01b_ta.py": "88185db2d48bdccc54e080c5d1e5b1d2494b032c",
+    "src/research_core/psr01b_ta.py": "1936d62b2d62e38ceab91118e2e6214b3338af11",
     "src/research_core/psr01b_egarch.py": "af2806a9fb9fb25519623a59a682a5689b7601e1",
     "src/research_core/psr01b_model.py": "812279770dee0c5479f3fb94c81e6abf356712fb",
     "src/research_core/psr01b_matrix.py": "b255c53bfcdf3ddc094969185515843781238c31",
     "src/research_core/psr01b_benchmarks.py": "1eb84d0ba14e9d6c430afa7c28b870612cb0f1e9",
-    "src/research_core/psr01b_preflight.py": "5480217f95bfd9eae2d44e2941f1c2e775966bb3",
-    "tests/test_psr01b_core.py": "c74150e48076995742c58cadb6ec9ff1f9298f9e",
+    "src/research_core/psr01b_preflight.py": "c48ccd6dea0c94004ca99a02925debaebff91d64",
+    "tests/test_psr01b_core.py": "5ec41b35ec251540e2b750185a4682d3124385ab",
     "tests/test_psr01b_features.py": "c94c43c741eaf4267b60d47a484fce03421508c2",
-    "tests/test_psr01b_ta.py": "e54e629ab4657ea09b05393f5b97766761b1d00b",
+    "tests/test_psr01b_ta.py": "0c8ea9bff6a703f050355836aaae022b79083dbf",
     "tests/test_psr01b_egarch.py": "aac65991effb6747ec3fc154e10a365deff2dfbb",
     "tests/test_psr01b_model.py": "66779340f681c1a5cb0024def2408055e3993744",
     "tests/test_psr01b_matrix.py": "4bd84a8c4ec68066a12566892573f888c3d34d4c",
     "tests/test_psr01b_benchmarks.py": "01e77c3772b9266d5c0c59a4684c8ed263d9f059",
-    "tests/test_psr01b_preflight.py": "33480a46fca47d49c255b1c24c1c05dd8f7e38b9"
+    "tests/test_psr01b_preflight.py": "77b54e4b4486481daed962cf164864615f75ce5c"
   },
   "pinned_upstream_git_blob_sha1": {
     "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
@@ -52,10 +53,10 @@
     "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
   },
   "candidate_evidence": {
-    "workflow_run_id": 36057960363,
+    "workflow_run_id": 36113083579,
     "workflow_event": "push",
     "branch": "psr-01b-bounded-implementation",
-    "exact_head": "7911b199bb8f3388b6771bb4343c34e66dc1f025",
+    "exact_head": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0",
     "conclusion": "success",
     "psr01b_synthetic_suite": "PASS",
     "inherited_normalization_blob_closure": "PASS",
@@ -105,5 +106,30 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "This freeze binds the bounded synthetic/offline implementation candidate only. It does not authorize source reads or any empirical PSR-01B execution."
+  "notes": "Replacement candidate 479eba36970b3572d8e6512ea7b7fd8b5b01b6f0 remediates the three Issue #93 findings entirely with synthetic/offline changes. This freeze does not authorize empirical source reads, forecasts, P&L, Validation/OOS, paper trading, or live trading.",
+  "remediation": {
+    "originating_review_issue": 93,
+    "review_decision": "REQUIRE_CHANGES_BEFORE_PSR01B_EXECUTION",
+    "superseded_candidate": "7911b199bb8f3388b6771bb4343c34e66dc1f025",
+    "replacement_candidate": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0",
+    "changes": [
+      {
+        "finding": "TA selection ignored global j>=336 feature-origin eligibility after state resets",
+        "implementation": "select_four_block_features now intersects each calendar-block mask with candidates.deployable before Spearman calculation",
+        "tests": "training-period gap fixture proves the first 336 rebuilt transitions cannot alter selected features or block correlations"
+      },
+      {
+        "finding": "missing pre-source-read DEVELOPMENT_START / DEVELOPMENT_END assertion",
+        "implementation": "preflight now verifies inherited AMS-DEP constants exactly equal 2017-08-17T00:00:00Z and 2022-01-01T00:00:00Z after pinned import-closure verification",
+        "tests": "wrong start/end hard-fail and combined import-closure-then-boundary gate is tested"
+      },
+      {
+        "finding": "missing complementary bootstrap Sharpe-difference evidence",
+        "implementation": "paired circular bootstrap now applies each identical sampled index vector to uncentered baseline and cost-aware returns and reports observed inference-universe Sharpe difference plus 95% percentile bootstrap Sharpe-difference interval when available",
+        "tests": "synthetic oracle proves one index draw per segment is reused for both strategies"
+      }
+    ],
+    "analytic_specification_changed": false,
+    "empirical_data_accessed": false
+  }
 }
