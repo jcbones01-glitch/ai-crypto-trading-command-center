@@ -1,16 +1,21 @@
 """Synthetic/metadata-only tests for PSR-01B preflight."""
 from datetime import datetime, timezone
+from types import SimpleNamespace
 import subprocess
 
 import pytest
 
 from research_core.psr01b_core import PSR01BError
 from research_core.psr01b_preflight import (
+    EXPECTED_DEVELOPMENT_END,
+    EXPECTED_DEVELOPMENT_START,
     EXPECTED_RUNTIME,
     ROOT,
     load_registration,
     verify_archive_digest_metadata,
     verify_archive_inventory,
+    verify_development_boundary_constants,
+    verify_import_closure_and_development_boundaries,
     verify_import_closure_blob_metadata,
     verify_runtime_versions,
     verify_timestamp_boundary_metadata,
@@ -95,4 +100,62 @@ def test_timestamp_boundary_fixture_rejects_post_2022_and_non_hour_rows():
         verify_timestamp_boundary_metadata(
             [int(datetime(2021, 1, 1, 0, 30, tzinfo=timezone.utc).timestamp())],
             reg,
+        )
+
+
+
+def test_development_boundary_constants_match_frozen_inherited_pipeline():
+    start, end = verify_development_boundary_constants()
+    assert start == EXPECTED_DEVELOPMENT_START
+    assert end == EXPECTED_DEVELOPMENT_END
+
+
+@pytest.mark.parametrize(
+    "start,end",
+    [
+        (datetime(2017, 8, 18, tzinfo=timezone.utc), EXPECTED_DEVELOPMENT_END),
+        (EXPECTED_DEVELOPMENT_START, datetime(2022, 1, 2, tzinfo=timezone.utc)),
+    ],
+)
+def test_wrong_development_boundary_constant_hard_fails(start, end):
+    fake = SimpleNamespace(DEVELOPMENT_START=start, DEVELOPMENT_END=end)
+    with pytest.raises(PSR01BError, match="Development boundary constants"):
+        verify_development_boundary_constants(fake)
+
+
+def test_import_closure_then_boundary_assertion_is_combined_pre_source_gate():
+    reg = load_registration()
+    expected = reg["source"]["row_treatment_contract"]["required_blob_sha1"]
+    observed = {}
+    for path in expected:
+        observed[path] = subprocess.check_output(
+            ["git", "hash-object", "--", path],
+            cwd=ROOT,
+            text=True,
+        ).strip()
+
+    good = SimpleNamespace(
+        DEVELOPMENT_START=EXPECTED_DEVELOPMENT_START,
+        DEVELOPMENT_END=EXPECTED_DEVELOPMENT_END,
+    )
+    blobs, boundaries = verify_import_closure_and_development_boundaries(
+        observed,
+        reg,
+        pipeline_module=good,
+    )
+    assert blobs == expected
+    assert boundaries == (EXPECTED_DEVELOPMENT_START, EXPECTED_DEVELOPMENT_END)
+
+    broken_blobs = dict(observed)
+    first = next(iter(broken_blobs))
+    broken_blobs[first] = "0" * 40
+    bad_boundaries = SimpleNamespace(
+        DEVELOPMENT_START=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        DEVELOPMENT_END=EXPECTED_DEVELOPMENT_END,
+    )
+    with pytest.raises(PSR01BError, match="pinned import blob mismatch"):
+        verify_import_closure_and_development_boundaries(
+            broken_blobs,
+            reg,
+            pipeline_module=bad_boundaries,
         )
