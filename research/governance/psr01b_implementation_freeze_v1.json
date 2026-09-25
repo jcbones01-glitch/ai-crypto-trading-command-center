@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "FROZEN_REPLACEMENT_CANDIDATE_FOR_INDEPENDENT_IMPLEMENTATION_REREVIEW",
+  "status": "FROZEN_REMEDIATION_ROUND_2_CANDIDATE_FOR_INDEPENDENT_IMPLEMENTATION_REREVIEW",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -15,30 +15,32 @@
     "issue": 91,
     "pull_request": 92,
     "branch": "psr-01b-bounded-implementation",
-    "implementation_candidate_commit": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0",
+    "implementation_candidate_commit": "692c9b60ee2221fd812e153316ed61d44adc93e3",
     "reviewed_implementation_commit": null,
     "independent_implementation_review_required": true,
     "independent_implementation_reviewed": false,
-    "superseded_candidate_commit": "7911b199bb8f3388b6771bb4343c34e66dc1f025"
+    "superseded_candidate_commit": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0"
   },
   "implementation_file_git_blob_sha1": {
-    ".github/workflows/psr01b-bounded-engineering.yml": "2d2d2facefaa5616391880214f2b39c16db88f20",
-    "src/research_core/psr01b_core.py": "7fab3a46f3e6a4e5eefcac5afad1aa197a7e788d",
+    ".github/workflows/psr01b-bounded-engineering.yml": "d9e3825d262929d564d03b3607b77d85f451ee0d",
+    "src/research_core/psr01b_core.py": "2b98cd2d49983bdd703ff448b00b7114faabe3c1",
     "src/research_core/psr01b_features.py": "e9819b4a62a9fc117ead656abc2b6c344c4c0158",
     "src/research_core/psr01b_ta.py": "1936d62b2d62e38ceab91118e2e6214b3338af11",
     "src/research_core/psr01b_egarch.py": "af2806a9fb9fb25519623a59a682a5689b7601e1",
     "src/research_core/psr01b_model.py": "812279770dee0c5479f3fb94c81e6abf356712fb",
     "src/research_core/psr01b_matrix.py": "b255c53bfcdf3ddc094969185515843781238c31",
     "src/research_core/psr01b_benchmarks.py": "1eb84d0ba14e9d6c430afa7c28b870612cb0f1e9",
-    "src/research_core/psr01b_preflight.py": "c48ccd6dea0c94004ca99a02925debaebff91d64",
-    "tests/test_psr01b_core.py": "5ec41b35ec251540e2b750185a4682d3124385ab",
+    "src/research_core/psr01b_preflight.py": "c4de2b4282418308d49f0e679c405dadef8bd03a",
+    "src/research_core/psr01b_runner.py": "ad2baeee6ad09aba981274da1d5d3a13c8b4e7ec",
+    "tests/test_psr01b_core.py": "8dcd00b5f357c2e7e02f0d2d14b5c26f55f27b2c",
     "tests/test_psr01b_features.py": "c94c43c741eaf4267b60d47a484fce03421508c2",
     "tests/test_psr01b_ta.py": "0c8ea9bff6a703f050355836aaae022b79083dbf",
     "tests/test_psr01b_egarch.py": "aac65991effb6747ec3fc154e10a365deff2dfbb",
     "tests/test_psr01b_model.py": "66779340f681c1a5cb0024def2408055e3993744",
     "tests/test_psr01b_matrix.py": "4bd84a8c4ec68066a12566892573f888c3d34d4c",
     "tests/test_psr01b_benchmarks.py": "01e77c3772b9266d5c0c59a4684c8ed263d9f059",
-    "tests/test_psr01b_preflight.py": "77b54e4b4486481daed962cf164864615f75ce5c"
+    "tests/test_psr01b_preflight.py": "7cbaf261f8c559e44f5bb17868f82019073765a0",
+    "tests/test_psr01b_runner.py": "cf3eebb154e207355d1fe8fa393973b3123bce8c"
   },
   "pinned_upstream_git_blob_sha1": {
     "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
@@ -53,10 +55,10 @@
     "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
   },
   "candidate_evidence": {
-    "workflow_run_id": 36113083579,
+    "workflow_run_id": 36182053386,
     "workflow_event": "push",
     "branch": "psr-01b-bounded-implementation",
-    "exact_head": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0",
+    "exact_head": "692c9b60ee2221fd812e153316ed61d44adc93e3",
     "conclusion": "success",
     "psr01b_synthetic_suite": "PASS",
     "inherited_normalization_blob_closure": "PASS",
@@ -70,7 +72,10 @@
         "tests/test_ams_dep_full_pipeline_runner.py": "24e5ddfd612e4f47fe326dab8e6ca90858eed2a9",
         "research/scripts/run_ams_dep_full_pipeline_integrity.py": "75bab7b7346bddea410f31c8f44c281a9e8cba9b"
       }
-    }
+    },
+    "psr01b_runner_integration_suite": "PASS",
+    "pre_source_upstream_registration_pin": "PASS",
+    "fail_closed_unavailable_success_classification": "PASS"
   },
   "implementation_notes": {
     "xgboost_api": "NATIVE_XGBOOST_3_4_1",
@@ -106,27 +111,27 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "Replacement candidate 479eba36970b3572d8e6512ea7b7fd8b5b01b6f0 remediates the three Issue #93 findings entirely with synthetic/offline changes. This freeze does not authorize empirical source reads, forecasts, P&L, Validation/OOS, paper trading, or live trading.",
+  "notes": "Remediation-round-2 candidate 692c9b60ee2221fd812e153316ed61d44adc93e3 addresses the independent Issue #93 blockers entirely with synthetic/offline changes. Workflow 36182053386 succeeded at the exact candidate head, including the PSR-specific suite with the end-to-end runner integration tests and the repository regression suite subject only to the unchanged documented AMS-DEP baseline fixture exception. This freeze does not authorize empirical source reads, forecasts, P&L, Validation/OOS, paper trading, live trading, leverage, or derivatives execution.",
   "remediation": {
     "originating_review_issue": 93,
     "review_decision": "REQUIRE_CHANGES_BEFORE_PSR01B_EXECUTION",
-    "superseded_candidate": "7911b199bb8f3388b6771bb4343c34e66dc1f025",
-    "replacement_candidate": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0",
+    "superseded_candidate": "479eba36970b3572d8e6512ea7b7fd8b5b01b6f0",
+    "replacement_candidate": "692c9b60ee2221fd812e153316ed61d44adc93e3",
     "changes": [
       {
-        "finding": "TA selection ignored global j>=336 feature-origin eligibility after state resets",
-        "implementation": "select_four_block_features now intersects each calendar-block mask with candidates.deployable before Spearman calculation",
-        "tests": "training-period gap fixture proves the first 336 rebuilt transitions cannot alter selected features or block correlations"
+        "finding": "upstream AMS-DEP registration blob was not verified by the pre-source-read contract",
+        "implementation": "psr01b_preflight now verifies the registered upstream registration Git blob SHA-1 in the same fail-closed pre-source contract as the import-closure blobs and inherited Development boundaries",
+        "tests": "synthetic/current-tree tests verify the exact pin and prove upstream-registration drift hard-fails"
       },
       {
-        "finding": "missing pre-source-read DEVELOPMENT_START / DEVELOPMENT_END assertion",
-        "implementation": "preflight now verifies inherited AMS-DEP constants exactly equal 2017-08-17T00:00:00Z and 2022-01-01T00:00:00Z after pinned import-closure verification",
-        "tests": "wrong start/end hard-fail and combined import-closure-then-boundary gate is tested"
+        "finding": "success classification raised on unavailable required inference or Sharpe evidence instead of failing closed",
+        "implementation": "classify_success now returns BOUNDED_H2_NOT_REPLICATED when primary inference support/evidence or a required Sharpe sign input is unavailable, while still hard-failing structurally missing fields",
+        "tests": "explicit synthetic regression tests cover unavailable inference-universe mean, primary p-value, required Sharpe values, and insufficient primary segment support"
       },
       {
-        "finding": "missing complementary bootstrap Sharpe-difference evidence",
-        "implementation": "paired circular bootstrap now applies each identical sampled index vector to uncentered baseline and cost-aware returns and reports observed inference-universe Sharpe difference plus 95% percentile bootstrap Sharpe-difference interval when available",
-        "tests": "synthetic oracle proves one index draw per segment is reused for both strategies"
+        "finding": "result-affecting end-to-end PSR-01B orchestration was not frozen or independently reviewable",
+        "implementation": "new psr01b_runner freezes source/preflight sequence, zero-based fold/trial indexing, 11-fold x 2-arm execution order, EGARCH training-return extraction, feature/model wiring, contiguous evaluation-segment ordering, identical-origin benchmarks, forecast hashes, 168/24/72 bootstrap order, and machine-readable success wiring",
+        "tests": "synthetic integration tests cover source-call ordering without empirical reads, gap-segment EGARCH extraction, one-fold component wiring, and complete 11x2 orchestration/bootstrap ordering"
       }
     ],
     "analytic_specification_changed": false,
