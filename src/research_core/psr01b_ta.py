@@ -351,6 +351,8 @@ def select_four_block_features(
     """Select one feature per frozen group from four 3-calendar-month blocks."""
     if len(arm.bars) != len(candidates.matrix):
         raise PSR01BError("candidate rows do not align to arm bars")
+    if np.asarray(candidates.deployable).shape != (len(arm.bars),):
+        raise PSR01BError("candidate deployability mask does not align to arm bars")
     if _add_months(train_start, 12) != train_end:
         raise PSR01BError("training window must be exactly 12 calendar months")
 
@@ -370,6 +372,11 @@ def select_four_block_features(
                 ],
                 dtype=bool,
             )
+            # Frozen revision-4 global feature-origin eligibility is controlling:
+            # rows with fewer than 336 contiguous transitions since a state reset
+            # must not influence training-block feature selection even when a
+            # short-window candidate is mathematically finite.
+            mask &= np.asarray(candidates.deployable, dtype=bool)
             vals.append(spearman_block_correlation(col[mask], candidates.target_next_hour[mask]))
         correlations[name] = tuple(vals)  # type: ignore[assignment]
 
