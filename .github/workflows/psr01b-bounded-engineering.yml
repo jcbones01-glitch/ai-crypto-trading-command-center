@@ -11,6 +11,7 @@ on:
       - 'src/research_core/psr01b_matrix.py'
       - 'src/research_core/psr01b_benchmarks.py'
       - 'src/research_core/psr01b_preflight.py'
+      - 'src/research_core/psr01b_runner.py'
       - 'tests/test_psr01b_core.py'
       - 'tests/test_psr01b_features.py'
       - 'tests/test_psr01b_ta.py'
@@ -19,6 +20,7 @@ on:
       - 'tests/test_psr01b_matrix.py'
       - 'tests/test_psr01b_benchmarks.py'
       - 'tests/test_psr01b_preflight.py'
+      - 'tests/test_psr01b_runner.py'
       - '.github/workflows/psr01b-bounded-engineering.yml'
   workflow_dispatch:
 permissions:
@@ -41,7 +43,7 @@ jobs:
       - name: Install exact PSR-01B runtime additions
         run: pip install pandas==3.0.6 xgboost==3.4.1 optuna==5.0.0 arch==8.0.0 statsmodels==0.15.0
       - name: Verify PSR-01B synthetic numerical core only
-        run: python -m pytest -q tests/test_psr01b_core.py tests/test_psr01b_features.py tests/test_psr01b_ta.py tests/test_psr01b_egarch.py tests/test_psr01b_model.py tests/test_psr01b_matrix.py tests/test_psr01b_benchmarks.py tests/test_psr01b_preflight.py
+        run: python -m pytest -q tests/test_psr01b_core.py tests/test_psr01b_features.py tests/test_psr01b_ta.py tests/test_psr01b_egarch.py tests/test_psr01b_model.py tests/test_psr01b_matrix.py tests/test_psr01b_benchmarks.py tests/test_psr01b_preflight.py tests/test_psr01b_runner.py
       - name: Verify pre-existing AMS-DEP baseline-mismatch files are unchanged
         run: |
           test "$(git hash-object research/governance/ams_dep_release_gate_v1.json)" = "f633b10fadd95e79deee707fac18b5cac5a55bab"
