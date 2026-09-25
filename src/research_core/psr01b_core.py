@@ -359,13 +359,45 @@ def paired_segment_bootstrap(
     )
 
 
-def classify_success(arm_summaries: dict[str, dict[str, float | int]]) -> str:
+def classify_success(arm_summaries: dict[str, dict[str, float | int | None]]) -> str:
     if set(arm_summaries) != set(ARM_ORDER):
         raise PSR01BError("success classification requires both registered arms")
-    raw_ps: dict[str, float] = {}
+
+    required = (
+        "all_record_mean",
+        "inference_universe_mean",
+        "eligible_primary_segments",
+        "primary_p_value",
+        "cost_aware_turnover",
+        "baseline_turnover",
+        "cost_aware_completed_trades",
+        "cost_aware_sharpe",
+        "baseline_sharpe",
+    )
     for arm in ARM_ORDER:
         s = arm_summaries[arm]
-        raw_ps[arm] = float(s["primary_p_value"])
+        missing = [key for key in required if key not in s]
+        if missing:
+            raise PSR01BError(
+                f"success classification missing required fields for {arm}: {missing}"
+            )
+        # Revision-4 explicitly makes unavailable primary inference or unavailable
+        # Sharpe evidence unable to satisfy a success criterion.  These are
+        # scientific non-replication outcomes, not runtime errors.
+        if int(s["eligible_primary_segments"]) < 2:
+            return "BOUNDED_H2_NOT_REPLICATED"
+        if any(
+            s[key] is None
+            for key in (
+                "inference_universe_mean",
+                "primary_p_value",
+                "cost_aware_sharpe",
+                "baseline_sharpe",
+            )
+        ):
+            return "BOUNDED_H2_NOT_REPLICATED"
+
+    raw_ps = {arm: float(arm_summaries[arm]["primary_p_value"]) for arm in ARM_ORDER}
     holm = holm_two(raw_ps)
 
     passed = True
@@ -373,7 +405,6 @@ def classify_success(arm_summaries: dict[str, dict[str, float | int]]) -> str:
         s = arm_summaries[arm]
         passed &= float(s["all_record_mean"]) > 0.0
         passed &= float(s["inference_universe_mean"]) > 0.0
-        passed &= int(s["eligible_primary_segments"]) >= 2
         passed &= bool(holm[arm]["reject"])
         passed &= float(s["cost_aware_turnover"]) < float(s["baseline_turnover"])
         passed &= int(s["cost_aware_completed_trades"]) >= 20
