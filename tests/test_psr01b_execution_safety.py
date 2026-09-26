@@ -69,8 +69,24 @@ class AtomicFakeGitHub:
 
 
 def _authorized_scope():
+    candidate = "a" * 40
     return {
-        "future_governance": {"execution_authorized": True},
+        "implementation": {"implementation_candidate_commit": candidate},
+        "future_governance": {
+            "execution_authorized": True,
+            "execution_scope": {
+                "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+                "revision": 4,
+                "implementation_candidate_commit": candidate,
+                "symbol": "BTCUSDT",
+                "market": "spot",
+                "timeframe": "1h",
+                "source_start": "2017-12-01T00:00:00Z",
+                "source_end_exclusive": "2022-01-01T00:00:00Z",
+                "execution_limit": 1,
+                "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1",
+            },
+        },
         "protected_access": {
             "empirical_binance_archive_access_authorized": True,
             "empirical_feature_generation_authorized": True,
@@ -88,8 +104,14 @@ def _authorized_scope():
 
 def test_authorized_scope_requires_bounded_empirical_true_and_protected_false():
     observed = verify_execution_authorization_scope(_authorized_scope())
-    assert observed["empirical_model_fit_authorized"] is True
-    assert observed["validation_or_oos_access_authorized"] is False
+    assert observed["execution_scope"]["execution_limit"] == 1
+    assert observed["permissions"]["empirical_model_fit_authorized"] is True
+    assert observed["permissions"]["validation_or_oos_access_authorized"] is False
+
+    bad = _authorized_scope()
+    bad["future_governance"]["execution_scope"]["symbol"] = "ETHUSDT"
+    with pytest.raises(PSR01BError, match="execution scope record mismatch"):
+        verify_execution_authorization_scope(bad)
 
     bad = _authorized_scope()
     bad["protected_access"]["validation_or_oos_access_authorized"] = True
