@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "INDEPENDENTLY_APPROVED_REVIEW_ANCHORED_V3_EXECUTION_LOCKED_PENDING_REF_PROTECTION",
+  "status": "AUTHORIZED_DEVELOPMENT_ONE_SHOT_PENDING_MANUAL_CONFIRMATION",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -122,8 +122,19 @@
     "separate_execution_authorization_required": true,
     "manual_confirmation_required": true,
     "one_shot_execution_claim_required": true,
-    "execution_authorized": false,
-    "execution_scope": null,
+    "execution_authorized": true,
+    "execution_scope": {
+      "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+      "revision": 4,
+      "implementation_candidate_commit": "9ef234210163dba8633a11acc74be0de8581be7c",
+      "symbol": "BTCUSDT",
+      "market": "spot",
+      "timeframe": "1h",
+      "source_start": "2017-12-01T00:00:00Z",
+      "source_end_exclusive": "2022-01-01T00:00:00Z",
+      "execution_limit": 1,
+      "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1"
+    },
     "reviewed_candidate_anchor_created": true,
     "one_shot_claim_created": false,
     "allowed_post_candidate_paths": [
@@ -171,7 +182,7 @@
       "validation_or_oos_access_required": false
     },
     "ref_protection": {
-      "status": "V3_ANCHOR_CREATED_PROTECTION_PENDING",
+      "status": "VERIFIED_BEFORE_EXECUTION_AUTHORIZATION",
       "existing_reviewed_v2_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v2",
       "existing_reviewed_v2_anchor_sha": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
       "existing_reviewed_v2_ruleset_id": 24038523,
@@ -179,22 +190,50 @@
       "reviewed_v3_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v3",
       "reviewed_v3_anchor_sha": "9ef234210163dba8633a11acc74be0de8581be7c",
       "reviewed_v3_anchor_created": true,
-      "reviewed_v3_protection_verified": false,
-      "claim_ref_exists": false
+      "reviewed_v3_protection_verified": true,
+      "claim_ref_exists": false,
+      "reviewed_v3_ruleset": {
+        "id": 24045086,
+        "name": "PSR-01B reviewed implementation lock v3",
+        "target": "branch",
+        "enforcement": "active",
+        "include": [
+          "refs/heads/psr-01b-bounded-implementation-reviewed-v3"
+        ],
+        "exclude": [],
+        "rules": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ],
+        "bypass_actors": [],
+        "observed_anchor_sha": "9ef234210163dba8633a11acc74be0de8581be7c",
+        "observed_branch_protected": true,
+        "updated_at": "2026-09-26T11:38:14.614-05:00"
+      }
     },
     "execution_prerequisites": {
-      "status": "PENDING_V3_ANCHOR_PROTECTION_AND_SEPARATE_EXECUTION_AUTHORIZATION_REVIEW",
+      "status": "AUTHORIZED_FOR_DEVELOPMENT_ONLY_PENDING_AUTHORIZED_HEAD_RECHECK_AND_MANUAL_CONFIRMATION",
       "prior_prerequisite_issue": 96,
       "evidence_persistence_plan_frozen": true,
       "empirical_execution_authorized": false
+    },
+    "execution_authorization_review": {
+      "issue": 100,
+      "comment_id": 5848047458,
+      "decision": "APPROVE_PSR01B_DEVELOPMENT_EXECUTION_AUTHORIZATION",
+      "external_reviewer": "Claude",
+      "reviewed_locked_governance_head": "35b395d3f2e87ccdc9d92bd592174debe81fbda5",
+      "implementation_candidate_commit": "9ef234210163dba8633a11acc74be0de8581be7c",
+      "authorized_head_independent_recheck_required": true
     }
   },
   "protected_access": {
-    "empirical_binance_archive_access_authorized": false,
-    "empirical_feature_generation_authorized": false,
-    "empirical_model_fit_authorized": false,
-    "empirical_forecast_generation_authorized": false,
-    "empirical_pnl_authorized": false,
+    "empirical_binance_archive_access_authorized": true,
+    "empirical_feature_generation_authorized": true,
+    "empirical_model_fit_authorized": true,
+    "empirical_forecast_generation_authorized": true,
+    "empirical_pnl_authorized": true,
     "validation_or_oos_access_authorized": false,
     "paper_trading_authorized": false,
     "live_trading_authorized": false,
@@ -249,8 +288,6 @@
   "independent_review_scope": "synthetic/offline implementation review only; no empirical BTCUSDT archive access, empirical feature/model/forecast/P&L execution, Validation/OOS access, repository mutation, new anchor creation, authorization, manual confirmation, or one-shot claim",
   "residual_nonblocking_review_notes": [
     "The existing reviewed-v2 anchor and its ruleset remain untouched historical evidence.",
-    "The reviewed-v3 anchor exists at the exact independently approved candidate but is not yet verified as protected.",
-    "A new exact v3 branch ruleset with no bypass actors must be created and verified before any execution authorization.",
     "The existing one-shot claim tag ruleset remains valid and unchanged.",
     "Manual confirmation and durable one-shot claim remain absent.",
     "Validation/OOS, paper/live trading, leverage, derivatives, and all empirical execution permissions remain unauthorized."
