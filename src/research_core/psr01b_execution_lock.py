@@ -293,3 +293,125 @@ def assert_result_reservation(result_path: Path, *, candidate: str, executing_sh
     if record != expected:
         raise PSR01BError("PSR-01B result reservation identity mismatch")
     return record
+
+
+def assert_preclaim_environment(
+    candidate: str,
+    freeze: Mapping[str, Any],
+    result_path: Path,
+    *,
+    executing_sha: str | None = None,
+    confirmation: str | None = None,
+    repository: str | None = None,
+    token: str | None = None,
+    environ: Mapping[str, str] | None = None,
+    opener: Callable = urlopen,
+) -> dict[str, Any]:
+    env = os.environ if environ is None else environ
+    executing_sha = executing_sha or env.get("GITHUB_SHA") or _git_head_sha()
+    changed = verify_execution_commit(candidate, executing_sha)
+    verify_candidate_blob_contract(
+        candidate, freeze.get("implementation_file_git_blob_sha1") or {}
+    )
+    anchor = assert_review_anchor(
+        candidate, freeze, repository=repository, token=token, opener=opener
+    )
+    manual = assert_manual_confirmation(
+        candidate, executing_sha, confirmation=confirmation, environ=env
+    )
+    repository = repository or env.get("GITHUB_REPOSITORY", "")
+    token = token or env.get("GITHUB_TOKEN", "")
+    assert_claim_absent(repository, token, opener=opener)
+    reservation = reserve_result_path(
+        result_path, candidate=candidate, executing_sha=executing_sha
+    )
+    return {
+        "executing_sha": executing_sha,
+        "post_candidate_changed_paths": list(changed),
+        "review_anchor": anchor,
+        "manual_confirmation": manual,
+        "result_reservation": reservation,
+    }
+
+
+def assert_execution_environment(
+    candidate: str,
+    freeze: Mapping[str, Any],
+    result_path: Path,
+    *,
+    executing_sha: str | None = None,
+    repository: str | None = None,
+    token: str | None = None,
+    environ: Mapping[str, str] | None = None,
+    opener: Callable = urlopen,
+) -> dict[str, Any]:
+    env = os.environ if environ is None else environ
+    executing_sha = executing_sha or env.get("GITHUB_SHA") or _git_head_sha()
+    changed = verify_execution_commit(candidate, executing_sha)
+    verify_candidate_blob_contract(
+        candidate, freeze.get("implementation_file_git_blob_sha1") or {}
+    )
+    anchor = assert_review_anchor(
+        candidate, freeze, repository=repository, token=token, opener=opener
+    )
+    manual = assert_manual_confirmation(candidate, executing_sha, environ=env)
+    claim = assert_claim_environment(
+        executing_sha,
+        repository=repository,
+        token=token,
+        environ=env,
+        opener=opener,
+    )
+    reservation = assert_result_reservation(
+        result_path, candidate=candidate, executing_sha=executing_sha
+    )
+    return {
+        "executing_sha": executing_sha,
+        "post_candidate_changed_paths": list(changed),
+        "review_anchor": anchor,
+        "manual_confirmation": manual,
+        "claim": claim,
+        "result_reservation": reservation,
+    }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("action", choices=("preflight", "claim"))
+    parser.add_argument("--repository", default=os.environ.get("GITHUB_REPOSITORY", ""))
+    parser.add_argument("--sha", default=os.environ.get("GITHUB_SHA", ""))
+    parser.add_argument("--confirmation", required=True)
+    parser.add_argument("--result-path", default=str(DEFAULT_RESULT_PATH))
+    parser.add_argument("--github-output", default=os.environ.get("GITHUB_OUTPUT"))
+    args = parser.parse_args()
+
+    from .psr01b_runner import load_implementation_freeze, verify_frozen_execution_identity
+
+    freeze = load_implementation_freeze()
+    provenance = verify_frozen_execution_identity(runner_label="ubuntu-24.04")
+    candidate = provenance["implementation_candidate_commit"]
+    token = os.environ.get("GITHUB_TOKEN", "")
+    preclaim = assert_preclaim_environment(
+        candidate,
+        freeze,
+        Path(args.result_path),
+        executing_sha=args.sha,
+        confirmation=args.confirmation,
+        repository=args.repository,
+        token=token,
+    )
+    if args.action == "preflight":
+        print(json.dumps(preclaim, sort_keys=True))
+        print("PSR01B_DEVELOPMENT_V1_PREFLIGHT_PASS")
+        return
+
+    claim = create_claim(args.repository, args.sha, token)
+    if args.github_output:
+        with Path(args.github_output).open("a", encoding="utf-8") as handle:
+            handle.write(f"claim_ref={claim['ref']}\n")
+            handle.write(f"claim_sha={claim['sha']}\n")
+    print(json.dumps(claim, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()
