@@ -233,3 +233,41 @@ def verify_pre_source_read_contract(
     )
     boundaries = verify_development_boundary_constants(pipeline_module)
     return blobs, upstream, boundaries
+
+
+EXECUTION_REQUIRED_TRUE = (
+    "empirical_binance_archive_access_authorized",
+    "empirical_feature_generation_authorized",
+    "empirical_model_fit_authorized",
+    "empirical_forecast_generation_authorized",
+    "empirical_pnl_authorized",
+)
+EXECUTION_REQUIRED_FALSE = (
+    "validation_or_oos_access_authorized",
+    "paper_trading_authorized",
+    "live_trading_authorized",
+    "leverage_authorized",
+    "derivatives_execution_authorized",
+)
+
+
+def verify_execution_authorization_scope(freeze: Mapping) -> dict[str, bool]:
+    """Require exact Development authority while all protected downstream scope stays shut."""
+    future = freeze.get("future_governance") or {}
+    if future.get("execution_authorized") is not True:
+        raise PSR01BError("PSR-01B Development execution authorization is not approved")
+    protected = freeze.get("protected_access") or {}
+    for field in EXECUTION_REQUIRED_TRUE:
+        if protected.get(field) is not True:
+            raise PSR01BError(
+                f"PSR-01B authorized Development scope missing: {field}=true"
+            )
+    for field in EXECUTION_REQUIRED_FALSE:
+        if protected.get(field) is not False:
+            raise PSR01BError(
+                f"PSR-01B protected scope must remain false: {field}"
+            )
+    return {field: bool(protected[field]) for field in (
+        *EXECUTION_REQUIRED_TRUE,
+        *EXECUTION_REQUIRED_FALSE,
+    )}
