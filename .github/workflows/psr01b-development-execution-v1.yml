@@ -92,7 +92,6 @@ jobs:
           python -m research_core.psr01b_execution_lock preflight \
             --repository "$GITHUB_REPOSITORY" \
             --sha "$GITHUB_SHA" \
-            --confirmation "${{ inputs.confirmation }}" \
             --result-path "research/experiments/psr01b_development_v1/result.json"
       - name: Atomically create durable PSR-01B one-shot claim
         id: claim
@@ -100,13 +99,14 @@ jobs:
           python -m research_core.psr01b_execution_lock claim \
             --repository "$GITHUB_REPOSITORY" \
             --sha "$GITHUB_SHA" \
-            --confirmation "${{ inputs.confirmation }}" \
             --result-path "research/experiments/psr01b_development_v1/result.json" \
             --github-output "$GITHUB_OUTPUT"
       - name: Reverify durable claim and run registered Development execution
         env:
           PSR01B_DEVELOPMENT_V1_CLAIM_REF: ${{ steps.claim.outputs.claim_ref }}
           PSR01B_DEVELOPMENT_V1_CLAIM_SHA: ${{ steps.claim.outputs.claim_sha }}
+          PSR01B_DEVELOPMENT_V1_CLAIM_TAG_OBJECT_SHA: ${{ steps.claim.outputs.claim_tag_object_sha }}
+          PSR01B_DEVELOPMENT_V1_CLAIM_RUN_ID: ${{ steps.claim.outputs.claim_run_id }}
         run: python research/scripts/run_psr01b_development_v1.py
       - name: Upload PSR-01B execution evidence
         if: always()
