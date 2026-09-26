@@ -85,6 +85,18 @@ def _ready_freeze_fixture():
     frozen["implementation"]["independent_implementation_reviewed"] = True
     frozen["future_governance"]["reviewed_candidate_anchor_created"] = True
     frozen["future_governance"]["execution_authorized"] = True
+    frozen["future_governance"]["execution_scope"] = {
+        "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+        "revision": 4,
+        "implementation_candidate_commit": candidate,
+        "symbol": "BTCUSDT",
+        "market": "spot",
+        "timeframe": "1h",
+        "source_start": "2017-12-01T00:00:00Z",
+        "source_end_exclusive": "2022-01-01T00:00:00Z",
+        "execution_limit": 1,
+        "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1",
+    }
     frozen["future_governance"]["manual_confirmation_created"] = True
     frozen["future_governance"]["one_shot_claim_created"] = False
     for field in (
