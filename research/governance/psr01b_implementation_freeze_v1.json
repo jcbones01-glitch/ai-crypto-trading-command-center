@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "FROZEN_REVIEW95_REMEDIATION_CANDIDATE_FOR_INDEPENDENT_REVIEW",
+  "status": "INDEPENDENTLY_APPROVED_REVIEW_ANCHORED_EXECUTION_LOCKED",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -16,9 +16,9 @@
     "pull_request": 92,
     "branch": "psr-01b-bounded-implementation",
     "implementation_candidate_commit": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
-    "reviewed_implementation_commit": null,
+    "reviewed_implementation_commit": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
     "independent_implementation_review_required": true,
-    "independent_implementation_reviewed": false,
+    "independent_implementation_reviewed": true,
     "superseded_candidate_commit": "d8ca40c885f900e6836880ccdd3e1054bbb5e5bc"
   },
   "implementation_file_git_blob_sha1": {
@@ -95,7 +95,7 @@
     "one_shot_execution_claim_required": true,
     "execution_authorized": false,
     "execution_scope": null,
-    "reviewed_candidate_anchor_created": false,
+    "reviewed_candidate_anchor_created": true,
     "one_shot_claim_created": false,
     "allowed_post_candidate_paths": [
       "research/governance/psr01b_implementation_freeze_v1.json"
@@ -114,7 +114,7 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "Candidate 097df9c22abd2ca01cdd93754bbf55ff9129d7ac remediates the blocking Issue #95 workflow/test defect and reviewer hardening recommendations without changing scientific/result-formula modules. Exact-candidate CI 36218760218 passed the normal safety suite, a simulated future authorized-governance offline suite, unmocked synthetic end-to-end, and the full 11x2 production-math dry run. This freeze authorizes no empirical access or execution.",
+  "notes": "Candidate 097df9c22abd2ca01cdd93754bbf55ff9129d7ac was independently approved in Issue #95 and the live reviewed-v2 anchor is verified at that exact commit. This governance update authorizes no empirical source access or execution. Separate Development execution authorization, explicit manual confirmation, durable one-shot claim creation, protected ref controls, and evidence-persistence controls remain mandatory before any empirical access.",
   "remediation": {
     "originating_review_issue": 95,
     "originating_review_comment_id": 5843210601,
@@ -162,16 +162,16 @@
     "status": "SUPERSEDED_FOR_FUTURE_EXECUTION_BY_REPLACEMENT_CANDIDATE_REVIEW"
   },
   "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v2",
-  "review_anchor_sha": null,
+  "review_anchor_sha": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
   "independent_review_issue": 95,
-  "independent_review_decision": null,
-  "independent_review_comment_id": null,
+  "independent_review_decision": "APPROVE_PSR01B_IMPLEMENTATION_FREEZE",
+  "independent_review_comment_id": 5845551266,
   "independent_review_external_reviewer": "Claude",
   "independent_review_scope": "synthetic/offline implementation re-review only; no empirical Binance BTCUSDT archive access, empirical feature/model/forecast/P&L execution, Validation/OOS access, or repository modification by reviewer",
   "residual_nonblocking_review_notes": [
-    "The reviewed-v2 anchor must not be created unless this replacement candidate is independently approved.",
-    "Execution authorization remains a separate later gate after independent implementation approval and v2 anchor creation.",
-    "Repository rules protecting the v2 anchor and one-shot claim ref must be verified at the later authorization gate.",
-    "Future execution evidence must be persisted beyond temporary workflow-artifact retention."
+    "Separate Development execution authorization remains mandatory after this anchor.",
+    "Before execution authorization, verify repository rules prevent deletion/repointing of the reviewed-v2 anchor and the fixed PSR-01B claim ref.",
+    "Future execution evidence must be persisted beyond temporary workflow-artifact retention.",
+    "No Validation/OOS, paper/live trading, leverage, or derivatives authorization exists."
   ]
 }
