@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "INDEPENDENTLY_APPROVED_REVIEW_ANCHORED_EXECUTION_LOCKED",
+  "status": "FROZEN_EXECUTION_SAFETY_REMEDIATION_CANDIDATE_FOR_INDEPENDENT_REVIEW",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -15,14 +15,17 @@
     "issue": 91,
     "pull_request": 92,
     "branch": "psr-01b-bounded-implementation",
-    "implementation_candidate_commit": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
-    "reviewed_implementation_commit": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
+    "implementation_candidate_commit": "d8ca40c885f900e6836880ccdd3e1054bbb5e5bc",
+    "reviewed_implementation_commit": null,
     "independent_implementation_review_required": true,
-    "independent_implementation_reviewed": true,
-    "superseded_candidate_commit": "692c9b60ee2221fd812e153316ed61d44adc93e3"
+    "independent_implementation_reviewed": false,
+    "superseded_candidate_commit": "1174d56361fdef928f19a21dcf4e24a8f8caf828"
   },
   "implementation_file_git_blob_sha1": {
-    ".github/workflows/psr01b-bounded-engineering.yml": "e6dabc1ff28dbc83af0fcb86a2462e0cdde53aba",
+    ".github/workflows/psr01b-bounded-engineering.yml": "8312bcd0860ad27bd0ccd72c454d3ecf8a407c20",
+    ".github/workflows/psr01b-development-execution-v1.yml": "b884cee959c7740be55e984e0a383d825235a1ef",
+    "research/scripts/run_psr01b_development_v1.py": "11fd7f2c0ff44e1389cf751c7e4f2e52ce5e4b43",
+    "src/research_core/psr01b_execution_lock.py": "b43ab9e5d8bc363e6fe8c290468ec202ed88112c",
     "src/research_core/psr01b_core.py": "2b98cd2d49983bdd703ff448b00b7114faabe3c1",
     "src/research_core/psr01b_features.py": "e9819b4a62a9fc117ead656abc2b6c344c4c0158",
     "src/research_core/psr01b_ta.py": "1936d62b2d62e38ceab91118e2e6214b3338af11",
@@ -30,8 +33,8 @@
     "src/research_core/psr01b_model.py": "812279770dee0c5479f3fb94c81e6abf356712fb",
     "src/research_core/psr01b_matrix.py": "b255c53bfcdf3ddc094969185515843781238c31",
     "src/research_core/psr01b_benchmarks.py": "1eb84d0ba14e9d6c430afa7c28b870612cb0f1e9",
-    "src/research_core/psr01b_preflight.py": "68f97417ecb2045b44ccfa333777bca23882c26b",
-    "src/research_core/psr01b_runner.py": "4d826395106e9a35c2c34bf8b8a9402d6fb4b6d1",
+    "src/research_core/psr01b_preflight.py": "9b0646098e4691a8fcddcca0a012d56309bb4b5b",
+    "src/research_core/psr01b_runner.py": "dd889d8d91d138d727c7bd1f51673a00b0ed3492",
     "tests/test_psr01b_core.py": "8dcd00b5f357c2e7e02f0d2d14b5c26f55f27b2c",
     "tests/test_psr01b_features.py": "c94c43c741eaf4267b60d47a484fce03421508c2",
     "tests/test_psr01b_ta.py": "0c8ea9bff6a703f050355836aaae022b79083dbf",
@@ -40,7 +43,8 @@
     "tests/test_psr01b_matrix.py": "4bd84a8c4ec68066a12566892573f888c3d34d4c",
     "tests/test_psr01b_benchmarks.py": "01e77c3772b9266d5c0c59a4684c8ed263d9f059",
     "tests/test_psr01b_preflight.py": "8cec5c95622d3c28bfcc849da980035f02e7a3c8",
-    "tests/test_psr01b_runner.py": "caeea466e2eed3505892da2cbf4cfa213631d7ef"
+    "tests/test_psr01b_runner.py": "17facdb4f33353a6333fdaa763ce20075932be05",
+    "tests/test_psr01b_execution_safety.py": "733f4d7f1ae50eeed7d89c8b3d888abae9c0ebe9"
   },
   "pinned_upstream_git_blob_sha1": {
     "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
@@ -55,51 +59,43 @@
     "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
   },
   "candidate_evidence": {
-    "workflow_run_id": 36193142708,
+    "workflow_run_id": 36211026132,
     "workflow_event": "push",
     "branch": "psr-01b-bounded-implementation",
-    "exact_head": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
+    "exact_head": "d8ca40c885f900e6836880ccdd3e1054bbb5e5bc",
     "conclusion": "success",
+    "completed_at": "2026-09-26T04:14:58Z",
     "psr01b_synthetic_suite": "PASS",
     "unmocked_synthetic_end_to_end": "PASS",
+    "full_11x2_production_math_synthetic_dry_run": "PASS",
     "unmocked_arms": [
       "PAPER_FILL",
       "PROJECT_GAP_PRESERVING"
     ],
     "gap_preserving_reset_recovery_fixture": "PASS",
-    "fold_metric_serialization": "PASS",
-    "frozen_one_shot_entry_and_provenance": "PASS",
-    "registered_fold_schedule_lock": "PASS",
     "runtime_pin_verification": "PASS",
     "thread_environment_pin_verification": "PASS",
-    "inherited_normalization_blob_closure": "PASS",
-    "pre_source_upstream_registration_pin": "PASS",
+    "execution_safety_suite": "PASS",
+    "manual_workflow_static_contract": "PASS",
+    "durable_claim_race_and_reuse_tests": "PASS",
+    "live_anchor_target_tests": "PASS",
+    "result_reservation_and_atomic_writer_tests": "PASS",
+    "candidate_commit_blob_binding_tests": "PASS",
+    "governance_only_post_candidate_diff_tests": "PASS",
+    "bounded_development_permission_scope_tests": "PASS",
+    "preexisting_ams_dep_baseline_mismatch_files_unchanged": "PASS",
     "repository_regression": "PASS_EXCEPT_EXPLICIT_PREEXISTING_BASELINE_FIXTURE",
     "preexisting_baseline_exception": {
       "deselected_test": "tests/test_ams_dep_full_pipeline_runner.py::test_valid_authorized_contract_passes",
-      "reason": "Test is inconsistent with later AMS-DEP release-gate state already present at the exact approved PSR01B specification head; PSR-01B implementation did not modify the test, runner, or release-gate JSON.",
-      "unchanged_blob_sha1": {
-        "research/governance/ams_dep_release_gate_v1.json": "f633b10fadd95e79deee707fac18b5cac5a55bab",
-        "tests/test_ams_dep_full_pipeline_runner.py": "24e5ddfd612e4f47fe326dab8e6ca90858eed2a9",
-        "research/scripts/run_ams_dep_full_pipeline_integrity.py": "75bab7b7346bddea410f31c8f44c281a9e8cba9b"
-      }
-    },
-    "intermediate_successful_run": {
-      "workflow_run_id": 36192815250,
-      "exact_head": "5a0531093a97be9bc6928c64a3772574012dea4f",
-      "conclusion": "success",
-      "status": "SUPERSEDED_BY_FINAL_HARDENED_CANDIDATE"
+      "reason": "Pre-existing AMS-DEP fixture mismatch predates the PSR-01B execution-safety remediation and the baseline files are verified unchanged."
     }
   },
   "implementation_notes": {
     "xgboost_api": "NATIVE_XGBOOST_3_4_1",
-    "rationale": "The frozen runtime pins xgboost==3.4.1 but does not pin scikit-learn. XGBRegressor requires scikit-learn, so the implementation uses xgboost.DMatrix/xgboost.train from the pinned package rather than introducing an unregistered dependency.",
-    "registered_control_mapping": {
-      "n_jobs=1": "nthread=1",
-      "random_state=derived_seed": "seed=the identical derived SeedSequence integer",
-      "n_estimators": "num_boost_round"
-    },
-    "analytic_specification_changed": false
+    "analytic_specification_changed": false,
+    "scientific_modules_byte_identical_to_previously_approved_candidate": true,
+    "execution_safety_remediation_only": true,
+    "manual_execution_workflow_trigger": "workflow_dispatch_only"
   },
   "future_governance": {
     "reviewed_candidate_anchor_required": true,
@@ -107,7 +103,8 @@
     "manual_confirmation_required": true,
     "one_shot_execution_claim_required": true,
     "execution_authorized": false,
-    "reviewed_candidate_anchor_created": true,
+    "execution_scope": null,
+    "reviewed_candidate_anchor_created": false,
     "one_shot_claim_created": false,
     "allowed_post_candidate_paths": [
       "research/governance/psr01b_implementation_freeze_v1.json"
@@ -126,27 +123,41 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "Candidate 1174d56361fdef928f19a21dcf4e24a8f8caf828 was independently approved in Issue #93 and is now immutably anchored by refs/heads/psr-01b-bounded-implementation-reviewed-v1. This governance update authorizes no empirical source access or execution. Separate execution authorization, manual confirmation, and one-shot claim remain mandatory future gates; Validation/OOS, paper/live trading, leverage, and derivatives remain unauthorized.",
+  "notes": "Replacement candidate d8ca40c885f900e6836880ccdd3e1054bbb5e5bc remediates Issue #94 execution-safety findings without changing the approved scientific/result-formula modules. It has passed exact-candidate CI including the full 11-fold x 2-arm production-math synthetic dry run. It is frozen for independent implementation review only. No empirical source access or execution is authorized. The reviewed-v2 anchor has not been created, no manual confirmation exists, and the durable one-shot claim has not been created.",
   "remediation": {
-    "originating_review_issue": 93,
-    "review_decision": "REQUIRE_CHANGES_BEFORE_PSR01B_EXECUTION",
-    "superseded_candidate": "692c9b60ee2221fd812e153316ed61d44adc93e3",
-    "replacement_candidate": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
+    "originating_review_issue": 94,
+    "originating_review_comment_id": 5842181358,
+    "review_decision": "REQUIRE_CHANGES_BEFORE_PSR01B_DEVELOPMENT_EXECUTION_AUTHORIZATION",
+    "superseded_candidate": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
+    "replacement_candidate": "d8ca40c885f900e6836880ccdd3e1054bbb5e5bc",
     "changes": [
       {
-        "finding": "R1 — registered fold_total_return, fold_ARC, fold_ASD, and fold_SHARPE were not persisted in the one-shot fold records",
-        "implementation": "FoldExecution.record now persists registered fold metrics for BASELINE_SIGN, COST_AWARE, BUY_AND_HOLD, and MOMENTUM_24H using the already-frozen performance_metrics formulas; unavailable ASD/Sharpe serialize as null rather than NaN",
-        "tests": "synthetic tests compare fold metrics to the frozen metric implementation, verify unavailable semantics, and require allow_nan=False JSON serialization"
+        "finding": "E — runtime identity and reviewed-candidate binding",
+        "implementation": "Live v2 review-anchor resolution, candidate ancestry, governance-only candidate-to-execution diff, and candidate-commit blob verification are enforced before source access."
       },
       {
-        "finding": "R2 — actual one-shot execution entry path/provenance was not fully frozen and could be bypassed or caller-substituted",
-        "implementation": "execute_registered_one_shot is the single empirical source→normalization→registered experiment→result-writing entry; direct source normalization is disabled, run_from_normalized_bars no longer accepts a caller registration override, exact 11-fold dates/order are hard-locked, approved spec and frozen implementation/upstream blobs are verified, exact runtime/thread env are checked, and result provenance records the observed identities; current governance state remains fail-closed",
-        "tests": "synthetic tests verify identity/provenance capture, implementation-blob drift failure, fold-schedule drift failure, caller-registration rejection, direct-normalization rejection, and current unapproved freeze failure before source bytes"
+        "finding": "F — bounded authorization transition",
+        "implementation": "Execution requires an exact Development scope record plus exactly five empirical Development permissions true while Validation/OOS, paper/live trading, leverage, and derivatives remain false."
       },
       {
-        "finding": "R3 — orchestration coverage relied on mocked integration tests rather than an unmocked real-component synthetic path",
-        "implementation": "dedicated bounded CI now runs real PSR-01B components through _run_arm_fold for PAPER_FILL and PROJECT_GAP_PRESERVING, including real feature construction/selection, EGARCH, Optuna/XGBoost, evaluation segmentation, benchmarks, accounting, bootstrap/classification/output serialization, and a deliberate synthetic test-period gap",
-        "tests": "exact-candidate CI run 36193142708 completed the dedicated unmocked end-to-end step successfully and verifies deterministic PAPER_FILL reproducibility plus gap-preserving segmentation/reset/recovery behavior"
+        "finding": "G — explicit manual confirmation",
+        "implementation": "workflow_dispatch confirmation is bound exactly to the reviewed candidate and execution SHA and records actor/run provenance."
+      },
+      {
+        "finding": "H — durable one-shot claim",
+        "implementation": "A fixed Git tag is required to be absent before execution, atomically created at the execution SHA before source bytes, and live-verified; reuse/repointing is rejected."
+      },
+      {
+        "finding": "I — result preflight",
+        "implementation": "Result path is reserved before claim/source access and final result writing is exclusive and atomic."
+      },
+      {
+        "finding": "J — execution surface",
+        "implementation": "A manual-only workflow and bounded wrapper enforce preflight, claim, live re-verification, source acquisition, registered execution, and evidence upload in order."
+      },
+      {
+        "finding": "K — full production-math synthetic dry run",
+        "implementation": "Exact-candidate CI run 36211026132 passed one complete 11-fold x 2-arm production-math synthetic dry run."
       }
     ],
     "analytic_specification_changed": false,
@@ -155,19 +166,25 @@
     "validation_or_oos_accessed": false,
     "empirical_execution_authorized": false
   },
-  "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v1",
-  "review_anchor_sha": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
-  "independent_review_issue": 93,
-  "independent_review_decision": "APPROVE_PSR01B_IMPLEMENTATION_FREEZE",
-  "independent_review_comment_id": 5840614782,
+  "historical_review_anchor": {
+    "ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v1",
+    "sha": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
+    "independent_review_issue": 93,
+    "independent_review_decision": "APPROVE_PSR01B_IMPLEMENTATION_FREEZE",
+    "independent_review_comment_id": 5840614782,
+    "status": "SUPERSEDED_FOR_FUTURE_EXECUTION_BY_REPLACEMENT_CANDIDATE_REVIEW"
+  },
+  "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v2",
+  "review_anchor_sha": null,
+  "independent_review_issue": null,
+  "independent_review_decision": null,
+  "independent_review_comment_id": null,
   "independent_review_external_reviewer": "Claude",
-  "independent_review_scope": "synthetic/offline only; no empirical Binance BTCUSDT archive, empirical feature/model/forecast/P&L, Validation/OOS, or repository modification by reviewer",
+  "independent_review_scope": "synthetic/offline implementation review only; no empirical Binance BTCUSDT archive access, empirical feature/model/forecast/P&L execution, Validation/OOS access, or repository modification by reviewer",
   "residual_nonblocking_review_notes": [
-    "Execution authorization must bind any future execution checkout to the reviewed candidate plus explicitly allowed governance-only changes.",
-    "Future execution workflow should precheck the result output path is writable and unclaimed before consuming the one-shot attempt.",
-    "No all-11-fold x 2-arm real-component aggregation run has been performed in CI; current unmocked CI covers a real fold in both arms plus gap/reset/reproducibility behavior.",
-    "PAPER_FILL warmup-start exact-bar hard-fail is retained exactly as registered.",
-    "Fold and trial seed indices are prospectively fixed as 0-based.",
-    "Reviewer local Python 3.12.3 correctly failed the pinned Python 3.12.14 runtime gate; exact-candidate CI used Python 3.12.14."
+    "The reviewed-v2 anchor must not be created unless the replacement candidate is independently approved.",
+    "Execution authorization remains a separate later gate after independent implementation approval and v2 anchor creation.",
+    "Manual confirmation and durable one-shot claim are runtime gates and remain absent before execution authorization.",
+    "PAPER_FILL warmup-start exact-bar hard-fail and 0-based fold/trial seed semantics remain as registered."
   ]
 }
