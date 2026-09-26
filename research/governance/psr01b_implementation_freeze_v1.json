@@ -93,8 +93,19 @@
     "separate_execution_authorization_required": true,
     "manual_confirmation_required": true,
     "one_shot_execution_claim_required": true,
-    "execution_authorized": false,
-    "execution_scope": null,
+    "execution_authorized": true,
+    "execution_scope": {
+      "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+      "revision": 4,
+      "implementation_candidate_commit": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
+      "symbol": "BTCUSDT",
+      "market": "spot",
+      "timeframe": "1h",
+      "source_start": "2017-12-01T00:00:00Z",
+      "source_end_exclusive": "2022-01-01T00:00:00Z",
+      "execution_limit": 1,
+      "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1"
+    },
     "reviewed_candidate_anchor_created": true,
     "one_shot_claim_created": false,
     "allowed_post_candidate_paths": [
@@ -196,11 +207,11 @@
     }
   },
   "protected_access": {
-    "empirical_binance_archive_access_authorized": false,
-    "empirical_feature_generation_authorized": false,
-    "empirical_model_fit_authorized": false,
-    "empirical_forecast_generation_authorized": false,
-    "empirical_pnl_authorized": false,
+    "empirical_binance_archive_access_authorized": true,
+    "empirical_feature_generation_authorized": true,
+    "empirical_model_fit_authorized": true,
+    "empirical_forecast_generation_authorized": true,
+    "empirical_pnl_authorized": true,
     "validation_or_oos_access_authorized": false,
     "paper_trading_authorized": false,
     "live_trading_authorized": false,
