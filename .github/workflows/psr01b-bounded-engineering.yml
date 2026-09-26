@@ -1,0 +1,131 @@
+name: PSR-01B Bounded Engineering
+# remediation round 3 synthetic/offline verification
+on:
+  push:
+    branches: [psr-01b-bounded-implementation]
+    paths:
+      - 'src/research_core/psr01b_core.py'
+      - 'src/research_core/psr01b_features.py'
+      - 'src/research_core/psr01b_ta.py'
+      - 'src/research_core/psr01b_egarch.py'
+      - 'src/research_core/psr01b_model.py'
+      - 'src/research_core/psr01b_matrix.py'
+      - 'src/research_core/psr01b_benchmarks.py'
+      - 'src/research_core/psr01b_preflight.py'
+      - 'src/research_core/psr01b_runner.py'
+      - 'src/research_core/psr01b_execution_lock.py'
+      - 'research/scripts/run_psr01b_development_v1.py'
+      - 'tests/test_psr01b_execution_safety.py'
+      - '.github/workflows/psr01b-development-execution-v1.yml'
+      - 'tests/test_psr01b_core.py'
+      - 'tests/test_psr01b_features.py'
+      - 'tests/test_psr01b_ta.py'
+      - 'tests/test_psr01b_egarch.py'
+      - 'tests/test_psr01b_model.py'
+      - 'tests/test_psr01b_matrix.py'
+      - 'tests/test_psr01b_benchmarks.py'
+      - 'tests/test_psr01b_preflight.py'
+      - 'tests/test_psr01b_runner.py'
+      - '.github/workflows/psr01b-bounded-engineering.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[dev]'
+      - name: Install exact PSR-01B runtime additions
+        run: pip install pandas==3.0.6 xgboost==3.4.1 optuna==5.0.0 arch==8.0.0 statsmodels==0.15.0
+      - name: Verify PSR-01B synthetic numerical core only
+        run: python -m pytest -q tests/test_psr01b_core.py tests/test_psr01b_features.py tests/test_psr01b_ta.py tests/test_psr01b_egarch.py tests/test_psr01b_model.py tests/test_psr01b_matrix.py tests/test_psr01b_benchmarks.py tests/test_psr01b_preflight.py tests/test_psr01b_runner.py tests/test_psr01b_execution_safety.py
+      - name: Verify offline suite under simulated authorized governance state
+        run: |
+          cp research/governance/psr01b_implementation_freeze_v1.json /tmp/psr01b-freeze.json
+          restore_freeze() {
+            cp /tmp/psr01b-freeze.json research/governance/psr01b_implementation_freeze_v1.json
+          }
+          trap restore_freeze EXIT
+          python - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          path = Path("research/governance/psr01b_implementation_freeze_v1.json")
+          freeze = json.loads(path.read_text(encoding="utf-8"))
+          head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+          freeze["implementation"]["implementation_candidate_commit"] = head
+          freeze["implementation"]["reviewed_implementation_commit"] = head
+          freeze["implementation"]["independent_implementation_reviewed"] = True
+          freeze["implementation_file_git_blob_sha1"] = {
+              file_path: subprocess.check_output(
+                  ["git", "hash-object", file_path], text=True
+              ).strip()
+              for file_path in freeze["implementation_file_git_blob_sha1"]
+          }
+          freeze["future_governance"]["reviewed_candidate_anchor_created"] = True
+          freeze["future_governance"]["execution_authorized"] = True
+          freeze["future_governance"]["execution_scope"] = {
+              "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+              "revision": 4,
+              "implementation_candidate_commit": head,
+              "symbol": "BTCUSDT",
+              "market": "spot",
+              "timeframe": "1h",
+              "source_start": "2017-12-01T00:00:00Z",
+              "source_end_exclusive": "2022-01-01T00:00:00Z",
+              "execution_limit": 1,
+              "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1",
+          }
+          for key in (
+              "empirical_binance_archive_access_authorized",
+              "empirical_feature_generation_authorized",
+              "empirical_model_fit_authorized",
+              "empirical_forecast_generation_authorized",
+              "empirical_pnl_authorized",
+          ):
+              freeze["protected_access"][key] = True
+          for key in (
+              "validation_or_oos_access_authorized",
+              "paper_trading_authorized",
+              "live_trading_authorized",
+              "leverage_authorized",
+              "derivatives_execution_authorized",
+          ):
+              freeze["protected_access"][key] = False
+          freeze["review_anchor_ref"] = "refs/heads/psr-01b-bounded-implementation-reviewed-v3"
+          freeze["review_anchor_sha"] = head
+          path.write_text(json.dumps(freeze, indent=2) + "\n", encoding="utf-8")
+          PY
+          python -m pytest -q \
+            tests/test_psr01b_preflight.py \
+            tests/test_psr01b_runner.py \
+            tests/test_psr01b_execution_safety.py
+          restore_freeze
+          trap - EXIT
+          git diff --exit-code -- research/governance/psr01b_implementation_freeze_v1.json
+      - name: Verify PSR-01B unmocked synthetic end-to-end
+        env:
+          PSR01B_UNMOCKED_E2E: '1'
+        run: python -m pytest -q tests/test_psr01b_runner.py::test_unmocked_synthetic_end_to_end_real_components_both_arms_gap_and_reproducibility
+      - name: Verify full PSR-01B 11x2 production-math synthetic dry run
+        env:
+          PSR01B_FULL_SYNTHETIC_DRY_RUN: '1'
+        run: python -m pytest -q -s tests/test_psr01b_execution_safety.py::test_full_11x2_production_math_synthetic_dry_run
+      - name: Verify pre-existing AMS-DEP baseline-mismatch files are unchanged
+        run: |
+          test "$(git hash-object research/governance/ams_dep_release_gate_v1.json)" = "f633b10fadd95e79deee707fac18b5cac5a55bab"
+          test "$(git hash-object tests/test_ams_dep_full_pipeline_runner.py)" = "24e5ddfd612e4f47fe326dab8e6ca90858eed2a9"
+          test "$(git hash-object research/scripts/run_ams_dep_full_pipeline_integrity.py)" = "75bab7b7346bddea410f31c8f44c281a9e8cba9b"
+      - name: Repository regression excluding one pre-existing AMS-DEP fixture mismatch
+        run: python -m pytest -q --deselect tests/test_ams_dep_full_pipeline_runner.py::test_valid_authorized_contract_passes

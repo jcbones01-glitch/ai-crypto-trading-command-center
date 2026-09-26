@@ -1,0 +1,272 @@
+{
+  "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
+  "version": 1,
+  "status": "INDEPENDENTLY_APPROVED_REVIEW_ANCHORED_V3_EXECUTION_LOCKED_PENDING_REF_PROTECTION",
+  "approved_specification": {
+    "issue": 90,
+    "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
+    "approval_comment_id": 5821484000,
+    "exact_approved_head": "16d5193f0c80b5899f5084e76a42917e824e0936",
+    "specification_path": "research/governance/psr01b_bounded_spec_v1.json",
+    "specification_git_blob_sha1": "47c5379eeb4eae8c5890814c92e29b86bfddb23e",
+    "revision": 4
+  },
+  "implementation": {
+    "issue": 91,
+    "pull_request": 92,
+    "branch": "psr-01b-bounded-implementation",
+    "implementation_candidate_commit": "9ef234210163dba8633a11acc74be0de8581be7c",
+    "reviewed_implementation_commit": "9ef234210163dba8633a11acc74be0de8581be7c",
+    "independent_implementation_review_required": true,
+    "independent_implementation_reviewed": true,
+    "superseded_candidate_commit": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac"
+  },
+  "implementation_file_git_blob_sha1": {
+    ".github/workflows/psr01b-bounded-engineering.yml": "9f3871bde83b30d2197f1d328150cd8d72aef259",
+    ".github/workflows/psr01b-development-execution-v1.yml": "fe7531c5b43da3cdca6bf25222c5696d3af2b1b2",
+    "research/scripts/run_psr01b_development_v1.py": "e0b32d3c090f80d2be24abe0465fd3df15fa49ed",
+    "src/research_core/psr01b_execution_lock.py": "02ca038b18db105670f93650246f3cafdf800bd3",
+    "src/research_core/psr01b_core.py": "2b98cd2d49983bdd703ff448b00b7114faabe3c1",
+    "src/research_core/psr01b_features.py": "e9819b4a62a9fc117ead656abc2b6c344c4c0158",
+    "src/research_core/psr01b_ta.py": "1936d62b2d62e38ceab91118e2e6214b3338af11",
+    "src/research_core/psr01b_egarch.py": "af2806a9fb9fb25519623a59a682a5689b7601e1",
+    "src/research_core/psr01b_model.py": "812279770dee0c5479f3fb94c81e6abf356712fb",
+    "src/research_core/psr01b_matrix.py": "b255c53bfcdf3ddc094969185515843781238c31",
+    "src/research_core/psr01b_benchmarks.py": "1eb84d0ba14e9d6c430afa7c28b870612cb0f1e9",
+    "src/research_core/psr01b_preflight.py": "9b0646098e4691a8fcddcca0a012d56309bb4b5b",
+    "src/research_core/psr01b_runner.py": "dd889d8d91d138d727c7bd1f51673a00b0ed3492",
+    "tests/test_psr01b_core.py": "8dcd00b5f357c2e7e02f0d2d14b5c26f55f27b2c",
+    "tests/test_psr01b_features.py": "c94c43c741eaf4267b60d47a484fce03421508c2",
+    "tests/test_psr01b_ta.py": "0c8ea9bff6a703f050355836aaae022b79083dbf",
+    "tests/test_psr01b_egarch.py": "aac65991effb6747ec3fc154e10a365deff2dfbb",
+    "tests/test_psr01b_model.py": "66779340f681c1a5cb0024def2408055e3993744",
+    "tests/test_psr01b_matrix.py": "4bd84a8c4ec68066a12566892573f888c3d34d4c",
+    "tests/test_psr01b_benchmarks.py": "01e77c3772b9266d5c0c59a4684c8ed263d9f059",
+    "tests/test_psr01b_preflight.py": "8cec5c95622d3c28bfcc849da980035f02e7a3c8",
+    "tests/test_psr01b_runner.py": "96dcc8863210df4b441d1eb8b39509ccf7cdf16f",
+    "tests/test_psr01b_execution_safety.py": "338fc8ce38f61a4980954a83c7370fe077532b04"
+  },
+  "pinned_upstream_git_blob_sha1": {
+    "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
+    "src/research_core/data_quality.py": "a8251c4288013d8264a85bb4cda44007459e1adf",
+    "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+    "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+    "src/research_core/archive_security.py": "cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b",
+    "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534",
+    "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
+    "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+    "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+    "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
+  },
+  "candidate_evidence": {
+    "workflow_run_id": 36239499845,
+    "workflow_event": "push",
+    "branch": "psr-01b-bounded-implementation",
+    "exact_head": "9ef234210163dba8633a11acc74be0de8581be7c",
+    "conclusion": "success",
+    "completed_at": "2026-09-26T13:40:09Z",
+    "psr01b_synthetic_suite": "PASS",
+    "simulated_authorized_governance_offline_suite": "PASS",
+    "unmocked_synthetic_end_to_end": "PASS",
+    "full_11x2_production_math_synthetic_dry_run": "PASS",
+    "preexisting_ams_dep_baseline_mismatch_files_unchanged": "PASS",
+    "repository_regression": "PASS_EXCEPT_EXPLICIT_PREEXISTING_BASELINE_FIXTURE",
+    "download_retry_synthetic_tests": {
+      "transient_failure_then_success": "PASS",
+      "exhausted_retries": "PASS",
+      "checksum_mismatch_not_retried": "PASS",
+      "strict_retry_classifier": "PASS"
+    },
+    "runtime_pin_verification": "PASS",
+    "thread_environment_pin_verification": "PASS",
+    "empirical_data_accessed": false
+  },
+  "implementation_notes": {
+    "xgboost_api": "NATIVE_XGBOOST_3_4_1",
+    "analytic_specification_changed": false,
+    "scientific_modules_byte_identical_to_previously_approved_candidate": true,
+    "execution_safety_remediation_only": true,
+    "manual_execution_workflow_trigger": "workflow_dispatch_only",
+    "claim_semantics": "annotated fixed tag binds execution SHA to GitHub run ID, run attempt, and actor",
+    "pinned_upstream_modules_byte_identical": true,
+    "download_retry_policy": {
+      "maximum_attempts": 4,
+      "exponential_backoff_seconds": [
+        5,
+        15,
+        45
+      ],
+      "retry_only": [
+        "network errors",
+        "timeouts",
+        "HTTP 429",
+        "HTTP 5xx"
+      ],
+      "never_retry": [
+        "archive checksum mismatch",
+        "registered checksum mismatch",
+        "registration mismatch",
+        "non-retryable HTTP errors"
+      ],
+      "partial_file_deleted_before_each_retry": true,
+      "attempt_record_fields": [
+        "archive",
+        "attempt",
+        "error_type"
+      ],
+      "incident_record_field": "source_acquisition_attempts"
+    }
+  },
+  "future_governance": {
+    "reviewed_candidate_anchor_required": true,
+    "separate_execution_authorization_required": true,
+    "manual_confirmation_required": true,
+    "one_shot_execution_claim_required": true,
+    "execution_authorized": false,
+    "execution_scope": null,
+    "reviewed_candidate_anchor_created": true,
+    "one_shot_claim_created": false,
+    "allowed_post_candidate_paths": [
+      "research/governance/psr01b_implementation_freeze_v1.json"
+    ],
+    "manual_confirmation_created": false,
+    "evidence_persistence_plan": {
+      "status": "FROZEN_BEFORE_EXECUTION_AUTHORIZATION",
+      "trigger": "After the one-shot workflow reaches a final conclusion, before any downstream research step or Validation/OOS access.",
+      "source_artifact_name": "psr01b-development-v1",
+      "source_artifact_retention_days": 90,
+      "permanent_repository_paths": {
+        "result": "research/experiments/psr01b_development_v1/evidence/result.json",
+        "incident": "research/experiments/psr01b_development_v1/evidence/incident.json",
+        "manifest": "research/experiments/psr01b_development_v1/evidence/evidence_manifest.json"
+      },
+      "manifest_required_fields": [
+        "execution_sha",
+        "reviewed_candidate_sha",
+        "governance_head_sha",
+        "implementation_freeze_git_blob_sha1",
+        "workflow_run_id",
+        "workflow_run_attempt",
+        "workflow_actor",
+        "workflow_conclusion",
+        "claim_ref",
+        "claim_tag_object_sha",
+        "claim_run_id",
+        "source_registration_id",
+        "source_checksum_evidence",
+        "result_sha256",
+        "incident_sha256",
+        "persisted_at_utc"
+      ],
+      "procedure": [
+        "Retrieve the exact result and incident bytes from the completed one-shot workflow artifact without rerunning any empirical code.",
+        "Compute SHA-256 for each persisted evidence file and build evidence_manifest.json from run and frozen-governance provenance.",
+        "Commit those exact bytes once to the listed repository paths in a governance/evidence-only follow-up commit.",
+        "Record the evidence commit SHA and file blob IDs on the execution-authorization issue.",
+        "Refuse overwrite: if any permanent evidence path already exists, stop and require independent review; never replace existing evidence.",
+        "The durable one-shot claim remains consumed regardless of workflow success or failure."
+      ],
+      "rerun_authorized": false,
+      "overwrite_authorized": false,
+      "validation_or_oos_access_required": false
+    },
+    "ref_protection": {
+      "status": "V3_ANCHOR_CREATED_PROTECTION_PENDING",
+      "existing_reviewed_v2_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v2",
+      "existing_reviewed_v2_anchor_sha": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
+      "existing_reviewed_v2_ruleset_id": 24038523,
+      "existing_claim_ruleset_id": 24038561,
+      "reviewed_v3_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v3",
+      "reviewed_v3_anchor_sha": "9ef234210163dba8633a11acc74be0de8581be7c",
+      "reviewed_v3_anchor_created": true,
+      "reviewed_v3_protection_verified": false,
+      "claim_ref_exists": false
+    },
+    "execution_prerequisites": {
+      "status": "PENDING_V3_ANCHOR_PROTECTION_AND_SEPARATE_EXECUTION_AUTHORIZATION_REVIEW",
+      "prior_prerequisite_issue": 96,
+      "evidence_persistence_plan_frozen": true,
+      "empirical_execution_authorized": false
+    }
+  },
+  "protected_access": {
+    "empirical_binance_archive_access_authorized": false,
+    "empirical_feature_generation_authorized": false,
+    "empirical_model_fit_authorized": false,
+    "empirical_forecast_generation_authorized": false,
+    "empirical_pnl_authorized": false,
+    "validation_or_oos_access_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "leverage_authorized": false,
+    "derivatives_execution_authorized": false
+  },
+  "notes": "Download-retry remediation candidate 9ef234210163dba8633a11acc74be0de8581be7c is independently approved and anchored at reviewed-v3. Execution remains fully locked; all protected-access permissions are false. The historical reviewed-v2 anchor and existing v2/claim rulesets remain untouched. Before any new execution authorization, the reviewed-v3 anchor must receive its own exact repository ruleset protection and that protection must be independently verified.",
+  "remediation": {
+    "type": "PRE_EXECUTION_DOWNLOAD_RETRY_SAFETY_HARDENING",
+    "superseded_candidate": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
+    "replacement_candidate": "9ef234210163dba8633a11acc74be0de8581be7c",
+    "changes": [
+      {
+        "path": "research/scripts/run_psr01b_development_v1.py",
+        "purpose": "Bound archive+checksum acquisition retries to four attempts with 5s/15s/45s backoff; retry only transient network/timeout/HTTP 429/5xx failures; delete partial files before retry; record every attempt in incident provenance."
+      },
+      {
+        "path": "tests/test_psr01b_execution_safety.py",
+        "purpose": "Add synthetic fake-opener coverage for transient failure then success, exhausted retries, checksum mismatch no-retry, and strict retry classification."
+      },
+      {
+        "path": "src/research_core/psr01b_execution_lock.py",
+        "purpose": "Reserve a future reviewed-v3 anchor name so the protected historical reviewed-v2 anchor remains untouched."
+      },
+      {
+        "path": ".github/workflows/psr01b-bounded-engineering.yml",
+        "purpose": "Update synthetic authorized-state simulation to the future reviewed-v3 anchor name; no anchor is created by CI."
+      }
+    ],
+    "analytic_specification_changed": false,
+    "approved_specification_blob_unchanged": "47c5379eeb4eae8c5890814c92e29b86bfddb23e",
+    "scientific_modules_unchanged": true,
+    "pinned_upstream_modules_unchanged": true,
+    "empirical_data_accessed": false,
+    "validation_or_oos_accessed": false,
+    "empirical_execution_authorized": false
+  },
+  "historical_review_anchor": {
+    "ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v1",
+    "sha": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
+    "independent_review_issue": 93,
+    "independent_review_decision": "APPROVE_PSR01B_IMPLEMENTATION_FREEZE",
+    "independent_review_comment_id": 5840614782,
+    "status": "SUPERSEDED_FOR_FUTURE_EXECUTION_BY_REPLACEMENT_CANDIDATE_REVIEW"
+  },
+  "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v3",
+  "review_anchor_sha": "9ef234210163dba8633a11acc74be0de8581be7c",
+  "independent_review_issue": 99,
+  "independent_review_decision": "APPROVE_PSR01B_DOWNLOAD_RETRY_REMEDIATION_FREEZE",
+  "independent_review_comment_id": 5846894297,
+  "independent_review_external_reviewer": "Claude",
+  "independent_review_scope": "synthetic/offline implementation review only; no empirical BTCUSDT archive access, empirical feature/model/forecast/P&L execution, Validation/OOS access, repository mutation, new anchor creation, authorization, manual confirmation, or one-shot claim",
+  "residual_nonblocking_review_notes": [
+    "The existing reviewed-v2 anchor and its ruleset remain untouched historical evidence.",
+    "The reviewed-v3 anchor exists at the exact independently approved candidate but is not yet verified as protected.",
+    "A new exact v3 branch ruleset with no bypass actors must be created and verified before any execution authorization.",
+    "The existing one-shot claim tag ruleset remains valid and unchanged.",
+    "Manual confirmation and durable one-shot claim remain absent.",
+    "Validation/OOS, paper/live trading, leverage, derivatives, and all empirical execution permissions remain unauthorized."
+  ],
+  "historical_review_anchors": [
+    {
+      "ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v1",
+      "sha": "1174d56361fdef928f19a21dcf4e24a8f8caf828",
+      "status": "HISTORICAL_SUPERSEDED"
+    },
+    {
+      "ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v2",
+      "sha": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
+      "independent_review_issue": 95,
+      "independent_review_decision": "APPROVE_PSR01B_IMPLEMENTATION_FREEZE",
+      "status": "HISTORICAL_IMMUTABLE_PRESERVED_UNTOUCHED"
+    }
+  ]
+}
