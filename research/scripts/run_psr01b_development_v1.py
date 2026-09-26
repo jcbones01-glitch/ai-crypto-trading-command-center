@@ -27,6 +27,8 @@ from research_core.psr01b_preflight import load_registration
 OUTPUT_DIR = DEFAULT_RESULT_PATH.parent
 INCIDENT_PATH = OUTPUT_DIR / "incident.json"
 ARCHIVE_RE = re.compile(r"^BTCUSDT-1h-(\d{4})-(\d{2})\.zip$")
+MAX_DOWNLOAD_ATTEMPTS = 4
+DOWNLOAD_RETRY_DELAYS_SECONDS = (5, 15, 45)
 
 
 def _atomic_json(path: Path, payload: dict) -> None:
