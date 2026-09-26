@@ -10,7 +10,10 @@ import json
 import os
 from pathlib import Path
 import re
+import socket
 import tempfile
+import time
+from urllib.error import HTTPError, URLError
 
 from research_core.data_ingestion import archive_url, download_archive
 from research_core.psr01b_execution_lock import DEFAULT_RESULT_PATH, assert_execution_environment
@@ -39,8 +42,20 @@ def _atomic_json(path: Path, payload: dict) -> None:
     os.replace(temporary, path)
 
 
-def _acquire_registered_archives(registration: dict, destination: Path) -> list[Path]:
+def _retryable_download_error(exc: Exception) -> bool:
+    if isinstance(exc, HTTPError):
+        return exc.code == 429 or 500 <= exc.code <= 599
+    return isinstance(exc, (URLError, TimeoutError, socket.timeout, ConnectionError))
+
+
+def _acquire_registered_archives(
+    registration: dict,
+    destination: Path,
+    *,
+    attempt_log: list[dict[str, object]] | None = None,
+) -> list[Path]:
     expected = registration["source"]["archive_sha256"]
+    attempts = [] if attempt_log is None else attempt_log
     paths: list[Path] = []
     for name in sorted(expected):
         match = ARCHIVE_RE.fullmatch(name)
@@ -48,14 +63,46 @@ def _acquire_registered_archives(registration: dict, destination: Path) -> list[
             raise RuntimeError(f"unexpected registered archive name: {name}")
         year, month = int(match.group(1)), int(match.group(2))
         path = destination / name
-        checksum = download_archive(
-            archive_url("BTCUSDT", year, month),
-            path,
-            verify_checksum=True,
-        )
-        if checksum != str(expected[name]).lower():
-            raise RuntimeError(f"official checksum differs from registration: {name}")
-        paths.append(path)
+        for attempt in range(1, MAX_DOWNLOAD_ATTEMPTS + 1):
+            if path.exists():
+                path.unlink()
+            try:
+                checksum = download_archive(
+                    archive_url("BTCUSDT", year, month),
+                    path,
+                    verify_checksum=True,
+                )
+                if checksum != str(expected[name]).lower():
+                    raise RuntimeError(
+                        f"official checksum differs from registration: {name}"
+                    )
+            except Exception as exc:
+                attempts.append(
+                    {
+                        "archive": name,
+                        "attempt": attempt,
+                        "error_type": type(exc).__name__,
+                    }
+                )
+                if path.exists():
+                    path.unlink()
+                if (
+                    attempt >= MAX_DOWNLOAD_ATTEMPTS
+                    or not _retryable_download_error(exc)
+                ):
+                    raise
+                time.sleep(DOWNLOAD_RETRY_DELAYS_SECONDS[attempt - 1])
+                continue
+
+            attempts.append(
+                {
+                    "archive": name,
+                    "attempt": attempt,
+                    "error_type": None,
+                }
+            )
+            paths.append(path)
+            break
     return paths
 
 
@@ -69,6 +116,7 @@ def main() -> None:
         "actor": os.environ.get("GITHUB_ACTOR"),
         "workflow_event": os.environ.get("GITHUB_EVENT_NAME"),
         "market_data_accessed": False,
+        "source_acquisition_attempts": [],
         "completed": False,
         "recorded_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     }
@@ -88,7 +136,11 @@ def main() -> None:
         ) as temporary:
             incident["stage"] = "SOURCE_ACQUISITION"
             incident["market_data_accessed"] = True
-            archives = _acquire_registered_archives(registration, Path(temporary))
+            archives = _acquire_registered_archives(
+                registration,
+                Path(temporary),
+                attempt_log=incident["source_acquisition_attempts"],
+            )
             incident["stage"] = "REGISTERED_EXECUTION"
             result = execute_registered_one_shot(
                 archives,

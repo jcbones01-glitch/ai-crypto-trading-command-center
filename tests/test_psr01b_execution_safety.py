@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+import hashlib
 import io
 import json
 import math
@@ -10,11 +11,13 @@ from pathlib import Path
 import subprocess
 import sys
 import threading
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 import numpy as np
 import pytest
 
+import research.scripts.run_psr01b_development_v1 as development_script
+import research_core.data_ingestion as ingestion
 import research_core.psr01b_execution_lock as lock
 import research_core.psr01b_runner as runner
 from research_core.data_interfaces import MarketBar
@@ -36,6 +39,166 @@ class FakeResponse:
 
     def read(self):
         return json.dumps(self.payload).encode()
+
+
+class FakeBinaryResponse:
+    def __init__(self, payload: bytes):
+        self.payload = payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+    def read(self):
+        return self.payload
+
+
+def _single_archive_registration(payload: bytes) -> dict:
+    return {
+        "source": {
+            "archive_sha256": {
+                "BTCUSDT-1h-2021-12.zip": hashlib.sha256(payload).hexdigest(),
+            }
+        }
+    }
+
+
+def test_archive_download_retries_transient_network_failure_then_succeeds(
+    tmp_path, monkeypatch
+):
+    payload = b"synthetic-archive"
+    checksum = hashlib.sha256(payload).hexdigest()
+    sequence = [
+        URLError("temporary network failure"),
+        FakeBinaryResponse(payload),
+        FakeBinaryResponse((checksum + "  BTCUSDT-1h-2021-12.zip\n").encode()),
+    ]
+    sleeps = []
+
+    def fake_opener(url, timeout=60):
+        item = sequence.pop(0)
+        if isinstance(item, BaseException):
+            raise item
+        return item
+
+    monkeypatch.setattr(ingestion.urllib.request, "urlopen", fake_opener)
+    monkeypatch.setattr(development_script.time, "sleep", sleeps.append)
+
+    attempts = []
+    paths = development_script._acquire_registered_archives(
+        _single_archive_registration(payload),
+        tmp_path,
+        attempt_log=attempts,
+    )
+
+    assert [path.name for path in paths] == ["BTCUSDT-1h-2021-12.zip"]
+    assert paths[0].read_bytes() == payload
+    assert attempts == [
+        {
+            "archive": "BTCUSDT-1h-2021-12.zip",
+            "attempt": 1,
+            "error_type": "URLError",
+        },
+        {
+            "archive": "BTCUSDT-1h-2021-12.zip",
+            "attempt": 2,
+            "error_type": None,
+        },
+    ]
+    assert sleeps == [5]
+
+
+def test_archive_download_exhausts_four_attempts_on_http_5xx(
+    tmp_path, monkeypatch
+):
+    payload = b"synthetic-archive"
+    sleeps = []
+    calls = []
+
+    def fake_opener(url, timeout=60):
+        calls.append(url)
+        raise HTTPError(url, 503, "Service Unavailable", {}, io.BytesIO())
+
+    monkeypatch.setattr(ingestion.urllib.request, "urlopen", fake_opener)
+    monkeypatch.setattr(development_script.time, "sleep", sleeps.append)
+
+    attempts = []
+    with pytest.raises(HTTPError) as exc:
+        development_script._acquire_registered_archives(
+            _single_archive_registration(payload),
+            tmp_path,
+            attempt_log=attempts,
+        )
+
+    assert exc.value.code == 503
+    assert len(calls) == 4
+    assert attempts == [
+        {
+            "archive": "BTCUSDT-1h-2021-12.zip",
+            "attempt": attempt,
+            "error_type": "HTTPError",
+        }
+        for attempt in range(1, 5)
+    ]
+    assert sleeps == [5, 15, 45]
+    assert not (tmp_path / "BTCUSDT-1h-2021-12.zip").exists()
+
+
+def test_archive_checksum_mismatch_hard_fails_without_retry(
+    tmp_path, monkeypatch
+):
+    payload = b"synthetic-archive"
+    calls = []
+    sleeps = []
+    sequence = [
+        FakeBinaryResponse(payload),
+        FakeBinaryResponse(("0" * 64 + "  BTCUSDT-1h-2021-12.zip\n").encode()),
+    ]
+
+    def fake_opener(url, timeout=60):
+        calls.append(url)
+        return sequence.pop(0)
+
+    monkeypatch.setattr(ingestion.urllib.request, "urlopen", fake_opener)
+    monkeypatch.setattr(development_script.time, "sleep", sleeps.append)
+
+    attempts = []
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        development_script._acquire_registered_archives(
+            _single_archive_registration(payload),
+            tmp_path,
+            attempt_log=attempts,
+        )
+
+    assert len(calls) == 2
+    assert attempts == [
+        {
+            "archive": "BTCUSDT-1h-2021-12.zip",
+            "attempt": 1,
+            "error_type": "ValueError",
+        }
+    ]
+    assert sleeps == []
+    assert not (tmp_path / "BTCUSDT-1h-2021-12.zip").exists()
+
+
+def test_download_retry_classifier_is_strict():
+    assert development_script._retryable_download_error(URLError("network"))
+    assert development_script._retryable_download_error(TimeoutError("timeout"))
+    assert development_script._retryable_download_error(
+        HTTPError("url", 429, "Too Many Requests", {}, io.BytesIO())
+    )
+    assert development_script._retryable_download_error(
+        HTTPError("url", 500, "Server Error", {}, io.BytesIO())
+    )
+    assert not development_script._retryable_download_error(
+        HTTPError("url", 404, "Not Found", {}, io.BytesIO())
+    )
+    assert not development_script._retryable_download_error(
+        ValueError("Binance archive SHA-256 checksum mismatch")
+    )
 
 
 class AtomicFakeGitHub:
