@@ -216,7 +216,7 @@
       "status": "AUTHORIZED_FOR_DEVELOPMENT_ONLY_PENDING_AUTHORIZED_HEAD_RECHECK_AND_MANUAL_CONFIRMATION",
       "prior_prerequisite_issue": 96,
       "evidence_persistence_plan_frozen": true,
-      "empirical_execution_authorized": false
+      "empirical_execution_authorized": true
     },
     "execution_authorization_review": {
       "issue": 100,
@@ -240,7 +240,7 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "Download-retry remediation candidate 9ef234210163dba8633a11acc74be0de8581be7c is independently approved and anchored at reviewed-v3. Execution remains fully locked; all protected-access permissions are false. The historical reviewed-v2 anchor and existing v2/claim rulesets remain untouched. Before any new execution authorization, the reviewed-v3 anchor must receive its own exact repository ruleset protection and that protection must be independently verified.",
+  "notes": "Download-retry remediation candidate 9ef234210163dba8633a11acc74be0de8581be7c is independently approved (#99) and anchored at reviewed-v3, protected by ruleset 24045086. Development execution is authorized (#100) for exactly one PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1 run with the five Development empirical permissions; Validation/OOS, paper/live trading, leverage, and derivatives remain unauthorized. Manual confirmation and the durable one-shot claim remain absent. The historical reviewed-v2 anchor and v2/claim rulesets remain untouched.",
   "remediation": {
     "type": "PRE_EXECUTION_DOWNLOAD_RETRY_SAFETY_HARDENING",
     "superseded_candidate": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
@@ -290,7 +290,7 @@
     "The existing reviewed-v2 anchor and its ruleset remain untouched historical evidence.",
     "The existing one-shot claim tag ruleset remains valid and unchanged.",
     "Manual confirmation and durable one-shot claim remain absent.",
-    "Validation/OOS, paper/live trading, leverage, derivatives, and all empirical execution permissions remain unauthorized."
+    "Validation/OOS, paper/live trading, leverage, and derivatives remain unauthorized; only the five Development empirical permissions are authorized, for the single registered one-shot."
   ],
   "historical_review_anchors": [
     {
