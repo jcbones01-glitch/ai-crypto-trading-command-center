@@ -218,6 +218,110 @@ def assert_manual_confirmation(
     }
 
 
+def _create_claim_tag_object(
+    repository: str,
+    executing_sha: str,
+    token: str,
+    *,
+    run_id: str,
+    run_attempt: str,
+    actor: str,
+    opener: Callable = urlopen,
+) -> dict[str, str]:
+    if not repository or "/" not in repository or not token:
+        raise PSR01BError("repository and token required for durable-claim creation")
+    if not run_id or not run_attempt or not actor:
+        raise PSR01BError("PSR-01B claim run provenance is incomplete")
+    record = {
+        "claim_ref": DEFAULT_CLAIM_REF,
+        "execution_sha": executing_sha,
+        "run_id": run_id,
+        "run_attempt": run_attempt,
+        "actor": actor,
+    }
+    message = json.dumps(record, sort_keys=True, separators=(",", ":"))
+    payload = json.dumps(
+        {
+            "tag": DEFAULT_CLAIM_REF.removeprefix("refs/tags/"),
+            "message": message,
+            "object": executing_sha,
+            "type": "commit",
+        }
+    ).encode("utf-8")
+    url = f"https://api.github.com/repos/{repository}/git/tags"
+    try:
+        response = opener(_request(url, token, method="POST", data=payload))
+        with response:
+            body = response.read()
+    except HTTPError as exc:
+        raise PSR01BError(f"create-claim-tag failed with HTTP {exc.code}") from exc
+    try:
+        created = json.loads(body)
+    except json.JSONDecodeError as exc:
+        raise PSR01BError("invalid create-claim-tag response") from exc
+    tag_sha = created.get("sha")
+    obj = created.get("object", {})
+    if (
+        created.get("tag") != DEFAULT_CLAIM_REF.removeprefix("refs/tags/")
+        or created.get("message", "").strip() != message
+        or obj.get("sha") != executing_sha
+        or obj.get("type") != "commit"
+        or not isinstance(tag_sha, str)
+        or len(tag_sha) != 40
+    ):
+        raise PSR01BError("GitHub returned unexpected PSR-01B claim tag object")
+    return {
+        "ref": DEFAULT_CLAIM_REF,
+        "sha": executing_sha,
+        "tag_object_sha": tag_sha,
+        "run_id": run_id,
+        "run_attempt": run_attempt,
+        "actor": actor,
+    }
+
+
+def _resolve_claim_record(
+    repository: str, token: str, *, opener: Callable = urlopen
+) -> dict[str, str] | None:
+    tag_sha = _resolve_fixed_ref(
+        repository, token, DEFAULT_CLAIM_REF, opener=opener
+    )
+    if tag_sha is None:
+        return None
+    url = f"https://api.github.com/repos/{repository}/git/tags/{tag_sha}"
+    try:
+        response = opener(_request(url, token))
+        with response:
+            body = response.read()
+    except HTTPError as exc:
+        raise PSR01BError(f"claim-tag lookup failed with HTTP {exc.code}") from exc
+    try:
+        tag = json.loads(body)
+        record = json.loads(str(tag.get("message", "")).strip())
+    except (json.JSONDecodeError, TypeError, ValueError) as exc:
+        raise PSR01BError("invalid durable PSR-01B claim tag") from exc
+    obj = tag.get("object", {})
+    if (
+        tag.get("sha") != tag_sha
+        or tag.get("tag") != DEFAULT_CLAIM_REF.removeprefix("refs/tags/")
+        or obj.get("type") != "commit"
+        or record.get("claim_ref") != DEFAULT_CLAIM_REF
+        or record.get("execution_sha") != obj.get("sha")
+    ):
+        raise PSR01BError("durable PSR-01B claim tag identity mismatch")
+    for key in ("execution_sha", "run_id", "run_attempt", "actor"):
+        if not isinstance(record.get(key), str) or not record[key]:
+            raise PSR01BError("durable PSR-01B claim provenance is incomplete")
+    return {
+        "ref": DEFAULT_CLAIM_REF,
+        "sha": record["execution_sha"],
+        "tag_object_sha": tag_sha,
+        "run_id": record["run_id"],
+        "run_attempt": record["run_attempt"],
+        "actor": record["actor"],
+    }
+
+
 def claim_exists(repository: str, token: str, *, opener: Callable = urlopen) -> bool:
     return _resolve_fixed_ref(repository, token, DEFAULT_CLAIM_REF, opener=opener) is not None
 
@@ -227,8 +331,32 @@ def assert_claim_absent(repository: str, token: str, *, opener: Callable = urlop
         raise PSR01BError(f"one-shot claim already exists: {DEFAULT_CLAIM_REF}")
 
 
-def create_claim(repository: str, sha: str, token: str, *, opener: Callable = urlopen):
-    return create_fixed_ref(repository, sha, token, ref=DEFAULT_CLAIM_REF, opener=opener)
+def create_claim(
+    repository: str,
+    sha: str,
+    token: str,
+    *,
+    environ: Mapping[str, str] | None = None,
+    opener: Callable = urlopen,
+) -> dict[str, str]:
+    env = os.environ if environ is None else environ
+    tag = _create_claim_tag_object(
+        repository,
+        sha,
+        token,
+        run_id=env.get("GITHUB_RUN_ID", ""),
+        run_attempt=env.get("GITHUB_RUN_ATTEMPT", ""),
+        actor=env.get("GITHUB_ACTOR", ""),
+        opener=opener,
+    )
+    create_fixed_ref(
+        repository,
+        tag["tag_object_sha"],
+        token,
+        ref=DEFAULT_CLAIM_REF,
+        opener=opener,
+    )
+    return tag
 
 
 def assert_claim_environment(
@@ -241,14 +369,29 @@ def assert_claim_environment(
         raise PSR01BError("forwarded one-shot claim ref is missing or incorrect")
     if env.get("PSR01B_DEVELOPMENT_V1_CLAIM_SHA") != executing_sha:
         raise PSR01BError("forwarded one-shot claim SHA mismatch")
+    current_run = env.get("GITHUB_RUN_ID", "")
+    current_attempt = env.get("GITHUB_RUN_ATTEMPT", "")
+    current_actor = env.get("GITHUB_ACTOR", "")
+    if not current_run or not current_attempt or not current_actor:
+        raise PSR01BError("PSR-01B current workflow provenance is incomplete")
+    if env.get("PSR01B_DEVELOPMENT_V1_CLAIM_RUN_ID") != current_run:
+        raise PSR01BError("forwarded one-shot claim run ID mismatch")
     repository = repository or env.get("GITHUB_REPOSITORY", "")
     token = token or env.get("GITHUB_TOKEN", "")
-    target = _resolve_fixed_ref(repository, token, DEFAULT_CLAIM_REF, opener=opener)
-    if target is None:
+    record = _resolve_claim_record(repository, token, opener=opener)
+    if record is None:
         raise PSR01BError("durable PSR-01B one-shot claim does not exist")
-    if target != executing_sha:
+    if record["sha"] != executing_sha:
         raise PSR01BError("durable PSR-01B one-shot claim target mismatch")
-    return {"ref": DEFAULT_CLAIM_REF, "sha": target}
+    if record["run_id"] != current_run:
+        raise PSR01BError("durable PSR-01B one-shot claim belongs to another workflow run")
+    if record["run_attempt"] != current_attempt:
+        raise PSR01BError("durable PSR-01B one-shot claim attempt mismatch")
+    if record["actor"] != current_actor:
+        raise PSR01BError("durable PSR-01B one-shot claim actor mismatch")
+    if env.get("PSR01B_DEVELOPMENT_V1_CLAIM_TAG_OBJECT_SHA") != record["tag_object_sha"]:
+        raise PSR01BError("forwarded one-shot claim tag-object SHA mismatch")
+    return record
 
 
 def reservation_path(result_path: Path) -> Path:
@@ -380,7 +523,10 @@ def main() -> None:
     parser.add_argument("action", choices=("preflight", "claim"))
     parser.add_argument("--repository", default=os.environ.get("GITHUB_REPOSITORY", ""))
     parser.add_argument("--sha", default=os.environ.get("GITHUB_SHA", ""))
-    parser.add_argument("--confirmation", required=True)
+    parser.add_argument(
+        "--confirmation",
+        default=os.environ.get("PSR01B_DEVELOPMENT_V1_CONFIRMATION", ""),
+    )
     parser.add_argument("--result-path", default=str(DEFAULT_RESULT_PATH))
     parser.add_argument("--github-output", default=os.environ.get("GITHUB_OUTPUT"))
     args = parser.parse_args()
@@ -405,11 +551,13 @@ def main() -> None:
         print("PSR01B_DEVELOPMENT_V1_PREFLIGHT_PASS")
         return
 
-    claim = create_claim(args.repository, args.sha, token)
+    claim = create_claim(args.repository, args.sha, token, environ=os.environ)
     if args.github_output:
         with Path(args.github_output).open("a", encoding="utf-8") as handle:
             handle.write(f"claim_ref={claim['ref']}\n")
             handle.write(f"claim_sha={claim['sha']}\n")
+            handle.write(f"claim_tag_object_sha={claim['tag_object_sha']}\n")
+            handle.write(f"claim_run_id={claim['run_id']}\n")
     print(json.dumps(claim, sort_keys=True))
 
 
