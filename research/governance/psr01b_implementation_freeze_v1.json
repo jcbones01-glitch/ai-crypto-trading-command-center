@@ -100,7 +100,47 @@
     "allowed_post_candidate_paths": [
       "research/governance/psr01b_implementation_freeze_v1.json"
     ],
-    "manual_confirmation_created": false
+    "manual_confirmation_created": false,
+    "evidence_persistence_plan": {
+      "status": "FROZEN_BEFORE_EXECUTION_AUTHORIZATION",
+      "trigger": "After the one-shot workflow reaches a final conclusion, before any downstream research step or Validation/OOS access.",
+      "source_artifact_name": "psr01b-development-v1",
+      "source_artifact_retention_days": 90,
+      "permanent_repository_paths": {
+        "result": "research/experiments/psr01b_development_v1/evidence/result.json",
+        "incident": "research/experiments/psr01b_development_v1/evidence/incident.json",
+        "manifest": "research/experiments/psr01b_development_v1/evidence/evidence_manifest.json"
+      },
+      "manifest_required_fields": [
+        "execution_sha",
+        "reviewed_candidate_sha",
+        "governance_head_sha",
+        "implementation_freeze_git_blob_sha1",
+        "workflow_run_id",
+        "workflow_run_attempt",
+        "workflow_actor",
+        "workflow_conclusion",
+        "claim_ref",
+        "claim_tag_object_sha",
+        "claim_run_id",
+        "source_registration_id",
+        "source_checksum_evidence",
+        "result_sha256",
+        "incident_sha256",
+        "persisted_at_utc"
+      ],
+      "procedure": [
+        "Retrieve the exact result and incident bytes from the completed one-shot workflow artifact without rerunning any empirical code.",
+        "Compute SHA-256 for each persisted evidence file and build evidence_manifest.json from run and frozen-governance provenance.",
+        "Commit those exact bytes once to the listed repository paths in a governance/evidence-only follow-up commit.",
+        "Record the evidence commit SHA and file blob IDs on the execution-authorization issue.",
+        "Refuse overwrite: if any permanent evidence path already exists, stop and require independent review; never replace existing evidence.",
+        "The durable one-shot claim remains consumed regardless of workflow success or failure."
+      ],
+      "rerun_authorized": false,
+      "overwrite_authorized": false,
+      "validation_or_oos_access_required": false
+    }
   },
   "protected_access": {
     "empirical_binance_archive_access_authorized": false,
@@ -114,7 +154,7 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "Candidate 097df9c22abd2ca01cdd93754bbf55ff9129d7ac was independently approved in Issue #95 and the live reviewed-v2 anchor is verified at that exact commit. This governance update authorizes no empirical source access or execution. Separate Development execution authorization, explicit manual confirmation, durable one-shot claim creation, protected ref controls, and evidence-persistence controls remain mandatory before any empirical access.",
+  "notes": "Candidate 097df9c22abd2ca01cdd93754bbf55ff9129d7ac is independently approved and live-anchored by reviewed-v2. Execution remains locked. A deterministic post-run evidence-persistence plan is frozen in governance; repository-enforced protection of the reviewed-v2 anchor and fixed claim ref remains the blocking prerequisite before execution authorization.",
   "remediation": {
     "originating_review_issue": 95,
     "originating_review_comment_id": 5843210601,
