@@ -6,6 +6,9 @@ import io
 import json
 import math
 import os
+from pathlib import Path
+import subprocess
+import sys
 import threading
 from urllib.error import HTTPError
 
@@ -39,9 +42,16 @@ class AtomicFakeGitHub:
     def __init__(self):
         self.guard = threading.Lock()
         self.refs = {}
+        self.tag_objects = {}
+        self.next_tag = 1
 
     def __call__(self, request):
-        if request.get_method() == "GET":
+        method = request.get_method()
+        if method == "GET":
+            if "/git/tags/" in request.full_url:
+                tag_sha = request.full_url.rsplit("/", 1)[-1]
+                if tag_sha in self.tag_objects:
+                    return FakeResponse(self.tag_objects[tag_sha])
             for ref, sha in self.refs.items():
                 short = ref.removeprefix("refs/")
                 if request.full_url.endswith("/git/ref/" + short):
@@ -53,7 +63,24 @@ class AtomicFakeGitHub:
                 {},
                 io.BytesIO(b'{"message":"Not Found"}'),
             )
+
         payload = json.loads(request.data)
+        if request.full_url.endswith("/git/tags"):
+            with self.guard:
+                tag_sha = f"{self.next_tag:040x}"
+                self.next_tag += 1
+                created = {
+                    "sha": tag_sha,
+                    "tag": payload["tag"],
+                    "message": payload["message"],
+                    "object": {
+                        "sha": payload["object"],
+                        "type": payload["type"],
+                    },
+                }
+                self.tag_objects[tag_sha] = created
+                return FakeResponse(created)
+
         ref = payload["ref"]
         with self.guard:
             if ref in self.refs:
@@ -124,20 +151,57 @@ def test_authorized_scope_requires_bounded_empirical_true_and_protected_false():
         verify_execution_authorization_scope(bad)
 
 
-def test_claim_is_atomic_duplicate_is_consumed_and_race_has_one_winner():
+def test_claim_is_atomic_run_bound_duplicate_consumed_and_race_has_one_winner():
+    env = {
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GITHUB_ACTOR": "reviewed-operator",
+    }
     backend = AtomicFakeGitHub()
     lock.assert_claim_absent("owner/repo", "token", opener=backend)
-    claim = lock.create_claim("owner/repo", "a" * 40, "token", opener=backend)
-    assert claim == {"ref": lock.DEFAULT_CLAIM_REF, "sha": "a" * 40}
+    claim = lock.create_claim(
+        "owner/repo", "a" * 40, "token", environ=env, opener=backend
+    )
+    assert claim["ref"] == lock.DEFAULT_CLAIM_REF
+    assert claim["sha"] == "a" * 40
+    assert claim["run_id"] == "123"
+    assert backend.refs[lock.DEFAULT_CLAIM_REF] == claim["tag_object_sha"]
+
+    forwarded = {
+        **env,
+        "GITHUB_REPOSITORY": "owner/repo",
+        "GITHUB_TOKEN": "token",
+        "PSR01B_DEVELOPMENT_V1_CLAIM_REF": lock.DEFAULT_CLAIM_REF,
+        "PSR01B_DEVELOPMENT_V1_CLAIM_SHA": "a" * 40,
+        "PSR01B_DEVELOPMENT_V1_CLAIM_TAG_OBJECT_SHA": claim["tag_object_sha"],
+        "PSR01B_DEVELOPMENT_V1_CLAIM_RUN_ID": "123",
+    }
+    assert lock.assert_claim_environment(
+        "a" * 40, environ=forwarded, opener=backend
+    )["run_id"] == "123"
+    replay = {
+        **forwarded,
+        "GITHUB_RUN_ID": "124",
+        "PSR01B_DEVELOPMENT_V1_CLAIM_RUN_ID": "124",
+    }
+    with pytest.raises(PSR01BError, match="belongs to another workflow run"):
+        lock.assert_claim_environment("a" * 40, environ=replay, opener=backend)
+
     with pytest.raises(PSR01BError, match="already exists"):
-        lock.create_claim("owner/repo", "a" * 40, "token", opener=backend)
+        lock.create_claim(
+            "owner/repo", "a" * 40, "token", environ=env, opener=backend
+        )
 
     race = AtomicFakeGitHub()
     success, failure = [], []
 
     def attempt():
         try:
-            success.append(lock.create_claim("owner/repo", "b" * 40, "token", opener=race))
+            success.append(
+                lock.create_claim(
+                    "owner/repo", "b" * 40, "token", environ=env, opener=race
+                )
+            )
         except PSR01BError as exc:
             failure.append(str(exc))
 
@@ -154,8 +218,13 @@ def test_forged_claim_environment_fails_without_live_ref(monkeypatch):
     sha = "c" * 40
     monkeypatch.setenv("GITHUB_REPOSITORY", "owner/repo")
     monkeypatch.setenv("GITHUB_TOKEN", "token")
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("GITHUB_ACTOR", "reviewed-operator")
     monkeypatch.setenv("PSR01B_DEVELOPMENT_V1_CLAIM_REF", lock.DEFAULT_CLAIM_REF)
     monkeypatch.setenv("PSR01B_DEVELOPMENT_V1_CLAIM_SHA", sha)
+    monkeypatch.setenv("PSR01B_DEVELOPMENT_V1_CLAIM_TAG_OBJECT_SHA", "d" * 40)
+    monkeypatch.setenv("PSR01B_DEVELOPMENT_V1_CLAIM_RUN_ID", "123")
     with pytest.raises(PSR01BError, match="does not exist"):
         lock.assert_claim_environment(sha, opener=AtomicFakeGitHub())
 
@@ -208,6 +277,166 @@ def test_manual_confirmation_binds_candidate_execution_actor_and_run():
         )
 
 
+def _git(cwd: Path, *args: str) -> str:
+    return subprocess.check_output(["git", *args], cwd=cwd, text=True).strip()
+
+
+def test_execution_commit_and_candidate_blob_contract_direct_against_scratch_git(
+    tmp_path, monkeypatch
+):
+    subprocess.run(["git", "init"], cwd=tmp_path, check=True, capture_output=True)
+    subprocess.run(
+        ["git", "config", "user.email", "psr01b@example.invalid"],
+        cwd=tmp_path,
+        check=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "PSR01B Synthetic Test"],
+        cwd=tmp_path,
+        check=True,
+    )
+    tracked = tmp_path / "tracked.txt"
+    tracked.write_text("candidate\n", encoding="utf-8")
+    subprocess.run(["git", "add", "tracked.txt"], cwd=tmp_path, check=True)
+    subprocess.run(
+        ["git", "commit", "-m", "candidate"],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+    candidate = _git(tmp_path, "rev-parse", "HEAD")
+    candidate_blob = _git(tmp_path, "rev-parse", f"{candidate}:tracked.txt")
+
+    freeze_path = (
+        tmp_path / "research/governance/psr01b_implementation_freeze_v1.json"
+    )
+    freeze_path.parent.mkdir(parents=True)
+    freeze_path.write_text("{}\n", encoding="utf-8")
+    subprocess.run(
+        ["git", "add", "research/governance/psr01b_implementation_freeze_v1.json"],
+        cwd=tmp_path,
+        check=True,
+    )
+    subprocess.run(
+        ["git", "commit", "-m", "governance"],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+    governance = _git(tmp_path, "rev-parse", "HEAD")
+
+    monkeypatch.setattr(lock, "ROOT", tmp_path)
+    assert lock.verify_execution_commit(candidate, governance) == (
+        "research/governance/psr01b_implementation_freeze_v1.json",
+    )
+    assert lock.verify_candidate_blob_contract(
+        candidate, {"tracked.txt": candidate_blob}
+    ) == {"tracked.txt": candidate_blob}
+
+    tracked.write_text("tampered\n", encoding="utf-8")
+    with pytest.raises(PSR01BError, match="checkout differs"):
+        lock.verify_candidate_blob_contract(
+            candidate, {"tracked.txt": candidate_blob}
+        )
+
+    tracked.write_text("candidate\n", encoding="utf-8")
+    forbidden = tmp_path / "forbidden.txt"
+    forbidden.write_text("changed\n", encoding="utf-8")
+    subprocess.run(["git", "add", "forbidden.txt"], cwd=tmp_path, check=True)
+    subprocess.run(
+        ["git", "commit", "-m", "forbidden"],
+        cwd=tmp_path,
+        check=True,
+        capture_output=True,
+    )
+    forbidden_head = _git(tmp_path, "rev-parse", "HEAD")
+    with pytest.raises(PSR01BError, match="unapproved post-candidate path changed"):
+        lock.verify_execution_commit(candidate, forbidden_head)
+
+
+def test_cli_preflight_and_claim_use_env_confirmation_and_emit_run_bound_claim(
+    tmp_path, monkeypatch, capsys
+):
+    candidate = "a" * 40
+    execution = "b" * 40
+    confirmation = lock.expected_confirmation(candidate, execution)
+    fake_freeze = {"implementation": {"implementation_candidate_commit": candidate}}
+    calls = []
+
+    monkeypatch.setenv("GITHUB_TOKEN", "token")
+    monkeypatch.setenv("GITHUB_RUN_ID", "321")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("GITHUB_ACTOR", "reviewed-operator")
+    monkeypatch.setenv("PSR01B_DEVELOPMENT_V1_CONFIRMATION", confirmation)
+    monkeypatch.setattr(runner, "load_implementation_freeze", lambda: fake_freeze)
+    monkeypatch.setattr(
+        runner,
+        "verify_frozen_execution_identity",
+        lambda **kwargs: {"implementation_candidate_commit": candidate},
+    )
+
+    def fake_preclaim(candidate_arg, freeze_arg, result_path, **kwargs):
+        calls.append(("preclaim", candidate_arg, kwargs["confirmation"]))
+        return {"executing_sha": kwargs["executing_sha"]}
+
+    monkeypatch.setattr(lock, "assert_preclaim_environment", fake_preclaim)
+    monkeypatch.setattr(
+        lock,
+        "create_claim",
+        lambda repository, sha, token, **kwargs: {
+            "ref": lock.DEFAULT_CLAIM_REF,
+            "sha": sha,
+            "tag_object_sha": "c" * 40,
+            "run_id": "321",
+            "run_attempt": "1",
+            "actor": "reviewed-operator",
+        },
+    )
+
+    result_path = tmp_path / "result.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "psr01b_execution_lock",
+            "preflight",
+            "--repository",
+            "owner/repo",
+            "--sha",
+            execution,
+            "--result-path",
+            str(result_path),
+        ],
+    )
+    lock.main()
+    assert "PSR01B_DEVELOPMENT_V1_PREFLIGHT_PASS" in capsys.readouterr().out
+    assert calls[-1] == ("preclaim", candidate, confirmation)
+
+    output = tmp_path / "github-output.txt"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "psr01b_execution_lock",
+            "claim",
+            "--repository",
+            "owner/repo",
+            "--sha",
+            execution,
+            "--result-path",
+            str(result_path),
+            "--github-output",
+            str(output),
+        ],
+    )
+    lock.main()
+    written = output.read_text(encoding="utf-8")
+    assert f"claim_ref={lock.DEFAULT_CLAIM_REF}" in written
+    assert f"claim_sha={execution}" in written
+    assert f"claim_tag_object_sha={'c' * 40}" in written
+    assert "claim_run_id=321" in written
+
+
 def test_result_path_reservation_and_atomic_write_never_overwrite(tmp_path):
     result = tmp_path / "result.json"
     candidate = "a" * 40
@@ -252,6 +481,10 @@ def test_execution_workflow_is_manual_only_and_ordered():
     assert lock.DEFAULT_CLAIM_REF in text
     assert "contents: write" in text
     assert "python-version: '3.12.14'" in text
+    assert "--confirmation" not in text
+    assert "PSR01B_DEVELOPMENT_V1_CONFIRMATION:" in text
+    assert "PSR01B_DEVELOPMENT_V1_CLAIM_TAG_OBJECT_SHA:" in text
+    assert "PSR01B_DEVELOPMENT_V1_CLAIM_RUN_ID:" in text
 
 
 def _full_synthetic_bars():
