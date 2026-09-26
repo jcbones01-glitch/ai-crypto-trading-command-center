@@ -1,4 +1,5 @@
-name: PSR-01B Development One-Shot V1\n# Durable claim: refs/tags/psr01b-development-one-shot-claim-v1
+name: PSR-01B Development One-Shot V1
+# Durable claim: refs/tags/psr01b-development-one-shot-claim-v1
 
 on:
   workflow_dispatch:
