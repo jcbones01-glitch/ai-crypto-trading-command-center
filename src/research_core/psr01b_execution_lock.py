@@ -17,7 +17,7 @@ from .psr01b_preflight import ROOT
 
 DEFAULT_RESULT_PATH = ROOT / "research/experiments/psr01b_development_v1/result.json"
 DEFAULT_CLAIM_REF = "refs/tags/psr01b-development-one-shot-claim-v1"
-DEFAULT_REVIEW_ANCHOR_REF = "refs/heads/psr-01b-bounded-implementation-reviewed-v2"
+DEFAULT_REVIEW_ANCHOR_REF = "refs/heads/psr-01b-bounded-implementation-reviewed-v3"
 CONFIRMATION_PREFIX = "PSR01B_DEVELOPMENT_V1"
 ALLOWED_POST_CANDIDATE_PATHS = {
     "research/governance/psr01b_implementation_freeze_v1.json",

@@ -103,7 +103,7 @@ jobs:
               "derivatives_execution_authorized",
           ):
               freeze["protected_access"][key] = False
-          freeze["review_anchor_ref"] = "refs/heads/psr-01b-bounded-implementation-reviewed-v2"
+          freeze["review_anchor_ref"] = "refs/heads/psr-01b-bounded-implementation-reviewed-v3"
           freeze["review_anchor_sha"] = head
           path.write_text(json.dumps(freeze, indent=2) + "\n", encoding="utf-8")
           PY
