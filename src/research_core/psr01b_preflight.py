@@ -251,11 +251,29 @@ EXECUTION_REQUIRED_FALSE = (
 )
 
 
-def verify_execution_authorization_scope(freeze: Mapping) -> dict[str, bool]:
-    """Require exact Development authority while all protected downstream scope stays shut."""
+def verify_execution_authorization_scope(freeze: Mapping) -> dict:
+    """Require exact bounded Development authority and a single-execution scope record."""
     future = freeze.get("future_governance") or {}
     if future.get("execution_authorized") is not True:
         raise PSR01BError("PSR-01B Development execution authorization is not approved")
+
+    implementation = freeze.get("implementation") or {}
+    candidate = implementation.get("implementation_candidate_commit")
+    expected_scope = {
+        "registration_id": REGISTRATION_ID,
+        "revision": EXPECTED_REVISION,
+        "implementation_candidate_commit": candidate,
+        "symbol": "BTCUSDT",
+        "market": "spot",
+        "timeframe": "1h",
+        "source_start": "2017-12-01T00:00:00Z",
+        "source_end_exclusive": "2022-01-01T00:00:00Z",
+        "execution_limit": 1,
+        "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1",
+    }
+    if future.get("execution_scope") != expected_scope:
+        raise PSR01BError("PSR-01B Development execution scope record mismatch")
+
     protected = freeze.get("protected_access") or {}
     for field in EXECUTION_REQUIRED_TRUE:
         if protected.get(field) is not True:
@@ -267,7 +285,10 @@ def verify_execution_authorization_scope(freeze: Mapping) -> dict[str, bool]:
             raise PSR01BError(
                 f"PSR-01B protected scope must remain false: {field}"
             )
-    return {field: bool(protected[field]) for field in (
-        *EXECUTION_REQUIRED_TRUE,
-        *EXECUTION_REQUIRED_FALSE,
-    )}
+    return {
+        "execution_scope": dict(expected_scope),
+        "permissions": {
+            field: bool(protected[field])
+            for field in (*EXECUTION_REQUIRED_TRUE, *EXECUTION_REQUIRED_FALSE)
+        },
+    }
