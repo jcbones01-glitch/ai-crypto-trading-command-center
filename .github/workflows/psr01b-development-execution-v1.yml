@@ -1,0 +1,118 @@
+name: PSR-01B Development One-Shot V1
+# Durable claim: refs/tags/psr01b-development-one-shot-claim-v1
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'offline_review runs only frozen synthetic/offline evidence; execute consumes the one-shot claim after authorization'
+        required: true
+        default: offline_review
+        type: choice
+        options:
+          - offline_review
+          - execute
+      confirmation:
+        description: 'Execute only: PSR01B_DEVELOPMENT_V1:<reviewed_candidate_sha>:<execution_sha>'
+        required: false
+        type: string
+
+concurrency:
+  group: psr01b-development-one-shot-v1
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Checkout exact workflow commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[dev]'
+      - name: Install exact PSR-01B runtime additions
+        run: pip install pandas==3.0.6 xgboost==3.4.1 optuna==5.0.0 arch==8.0.0 statsmodels==0.15.0
+      - name: Run PSR-01B execution-safety tests
+        run: |
+          python -m pytest -q \
+            tests/test_psr01b_preflight.py \
+            tests/test_psr01b_runner.py \
+            tests/test_psr01b_execution_safety.py
+      - name: Run full 11x2 production-math synthetic dry run
+        env:
+          PSR01B_FULL_SYNTHETIC_DRY_RUN: '1'
+        run: |
+          python -m pytest -q -s \
+            tests/test_psr01b_execution_safety.py::test_full_11x2_production_math_synthetic_dry_run
+      - name: Offline review cannot create claim or read source
+        if: inputs.mode == 'offline_review'
+        run: |
+          echo "PSR01B_DEVELOPMENT_V1_OFFLINE_REVIEW_PASS"
+          echo "No durable claim creation or empirical source adapter is invoked in offline_review mode."
+
+  execute:
+    if: inputs.mode == 'execute'
+    needs: offline-tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    permissions:
+      contents: write
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+      GITHUB_TOKEN: ${{ github.token }}
+      PSR01B_DEVELOPMENT_V1_CONFIRMATION: ${{ inputs.confirmation }}
+    steps:
+      - name: Checkout exact execution commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[research]'
+      - name: Install exact PSR-01B runtime additions
+        run: pip install pandas==3.0.6 xgboost==3.4.1 optuna==5.0.0 arch==8.0.0 statsmodels==0.15.0
+      - name: Reserve result path and verify authority before claim
+        run: |
+          python -m research_core.psr01b_execution_lock preflight \
+            --repository "$GITHUB_REPOSITORY" \
+            --sha "$GITHUB_SHA" \
+            --result-path "research/experiments/psr01b_development_v1/result.json"
+      - name: Atomically create durable PSR-01B one-shot claim
+        id: claim
+        run: |
+          python -m research_core.psr01b_execution_lock claim \
+            --repository "$GITHUB_REPOSITORY" \
+            --sha "$GITHUB_SHA" \
+            --result-path "research/experiments/psr01b_development_v1/result.json" \
+            --github-output "$GITHUB_OUTPUT"
+      - name: Reverify durable claim and run registered Development execution
+        env:
+          PSR01B_DEVELOPMENT_V1_CLAIM_REF: ${{ steps.claim.outputs.claim_ref }}
+          PSR01B_DEVELOPMENT_V1_CLAIM_SHA: ${{ steps.claim.outputs.claim_sha }}
+          PSR01B_DEVELOPMENT_V1_CLAIM_TAG_OBJECT_SHA: ${{ steps.claim.outputs.claim_tag_object_sha }}
+          PSR01B_DEVELOPMENT_V1_CLAIM_RUN_ID: ${{ steps.claim.outputs.claim_run_id }}
+        run: python research/scripts/run_psr01b_development_v1.py
+      - name: Upload PSR-01B execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: psr01b-development-v1
+          path: research/experiments/psr01b_development_v1/
+          if-no-files-found: error
+          retention-days: 90
