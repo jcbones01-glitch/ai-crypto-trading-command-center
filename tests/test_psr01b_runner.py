@@ -86,7 +86,23 @@ def _ready_freeze_fixture():
     frozen["future_governance"]["reviewed_candidate_anchor_created"] = True
     frozen["future_governance"]["execution_authorized"] = True
     frozen["future_governance"]["manual_confirmation_created"] = True
-    frozen["future_governance"]["one_shot_claim_created"] = True
+    frozen["future_governance"]["one_shot_claim_created"] = False
+    for field in (
+        "empirical_binance_archive_access_authorized",
+        "empirical_feature_generation_authorized",
+        "empirical_model_fit_authorized",
+        "empirical_forecast_generation_authorized",
+        "empirical_pnl_authorized",
+    ):
+        frozen["protected_access"][field] = True
+    for field in (
+        "validation_or_oos_access_authorized",
+        "paper_trading_authorized",
+        "live_trading_authorized",
+        "leverage_authorized",
+        "derivatives_execution_authorized",
+    ):
+        frozen["protected_access"][field] = False
     return frozen
 
 
@@ -114,12 +130,14 @@ def test_one_shot_entry_fails_on_current_unapproved_freeze_before_source_bytes(m
         raise AssertionError("source bytes must not be touched")
 
     monkeypatch.setattr(runner, "_sha256_file", forbidden)
-    with pytest.raises(PSR01BError, match="independent implementation review is not approved"):
+    with pytest.raises(
+        PSR01BError,
+        match="Development execution authorization is not approved",
+    ):
         runner.execute_registered_one_shot(
             [],
             result_path=tmp_path / "forbidden.json",
             runner_label="ubuntu-24.04",
-            source_read_authorized=True,
         )
     assert touched == []
     assert not (tmp_path / "forbidden.json").exists()
@@ -419,18 +437,24 @@ def test_execution_identity_lock_records_exact_provenance_and_fails_on_blob_drif
         "MKL_NUM_THREADS": "1",
         "NUMEXPR_NUM_THREADS": "1",
     }
-    provenance = runner.verify_frozen_execution_identity(
-        runner_label="ubuntu-24.04",
-        freeze=frozen,
-        environ=env,
-    )
+    original_candidate_check = runner.verify_candidate_blob_contract
+    runner.verify_candidate_blob_contract = lambda candidate, mapping: dict(mapping)
+    try:
+        provenance = runner.verify_frozen_execution_identity(
+            runner_label="ubuntu-24.04",
+            freeze=frozen,
+            environ=env,
+        )
+    finally:
+        runner.verify_candidate_blob_contract = original_candidate_check
     assert provenance["execution_identity"] == runner.EXECUTION_ID
     assert provenance["approved_specification_git_blob_sha1"] == runner.APPROVED_SPEC_BLOB_SHA1
     assert provenance["implementation_candidate_commit"] == "a" * 40
     assert provenance["reviewed_implementation_commit"] == "a" * 40
     assert len(provenance["registered_folds"]) == 11
     assert provenance["thread_environment"] == env
-    assert provenance["governance"]["manual_confirmation_created"] is True
+    assert provenance["governance"]["manual_confirmation_runtime_required"] is True
+    assert provenance["governance"]["durable_one_shot_claim_runtime_required"] is True
     assert provenance["implementation_freeze_git_blob_sha1"] is None
 
     broken = copy.deepcopy(frozen)
