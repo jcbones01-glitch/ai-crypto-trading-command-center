@@ -95,7 +95,7 @@ def _ready_freeze_fixture():
         "source_start": "2017-12-01T00:00:00Z",
         "source_end_exclusive": "2022-01-01T00:00:00Z",
         "execution_limit": 1,
-        "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1",
+        "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v2",
     }
     frozen["future_governance"]["manual_confirmation_created"] = True
     frozen["future_governance"]["one_shot_claim_created"] = False

@@ -1,5 +1,5 @@
-name: PSR-01B Development One-Shot V1
-# Durable claim: refs/tags/psr01b-development-one-shot-claim-v1
+name: PSR-01B Development One-Shot V2
+# Durable claim: refs/tags/psr01b-development-one-shot-claim-v2
 
 on:
   workflow_dispatch:
@@ -12,8 +12,9 @@ on:
         options:
           - offline_review
           - execute
+          - rehearsal
       confirmation:
-        description: 'Execute only: PSR01B_DEVELOPMENT_V1:<reviewed_candidate_sha>:<execution_sha>'
+        description: 'Execute: PSR01B_DEVELOPMENT_V1:<candidate>:<head>; rehearsal: PSR01B_REHEARSAL_V2:<candidate>:<head>'
         required: false
         type: string
 
@@ -49,7 +50,8 @@ jobs:
           python -m pytest -q \
             tests/test_psr01b_preflight.py \
             tests/test_psr01b_runner.py \
-            tests/test_psr01b_execution_safety.py
+            tests/test_psr01b_execution_safety.py \
+            tests/test_psr01b_v2_workflow.py
       - name: Run full 11x2 production-math synthetic dry run
         env:
           PSR01B_FULL_SYNTHETIC_DRY_RUN: '1'
@@ -63,7 +65,7 @@ jobs:
           echo "No durable claim creation or empirical source adapter is invoked in offline_review mode."
 
   execute:
-    if: inputs.mode == 'execute'
+    if: inputs.mode == 'execute' || inputs.mode == 'rehearsal'
     needs: offline-tests
     runs-on: ubuntu-24.04
     timeout-minutes: 355
@@ -74,6 +76,7 @@ jobs:
       OMP_NUM_THREADS: '1'
       MKL_NUM_THREADS: '1'
       NUMEXPR_NUM_THREADS: '1'
+      PSR01B_EXECUTION_MODE: ${{ inputs.mode }}
       GITHUB_TOKEN: ${{ github.token }}
       PSR01B_DEVELOPMENT_V1_CONFIRMATION: ${{ inputs.confirmation }}
     steps:
@@ -91,15 +94,13 @@ jobs:
         run: |
           python -m research_core.psr01b_execution_lock preflight \
             --repository "$GITHUB_REPOSITORY" \
-            --sha "$GITHUB_SHA" \
-            --result-path "research/experiments/psr01b_development_v1/result.json"
+            --sha "$GITHUB_SHA"
       - name: Atomically create durable PSR-01B one-shot claim
         id: claim
         run: |
           python -m research_core.psr01b_execution_lock claim \
             --repository "$GITHUB_REPOSITORY" \
             --sha "$GITHUB_SHA" \
-            --result-path "research/experiments/psr01b_development_v1/result.json" \
             --github-output "$GITHUB_OUTPUT"
       - name: Reverify durable claim and run registered Development execution
         env:
@@ -112,7 +113,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: psr01b-development-v1
-          path: research/experiments/psr01b_development_v1/
+          name: psr01b-${{ inputs.mode }}-v2
+          path: |
+            research/experiments/psr01b_development_v2/
+            research/experiments/psr01b_rehearsals/
           if-no-files-found: error
           retention-days: 90

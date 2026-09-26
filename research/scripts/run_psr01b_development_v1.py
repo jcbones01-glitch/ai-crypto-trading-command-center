@@ -15,12 +15,8 @@ import tempfile
 import time
 from urllib.error import HTTPError, URLError
 
-from research_core.data_ingestion import archive_url, download_archive
-from research_core.psr01b_execution_lock import DEFAULT_RESULT_PATH, assert_execution_environment
-from research_core.psr01b_runner import (
-    execute_registered_one_shot,
-    load_implementation_freeze,
-    verify_frozen_execution_identity,
+from research_core.psr01b_execution_lock import (
+    DEFAULT_RESULT_PATH, assert_execution_environment, execution_mode, execution_result_path,
 )
 from research_core.psr01b_preflight import load_registration
 
@@ -56,6 +52,10 @@ def _acquire_registered_archives(
     *,
     attempt_log: list[dict[str, object]] | None = None,
 ) -> list[Path]:
+    if execution_mode() == "rehearsal":
+        raise RuntimeError("rehearsal must never acquire archives")
+    from research_core.data_ingestion import archive_url, download_archive
+
     expected = registration["source"]["archive_sha256"]
     attempts = [] if attempt_log is None else attempt_log
     paths: list[Path] = []
@@ -109,6 +109,25 @@ def _acquire_registered_archives(
 
 
 def main() -> None:
+    if execution_mode() == "rehearsal":
+        from research_core.psr01b_rehearsal import load_implementation_freeze, verify_frozen_execution_identity
+        freeze = load_implementation_freeze()
+        provenance = verify_frozen_execution_identity(runner_label="ubuntu-24.04")
+        assert_execution_environment(
+            provenance["implementation_candidate_commit"], freeze, execution_result_path(),
+        )
+        _atomic_json(execution_result_path().parent / "rehearsal.json", {
+            "success_token": "PSR01B_REHEARSAL_V2_PRE_SOURCE_PASS",
+            "market_data_accessed": False,
+            "execution_sha": os.environ.get("GITHUB_SHA"),
+            "run_id": os.environ.get("GITHUB_RUN_ID"),
+            "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+        })
+        print("PSR01B_REHEARSAL_V2_PRE_SOURCE_PASS")
+        return
+    from research_core.psr01b_runner import (
+        execute_registered_one_shot, load_implementation_freeze, verify_frozen_execution_identity,
+    )
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     incident = {
         "stage": "PRE_SOURCE",

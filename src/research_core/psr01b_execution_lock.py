@@ -5,6 +5,7 @@ import argparse
 from datetime import datetime, timezone
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 from typing import Any, Callable, Mapping
@@ -15,13 +16,51 @@ from urllib.request import Request, urlopen
 from .psr01b_core import PSR01BError
 from .psr01b_preflight import ROOT
 
-DEFAULT_RESULT_PATH = ROOT / "research/experiments/psr01b_development_v1/result.json"
-DEFAULT_CLAIM_REF = "refs/tags/psr01b-development-one-shot-claim-v1"
-DEFAULT_REVIEW_ANCHOR_REF = "refs/heads/psr-01b-bounded-implementation-reviewed-v3"
+DEFAULT_RESULT_PATH = ROOT / "research/experiments/psr01b_development_v2/result.json"
+DEFAULT_CLAIM_REF = "refs/tags/psr01b-development-one-shot-claim-v2"
+DEFAULT_REVIEW_ANCHOR_REF = "refs/heads/psr-01b-bounded-implementation-reviewed-v4"
 CONFIRMATION_PREFIX = "PSR01B_DEVELOPMENT_V1"
 ALLOWED_POST_CANDIDATE_PATHS = {
     "research/governance/psr01b_implementation_freeze_v1.json",
 }
+
+
+def execution_mode(environ=None) -> str:
+    env = os.environ if environ is None else environ
+    mode = env.get("PSR01B_EXECUTION_MODE", "execute")
+    if mode not in {"execute", "rehearsal"}:
+        raise PSR01BError("invalid PSR-01B execution mode")
+    return mode
+
+
+def claim_ref(environ=None) -> str:
+    env = os.environ if environ is None else environ
+    if execution_mode(env) == "execute":
+        return DEFAULT_CLAIM_REF
+    run_id, attempt = env.get("GITHUB_RUN_ID", ""), env.get("GITHUB_RUN_ATTEMPT", "")
+    if not re.fullmatch(r"[0-9]+", run_id) or not re.fullmatch(r"[0-9]+", attempt):
+        raise PSR01BError("invalid rehearsal run/attempt identity")
+    ref = f"refs/tags/psr01b-rehearsal-{run_id}-{attempt}"
+    if ref == DEFAULT_CLAIM_REF:
+        raise PSR01BError("rehearsal must never use the real claim ref")
+    return ref
+
+
+def execution_result_path(environ=None) -> Path:
+    env = os.environ if environ is None else environ
+    if execution_mode(env) == "execute":
+        return DEFAULT_RESULT_PATH.resolve()
+    ref = claim_ref(env)
+    path = (ROOT / "research/experiments/psr01b_rehearsals" /
+            ref.removeprefix("refs/tags/") / "result.json").resolve()
+    if path == DEFAULT_RESULT_PATH.resolve() or DEFAULT_RESULT_PATH.parent.resolve() in path.parents:
+        raise PSR01BError("rehearsal must not use the real result path")
+    return path
+
+
+def _assert_mode_result_path(result_path, environ=None):
+    if execution_mode(environ) == "rehearsal" and Path(result_path).resolve() != execution_result_path(environ):
+        raise PSR01BError("rehearsal result path mismatch")
 
 
 def _git_head_sha() -> str:
@@ -122,7 +161,7 @@ def _request(url: str, token: str, *, method: str = "GET", data: bytes | None = 
 def _resolve_fixed_ref(
     repository: str, token: str, ref: str, *, opener: Callable = urlopen
 ) -> str | None:
-    if ref not in {DEFAULT_CLAIM_REF, DEFAULT_REVIEW_ANCHOR_REF}:
+    if ref not in {claim_ref(), DEFAULT_REVIEW_ANCHOR_REF}:
         raise PSR01BError("unexpected PSR-01B fixed governance ref")
     if not repository or "/" not in repository or not token:
         raise PSR01BError("repository and token required for durable-ref verification")
@@ -151,7 +190,7 @@ def _resolve_fixed_ref(
 def create_fixed_ref(
     repository: str, sha: str, token: str, *, ref: str, opener: Callable = urlopen
 ) -> dict[str, str]:
-    if ref not in {DEFAULT_CLAIM_REF, DEFAULT_REVIEW_ANCHOR_REF}:
+    if ref not in {claim_ref(), DEFAULT_REVIEW_ANCHOR_REF}:
         raise PSR01BError("unexpected PSR-01B fixed governance ref")
     payload = json.dumps({"ref": ref, "sha": sha}).encode("utf-8")
     url = f"https://api.github.com/repos/{repository}/git/refs"
@@ -188,8 +227,9 @@ def assert_review_anchor(
     return {"ref": DEFAULT_REVIEW_ANCHOR_REF, "sha": target}
 
 
-def expected_confirmation(candidate: str, executing_sha: str) -> str:
-    return f"{CONFIRMATION_PREFIX}:{candidate}:{executing_sha}"
+def expected_confirmation(candidate: str, executing_sha: str, environ=None) -> str:
+    prefix = "PSR01B_REHEARSAL_V2" if execution_mode(environ) == "rehearsal" else CONFIRMATION_PREFIX
+    return f"{prefix}:{candidate}:{executing_sha}"
 
 
 def assert_manual_confirmation(
@@ -201,7 +241,7 @@ def assert_manual_confirmation(
     supplied = confirmation if confirmation is not None else env.get(
         "PSR01B_DEVELOPMENT_V1_CONFIRMATION", ""
     )
-    exact = expected_confirmation(candidate, executing_sha)
+    exact = expected_confirmation(candidate, executing_sha, env)
     if supplied != exact:
         raise PSR01BError("exact PSR-01B manual confirmation string required")
     if env.get("GITHUB_EVENT_NAME") != "workflow_dispatch":
@@ -233,7 +273,7 @@ def _create_claim_tag_object(
     if not run_id or not run_attempt or not actor:
         raise PSR01BError("PSR-01B claim run provenance is incomplete")
     record = {
-        "claim_ref": DEFAULT_CLAIM_REF,
+        "claim_ref": claim_ref(),
         "execution_sha": executing_sha,
         "run_id": run_id,
         "run_attempt": run_attempt,
@@ -242,7 +282,7 @@ def _create_claim_tag_object(
     message = json.dumps(record, sort_keys=True, separators=(",", ":"))
     payload = json.dumps(
         {
-            "tag": DEFAULT_CLAIM_REF.removeprefix("refs/tags/"),
+            "tag": claim_ref().removeprefix("refs/tags/"),
             "message": message,
             "object": executing_sha,
             "type": "commit",
@@ -262,7 +302,7 @@ def _create_claim_tag_object(
     tag_sha = created.get("sha")
     obj = created.get("object", {})
     if (
-        created.get("tag") != DEFAULT_CLAIM_REF.removeprefix("refs/tags/")
+        created.get("tag") != claim_ref().removeprefix("refs/tags/")
         or created.get("message", "").strip() != message
         or obj.get("sha") != executing_sha
         or obj.get("type") != "commit"
@@ -271,7 +311,7 @@ def _create_claim_tag_object(
     ):
         raise PSR01BError("GitHub returned unexpected PSR-01B claim tag object")
     return {
-        "ref": DEFAULT_CLAIM_REF,
+        "ref": claim_ref(),
         "sha": executing_sha,
         "tag_object_sha": tag_sha,
         "run_id": run_id,
@@ -284,7 +324,7 @@ def _resolve_claim_record(
     repository: str, token: str, *, opener: Callable = urlopen
 ) -> dict[str, str] | None:
     tag_sha = _resolve_fixed_ref(
-        repository, token, DEFAULT_CLAIM_REF, opener=opener
+        repository, token, claim_ref(), opener=opener
     )
     if tag_sha is None:
         return None
@@ -303,9 +343,9 @@ def _resolve_claim_record(
     obj = tag.get("object", {})
     if (
         tag.get("sha") != tag_sha
-        or tag.get("tag") != DEFAULT_CLAIM_REF.removeprefix("refs/tags/")
+        or tag.get("tag") != claim_ref().removeprefix("refs/tags/")
         or obj.get("type") != "commit"
-        or record.get("claim_ref") != DEFAULT_CLAIM_REF
+        or record.get("claim_ref") != claim_ref()
         or record.get("execution_sha") != obj.get("sha")
     ):
         raise PSR01BError("durable PSR-01B claim tag identity mismatch")
@@ -313,7 +353,7 @@ def _resolve_claim_record(
         if not isinstance(record.get(key), str) or not record[key]:
             raise PSR01BError("durable PSR-01B claim provenance is incomplete")
     return {
-        "ref": DEFAULT_CLAIM_REF,
+        "ref": claim_ref(),
         "sha": record["execution_sha"],
         "tag_object_sha": tag_sha,
         "run_id": record["run_id"],
@@ -323,12 +363,12 @@ def _resolve_claim_record(
 
 
 def claim_exists(repository: str, token: str, *, opener: Callable = urlopen) -> bool:
-    return _resolve_fixed_ref(repository, token, DEFAULT_CLAIM_REF, opener=opener) is not None
+    return _resolve_fixed_ref(repository, token, claim_ref(), opener=opener) is not None
 
 
 def assert_claim_absent(repository: str, token: str, *, opener: Callable = urlopen) -> None:
     if claim_exists(repository, token, opener=opener):
-        raise PSR01BError(f"one-shot claim already exists: {DEFAULT_CLAIM_REF}")
+        raise PSR01BError(f"one-shot claim already exists: {claim_ref()}")
 
 
 def create_claim(
@@ -340,6 +380,8 @@ def create_claim(
     opener: Callable = urlopen,
 ) -> dict[str, str]:
     env = os.environ if environ is None else environ
+    if claim_ref(env) != claim_ref():
+        raise PSR01BError("claim mode/run differs from current process")
     tag = _create_claim_tag_object(
         repository,
         sha,
@@ -353,7 +395,7 @@ def create_claim(
         repository,
         tag["tag_object_sha"],
         token,
-        ref=DEFAULT_CLAIM_REF,
+        ref=claim_ref(),
         opener=opener,
     )
     return tag
@@ -365,7 +407,7 @@ def assert_claim_environment(
     opener: Callable = urlopen,
 ) -> dict[str, str]:
     env = os.environ if environ is None else environ
-    if env.get("PSR01B_DEVELOPMENT_V1_CLAIM_REF") != DEFAULT_CLAIM_REF:
+    if env.get("PSR01B_DEVELOPMENT_V1_CLAIM_REF") != claim_ref(env):
         raise PSR01BError("forwarded one-shot claim ref is missing or incorrect")
     if env.get("PSR01B_DEVELOPMENT_V1_CLAIM_SHA") != executing_sha:
         raise PSR01BError("forwarded one-shot claim SHA mismatch")
@@ -395,12 +437,12 @@ def assert_claim_environment(
 
 
 def reservation_path(result_path: Path) -> Path:
-    path = Path(result_path)
+    path = Path(result_path).resolve()
     return path.with_name(path.name + ".reservation")
 
 
 def reserve_result_path(result_path: Path, *, candidate: str, executing_sha: str):
-    path = Path(result_path)
+    path = Path(result_path).resolve()
     if path.exists():
         raise PSR01BError("PSR-01B result path already exists")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -425,7 +467,7 @@ def reserve_result_path(result_path: Path, *, candidate: str, executing_sha: str
 
 
 def assert_result_reservation(result_path: Path, *, candidate: str, executing_sha: str):
-    path = Path(result_path)
+    path = Path(result_path).resolve()
     if path.exists():
         raise PSR01BError("PSR-01B result path already exists")
     try:
@@ -451,6 +493,7 @@ def assert_preclaim_environment(
     opener: Callable = urlopen,
 ) -> dict[str, Any]:
     env = os.environ if environ is None else environ
+    _assert_mode_result_path(result_path, env)
     executing_sha = executing_sha or env.get("GITHUB_SHA") or _git_head_sha()
     changed = verify_execution_commit(candidate, executing_sha)
     verify_candidate_blob_contract(
@@ -489,6 +532,7 @@ def assert_execution_environment(
     opener: Callable = urlopen,
 ) -> dict[str, Any]:
     env = os.environ if environ is None else environ
+    _assert_mode_result_path(result_path, env)
     executing_sha = executing_sha or env.get("GITHUB_SHA") or _git_head_sha()
     changed = verify_execution_commit(candidate, executing_sha)
     verify_candidate_blob_contract(
@@ -527,11 +571,14 @@ def main() -> None:
         "--confirmation",
         default=os.environ.get("PSR01B_DEVELOPMENT_V1_CONFIRMATION", ""),
     )
-    parser.add_argument("--result-path", default=str(DEFAULT_RESULT_PATH))
+    parser.add_argument("--result-path", default=str(execution_result_path()))
     parser.add_argument("--github-output", default=os.environ.get("GITHUB_OUTPUT"))
     args = parser.parse_args()
 
-    from .psr01b_runner import load_implementation_freeze, verify_frozen_execution_identity
+    if execution_mode() == "rehearsal":
+        from .psr01b_rehearsal import load_implementation_freeze, verify_frozen_execution_identity
+    else:
+        from .psr01b_runner import load_implementation_freeze, verify_frozen_execution_identity
 
     freeze = load_implementation_freeze()
     provenance = verify_frozen_execution_identity(runner_label="ubuntu-24.04")
