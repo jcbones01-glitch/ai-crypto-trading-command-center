@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "FROZEN_DOWNLOAD_RETRY_REMEDIATION_CANDIDATE_FOR_INDEPENDENT_REVIEW",
+  "status": "INDEPENDENTLY_APPROVED_REVIEW_ANCHORED_V3_EXECUTION_LOCKED_PENDING_REF_PROTECTION",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -16,9 +16,9 @@
     "pull_request": 92,
     "branch": "psr-01b-bounded-implementation",
     "implementation_candidate_commit": "9ef234210163dba8633a11acc74be0de8581be7c",
-    "reviewed_implementation_commit": null,
+    "reviewed_implementation_commit": "9ef234210163dba8633a11acc74be0de8581be7c",
     "independent_implementation_review_required": true,
-    "independent_implementation_reviewed": false,
+    "independent_implementation_reviewed": true,
     "superseded_candidate_commit": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac"
   },
   "implementation_file_git_blob_sha1": {
@@ -124,7 +124,7 @@
     "one_shot_execution_claim_required": true,
     "execution_authorized": false,
     "execution_scope": null,
-    "reviewed_candidate_anchor_created": false,
+    "reviewed_candidate_anchor_created": true,
     "one_shot_claim_created": false,
     "allowed_post_candidate_paths": [
       "research/governance/psr01b_implementation_freeze_v1.json"
@@ -171,18 +171,19 @@
       "validation_or_oos_access_required": false
     },
     "ref_protection": {
-      "status": "EXISTING_V2_AND_CLAIM_RULESETS_PRESERVED_UNCHANGED_V3_NOT_YET_CREATED",
+      "status": "V3_ANCHOR_CREATED_PROTECTION_PENDING",
       "existing_reviewed_v2_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v2",
       "existing_reviewed_v2_anchor_sha": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
       "existing_reviewed_v2_ruleset_id": 24038523,
       "existing_claim_ruleset_id": 24038561,
-      "future_reviewed_v3_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v3",
-      "future_reviewed_v3_anchor_created": false,
-      "future_reviewed_v3_protection_verified": false,
+      "reviewed_v3_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v3",
+      "reviewed_v3_anchor_sha": "9ef234210163dba8633a11acc74be0de8581be7c",
+      "reviewed_v3_anchor_created": true,
+      "reviewed_v3_protection_verified": false,
       "claim_ref_exists": false
     },
     "execution_prerequisites": {
-      "status": "RESET_PENDING_NEW_IMPLEMENTATION_REVIEW_AND_FUTURE_V3_ANCHOR_PROTECTION",
+      "status": "PENDING_V3_ANCHOR_PROTECTION_AND_SEPARATE_EXECUTION_AUTHORIZATION_REVIEW",
       "prior_prerequisite_issue": 96,
       "evidence_persistence_plan_frozen": true,
       "empirical_execution_authorized": false
@@ -200,7 +201,7 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "Execution-safety-only download retry remediation candidate. Exact candidate 9ef234210163dba8633a11acc74be0de8581be7c passed exact-candidate synthetic CI including the full 11x2 production-math dry run. The approved specification, seven scientific/result-formula modules, and ten pinned upstream modules are byte-identical to the prior approved candidate. All execution/protected-access authorization has been reset to false. The existing reviewed-v2 anchor and existing rulesets are preserved untouched. No reviewed-v3 anchor, execution authorization, manual confirmation, or one-shot claim exists.",
+  "notes": "Download-retry remediation candidate 9ef234210163dba8633a11acc74be0de8581be7c is independently approved and anchored at reviewed-v3. Execution remains fully locked; all protected-access permissions are false. The historical reviewed-v2 anchor and existing v2/claim rulesets remain untouched. Before any new execution authorization, the reviewed-v3 anchor must receive its own exact repository ruleset protection and that protection must be independently verified.",
   "remediation": {
     "type": "PRE_EXECUTION_DOWNLOAD_RETRY_SAFETY_HARDENING",
     "superseded_candidate": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
@@ -240,18 +241,19 @@
     "status": "SUPERSEDED_FOR_FUTURE_EXECUTION_BY_REPLACEMENT_CANDIDATE_REVIEW"
   },
   "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v3",
-  "review_anchor_sha": null,
-  "independent_review_issue": null,
-  "independent_review_decision": null,
-  "independent_review_comment_id": null,
+  "review_anchor_sha": "9ef234210163dba8633a11acc74be0de8581be7c",
+  "independent_review_issue": 99,
+  "independent_review_decision": "APPROVE_PSR01B_DOWNLOAD_RETRY_REMEDIATION_FREEZE",
+  "independent_review_comment_id": 5846894297,
   "independent_review_external_reviewer": "Claude",
   "independent_review_scope": "synthetic/offline implementation review only; no empirical BTCUSDT archive access, empirical feature/model/forecast/P&L execution, Validation/OOS access, repository mutation, new anchor creation, authorization, manual confirmation, or one-shot claim",
   "residual_nonblocking_review_notes": [
     "The existing reviewed-v2 anchor and its ruleset remain untouched historical evidence.",
-    "The future reviewed-v3 anchor must not be created until independent approval of this exact candidate.",
-    "A future v3 anchor protection control must be established and independently verified before any new execution authorization.",
-    "Manual confirmation and the durable one-shot claim remain absent.",
-    "Validation/OOS, paper/live trading, leverage, and derivatives remain unauthorized."
+    "The reviewed-v3 anchor exists at the exact independently approved candidate but is not yet verified as protected.",
+    "A new exact v3 branch ruleset with no bypass actors must be created and verified before any execution authorization.",
+    "The existing one-shot claim tag ruleset remains valid and unchanged.",
+    "Manual confirmation and durable one-shot claim remain absent.",
+    "Validation/OOS, paper/live trading, leverage, derivatives, and all empirical execution permissions remain unauthorized."
   ],
   "historical_review_anchors": [
     {
