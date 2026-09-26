@@ -6,8 +6,9 @@ sequence, segment ordering, benchmark construction, bootstrap ordering, forecast
 identity, and machine-readable result assembly.
 
 Nothing in this module authorizes empirical execution.  The empirical source
-entry point requires an explicit caller authorization boolean and must only be
-invoked later by a separately reviewed governance/claim gate.
+entry point is inert unless the separately reviewed governance, live review
+anchor, manual-dispatch confirmation, durable claim, and result reservation all
+verify before any source byte is opened.
 """
 from __future__ import annotations
 
@@ -58,6 +59,11 @@ from .psr01b_preflight import (
     verify_runtime_versions,
     verify_thread_environment,
     verify_timestamp_boundary_metadata,
+    verify_execution_authorization_scope,
+)
+from .psr01b_execution_lock import (
+    assert_execution_environment,
+    verify_candidate_blob_contract,
 )
 from .psr01b_ta import compute_ta_candidates, select_four_block_features
 
@@ -248,6 +254,8 @@ def verify_frozen_execution_identity(
     if reviewed != candidate:
         raise PSR01BError("reviewed implementation identity does not equal frozen candidate")
 
+    protected_scope = verify_execution_authorization_scope(frozen)
+
     expected_implementation_blobs = frozen.get("implementation_file_git_blob_sha1") or {}
     if not expected_implementation_blobs:
         raise PSR01BError("frozen implementation blob inventory missing")
@@ -257,6 +265,7 @@ def verify_frozen_execution_identity(
     }
     if observed_implementation_blobs != expected_implementation_blobs:
         raise PSR01BError("frozen PSR-01B implementation blob mismatch")
+    verify_candidate_blob_contract(candidate, expected_implementation_blobs)
 
     row_contract = registration["source"]["row_treatment_contract"]
     expected_upstream_blobs = frozen.get("pinned_upstream_git_blob_sha1") or {}
@@ -278,14 +287,10 @@ def verify_frozen_execution_identity(
     runtime = verify_runtime_versions(runner_label=runner_label)
     thread_env = verify_thread_environment(environ)
     future = frozen.get("future_governance") or {}
-    for flag in (
-        "reviewed_candidate_anchor_created",
-        "execution_authorized",
-        "manual_confirmation_created",
-        "one_shot_claim_created",
-    ):
-        if future.get(flag) is not True:
-            raise PSR01BError(f"PSR-01B governance gate not satisfied: {flag}")
+    if future.get("reviewed_candidate_anchor_created") is not True:
+        raise PSR01BError(
+            "PSR-01B governance gate not satisfied: reviewed_candidate_anchor_created"
+        )
 
     freeze_blob = None
     if freeze is None:
@@ -323,8 +328,9 @@ def verify_frozen_execution_identity(
             "independent_implementation_reviewed": True,
             "reviewed_candidate_anchor_created": True,
             "execution_authorized": True,
-            "manual_confirmation_created": True,
-            "one_shot_claim_created": True,
+            "manual_confirmation_runtime_required": True,
+            "durable_one_shot_claim_runtime_required": True,
+            "protected_access": protected_scope,
         },
     }
 
@@ -836,18 +842,16 @@ def execute_registered_one_shot(
     *,
     result_path: Path,
     runner_label: str,
-    source_read_authorized: bool = False,
 ) -> dict[str, Any]:
-    """Single identity-locked source -> experiment -> result-writing entry path.
-
-    This function does not grant execution authority.  It remains inert unless
-    a future reviewed governance state is present in the freeze and the caller
-    also supplies the explicit source-read confirmation.
-    """
-    if source_read_authorized is not True:
-        raise PSR01BError("PSR-01B empirical source read is not authorized")
-
+    """Single durable-claim-bound source -> experiment -> atomic-result path."""
+    frozen = load_implementation_freeze()
     provenance = verify_frozen_execution_identity(runner_label=runner_label)
+    safety = assert_execution_environment(
+        provenance["implementation_candidate_commit"],
+        frozen,
+        Path(result_path),
+    )
+
     source_evidence: dict[str, Any] = {}
     bars = _normalize_registered_source(
         archive_paths,
@@ -857,6 +861,7 @@ def execute_registered_one_shot(
     result = run_from_normalized_bars(bars)
     result["provenance"] = {
         **provenance,
+        "execution_safety": safety,
         "source": source_evidence,
     }
     write_result_json(Path(result_path), result)
@@ -864,6 +869,21 @@ def execute_registered_one_shot(
 
 
 def write_result_json(path: Path, result: Mapping[str, Any]) -> None:
-    """Write one deterministic machine-readable result record."""
+    """Atomically write one deterministic machine-readable result record."""
     payload = json.dumps(result, sort_keys=True, separators=(",", ":"), allow_nan=False)
-    Path(path).write_text(payload + "\n", encoding="utf-8")
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + ".tmp")
+    if path.exists() or temporary.exists():
+        raise PSR01BError("PSR-01B result path or staging path already exists")
+    try:
+        with temporary.open("x", encoding="utf-8") as handle:
+            handle.write(payload + "\n")
+            handle.flush()
+            import os
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    except Exception:
+        if temporary.exists():
+            temporary.unlink()
+        raise
