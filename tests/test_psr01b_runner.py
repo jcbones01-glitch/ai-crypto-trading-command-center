@@ -134,13 +134,25 @@ def test_direct_empirical_source_normalization_is_disabled(monkeypatch):
     assert touched == []
 
 
-def test_one_shot_entry_fails_on_current_unapproved_freeze_before_source_bytes(monkeypatch, tmp_path):
+def test_one_shot_entry_fails_on_explicit_locked_freeze_before_source_bytes(monkeypatch, tmp_path):
     touched = []
 
     def forbidden(*args, **kwargs):
         touched.append(True)
         raise AssertionError("source bytes must not be touched")
 
+    locked = _ready_freeze_fixture()
+    locked["future_governance"]["execution_authorized"] = False
+    locked["future_governance"]["execution_scope"] = None
+    locked["future_governance"]["reviewed_candidate_anchor_created"] = False
+    locked["future_governance"]["manual_confirmation_created"] = False
+    locked["future_governance"]["one_shot_claim_created"] = False
+    for field in locked["protected_access"]:
+        locked["protected_access"][field] = False
+
+    monkeypatch.setattr(
+        runner, "load_implementation_freeze", lambda: copy.deepcopy(locked)
+    )
     monkeypatch.setattr(runner, "_sha256_file", forbidden)
     with pytest.raises(
         PSR01BError,
