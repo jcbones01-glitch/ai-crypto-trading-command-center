@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "V2_IMPLEMENTATION_FROZEN_PRE_REVIEW_NOT_AUTHORIZED",
+  "status": "V2_IMPLEMENTATION_REVIEWED_PROTECTED_PRE_AUTHORIZATION",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -16,9 +16,9 @@
     "pull_request": 92,
     "branch": "psr-01b-bounded-implementation",
     "implementation_candidate_commit": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
-    "reviewed_implementation_commit": null,
+    "reviewed_implementation_commit": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
     "independent_implementation_review_required": true,
-    "independent_implementation_reviewed": false,
+    "independent_implementation_reviewed": true,
     "superseded_candidate_commit": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
     "original_implementation_issue": 91,
     "prior_reviewed_implementation_commit": "9ef234210163dba8633a11acc74be0de8581be7c"
@@ -140,7 +140,7 @@
       "execution_limit": 1,
       "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v2"
     },
-    "reviewed_candidate_anchor_created": false,
+    "reviewed_candidate_anchor_created": true,
     "one_shot_claim_created": false,
     "allowed_post_candidate_paths": [
       "research/governance/psr01b_implementation_freeze_v1.json"
@@ -187,7 +187,7 @@
       "validation_or_oos_access_required": false
     },
     "ref_protection": {
-      "status": "VERIFIED_BEFORE_EXECUTION_AUTHORIZATION",
+      "status": "V2_REVIEWED_IMPLEMENTATION_AND_FUTURE_CLAIM_PROTECTION_VERIFIED_PRE_AUTHORIZATION",
       "existing_reviewed_v2_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v2",
       "existing_reviewed_v2_anchor_sha": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
       "existing_reviewed_v2_ruleset_id": 24038523,
@@ -196,7 +196,6 @@
       "reviewed_v3_anchor_sha": "9ef234210163dba8633a11acc74be0de8581be7c",
       "reviewed_v3_anchor_created": true,
       "reviewed_v3_protection_verified": true,
-      "claim_ref_exists": false,
       "reviewed_v3_ruleset": {
         "id": 24045086,
         "name": "PSR-01B reviewed implementation lock v3",
@@ -217,16 +216,90 @@
         "updated_at": "2026-09-26T11:38:14.614-05:00"
       },
       "reviewed_v4_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v4",
-      "reviewed_v4_anchor_sha": null,
-      "reviewed_v4_anchor_created": false,
-      "reviewed_v4_protection_verified": false,
+      "reviewed_v4_anchor_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+      "reviewed_v4_anchor_created": true,
+      "reviewed_v4_protection_verified": true,
       "claim_v2_ref": "refs/tags/psr01b-development-one-shot-claim-v2",
-      "claim_v2_exists": false
+      "claim_v2_exists": false,
+      "existing_reviewed_v2_status": "HISTORICAL_PRESERVED",
+      "reviewed_v3_status": "HISTORICAL_PRESERVED",
+      "existing_claim_ruleset_status": "HISTORICAL_V1_CLAIM_PROTECTION_PRESERVED",
+      "reviewed_v4_ruleset": {
+        "id": 24058404,
+        "name": "PSR-01B reviewed implementation lock v4",
+        "target": "branch",
+        "source_type": "Repository",
+        "source": "jcbones01-glitch/ai-crypto-trading-command-center",
+        "enforcement": "active",
+        "conditions": {
+          "ref_name": {
+            "exclude": [],
+            "include": [
+              "refs/heads/psr-01b-bounded-implementation-reviewed-v4"
+            ]
+          }
+        },
+        "rules": [
+          {
+            "type": "deletion"
+          },
+          {
+            "type": "non_fast_forward"
+          },
+          {
+            "type": "update"
+          }
+        ],
+        "bypass_actors": [],
+        "current_user_can_bypass": "never"
+      },
+      "claim_v2_ruleset": {
+        "id": 24058545,
+        "name": "PSR-01B Development one-shot claim lock v2",
+        "target": "tag",
+        "source_type": "Repository",
+        "source": "jcbones01-glitch/ai-crypto-trading-command-center",
+        "enforcement": "active",
+        "conditions": {
+          "ref_name": {
+            "exclude": [],
+            "include": [
+              "refs/tags/psr01b-development-one-shot-claim-v2"
+            ]
+          }
+        },
+        "rules": [
+          {
+            "type": "deletion"
+          },
+          {
+            "type": "non_fast_forward"
+          },
+          {
+            "type": "update"
+          }
+        ],
+        "bypass_actors": [],
+        "current_user_can_bypass": "never"
+      },
+      "current_reviewed_implementation_protection": {
+        "ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v4",
+        "sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+        "ruleset_id": 24058404,
+        "status": "CURRENT_REVIEWED_IMPLEMENTATION_PROTECTION"
+      },
+      "current_future_claim_protection": {
+        "ref": "refs/tags/psr01b-development-one-shot-claim-v2",
+        "claim_exists": false,
+        "ruleset_id": 24058545,
+        "status": "CURRENT_FUTURE_ONE_SHOT_CLAIM_PROTECTION_PRE_CREATION"
+      }
     },
     "execution_prerequisites": {
-      "status": "PRE_REVIEW_NOT_AUTHORIZED",
+      "status": "V2_IMPLEMENTATION_REVIEWED_PROTECTED_PRE_AUTHORIZATION",
       "prior_prerequisite_issue": 96,
       "evidence_persistence_plan_frozen": true,
+      "v2_evidence_persistence_plan_recorded": true,
       "empirical_execution_authorized": false
     },
     "execution_authorization_review": {
@@ -260,7 +333,54 @@
     "development_v2_execution_dispatched": false,
     "rerun_authorized": false,
     "overwrite_authorized": false,
-    "proposed_future_real_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v2"
+    "proposed_future_real_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v2",
+    "v2_evidence_persistence_plan": {
+      "status": "RECORDED_PRE_AUTHORIZATION_NO_EVIDENCE_CREATED",
+      "workflow_blob_sha1": "12253674f2b0d47981fa31a365d9ca3c13cee292",
+      "real_execution": {
+        "mode": "execute",
+        "workflow_artifact_name": "psr01b-execute-v2",
+        "workflow_uploaded_roots": [
+          "research/experiments/psr01b_development_v2/",
+          "research/experiments/psr01b_rehearsals/"
+        ],
+        "runtime_output_root": "research/experiments/psr01b_development_v2/",
+        "permanent_evidence_namespace": "research/experiments/psr01b_development_v2/evidence/",
+        "actual_runtime_evidence_paths": {
+          "result": "research/experiments/psr01b_development_v2/result.json",
+          "incident": "research/experiments/psr01b_development_v2/incident.json",
+          "reservation": "research/experiments/psr01b_development_v2/result.json.reservation"
+        },
+        "preservation_rules": [
+          "After the future execute workflow reaches a final conclusion, retrieve the exact artifact bytes without rerunning empirical code.",
+          "Preserve exact result.json, incident.json, result.json.reservation, and any additional provenance/evidence bytes that actually exist in the workflow artifact; do not fabricate a missing result or any missing file.",
+          "Record SHA-256 and byte length for every persisted artifact-derived file.",
+          "Create a governance evidence manifest at persistence time recording execution SHA, reviewed candidate SHA, governance head SHA, implementation freeze Git blob SHA-1, workflow run ID, run attempt, actor, conclusion, claim ref, claim tag-object SHA, claim run provenance, source identity/checksum evidence when applicable, and persisted file SHA-256 values.",
+          "Refuse overwrite if any permanent V2 evidence destination already exists."
+        ]
+      },
+      "rehearsal": {
+        "mode": "rehearsal",
+        "workflow_artifact_name": "psr01b-rehearsal-v2",
+        "namespace_root": "research/experiments/psr01b_rehearsals/",
+        "runtime_directory_template": "research/experiments/psr01b_rehearsals/psr01b-rehearsal-<run_id>-<run_attempt>/",
+        "actual_success_evidence_files": [
+          "rehearsal.json",
+          "result.json.reservation"
+        ],
+        "preservation_rules": [
+          "Preserve the exact rehearsal artifact bytes that actually exist for the run/attempt-specific rehearsal directory; do not fabricate result.json or incident evidence that the workflow did not produce.",
+          "Record rehearsal run ID, run attempt, executing SHA, throwaway rehearsal claim ref, throwaway claim tag-object provenance when available, success token or failure/incident evidence, and relevant evidence SHA-256 values.",
+          "Record explicit confirmation from run/tag evidence that refs/tags/psr01b-development-one-shot-claim-v2 was not created by the rehearsal.",
+          "Record explicit confirmation that source acquisition was not reached; successful rehearsal.json records market_data_accessed=false and the reviewed rehearsal path returns before archive acquisition.",
+          "Refuse overwrite of any permanent rehearsal evidence destination."
+        ]
+      },
+      "rerun_authorized": false,
+      "overwrite_authorized": false,
+      "validation_or_oos_access_required": false,
+      "validation_or_oos_access_part_of_evidence_persistence": false
+    }
   },
   "protected_access": {
     "empirical_binance_archive_access_authorized": false,
@@ -274,7 +394,7 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "PSR-01B V2 execution-safety candidate is frozen at ebd0b1087878932d6f2759ca5c0acb57d3364392 after successful synthetic/offline CI run 36276697716. This is PRE-REVIEW and NOT AUTHORIZED for rehearsal, Development execution, empirical source access, Validation/OOS, tuning, paper/live trading, leverage, or derivatives. V1 claim remains consumed historical evidence under incident #103 and evidence commit 4025bd1506cf3d3ad52458945bb782dfad46689c. Future reviewed-v4 anchor and claim-v2 are absent.",
+  "notes": "PSR-01B V2 execution-safety candidate ebd0b1087878932d6f2759ca5c0acb57d3364392 is independently reviewed under Issue #105 and anchored at protected reviewed-v4. Claim-v2 remains absent but its exact future tag ref is protected by ruleset 24058545. This state is PRE-AUTHORIZATION: rehearsal, Development V2 execution, empirical source access, Validation/OOS, tuning, paper/live trading, leverage, and derivatives remain unauthorized. V1 claim remains permanently consumed historical evidence under incident #103 and evidence commit 4025bd1506cf3d3ad52458945bb782dfad46689c.",
   "remediation": {
     "type": "PRE_EXECUTION_DOWNLOAD_RETRY_SAFETY_HARDENING",
     "superseded_candidate": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
@@ -315,20 +435,19 @@
     "status": "SUPERSEDED_FOR_FUTURE_EXECUTION_BY_REPLACEMENT_CANDIDATE_REVIEW"
   },
   "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v4",
-  "review_anchor_sha": null,
-  "independent_review_issue": null,
-  "independent_review_decision": null,
-  "independent_review_comment_id": null,
-  "independent_review_external_reviewer": null,
-  "independent_review_scope": "NEW V2 EXECUTION-SAFETY IMPLEMENTATION REVIEW REQUIRED; review does not authorize anchor creation, claim creation, ruleset changes, rehearsal, Development execution, empirical source access, Validation/OOS, tuning, or trading.",
+  "review_anchor_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+  "independent_review_issue": 105,
+  "independent_review_decision": "APPROVE_PSR01B_V2_EXECUTION_SAFETY_IMPLEMENTATION_FREEZE",
+  "independent_review_comment_id": 5851592472,
+  "independent_review_external_reviewer": "Claude",
+  "independent_review_scope": "External independent implementation review relayed by repository owner; approval advances only to governance/protection. It does not authorize rehearsal, claim-v2 creation, empirical access, Development execution, Validation/OOS, tuning, or trading.",
   "residual_nonblocking_review_notes": [
-    "Historical reviewed-v1/v2/v3 anchors and V1 incident evidence remain preserved as historical evidence only.",
-    "The V1 one-shot claim remains permanently consumed; it is not reset or reused.",
-    "The proposed V2 real claim does not exist.",
-    "The reviewed-v4 anchor does not exist.",
-    "Manual confirmation is absent.",
-    "Rehearsal has not been authorized or dispatched by this freeze.",
-    "Development V2 execution and all protected empirical access remain unauthorized."
+    "Historical reviewed-v1/v2/v3 anchors and their protection evidence remain preserved as historical evidence only.",
+    "Historical V1 authorization is not current V2 authority; the V1 one-shot claim remains permanently consumed and is not reset or reused.",
+    "Current reviewed implementation protection is reviewed-v4 at ebd0b1087878932d6f2759ca5c0acb57d3364392 under ruleset 24058404.",
+    "Current future one-shot claim protection is ruleset 24058545 for refs/tags/psr01b-development-one-shot-claim-v2; the claim itself does not exist.",
+    "A separate V2 evidence-persistence plan is recorded; no V2 evidence files are created by this governance commit.",
+    "Manual confirmation, rehearsal authorization/dispatch, Development V2 authorization/dispatch, and all protected empirical access remain false."
   ],
   "historical_review_anchors": [
     {
@@ -355,11 +474,20 @@
   "current_v2_state": {
     "amendment_issue": 104,
     "implementation_candidate_commit": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+    "reviewed_implementation_commit": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
     "candidate_ci_run_id": 36276697716,
-    "phase": "PRE_REVIEW_NOT_AUTHORIZED",
-    "future_review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v4",
-    "reviewed_v4_anchor_created": false,
+    "independent_review_issue": 105,
+    "independent_review_decision": "APPROVE_PSR01B_V2_EXECUTION_SAFETY_IMPLEMENTATION_FREEZE",
+    "independent_review_comment_id": 5851592472,
+    "external_reviewer": "Claude",
+    "phase": "V2_IMPLEMENTATION_REVIEWED_PROTECTED_PRE_AUTHORIZATION",
+    "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v4",
+    "review_anchor_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+    "reviewed_v4_anchor_created": true,
+    "reviewed_v4_protection_verified": true,
+    "reviewed_v4_ruleset_id": 24058404,
     "proposed_real_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v2",
+    "claim_v2_ruleset_id": 24058545,
     "claim_v2_created": false,
     "manual_confirmation": false,
     "rehearsal_authorized": false,
@@ -383,11 +511,19 @@
     "issue": 104,
     "candidate_commit": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
     "ci_run_id": 36276697716,
-    "status": "IMPLEMENTED_AND_FROZEN_PENDING_INDEPENDENT_REVIEW",
+    "status": "INDEPENDENTLY_REVIEWED_AND_PROTECTED_PRE_AUTHORIZATION",
     "analytic_specification_changed": false,
     "scientific_modules_changed": false,
     "pinned_upstream_modules_changed": false,
     "rehearsal_authorized": false,
-    "development_execution_authorized": false
+    "development_execution_authorized": false,
+    "independent_review_issue": 105,
+    "independent_review_decision": "APPROVE_PSR01B_V2_EXECUTION_SAFETY_IMPLEMENTATION_FREEZE",
+    "independent_review_comment_id": 5851592472,
+    "external_reviewer": "Claude",
+    "reviewed_v4_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v4",
+    "reviewed_v4_anchor_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+    "reviewed_v4_ruleset_id": 24058404,
+    "claim_v2_ruleset_id": 24058545
   }
 }
