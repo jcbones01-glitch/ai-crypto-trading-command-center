@@ -622,7 +622,7 @@
     },
     {
       "name": "EXACT_MANIFEST_BUILD_AND_PRE_SOURCE_FAIL_CLOSED",
-      "required_proof": "Using synthetic reports only, invoke pinned build_manifest with BTCUSDT, research_start=2020-08-31T00:00:00Z and research_end=2024-01-01T00:00:00Z. Prove exact bounds and Development/Validation split; localized pre-start events remain provenance only and cannot affect PSR treatment/state; missing/duplicate reports, checksum-unverified/checksum-failure reports and unlocalized non-checksum events fail closed before scientific execution; and the Validation adapter never reads or inspects the OOS partition entry."
+      "required_proof": "Using synthetic reports only, invoke pinned build_manifest with BTCUSDT, research_start=2020-08-31T00:00:00Z and research_end=2024-01-01T00:00:00Z. Prove exact manifest bounds and Development/Validation split; prove localized pre-source August anomalies are handled first by the unedited pinned parent normalizer using Development-partition treatment/exclusion linkage; prove clean accepted pre-source rows are clipped only after parent normalization and cannot enter returned PSR rows or scientific state; prove missing/duplicate reports, checksum-unverified/checksum-failure reports and unlocalized non-checksum events fail closed before scientific execution; and prove the Validation adapter never reads, inspects, selects, infers from or falls back to the OOS partition."
     },
     {
       "name": "PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE",
