@@ -89,6 +89,30 @@ class ValidationContractError(PSR01BError):
         self.failure_code = failure_code
 
 
+class ScientificNonReplicationError(PSR01BError):
+    """Explicit sample-driven failure of the frozen scientific procedure."""
+
+    def __init__(self, message: str, *, failure_code: str):
+        super().__init__(message)
+        self.failure_code = failure_code
+
+
+class TechnicalIndeterminateError(PSR01BError):
+    """Explicit structural/runtime/invariant failure preventing fair science."""
+
+    def __init__(self, message: str, *, failure_code: str):
+        super().__init__(message)
+        self.failure_code = failure_code
+
+
+class EGARCHScientificUnavailable(ScientificNonReplicationError):
+    """All registered EGARCH orders unavailable on otherwise valid sample data."""
+
+
+class SampleScientificUnavailable(ScientificNonReplicationError):
+    """Registered sample cannot supply a required scientific component."""
+
+
 @dataclass(frozen=True)
 class TreatmentDecision:
     partition: str
@@ -109,6 +133,15 @@ class TerminalDecision:
     validation_result_token: str | None
     parent_h2_classification: str | None
     practical_benchmark_token: str | None
+
+
+@dataclass(frozen=True)
+class OfflineExecutionOutcome:
+    manifest_dataset_identity: str
+    normalized_row_count: int
+    result: dict[str, Any] | None
+    terminal: TerminalDecision
+    terminal_incident: dict[str, Any]
 
 
 def _git_blob_sha1_bytes(payload: bytes) -> str:
@@ -759,18 +792,15 @@ def run_with_operator_log_suppression(
         logging.disable(prior_disable)
 
 
-def classify_egarch_failure(
-    *,
-    all_registered_orders_unavailable: bool = False,
-    structural_exception: bool = False,
-) -> str:
-    if structural_exception:
-        return TECHNICAL_INDETERMINATE
-    if all_registered_orders_unavailable:
+def classify_egarch_failure(failure_state: str) -> str:
+    """Classify from an explicit state, never exception message text."""
+    if failure_state == "REGISTERED_NUMERICAL_ORDERS_UNAVAILABLE":
         return SCIENTIFIC_NON_REPLICATION
+    if failure_state == "STRUCTURAL_RUNTIME_OR_CONTRACT_FAILURE":
+        return TECHNICAL_INDETERMINATE
     raise ValidationContractError(
-        "EGARCH classification requires a registered terminal condition",
-        failure_code="EGARCH_CLASSIFICATION_INPUT_INVALID",
+        "unregistered EGARCH terminal state",
+        failure_code="EGARCH_CLASSIFICATION_STATE_INVALID",
     )
 
 
@@ -822,20 +852,13 @@ def serialize_registered_metric(
 
 
 def classify_exception(exc: BaseException) -> TerminalDecision:
-    message = str(exc)
-    scientific_fragments = (
-        "all four EGARCH orders unavailable",
-        "split has no eligible deployed rows",
-        "no eligible",
-        "target standard deviation",
-        "forecast vector must be finite",
-    )
-    if isinstance(exc, PSR01BError) and any(fragment in message for fragment in scientific_fragments):
+    """Classify by explicit exception category only; message text is irrelevant."""
+    if isinstance(exc, ScientificNonReplicationError):
         return TerminalDecision(
             SCIENTIFIC_NON_REPLICATION,
             VALIDATION_FAIL,
             "BOUNDED_H2_NOT_REPLICATED",
-            None,
+            PRACTICAL_FAIL,
         )
     return TerminalDecision(
         TECHNICAL_INDETERMINATE,
@@ -843,7 +866,6 @@ def classify_exception(exc: BaseException) -> TerminalDecision:
         None,
         None,
     )
-
 
 def _concat_segments(segments: Sequence[np.ndarray]) -> np.ndarray:
     if not segments:
@@ -866,6 +888,322 @@ def _bootstrap_record(result: Any) -> dict[str, Any]:
         "observed_inference_sharpe_difference": result.observed_inference_sharpe_difference,
         "sharpe_difference_ci_95": result.sharpe_difference_ci_95,
     }
+
+
+def _eligible_split_row_count(
+    arm: Any,
+    deployed: Any,
+    targets_next_hour: Sequence[float],
+    *,
+    split_start: datetime,
+    split_end: datetime,
+) -> int:
+    y = np.asarray(targets_next_hour, dtype=np.float64)
+    n = len(arm.bars)
+    if (
+        deployed.matrix.shape != (n, 28)
+        or len(deployed.deployable) != n
+        or y.shape != (n,)
+    ):
+        raise TechnicalIndeterminateError(
+            "split-row inputs violate frozen alignment contract",
+            failure_code="SPLIT_ROW_INPUT_ALIGNMENT_FAILURE",
+        )
+    count = 0
+    for i, bar in enumerate(arm.bars):
+        if (
+            bool(deployed.deployable[i])
+            and np.isfinite(y[i])
+            and split_origin_eligible(
+                bar.timestamp.astimezone(UTC),
+                split_start,
+                split_end,
+            )
+        ):
+            count += 1
+    return count
+
+
+def _require_positive_target_std(values: Sequence[float], *, stage: str) -> None:
+    y = np.asarray(values, dtype=np.float64)
+    if y.ndim != 1 or len(y) == 0 or not np.isfinite(y).all():
+        raise TechnicalIndeterminateError(
+            f"{stage} target vector violates frozen finite-vector contract",
+            failure_code="TARGET_VECTOR_INVARIANT_FAILURE",
+        )
+    std = float(np.std(y, ddof=0))
+    if not np.isfinite(std) or std <= 0.0:
+        raise SampleScientificUnavailable(
+            f"{stage} target scale unavailable on valid registered sample",
+            failure_code="TARGET_STANDARD_DEVIATION_UNAVAILABLE",
+        )
+
+
+def _run_validation_arm_fold(
+    normalized_bars: Sequence[MarketBar],
+    *,
+    arm_name: str,
+    fold: Mapping[str, Any],
+) -> Any:
+    """Exact frozen fold science with explicit stage-based failure typing."""
+    fold_number = int(fold["fold"])
+    fold_index = int(fold["fold_index"])
+    train_start = fold["train_start"]
+    validation_start = fold["validation_start"]
+    test_start = fold["test_start"]
+    test_end = fold["test_end"]
+
+    try:
+        arm = parent_runner.construct_missing_data_arm(
+            normalized_bars,
+            arm=arm_name,
+            interval_start=parent_runner.warmup_start(train_start),
+            interval_end_exclusive=test_end,
+        )
+        base = parent_runner.compute_base_ohlcv_features(arm)
+        candidates = parent_runner.compute_ta_candidates(arm)
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "frozen feature/missing-data construction failed structurally",
+            failure_code="FEATURE_CONSTRUCTION_STRUCTURAL_FAILURE",
+        ) from exc
+
+    if (
+        len(arm.bars) != len(candidates.matrix)
+        or np.asarray(candidates.deployable).shape != (len(arm.bars),)
+    ):
+        raise TechnicalIndeterminateError(
+            "TA candidate alignment violates frozen contract",
+            failure_code="TA_SELECTION_INPUT_ALIGNMENT_FAILURE",
+        )
+    try:
+        selection_features = parent_runner.select_four_block_features(
+            arm,
+            candidates,
+            train_start=train_start,
+            train_end=validation_start,
+        )
+    except PSR01BError as exc:
+        # With frozen module identity plus the alignment and fold checks above,
+        # a PSR01BError at this exact call boundary is the registered
+        # common-four-block candidate-unavailability sample state.
+        raise SampleScientificUnavailable(
+            "registered TA selection group has no eligible candidate",
+            failure_code="TA_SELECTION_CANDIDATE_UNAVAILABLE",
+        ) from exc
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "TA selection failed structurally",
+            failure_code="TA_SELECTION_STRUCTURAL_FAILURE",
+        ) from exc
+
+    try:
+        training_segments = parent_runner._training_return_segments(
+            arm,
+            train_start=train_start,
+            train_end=validation_start,
+        )
+        egarch_fit = parent_runner.select_best_order(training_segments)
+    except PSR01BError as exc:
+        # select_best_order absorbs registered order-level numerical failures and
+        # raises only when all four registered orders are unavailable.
+        raise EGARCHScientificUnavailable(
+            "all registered EGARCH orders unavailable on valid sample",
+            failure_code="EGARCH_REGISTERED_ORDERS_UNAVAILABLE",
+        ) from exc
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "EGARCH dependency/runtime/ABI/contract failure",
+            failure_code="EGARCH_STRUCTURAL_FAILURE",
+        ) from exc
+    if egarch_fit.params is None or egarch_fit.aic is None:
+        raise TechnicalIndeterminateError(
+            "selected EGARCH result violates fitted-state invariant",
+            failure_code="EGARCH_SELECTED_STATE_INVARIANT_FAILURE",
+        )
+
+    try:
+        egarch = parent_runner.build_egarch_features(
+            arm,
+            replay_start=train_start,
+            params=egarch_fit.params,
+            order=egarch_fit.order,
+        )
+        deployed = parent_runner.assemble_deployed_matrix(
+            base=base,
+            selection=selection_features,
+            egarch=egarch,
+        )
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "EGARCH replay/deployed-matrix invariant failure",
+            failure_code="DEPLOYED_MATRIX_STRUCTURAL_FAILURE",
+        ) from exc
+
+    split_specs = (
+        ("training", train_start, validation_start),
+        ("inner_validation", validation_start, test_start),
+        ("test", test_start, test_end),
+    )
+    for split_name, split_start, split_end in split_specs:
+        if _eligible_split_row_count(
+            arm,
+            deployed,
+            candidates.target_next_hour,
+            split_start=split_start,
+            split_end=split_end,
+        ) == 0:
+            if split_name in {"training", "inner_validation"}:
+                raise SampleScientificUnavailable(
+                    f"no eligible {split_name} rows on valid registered sample",
+                    failure_code=f"NO_ELIGIBLE_{split_name.upper()}_ROWS",
+                )
+            raise TechnicalIndeterminateError(
+                "registered test split has no evaluable rows",
+                failure_code="NO_ELIGIBLE_TEST_ROWS",
+            )
+
+    try:
+        train_rows = parent_runner.eligible_split_rows(
+            arm,
+            deployed,
+            candidates.target_next_hour,
+            split_start=train_start,
+            split_end=validation_start,
+        )
+        validation_rows = parent_runner.eligible_split_rows(
+            arm,
+            deployed,
+            candidates.target_next_hour,
+            split_start=validation_start,
+            split_end=test_start,
+        )
+        test_rows = parent_runner.eligible_split_rows(
+            arm,
+            deployed,
+            candidates.target_next_hour,
+            split_start=test_start,
+            split_end=test_end,
+        )
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "split-row construction violated frozen invariant",
+            failure_code="SPLIT_ROW_CONSTRUCTION_FAILURE",
+        ) from exc
+
+    _require_positive_target_std(train_rows.y, stage="training")
+    try:
+        model_selection = parent_runner.tune_fold(
+            X_train=train_rows.X,
+            y_train_raw=train_rows.y,
+            X_validation=validation_rows.X,
+            y_validation_raw=validation_rows.y,
+            arm=arm_name,
+            fold_index=fold_index,
+        )
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "model tuning dependency/runtime/contract failure",
+            failure_code="MODEL_TUNING_STRUCTURAL_FAILURE",
+        ) from exc
+
+    combined_y = np.concatenate((train_rows.y, validation_rows.y))
+    _require_positive_target_std(combined_y, stage="final_refit")
+    try:
+        forecast = parent_runner.final_refit_and_forecast(
+            X_train_eligible=train_rows.X,
+            y_train_raw_eligible=train_rows.y,
+            X_validation_eligible=validation_rows.X,
+            y_validation_raw_eligible=validation_rows.y,
+            X_test=test_rows.X,
+            selection=model_selection,
+        )
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "final-refit dependency/runtime/contract failure",
+            failure_code="FINAL_REFIT_STRUCTURAL_FAILURE",
+        ) from exc
+
+    forecast_classification = classify_forecast_vector(
+        forecast.forecasts_raw,
+        expected_length=len(test_rows.origin_timestamps),
+        model_returned_normally=True,
+    )
+    if forecast_classification == SCIENTIFIC_NON_REPLICATION:
+        raise SampleScientificUnavailable(
+            "nonfinite forecast values from normally returned frozen model",
+            failure_code="NONFINITE_FORECAST_VALUES",
+        )
+    if forecast_classification == TECHNICAL_INDETERMINATE:
+        raise TechnicalIndeterminateError(
+            "forecast vector shape/length violates frozen invariant",
+            failure_code="FORECAST_VECTOR_INVARIANT_FAILURE",
+        )
+
+    timestamps = [
+        int(stamp.astimezone(UTC).timestamp())
+        for stamp in test_rows.origin_timestamps
+    ]
+    try:
+        forecast_hash = parent_runner.forecast_vector_sha256(
+            timestamps,
+            forecast.forecasts_raw,
+        )
+        test_groups = parent_runner._split_test_segments(arm, test_rows)
+        forecast_segments = parent_runner._aligned_segments(
+            forecast.forecasts_raw, test_rows, test_groups
+        )
+        realized_segments = parent_runner._aligned_segments(
+            test_rows.y, test_rows, test_groups
+        )
+        baseline_segments, baseline_turnover, baseline_completed = (
+            parent_runner._evaluate_rule_by_segment(
+                forecast_segments,
+                realized_segments,
+                rule="BASELINE_SIGN",
+            )
+        )
+        cost_segments, cost_turnover, cost_completed = (
+            parent_runner._evaluate_rule_by_segment(
+                forecast_segments,
+                realized_segments,
+                rule="COST_AWARE",
+            )
+        )
+        momentum_values = parent_runner._momentum_24h_values(arm, test_rows)
+        momentum_segments = parent_runner._aligned_segments(
+            momentum_values, test_rows, test_groups
+        )
+        buy_segments, momentum_return_segments = parent_runner._benchmark_by_segment(
+            realized_segments,
+            momentum_segments,
+        )
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "forecast/accounting/benchmark invariant failure",
+            failure_code="EVALUATION_STRUCTURAL_FAILURE",
+        ) from exc
+
+    return parent_runner.FoldExecution(
+        arm=arm_name,
+        fold_number=fold_number,
+        fold_index=fold_index,
+        forecast_sha256=forecast_hash,
+        forecast_count=len(timestamps),
+        selected_features=tuple(selection_features.selected_names),
+        egarch_order=tuple(egarch_fit.order),
+        egarch_aic=float(egarch_fit.aic),
+        selected_trial_index=int(model_selection.selected.trial_number),
+        final_model_seed=int(forecast.random_state),
+        baseline_segments=baseline_segments,
+        cost_aware_segments=cost_segments,
+        buy_hold_segments=buy_segments,
+        momentum_segments=momentum_return_segments,
+        baseline_turnover=baseline_turnover,
+        cost_aware_turnover=cost_turnover,
+        baseline_completed_trades=baseline_completed,
+        cost_aware_completed_trades=cost_completed,
+    )
 
 
 def run_validation_from_normalized_bars(
@@ -893,7 +1231,7 @@ def run_validation_from_normalized_bars(
         for fold in folds:
             fold_runs_by_arm[arm].append(
                 run_with_operator_log_suppression(
-                    parent_runner._run_arm_fold,
+                    _run_validation_arm_fold,
                     bars,
                     arm_name=arm,
                     fold=fold,
@@ -1026,6 +1364,103 @@ def write_json_exclusive(path: Path, record: Mapping[str, Any]) -> None:
         raise
 
 
+def build_terminal_incident(
+    *,
+    execution_sha: str,
+    reviewed_candidate_sha: str,
+    run_id: str,
+    run_attempt: str,
+    actor: str,
+    claim_ref: str | None,
+    claim_tag_object_sha: str | None,
+    claim_target_sha: str | None,
+    stage: str,
+    terminal_classification: str,
+    validation_result_token: str | None,
+    source_access_occurred: bool,
+    source_acquisition_ledger: Sequence[Mapping[str, Any]],
+    source_hashes_obtained_before_failure: Sequence[Mapping[str, Any]],
+    result_json_exists: bool,
+    error_type: str | None,
+    error_message: str | None,
+    validation_boundary_status: str,
+    oos_boundary_status: str,
+    parent_h2_classification: str | None,
+    practical_benchmark_token: str | None,
+    first_protected_request_occurred: bool,
+    protected_validation_interval_consumed: bool,
+    evidence_gap_status: str,
+) -> dict[str, Any]:
+    """Construct the complete frozen terminal-incident schema in memory."""
+    return {
+        "execution_sha": execution_sha,
+        "reviewed_candidate_sha": reviewed_candidate_sha,
+        "run_id": run_id,
+        "run_attempt": run_attempt,
+        "actor": actor,
+        "claim_ref": claim_ref,
+        "claim_tag_object_sha": claim_tag_object_sha,
+        "claim_target_sha": claim_target_sha,
+        "stage": stage,
+        "terminal_classification": terminal_classification,
+        "validation_result_token": validation_result_token,
+        "source_access_occurred": bool(source_access_occurred),
+        "source_acquisition_ledger": [dict(item) for item in source_acquisition_ledger],
+        "source_hashes_obtained_before_failure": [
+            dict(item) for item in source_hashes_obtained_before_failure
+        ],
+        "result_json_exists": bool(result_json_exists),
+        "error_type": error_type,
+        "error_message": error_message,
+        "validation_boundary_status": validation_boundary_status,
+        "oos_boundary_status": oos_boundary_status,
+        "parent_h2_classification": parent_h2_classification,
+        "practical_benchmark_token": practical_benchmark_token,
+        "first_protected_request_occurred": bool(first_protected_request_occurred),
+        "protected_validation_interval_consumed": bool(
+            protected_validation_interval_consumed
+        ),
+        "evidence_gap_status": evidence_gap_status,
+    }
+
+
+def build_synthetic_terminal_incident(
+    *,
+    stage: str,
+    terminal: TerminalDecision,
+    result_json_exists: bool,
+    error: BaseException | None = None,
+    evidence_gap_status: str = "NONE",
+) -> dict[str, Any]:
+    """Populate every mandatory field with explicit synthetic/offline provenance."""
+    return build_terminal_incident(
+        execution_sha="SYNTHETIC_OFFLINE_EXECUTION_SHA",
+        reviewed_candidate_sha="SYNTHETIC_OFFLINE_REVIEWED_CANDIDATE_SHA",
+        run_id="SYNTHETIC_OFFLINE_RUN_ID",
+        run_attempt="0",
+        actor="SYNTHETIC_OFFLINE_ACTOR",
+        claim_ref="SYNTHETIC_NO_REAL_CLAIM",
+        claim_tag_object_sha=None,
+        claim_target_sha=None,
+        stage=stage,
+        terminal_classification=terminal.classification,
+        validation_result_token=terminal.validation_result_token,
+        source_access_occurred=False,
+        source_acquisition_ledger=(),
+        source_hashes_obtained_before_failure=(),
+        result_json_exists=result_json_exists,
+        error_type=None if error is None else type(error).__name__,
+        error_message=None if error is None else str(error),
+        validation_boundary_status="SYNTHETIC_ONLY_NO_PROTECTED_VALIDATION_ACCESS",
+        oos_boundary_status="OOS_NOT_ACCESSED",
+        parent_h2_classification=terminal.parent_h2_classification,
+        practical_benchmark_token=terminal.practical_benchmark_token,
+        first_protected_request_occurred=False,
+        protected_validation_interval_consumed=False,
+        evidence_gap_status=evidence_gap_status,
+    )
+
+
 def build_runner_loss_incident(
     *,
     execution_sha: str,
@@ -1039,20 +1474,125 @@ def build_runner_loss_incident(
             "runner-loss consumed-attempt state requires protected request",
             failure_code="RUNNER_LOSS_STATE_INVALID",
         )
-    return {
-        "execution_sha": execution_sha,
-        "reviewed_candidate_sha": reviewed_candidate_sha,
-        "stage": stage,
-        "terminal_classification": TECHNICAL_INDETERMINATE,
-        "validation_result_token": VALIDATION_TECHNICAL,
-        "parent_h2_classification": None,
-        "practical_benchmark_token": None,
-        "first_protected_request_occurred": True,
-        "protected_validation_interval_consumed": True,
-        "evidence_gap_status": evidence_gap_status,
+    return build_terminal_incident(
+        execution_sha=execution_sha,
+        reviewed_candidate_sha=reviewed_candidate_sha,
+        run_id="SYNTHETIC_RUNNER_LOSS_RUN_ID",
+        run_attempt="1",
+        actor="SYNTHETIC_RUNNER_LOSS_ACTOR",
+        claim_ref="SYNTHETIC_RUNNER_LOSS_CLAIM",
+        claim_tag_object_sha="SYNTHETIC_TAG_OBJECT",
+        claim_target_sha=execution_sha,
+        stage=stage,
+        terminal_classification=TECHNICAL_INDETERMINATE,
+        validation_result_token=VALIDATION_TECHNICAL,
+        source_access_occurred=True,
+        source_acquisition_ledger=(),
+        source_hashes_obtained_before_failure=(),
+        result_json_exists=False,
+        error_type="SyntheticRunnerLoss",
+        error_message="synthetic runner-loss/evidence-gap probe",
+        validation_boundary_status="SYNTHETIC_PROTECTED_BOUNDARY_TRIGGERED",
+        oos_boundary_status="OOS_NOT_ACCESSED",
+        parent_h2_classification=None,
+        practical_benchmark_token=None,
+        first_protected_request_occurred=True,
+        protected_validation_interval_consumed=True,
+        evidence_gap_status=evidence_gap_status,
+    ) | {
         "rerun_authorized": False,
         "oos_progression_authorized": False,
     }
+
+
+def run_offline_local_validation(
+    paths: Sequence[Path],
+    reports: Sequence[ArchiveQualityReport],
+    *,
+    scientific_runner: Callable[..., dict[str, Any]] | None = None,
+) -> OfflineExecutionOutcome:
+    """Complete bounded local-only source->manifest->science->terminal path.
+
+    No downloader, URL opener, execution authorization, claim, or external
+    transport exists on this path.
+    """
+    spec = load_validation_spec()
+    verify_pinned_module_identities(ROOT, spec)
+    if any(spec["authorization"].values()):
+        raise ValidationContractError(
+            "bounded offline orchestration requires all authorizations false",
+            failure_code="BOUNDED_AUTHORIZATION_DRIFT",
+        )
+    manifest = build_validation_manifest(reports, spec=spec)
+    normalized = normalize_registered_local_archives(
+        paths,
+        reports,
+        manifest,
+        spec=spec,
+    )
+    runner = scientific_runner or run_validation_from_normalized_bars
+    try:
+        result = runner(normalized.bars, spec=spec)
+    except Exception as exc:
+        terminal = classify_exception(exc)
+        if terminal.classification == SCIENTIFIC_NON_REPLICATION:
+            result = {
+                "registration_id": REGISTRATION_ID,
+                "version": int(spec["version"]),
+                "parent_h2_classification": "BOUNDED_H2_NOT_REPLICATED",
+                "validation_result_token": VALIDATION_FAIL,
+                "practical_benchmark_token": PRACTICAL_FAIL,
+                "terminal_reason_code": getattr(
+                    exc, "failure_code", type(exc).__name__
+                ),
+            }
+            result_exists = True
+        else:
+            result = None
+            result_exists = False
+        incident = build_synthetic_terminal_incident(
+            stage="SCIENTIFIC_EXECUTION",
+            terminal=terminal,
+            result_json_exists=result_exists,
+            error=exc,
+        )
+        return OfflineExecutionOutcome(
+            manifest.dataset_identity,
+            len(normalized.bars),
+            result,
+            terminal,
+            incident,
+        )
+
+    parent_h2 = result.get("parent_h2_classification")
+    validation_token = result.get("validation_result_token")
+    practical_token = result.get("practical_benchmark_token")
+    if parent_h2 == "BOUNDED_H2_REPLICATION":
+        terminal = TerminalDecision(
+            "SCIENTIFIC_COMPLETED",
+            validation_token,
+            parent_h2,
+            practical_token,
+        )
+    else:
+        terminal = TerminalDecision(
+            SCIENTIFIC_NON_REPLICATION,
+            validation_token,
+            parent_h2,
+            practical_token,
+        )
+    incident = build_synthetic_terminal_incident(
+        stage="COMPLETE",
+        terminal=terminal,
+        result_json_exists=True,
+    )
+    return OfflineExecutionOutcome(
+        manifest.dataset_identity,
+        len(normalized.bars),
+        result,
+        terminal,
+        incident,
+    )
 
 
 def verify_bounded_static_contracts(root: Path = ROOT) -> dict[str, Any]:

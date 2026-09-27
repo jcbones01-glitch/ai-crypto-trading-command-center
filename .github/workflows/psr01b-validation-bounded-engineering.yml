@@ -56,18 +56,8 @@ jobs:
             tests/test_psr01b_validation_v1.py::test_EXACT_MANIFEST_BUILD_AND_PRE_SOURCE_FAIL_CLOSED \
             tests/test_psr01b_validation_v1.py::test_PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE
 
-      - name: Run additional Validation bounded contract tests
-        run: |
-          python -m pytest -q tests/test_psr01b_validation_v1.py \
-            --deselect tests/test_psr01b_validation_v1.py::test_PRE_BOUNDARY_DEVELOPMENT_LINKAGE_EQUIVALENCE \
-            --deselect tests/test_psr01b_validation_v1.py::test_BOUNDARY_DISPATCH \
-            --deselect tests/test_psr01b_validation_v1.py::test_VALIDATION_LINKAGE \
-            --deselect tests/test_psr01b_validation_v1.py::test_HARD_END_REJECTION \
-            --deselect tests/test_psr01b_validation_v1.py::test_HISTORICAL_SIDE_DOES_NOT_CHANGE_ANOMALY_TREATMENT \
-            --deselect tests/test_psr01b_validation_v1.py::test_NO_OOS_PARTITION_READ_ENUMERATION_OR_FALLBACK \
-            --deselect tests/test_psr01b_validation_v1.py::test_OPERATOR_LOG_OUTCOME_SUPPRESSION \
-            --deselect tests/test_psr01b_validation_v1.py::test_EXACT_MANIFEST_BUILD_AND_PRE_SOURCE_FAIL_CLOSED \
-            --deselect tests/test_psr01b_validation_v1.py::test_PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE
+      - name: Run all Validation bounded tests
+        run: python -m pytest -q tests/test_psr01b_validation_v1.py
 
       - name: Pinned PSR scientific-core regression tests
         run: |
@@ -79,6 +69,13 @@ jobs:
             tests/test_psr01b_model.py \
             tests/test_psr01b_matrix.py \
             tests/test_psr01b_benchmarks.py
+
+      - name: Representative unmocked Validation fold-12 integration probe
+        env:
+          PSR01B_VALIDATION_UNMOCKED_FOLD: '1'
+        run: |
+          python -m pytest -q -s \
+            tests/test_psr01b_validation_v1.py::test_unmocked_representative_validation_fold12_real_pinned_modules
 
       - name: Confirm bounded implementation did not add protected evidence or claims
         run: |

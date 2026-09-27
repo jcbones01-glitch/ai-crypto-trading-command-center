@@ -4,6 +4,8 @@ from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 import logging
+import math
+import os
 from pathlib import Path
 from types import SimpleNamespace
 import zipfile
@@ -400,16 +402,26 @@ def test_protected_url_firewall():
 
 def test_egarch_scientific_vs_technical_classification():
     assert val.classify_egarch_failure(
-        all_registered_orders_unavailable=True
+        "REGISTERED_NUMERICAL_ORDERS_UNAVAILABLE"
     ) == val.SCIENTIFIC_NON_REPLICATION
     assert val.classify_egarch_failure(
-        structural_exception=True
+        "STRUCTURAL_RUNTIME_OR_CONTRACT_FAILURE"
     ) == val.TECHNICAL_INDETERMINATE
+
+    scientific = val.EGARCHScientificUnavailable(
+        "misleading text says ABI runtime corruption",
+        failure_code="EGARCH_REGISTERED_ORDERS_UNAVAILABLE",
+    )
+    structural = val.TechnicalIndeterminateError(
+        "misleading text says all four EGARCH orders unavailable",
+        failure_code="EGARCH_STRUCTURAL_FAILURE",
+    )
+    assert val.classify_exception(scientific).classification == val.SCIENTIFIC_NON_REPLICATION
+    assert val.classify_exception(structural).classification == val.TECHNICAL_INDETERMINATE
+
+    # Arbitrary PSR01BError text cannot opt into a scientific classification.
     assert val.classify_exception(
         PSR01BError("all four EGARCH orders unavailable")
-    ).classification == val.SCIENTIFIC_NON_REPLICATION
-    assert val.classify_exception(
-        ImportError("arch ABI missing")
     ).classification == val.TECHNICAL_INDETERMINATE
 
 
@@ -491,6 +503,40 @@ def test_runner_loss_evidence_gap_state_machine():
         )
 
 
+    required = set(
+        val.load_validation_spec()["result_and_evidence_contract"][
+            "terminal_incident_required_fields"
+        ]
+    )
+    assert required.issubset(incident)
+
+
+def test_terminal_incident_schema_complete_with_synthetic_placeholders():
+    terminal = val.TerminalDecision(
+        val.TECHNICAL_INDETERMINATE,
+        val.VALIDATION_TECHNICAL,
+        None,
+        None,
+    )
+    incident = val.build_synthetic_terminal_incident(
+        stage="SYNTHETIC_PROBE",
+        terminal=terminal,
+        result_json_exists=False,
+        error=RuntimeError("synthetic-only"),
+        evidence_gap_status="NONE",
+    )
+    required = set(
+        val.load_validation_spec()["result_and_evidence_contract"][
+            "terminal_incident_required_fields"
+        ]
+    )
+    assert required.issubset(incident)
+    assert incident["claim_ref"] == "SYNTHETIC_NO_REAL_CLAIM"
+    assert incident["first_protected_request_occurred"] is False
+    assert incident["protected_validation_interval_consumed"] is False
+    assert incident["oos_boundary_status"] == "OOS_NOT_ACCESSED"
+
+
 def test_validation_orchestration_uses_8x2_registered_sequence(monkeypatch):
     calls = []
 
@@ -521,7 +567,7 @@ def test_validation_orchestration_uses_8x2_registered_sequence(monkeypatch):
             cost_aware_completed_trades=1,
         )
 
-    monkeypatch.setattr(val.parent_runner, "_run_arm_fold", fake_run)
+    monkeypatch.setattr(val, "_run_validation_arm_fold", fake_run)
     bar = MarketBar(
         timestamp=val.SOURCE_START,
         symbol="BTC/USDT",
@@ -544,6 +590,122 @@ def test_validation_orchestration_uses_8x2_registered_sequence(monkeypatch):
     assert result["execution_order"]["folds"] == list(range(12, 20))
     assert result["execution_order"]["fold_indices"] == list(range(11, 19))
     assert result["validation_result_token"] in {val.VALIDATION_PASS, val.VALIDATION_FAIL}
+
+
+def _make_local_inventory_fixture(tmp_path: Path):
+    paths = []
+    reports = []
+    for name in val.registered_archive_inventory():
+        year, month = (int(x) for x in name.removesuffix(".zip").split("-")[-2:])
+        if (year, month) == (2020, 8):
+            stamp = val.SOURCE_START
+        else:
+            stamp = datetime(year, month, 1, tzinfo=UTC)
+        path = tmp_path / name
+        _write_zip(path, [_row(stamp)])
+        paths.append(path)
+        reports.append(
+            ArchiveQualityReport(
+                "BTCUSDT",
+                name,
+                1,
+                (),
+                True,
+                (stamp,),
+            )
+        )
+    return tuple(paths), tuple(reports)
+
+
+def test_complete_offline_local_orchestration(tmp_path):
+    paths, reports = _make_local_inventory_fixture(tmp_path)
+    observed = {}
+
+    def fake_science(bars, *, spec):
+        observed["rows"] = len(bars)
+        observed["registration_id"] = spec["registration_id"]
+        return {
+            "registration_id": val.REGISTRATION_ID,
+            "version": 1,
+            "parent_h2_classification": "BOUNDED_H2_NOT_REPLICATED",
+            "validation_result_token": val.VALIDATION_FAIL,
+            "practical_benchmark_token": val.PRACTICAL_FAIL,
+        }
+
+    outcome = val.run_offline_local_validation(
+        paths,
+        reports,
+        scientific_runner=fake_science,
+    )
+    assert observed["rows"] == 41
+    assert observed["registration_id"] == val.REGISTRATION_ID
+    assert outcome.normalized_row_count == 41
+    assert outcome.result["validation_result_token"] == val.VALIDATION_FAIL
+    assert outcome.terminal.classification == val.SCIENTIFIC_NON_REPLICATION
+    assert outcome.terminal_incident["source_access_occurred"] is False
+    assert outcome.terminal_incident["claim_ref"] == "SYNTHETIC_NO_REAL_CLAIM"
+    assert outcome.terminal_incident["oos_boundary_status"] == "OOS_NOT_ACCESSED"
+
+
+def _representative_fold12_bars():
+    start = val.SOURCE_START
+    end = datetime(2022, 4, 1, tzinfo=UTC)
+    rng = np.random.Generator(np.random.PCG64(2026092502))
+    previous_close = 10_000.0
+    out = []
+    stamp = start
+    i = 0
+    while stamp < end:
+        cyclical = 0.00032 * math.sin(i / 17.0) + 0.00018 * math.cos(i / 73.0)
+        close = previous_close * math.exp(
+            cyclical + float(rng.normal(0.0, 0.00115))
+        )
+        open_value = previous_close * math.exp(float(rng.normal(0.0, 0.00025)))
+        spread = 0.0008 + abs(float(rng.normal(0.0, 0.0002)))
+        high = max(open_value, close) * (1.0 + spread)
+        low = min(open_value, close) / (1.0 + spread)
+        volume = math.exp(math.log(125.0) + float(rng.normal(0.0, 0.18)))
+        out.append(
+            MarketBar(
+                timestamp=stamp,
+                symbol="BTC/USDT",
+                open=Decimal(f"{open_value:.12f}"),
+                high=Decimal(f"{high:.12f}"),
+                low=Decimal(f"{low:.12f}"),
+                close=Decimal(f"{close:.12f}"),
+                volume=Decimal(f"{volume:.12f}"),
+            )
+        )
+        previous_close = close
+        stamp += timedelta(hours=1)
+        i += 1
+    return tuple(out)
+
+
+@pytest.mark.skipif(
+    os.environ.get("PSR01B_VALIDATION_UNMOCKED_FOLD") != "1",
+    reason="representative real fold runs only in dedicated bounded CI step",
+)
+def test_unmocked_representative_validation_fold12_real_pinned_modules():
+    fold = val.registered_validation_folds()[0]
+    assert fold["fold"] == 12
+    assert fold["fold_index"] == 11
+    run = val.run_with_operator_log_suppression(
+        val._run_validation_arm_fold,
+        _representative_fold12_bars(),
+        arm_name="PAPER_FILL",
+        fold=fold,
+    )
+    assert run.fold_number == 12
+    assert run.fold_index == 11
+    assert run.arm == "PAPER_FILL"
+    assert run.forecast_count > 0
+    assert len(run.selected_features) == 10
+    assert run.egarch_order in {(1, 1, 1), (1, 1, 2), (2, 1, 1), (2, 1, 2)}
+    assert np.isfinite(run.egarch_aic)
+    assert 0 <= run.selected_trial_index < 50
+    assert run.final_model_seed >= 0
+    print("PSR01B_VALIDATION_UNMOCKED_FOLD12_PASS")
 
 
 def test_bounded_static_contract_reports_all_authorizations_closed():
