@@ -1189,6 +1189,20 @@
     "final_target_label_must_be_before": "2024-01-01T00:00:00Z",
     "origin_at_2023_12_31T23_00Z_eligible": false,
     "reason": "Its target label would be 2024-01-01T00:00:00Z, which is outside the half-open final split.",
-    "scientific_semantics_changed": false
+    "scientific_semantics_changed": false,
+    "bar_timestamp_semantics": "Binance kline open timestamp in UTC labels bar [t,t+1h)",
+    "target_definition": "r_(t+1)=log(C_(t+1)/C_t), where C_t is the close of the bar labeled t",
+    "split_half_open_rule": "for any split [S,E), an origin t is eligible iff S <= t < E AND S <= t+1h < E",
+    "equivalent_last_origin": "E-2h on a complete hourly grid",
+    "boundary_crossing_target_allowed": false,
+    "applies_to": [
+      "training targets",
+      "validation loss",
+      "test forecasts and evaluation returns",
+      "feature-selection correlations within each three-month selection block",
+      "benchmark evaluation records"
+    ],
+    "final_source_boundary": "no origin may be retained if its target bar label is >= 2024-01-01T00:00:00Z",
+    "final_refit_rows": "union of rows independently eligible under the original train split and original validation split; no row crossing the train/validation or validation/test boundary is restored"
   }
 }
