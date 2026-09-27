@@ -1,0 +1,811 @@
+{
+  "registration_id": "PSR01B-BOUNDED-VALIDATION-SPOT-V1",
+  "version": 1,
+  "status": "FROZEN_PENDING_INDEPENDENT_SPECIFICATION_REVIEW",
+  "authoritative_repository_head_reviewed_for_draft": "614859472715ac8dfa4489913ccb4a70d185412a",
+  "parent_scientific_specification": {
+    "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+    "revision": 4,
+    "path": "research/governance/psr01b_bounded_spec_v1.json",
+    "git_blob_sha1": "47c5379eeb4eae8c5890814c92e29b86bfddb23e",
+    "inheritance_rule": "Every scientific/statistical field is inherited byte-semantically from revision 4 except the prospectively registered Validation phase/source/fold continuation and governance/evidence adaptations explicitly enumerated in this draft. No outcome-dependent or Validation-data-dependent modification is permitted."
+  },
+  "claim_boundary": {
+    "scientific_claim": "BOUNDED_DECLARED_DEVIATION_MECHANISM_VALIDATION",
+    "exact_replication_claim_allowed": false,
+    "paper_futures_performance_reproduction_claim_allowed": false,
+    "development_success_is_not_validation_success": true
+  },
+  "authorization": {
+    "implementation_authorized": false,
+    "validation_source_access_authorized": false,
+    "validation_empirical_feature_generation_authorized": false,
+    "validation_empirical_model_fit_authorized": false,
+    "validation_empirical_forecast_generation_authorized": false,
+    "validation_strategy_pnl_authorized": false,
+    "oos_access_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "leverage_authorized": false,
+    "derivatives_execution_authorized": false
+  },
+  "phase": {
+    "name": "VALIDATION",
+    "protected_evaluation_interval": "[2022-01-01T00:00:00Z,2024-01-01T00:00:00Z)",
+    "registered_source_interval": "[2020-08-31T00:00:00Z,2024-01-01T00:00:00Z)",
+    "source_start": "2020-08-31T00:00:00Z",
+    "validation_start": "2022-01-01T00:00:00Z",
+    "hard_end_exclusive": "2024-01-01T00:00:00Z",
+    "prohibited_timestamp_gte": "2024-01-01T00:00:00Z",
+    "oos_partition_may_be_selected": false
+  },
+  "folds": [
+    {
+      "fold": 12,
+      "fold_index": 11,
+      "train_start": "2020-10-01T00:00:00Z",
+      "train_end_validation_start": "2021-10-01T00:00:00Z",
+      "validation_end_test_start": "2022-01-01T00:00:00Z",
+      "test_end": "2022-04-01T00:00:00Z"
+    },
+    {
+      "fold": 13,
+      "fold_index": 12,
+      "train_start": "2021-01-01T00:00:00Z",
+      "train_end_validation_start": "2022-01-01T00:00:00Z",
+      "validation_end_test_start": "2022-04-01T00:00:00Z",
+      "test_end": "2022-07-01T00:00:00Z"
+    },
+    {
+      "fold": 14,
+      "fold_index": 13,
+      "train_start": "2021-04-01T00:00:00Z",
+      "train_end_validation_start": "2022-04-01T00:00:00Z",
+      "validation_end_test_start": "2022-07-01T00:00:00Z",
+      "test_end": "2022-10-01T00:00:00Z"
+    },
+    {
+      "fold": 15,
+      "fold_index": 14,
+      "train_start": "2021-07-01T00:00:00Z",
+      "train_end_validation_start": "2022-07-01T00:00:00Z",
+      "validation_end_test_start": "2022-10-01T00:00:00Z",
+      "test_end": "2023-01-01T00:00:00Z"
+    },
+    {
+      "fold": 16,
+      "fold_index": 15,
+      "train_start": "2021-10-01T00:00:00Z",
+      "train_end_validation_start": "2022-10-01T00:00:00Z",
+      "validation_end_test_start": "2023-01-01T00:00:00Z",
+      "test_end": "2023-04-01T00:00:00Z"
+    },
+    {
+      "fold": 17,
+      "fold_index": 16,
+      "train_start": "2022-01-01T00:00:00Z",
+      "train_end_validation_start": "2023-01-01T00:00:00Z",
+      "validation_end_test_start": "2023-04-01T00:00:00Z",
+      "test_end": "2023-07-01T00:00:00Z"
+    },
+    {
+      "fold": 18,
+      "fold_index": 17,
+      "train_start": "2022-04-01T00:00:00Z",
+      "train_end_validation_start": "2023-04-01T00:00:00Z",
+      "validation_end_test_start": "2023-07-01T00:00:00Z",
+      "test_end": "2023-10-01T00:00:00Z"
+    },
+    {
+      "fold": 19,
+      "fold_index": 18,
+      "train_start": "2022-07-01T00:00:00Z",
+      "train_end_validation_start": "2023-07-01T00:00:00Z",
+      "validation_end_test_start": "2023-10-01T00:00:00Z",
+      "test_end": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "scientific_contract": {
+    "inherit_exactly_from_parent_revision_4": true,
+    "unchanged_items": [
+      "OHLCV+TA+EGARCH feature definitions and exact 28-column deployed order",
+      "94 TA candidates, 10 registered groups, four-block common eligible rank universe and eligibility thresholds",
+      "segmented EGARCH candidate orders, likelihood, reset, AIC, causal replay and feature outputs",
+      "XGBoost model, Optuna TPE search space, 50 trials, early stopping, final refit, deterministic trial tie rule",
+      "target definition and standardization",
+      "PAPER_FILL and PROJECT_GAP_PRESERVING missing-data arms",
+      "long-only BASELINE_SIGN and COST_AWARE rules, c=0.001 and lambda=2",
+      "gap/fold forced-liquidation and cash-restart accounting",
+      "BUY_AND_HOLD and MOMENTUM_24H contextual benchmarks",
+      "fold_total_return, fold_ARC, fold_ASD, fold_SHARPE and consolidated metrics",
+      "paired circular block bootstrap with primary 168h, diagnostics 24h/72h, 10000 draws, segment eligibility n>=2L",
+      "two-arm Holm family at alpha=0.05",
+      "all seven H2 success criteria",
+      "forecast vector serialization/hash identity and same-forecast requirement for BASELINE_SIGN/COST_AWARE",
+      "split endpoint contract and 744h mandatory artificial state boundary",
+      "runtime pins and single-thread environment"
+    ],
+    "h2_pass_token": "BOUNDED_H2_REPLICATION",
+    "h2_fail_token": "BOUNDED_H2_NOT_REPLICATED",
+    "h2_pass_requires_all": [
+      "all-record observed mean net-return differential > 0 in both missing-data arms",
+      "primary 168h inference-universe observed mean net-return differential > 0 in both missing-data arms",
+      "at least 2 primary-inference-eligible contiguous evaluation segments (n>=336 each) exist in each arm",
+      "Holm-adjusted primary 168h one-sided p-value <= 0.05 in both arms",
+      "cost-aware turnover < baseline turnover in both arms using all registered evaluation records and forced gap/fold liquidations",
+      "cost-aware completed trades >= 20 in both arms",
+      "all-record cost-aware Sharpe - baseline Sharpe > 0 in both arms"
+    ],
+    "practical_benchmark": {
+      "name": "VALIDATION_COST_AWARE_VS_BUY_AND_HOLD_SHARPE_GATE",
+      "per_arm_rule": "For each missing-data arm, all-record COST_AWARE Sharpe must be strictly greater than all-record BUY_AND_HOLD Sharpe.",
+      "required_arms": [
+        "PAPER_FILL",
+        "PROJECT_GAP_PRESERVING"
+      ],
+      "pass_rule": "PASS iff COST_AWARE Sharpe > BUY_AND_HOLD Sharpe in BOTH required arms.",
+      "pass_token": "PSR01B_VALIDATION_PRACTICAL_BENCHMARK_PASS",
+      "fail_token": "PSR01B_VALIDATION_PRACTICAL_BENCHMARK_FAIL",
+      "buy_and_hold_sharpe_unavailable": "FAIL",
+      "cost_aware_sharpe_unavailable": "FAIL",
+      "scientific_terminal_without_both_arm_inequalities_established": "FAIL",
+      "technical_terminal_state": "JSON null because no scientific/practical judgment is valid on a technical-indeterminate attempt.",
+      "separate_from_parent_h2": true,
+      "may_change_parent_h2_classification": false,
+      "may_change_validation_h2_token": false
+    },
+    "no_rescue_after_outcome": true,
+    "parent_h2_classification_tokens": {
+      "pass": "BOUNDED_H2_REPLICATION",
+      "fail": "BOUNDED_H2_NOT_REPLICATED"
+    },
+    "validation_terminal_tokens": {
+      "parent_h2_pass": "PSR01B_VALIDATION_BOUNDED_H2_REPLICATION",
+      "parent_h2_fail": "PSR01B_VALIDATION_BOUNDED_H2_NOT_REPLICATED",
+      "technical_indeterminate": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE"
+    },
+    "result_token_mapping": {
+      "scientifically_completed_parent_pass": {
+        "parent_h2_classification": "BOUNDED_H2_REPLICATION",
+        "validation_result_token": "PSR01B_VALIDATION_BOUNDED_H2_REPLICATION"
+      },
+      "scientifically_completed_parent_fail_or_sample_driven_scientific_failure": {
+        "parent_h2_classification": "BOUNDED_H2_NOT_REPLICATED",
+        "validation_result_token": "PSR01B_VALIDATION_BOUNDED_H2_NOT_REPLICATED"
+      },
+      "genuinely_non_scientific_technical_terminal_state": {
+        "parent_h2_classification": null,
+        "validation_result_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE"
+      },
+      "rule": "A technical terminal state MUST NOT be encoded as either parent H2 token. parent_h2_classification is JSON null whenever a fair scientific H2 classification was not obtained because of a TECHNICAL_INDETERMINATE terminal state."
+    }
+  },
+  "stochastic_continuation": {
+    "model_root": 2026092401,
+    "bootstrap_root": 2026092402,
+    "seed_engine": "numpy.random.SeedSequence(coordinates).generate_state(1,dtype=np.uint32)[0] converted to Python int",
+    "arm_indices": {
+      "PAPER_FILL": 0,
+      "PROJECT_GAP_PRESERVING": 1
+    },
+    "fold_index_rule": "fold_index = fold - 1; Validation folds 12-19 therefore use fold indices 11-18 without resetting the sequence.",
+    "optuna_seed_path": "[model_root,1,arm_index,fold_index]",
+    "xgboost_trial_seed_path": "[model_root,2,arm_index,fold_index,trial_index]",
+    "xgboost_final_seed_path": "[model_root,3,arm_index,fold_index,selected_trial_index]",
+    "bootstrap_seed_path": "[bootstrap_root,block_hours,arm_index]",
+    "uncontrolled_rng_allowed": false
+  },
+  "source": {
+    "provider": "Binance Public Data",
+    "market": "spot",
+    "symbol": "BTCUSDT",
+    "timeframe": "1h",
+    "timezone": "UTC",
+    "archive_type": "monthly klines ZIP",
+    "url_pattern": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1h/BTCUSDT-1h-{YYYY}-{MM}.zip",
+    "registered_archive_months": "2020-08 through 2023-12 inclusive",
+    "registered_archive_count": 41,
+    "source_use_clip": "Only accepted normalized bars with 2020-08-31T00:00:00Z <= timestamp < 2024-01-01T00:00:00Z may enter any PSR01B Validation fold.",
+    "historical_overlap_identity": {
+      "months": "2020-08 through 2021-12 inclusive",
+      "rule": "Use the exact already-registered Development revision-4 archive SHA-256 values for overlapping archives; do not reacquire a different identity."
+    },
+    "protected_validation_identity": {
+      "months": "2022-01 through 2023-12 inclusive",
+      "pre_claim_unseen_archive_or_checksum_read_allowed": false,
+      "post_claim_rule": "Acquire only from the exact Binance Public Data URL pattern using the inherited Development transport loop and verify the downloaded archive with the official checksum mechanism used by the frozen download_archive(..., verify_checksum=True) path. Record the returned/observed checksum, independently hash the accepted archive bytes with SHA-256, and bind both to the one-shot evidence.",
+      "identity_latching": "Once a post-claim archive download succeeds and checksum verification succeeds, its accepted bytes and SHA-256 are immutable for the remainder of the attempt; do not redownload that archive. Any conflicting official checksum identity observed within the same attempt is TECHNICAL_INDETERMINATE.",
+      "raw_byte_retention": "PERMANENT: the exact successfully accepted first-access raw ZIP bytes for protected 2022-01 through 2023-12 must be preserved after the one-shot run in immutable evidence. Hashes alone are insufficient."
+    },
+    "transport_retry_contract": {
+      "inheritance": "EXACT_DEVELOPMENT_V2_SOURCE_ACQUISITION_RETRY_SEMANTICS_PLUS_EXPLICIT_VALIDATION_FREEZE_DETAILS",
+      "development_runner_path": "research/scripts/run_psr01b_development_v1.py",
+      "development_runner_blob_at_reviewed_head": "7cc0bd7353d41502c4a0a07e7330b42bfea36ac5",
+      "archive_url_rule": "Exact HTTPS Binance Public Data archive URL from the registered URL pattern; only https scheme permitted.",
+      "checksum_url_rule": "checksum_url = archive_url + '.CHECKSUM'",
+      "urlopen_timeout_seconds": 60,
+      "timeout_applies_to": [
+        "archive request",
+        "checksum request"
+      ],
+      "max_download_attempts": 4,
+      "retry_delays_seconds": [
+        5,
+        15,
+        45
+      ],
+      "retryable_http_status": [
+        429,
+        "500-599"
+      ],
+      "retryable_exception_classes": [
+        "URLError",
+        "TimeoutError",
+        "socket.timeout",
+        "ConnectionError"
+      ],
+      "nonretryable": [
+        "all other HTTP 4xx",
+        "malformed checksum document",
+        "official checksum mismatch",
+        "registered or latched identity mismatch",
+        "unexpected filename/inventory/path/member/archive structure",
+        "deterministic source or implementation contract violation"
+      ],
+      "partial_destination_policy": "Delete any partial destination before each retry and after every failed attempt.",
+      "pre_claim_requests_forbidden": [
+        "HEAD archive",
+        "GET archive",
+        "HEAD checksum",
+        "GET checksum",
+        "any equivalent metadata or byte request to protected 2022-2023 source URLs"
+      ],
+      "redirect_policy": "Use only the redirect behavior of the pinned Python 3.12.14 urllib.request.urlopen stack; no ad hoc operator/manual redirect following, URL substitution, or alternate mirror is permitted.",
+      "zip_and_member_validation": "Use the pinned existing scanner/archive-security rules. A truncated/corrupt ZIP or invalid member structure is a source/integrity TECHNICAL_INDETERMINATE terminal failure.",
+      "source_acquisition_ledger": "Record every archive request and every checksum request attempt, including archive filename, attempt number, request kind, exact URL, outcome/HTTP status or exception type, and whether bytes/checksum were accepted.",
+      "change_from_development_retry_count_or_delay": false,
+      "scientific_rationale": "No scientific reason exists to alter Development retry behavior for Validation."
+    },
+    "raw_byte_evidence_policy": {
+      "applies_to_registered_archives": "All 41 archives 2020-08 through 2023-12 that are actually used by the Validation execution.",
+      "per_archive_required_fields": [
+        "filename",
+        "byte_length",
+        "sha256",
+        "official_checksum_value",
+        "source_url",
+        "exact_raw_bytes"
+      ],
+      "protected_2022_2023": "Exact first successfully accepted ZIP bytes must be permanently preserved. No later redownload may replace them within the attempt.",
+      "historical_overlap_2020_08_through_2021_12": "May rely on already-pinned parent identities for preregistration, but execution evidence must identify and preserve the exact bytes actually used, including byte length, SHA-256, official checksum value and source URL.",
+      "immutable_local_package": {
+        "directory": "research/experiments/psr01b_validation_v1/raw_source",
+        "manifest": "research/experiments/psr01b_validation_v1/raw_source_manifest.json",
+        "package": "research/experiments/psr01b_validation_v1/psr01b_validation_raw_source_v1.tar",
+        "package_contains": "The exact accepted ZIP files under their registered filenames. Tar packaging may add tar container headers, but every embedded ZIP file byte sequence must be byte-for-byte identical to the accepted source bytes.",
+        "binding": "Final evidence records package SHA-256, package byte length, manifest SHA-256 and every per-archive SHA-256/checksum/source URL."
+      },
+      "permanent_external_persistence": "Governance closeout is forbidden until the raw-source package or an exact byte-identical equivalent has been copied from the ephemeral runner to a separately immutable, non-expiring evidence object/store and its stable identifier plus SHA-256 is bound into closeout evidence. An expiring Actions artifact alone does not satisfy permanent preservation.",
+      "scientific_use_hard_end": "No raw source row with timestamp >= 2024-01-01T00:00:00Z may enter treatment output, state, features, model fitting, forecasts, returns, metrics or inference."
+    }
+  },
+  "row_treatment_contract": {
+    "frozen_normalizer_source_path": "src/research_core/ams_dep_treatment_aware_normalization_v2.py",
+    "frozen_normalizer_blob_sha1": "8c257290ff04e726b53cafa433596311dcec32c4",
+    "adapter_status": "PROSPECTIVE_PHASE_SAFE_ADAPTER_REQUIRED_BEFORE_ANY_VALIDATION_SOURCE_ACCESS",
+    "scanner_anomaly_rejection_semantics_changed": false,
+    "timestamp_rounding_allowed": false,
+    "timestamp_snapping_allowed": false,
+    "interpolation_allowed": false,
+    "resampling_allowed": false,
+    "ohlcv_repair_allowed": false,
+    "duplicate_or_order_repair_allowed": false,
+    "arbitrary_exception_skip_allowed": false,
+    "phase_safe_linkage_rule": {
+      "design": "B_TIMESTAMP_DIRECTED_REGISTERED_PARTITION",
+      "registered_interval_start": "2020-08-31T00:00:00Z",
+      "boundary": "2022-01-01T00:00:00Z",
+      "registered_interval_end_exclusive": "2024-01-01T00:00:00Z",
+      "algorithm": [
+        "For every localized scanner DataQualityEvent with parsed_timestamp inside the registered source interval, compute affected = hour(parsed_timestamp) exactly as the frozen normalizer does and compute the exact frozen event_id(event).",
+        "If 2020-08-31T00:00:00Z <= affected < 2022-01-01T00:00:00Z, select exactly one manifest partition whose partition name is 'development'.",
+        "If 2022-01-01T00:00:00Z <= affected < 2024-01-01T00:00:00Z, select exactly one manifest partition whose partition name is 'validation'.",
+        "The selected partition cardinality must be exactly one. The event is treatment-linked iff an exclusion in that selected partition satisfies start <= affected < end AND the frozen event_id is present in exclusion.anomaly_ids.",
+        "A localized anomaly event inside the registered source interval that is not linked under this exact rule hard-fails source integrity; it may not be silently accepted.",
+        "Any row/event timestamp at or after 2024-01-01T00:00:00Z hard-fails before it can enter treatment, features, training, forecasting, inference or P&L.",
+        "The adapter must never inspect, select, infer from, or fall back to an OOS partition.",
+        "Rows earlier than 2020-08-31T00:00:00Z that physically exist in the August 2020 monthly archive are outside the registered source interval and cannot enter the returned PSR source rows; their presence cannot supply state across the mandatory 2020-08-31 fold-12 warmup boundary."
+      ],
+      "pre_2022_equivalence": "The event-id, exclusion-window and anomaly-id test is exactly the frozen Development test; only partition dispatch is generalized. Thus an event in the historical side is judged against the Development partition and must receive the same treatment it would under frozen Development semantics.",
+      "validation_prospective_rule": "The identical test is applied prospectively against the Validation partition for 2022-2023 events. No rule may be chosen or changed based on observed Validation contents."
+    },
+    "implementation_characterization": "This remediation is NOT characterized as merely five AST substitutions. The phase-safe treatment-linkage dispatch is an explicit additional semantic adaptation and must receive independent review before any Validation source access."
+  },
+  "mandatory_synthetic_fault_injection_tests": [
+    {
+      "name": "PRE_BOUNDARY_DEVELOPMENT_LINKAGE_EQUIVALENCE",
+      "event_times": [
+        "2021-12-31T22:00:00Z",
+        "2021-12-31T23:00:00Z"
+      ],
+      "required_proof": "With identical synthetic manifest exclusions and anomaly IDs, adapter decisions equal the frozen Development linkage decisions byte-for-byte in accept/reject outcome and failure code."
+    },
+    {
+      "name": "BOUNDARY_DISPATCH",
+      "event_times": [
+        "2021-12-31T23:00:00Z",
+        "2022-01-01T00:00:00Z",
+        "2022-01-01T01:00:00Z"
+      ],
+      "required_proof": "23:00 selects Development; 00:00 and later select Validation; no OOS selection/fallback is possible."
+    },
+    {
+      "name": "VALIDATION_LINKAGE",
+      "event_times": [
+        "2022-06-15T12:00:00Z",
+        "2023-06-15T12:00:00Z"
+      ],
+      "required_proof": "The same event-id/exclusion-window rule governs linked rejection and missing-link hard failure prospectively in Validation."
+    },
+    {
+      "name": "HARD_END_REJECTION",
+      "event_times": [
+        "2024-01-01T00:00:00Z",
+        "2024-01-01T01:00:00Z"
+      ],
+      "required_proof": "Hard failure occurs before row use, feature/state propagation, model input, forecast, return or evidence classification as a scientific outcome."
+    },
+    {
+      "name": "HISTORICAL_SIDE_DOES_NOT_CHANGE_ANOMALY_TREATMENT",
+      "required_proof": "Construct paired synthetic events/exclusions with identical anomaly semantics on each side of the boundary and prove that only the selected registered partition changes; scanner classification, event_id generation, exclusion membership rule, rejected-row accounting and normalization behavior are otherwise identical."
+    }
+  ],
+  "failure_taxonomy": {
+    "governing_principle": "If source integrity, frozen implementation identity, runtime identity and execution integrity are valid, and the failure arises because the frozen scientific procedure cannot produce a required component on the observed Validation sample, classify SCIENTIFIC_NON_REPLICATION. Reserve TECHNICAL_INDETERMINATE for failures that prevent a fair execution because of infrastructure, source-integrity, runtime, implementation-invariant, transport, provenance/claim, or evidence-system failure.",
+    "rules": [
+      {
+        "condition": "No eligible candidate in a required TA selection group after the registered finite-row, four-block, common-rank-universe eligibility rules are applied to otherwise valid registered data.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "reason": "The frozen scientific procedure cannot produce a required selected feature on the observed sample."
+      },
+      {
+        "condition": "All four registered EGARCH orders are unavailable because of expected numerical non-convergence, nonfinite objective/parameters, or invalid fitted recursion on otherwise valid registered training data.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "reason": "The frozen scientific procedure cannot produce the required volatility component on the observed sample."
+      },
+      {
+        "condition": "Zero or nonfinite target standard deviation produced by an otherwise valid registered train or train+validation sample.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "reason": "The frozen model standardization/refit procedure is undefined on the observed sample."
+      },
+      {
+        "condition": "No eligible training rows or no eligible inner-validation rows remain after the registered causal endpoint, feature-history, gap, and row-treatment rules.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "reason": "The registered procedure has insufficient eligible data on the observed sample."
+      },
+      {
+        "condition": "A forecast vector has the exact registered one-dimensional shape and exact expected test-origin length, all source/runtime/implementation/invariant gates have passed, model fitting returned normally, but one or more forecast values are nonfinite.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "reason": "Deterministic rule: numerical failure of the valid frozen procedure on otherwise valid empirical inputs is a scientific non-replication; no reviewer discretion is permitted."
+      },
+      {
+        "condition": "Fewer than two inferentially eligible segments exist for the registered primary 168h block bootstrap in either arm.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "reason": "Registered primary inference support is unavailable."
+      },
+      {
+        "condition": "Required consolidated BASELINE_SIGN or COST_AWARE Sharpe is unavailable under the registered valid-return sequence.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "h2_effect": "H2 criterion 7 is false for that arm.",
+        "reason": "A required registered H2 criterion cannot be satisfied."
+      },
+      {
+        "condition": "BUY_AND_HOLD Sharpe is unavailable under its registered valid-return sequence.",
+        "classification": "PRACTICAL_BENCHMARK_FAIL",
+        "h2_effect": "No automatic change to the separate H2 classification.",
+        "reason": "The practical benchmark gate fails independently of H2."
+      },
+      {
+        "condition": "Dependency/runtime identity mismatch, frozen implementation identity mismatch, review-anchor/claim/provenance mismatch, source corruption or checksum/inventory/path/member mismatch, unexpected archive structure, scanner/manifest identity failure, treatment-linkage integrity failure, evidence/result/incident write failure, or transport failure that prevents fair execution.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "Execution or source/evidence integrity failed before the frozen scientific procedure could be fairly evaluated."
+      },
+      {
+        "condition": "Forecast vector/test-origin length mismatch, wrong dimensionality, duplicate/misaligned timestamps, or other deterministic implementation invariant violation.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "The implementation violated the frozen contract."
+      },
+      {
+        "condition": "Any registered strategy/benchmark return is nonfinite, or 1+r <= 0, where the return must arise from exp(realized_log_return)-1 plus the explicitly registered costs; any impossible accounting/equity invariant is violated.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "This is an impossible mathematical/accounting invariant failure, not an empirical H2 judgment."
+      },
+      {
+        "condition": "An EGARCH/library call raises a structural exception attributable to missing/wrong dependency, ABI/runtime corruption, wrong function contract, or another frozen-implementation invariant rather than registered numerical non-convergence on valid data.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "Deterministic structural/runtime failure, not sample-driven scientific failure."
+      }
+    ],
+    "nonfinite_forecast_deterministic_rule": "Shape-correct and length-correct vector + all prior integrity gates passed + normal model return + any nonfinite element => SCIENTIFIC_NON_REPLICATION. Wrong shape/length/alignment or structural exception/invariant failure => TECHNICAL_INDETERMINATE. No reviewer discretion.",
+    "post_claim_consumption_rule": "Every post-claim terminal state consumes the single Validation attempt regardless of classification.",
+    "rerun_authorized": false,
+    "technical_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE",
+    "scientific_non_replication_parent_h2_classification": "BOUNDED_H2_NOT_REPLICATED",
+    "scientific_non_replication_validation_token": "PSR01B_VALIDATION_BOUNDED_H2_NOT_REPLICATED",
+    "technical_parent_h2_classification": null,
+    "technical_practical_benchmark_token": null
+  },
+  "result_and_evidence_contract": {
+    "required_fold_metrics": [
+      "fold_total_return",
+      "fold_ARC",
+      "fold_ASD",
+      "fold_SHARPE"
+    ],
+    "null_semantics": "Registered metrics that are mathematically unavailable under an otherwise valid return sequence are serialized as JSON null only where the parent revision-4 contract permits unavailability; never NaN/Infinity. Unavailability must trigger the prospectively registered scientific/practical classification above.",
+    "incident_channel": "A separate atomic incident record is mandatory for post-claim failures and must be written independently of the final result path. Evidence-write failure itself is TECHNICAL_INDETERMINATE and still consumes the attempt.",
+    "provenance_required": [
+      "executing commit SHA",
+      "reviewed implementation candidate SHA",
+      "review-anchor ref/SHA",
+      "claim ref/SHA/tag-object SHA/run ID/run attempt/actor",
+      "runtime/package/thread pins",
+      "archive acquisition attempts and source identities",
+      "normalization accounting and treatment-linkage evidence",
+      "fold/arm execution order",
+      "forecast vector hashes",
+      "registered fold metrics",
+      "bootstrap results and support counts",
+      "H2 classification",
+      "practical benchmark status"
+    ],
+    "outcome_suppression": {
+      "fold_level_validation_test_return_or_pnl_in_logs_allowed": false,
+      "partial_h2_status_in_logs_allowed": false,
+      "partial_practical_gate_status_in_logs_allowed": false,
+      "intermediate_empirical_result_artifact_allowed": false,
+      "operator_facing_partial_test_metric_for_outcome_based_cancellation_allowed": false,
+      "model_or_feature_selection_details": "May be persisted in final evidence, but should not be streamed as partial empirical outcome evidence where avoidable.",
+      "post_claim_cancel_retry_semantics": "Cancellation, runner loss, artifact failure, technical failure, or any other post-claim terminal state consumes the single attempt. No legal retry/cancel pathway may create a second real claim or second empirical Validation attempt."
+    },
+    "execution_namespace": "research/experiments/psr01b_validation_v1",
+    "result_path": "research/experiments/psr01b_validation_v1/result.json",
+    "reservation_path": "research/experiments/psr01b_validation_v1/result.json.reservation",
+    "terminal_incident_path": "research/experiments/psr01b_validation_v1/terminal_incident.json",
+    "raw_source_directory": "research/experiments/psr01b_validation_v1/raw_source",
+    "raw_source_manifest_path": "research/experiments/psr01b_validation_v1/raw_source_manifest.json",
+    "raw_source_package_path": "research/experiments/psr01b_validation_v1/psr01b_validation_raw_source_v1.tar",
+    "path_semantics": {
+      "reservation": "PRE_SOURCE exclusive create/no-overwrite; establishes that the final evidence path is reserved before the real claim.",
+      "result": "Exclusive create/no-overwrite. Written only when the attempt reaches a scientifically classifiable terminal state: parent H2 pass, parent H2 fail, or sample-driven SCIENTIFIC_NON_REPLICATION. It is not written as a scientific result for TECHNICAL_INDETERMINATE; technical terminal states must not fabricate H2 metrics.",
+      "terminal_incident": "Independent of result.json; exclusive create/no-overwrite; finalized for every post-claim terminal state, including scientifically completed states, without fabricating absent scientific metrics."
+    },
+    "execution_write_order": [
+      "PRE_SOURCE reservation",
+      "atomic real claim creation",
+      "post-create claim verification",
+      "protected source acquisition",
+      "scientific execution",
+      "result.json write if scientifically completed",
+      "terminal_incident.json/provenance finalization",
+      "artifact upload with GitHub Actions if: always() or equivalent"
+    ],
+    "terminal_incident_required_fields": [
+      "execution_sha",
+      "reviewed_candidate_sha",
+      "run_id",
+      "run_attempt",
+      "actor",
+      "claim_ref",
+      "claim_tag_object_sha",
+      "claim_target_sha",
+      "stage",
+      "terminal_classification",
+      "validation_result_token",
+      "source_access_occurred",
+      "source_acquisition_ledger",
+      "source_hashes_obtained_before_failure",
+      "result_json_exists",
+      "error_type",
+      "error_message",
+      "validation_boundary_status",
+      "oos_boundary_status",
+      "parent_h2_classification",
+      "practical_benchmark_token"
+    ],
+    "incident_metric_rule": "terminal_incident.json never fabricates scientific metrics; unavailable/not-reached scientific values are omitted or JSON null only where explicitly defined, and a technical terminal state has parent_h2_classification=null.",
+    "artifact_upload": {
+      "must_run_on_success_or_failure": true,
+      "github_actions_condition": "if: always() or semantically equivalent",
+      "must_include": [
+        "research/experiments/psr01b_validation_v1/result.json if present",
+        "research/experiments/psr01b_validation_v1/result.json.reservation",
+        "research/experiments/psr01b_validation_v1/terminal_incident.json if successfully finalized",
+        "research/experiments/psr01b_validation_v1/raw_source_manifest.json if source access occurred",
+        "research/experiments/psr01b_validation_v1/psr01b_validation_raw_source_v1.tar if source access occurred",
+        "research/experiments/psr01b_validation_v1/raw_source/ exact accepted ZIP bytes if source access occurred"
+      ]
+    },
+    "final_scientific_fields": {
+      "parent_h2_classification": "Required for scientifically completed/scientific-non-replication terminal states; JSON null for TECHNICAL_INDETERMINATE.",
+      "validation_result_token": "Exactly one of PSR01B_VALIDATION_BOUNDED_H2_REPLICATION, PSR01B_VALIDATION_BOUNDED_H2_NOT_REPLICATED, PSR01B_VALIDATION_TECHNICAL_INDETERMINATE.",
+      "practical_benchmark_token": "On a scientific terminal path, exactly PASS or FAIL token. On a TECHNICAL_INDETERMINATE terminal path, JSON null."
+    },
+    "scientifically_completed_definition": "A scientifically classifiable terminal state includes a completed parent-H2 pass/fail evaluation or an earlier sample-driven SCIENTIFIC_NON_REPLICATION under the frozen procedure. It excludes every TECHNICAL_INDETERMINATE state."
+  },
+  "one_shot_governance": {
+    "claim_ref": "refs/tags/psr01b-validation-one-shot-claim-v1",
+    "execution_limit": 1,
+    "manual_dispatch_required": true,
+    "exact_manual_confirmation_required": true,
+    "pre_claim_protected_validation_byte_access_allowed": false,
+    "claim_must_precede_protected_source_acquisition": true,
+    "claim_must_be_atomically_created_and_reverified": true,
+    "failure_after_claim_consumes_attempt": true,
+    "technical_failure_rerun_allowed": false,
+    "scientific_failure_rerun_allowed": false,
+    "implementation_freeze_required_before_execution": true,
+    "independent_implementation_review_required_before_execution": true,
+    "reviewed_candidate_anchor_required_before_execution": true,
+    "separate_validation_execution_authorization_required": true,
+    "current_draft_authorizes_none_of_these_actions": true,
+    "pre_existing_real_claim": "HARD_STOP",
+    "atomic_create_binds_exact_execution_sha": true,
+    "annotated_claim_provenance_required": [
+      "run_id",
+      "run_attempt",
+      "actor"
+    ],
+    "post_create_verification_required": true,
+    "post_create_verification_must_match": [
+      "ref target SHA",
+      "annotated tag-object SHA",
+      "execution SHA",
+      "run_id",
+      "run_attempt",
+      "actor"
+    ],
+    "post_create_mismatch": "HARD_STOP",
+    "source_access_before_post_create_verification": false,
+    "claim_ruleset_required": true,
+    "claim_ruleset_must_prohibit": [
+      "update",
+      "deletion",
+      "non-fast-forward/replacement"
+    ],
+    "claim_ruleset_bypass_actor_allowed": false,
+    "claim_recreation_forbidden": true,
+    "rehearsal_claim_rule": "The PRE_SOURCE rehearsal uses a run/attempt-specific throwaway rehearsal claim distinct from the real claim.",
+    "rehearsal_may_create_real_claim": false,
+    "rehearsal_validation_source_access_allowed": false,
+    "rehearsal_downloader_invocation_allowed": false,
+    "post_claim_terminal_state_consumes_attempt": true,
+    "second_real_claim_or_second_empirical_attempt_allowed": false
+  },
+  "required_pre_execution_lifecycle": [
+    "frozen Validation specification committed",
+    "independent specification review and approval",
+    "bounded Validation implementation only",
+    "synthetic/offline tests",
+    "fault-injection tests",
+    "implementation freeze",
+    "protected reviewed-candidate anchor",
+    "protected future real Validation claim ruleset",
+    "independent implementation + holdout-firewall review",
+    "exact-head downloader-free PRE_SOURCE rehearsal using a run/attempt-specific throwaway rehearsal claim",
+    "post-rehearsal unchanged-head independent recheck",
+    "separate Validation execution-authorization review",
+    "owner manual confirmation",
+    "result/evidence-path reservation",
+    "atomic creation of the protected real Validation claim",
+    "post-create claim verification",
+    "only then first protected Validation source/checksum request",
+    "ONE empirical Validation execution"
+  ],
+  "forbidden_by_this_draft": [
+    "Validation or OOS access now",
+    "empirical execution now",
+    "GitHub modification now",
+    "implementation authorization",
+    "execution authorization",
+    "parameter rescue or method changes after outcome",
+    "OOS partition access or fallback",
+    "rerun after any post-claim terminal state"
+  ],
+  "draft_decision": "READY_TO_FREEZE_PSR01B_VALIDATION_SPEC_DRAFT",
+  "future_oos_consideration": {
+    "status": "NOT_AUTHORIZED",
+    "may_be_considered_only_if_all": [
+      "validation_result_token == PSR01B_VALIDATION_BOUNDED_H2_REPLICATION",
+      "practical_benchmark_token == PSR01B_VALIDATION_PRACTICAL_BENCHMARK_PASS",
+      "Validation evidence has been persisted, independently audited, and governance-closed"
+    ],
+    "conditions_authorize_oos": false,
+    "oos_source_access_authorized": false,
+    "oos_implementation_authorized": false,
+    "oos_execution_authorized": false
+  },
+  "metric_unavailability_contract": {
+    "serialization_rule": "JSON null is permitted only for the explicitly registered mathematical ASD/Sharpe-unavailability cases below. NaN and Infinity are forbidden everywhere.",
+    "required_metric_omission_allowed": false,
+    "table": [
+      {
+        "metric_id": "FOLD_ASD_UNAVAILABLE",
+        "scope": "per-fold descriptive",
+        "metric": "fold_ASD",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Parent metric contract cannot produce a finite ASD on an otherwise valid registered finite-return fold sequence and treats ASD as mathematically unavailable. A finite zero ASD is serialized as numeric 0, not null.",
+        "classification": "DESCRIPTIVE_METRIC_UNAVAILABLE",
+        "h2_effect": "NONE_DIRECT",
+        "practical_effect": "NONE_DIRECT",
+        "rule": "Serialize JSON null only when the parent metric contract permits ASD unavailability; never NaN/Infinity. A finite zero ASD remains 0. This alone does not fail H2."
+      },
+      {
+        "metric_id": "FOLD_SHARPE_UNAVAILABLE",
+        "scope": "per-fold descriptive",
+        "metric": "fold_SHARPE",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "fold Sharpe is mathematically unavailable under the frozen parent formula, including when fold ASD is unavailable or is finite zero.",
+        "classification": "DESCRIPTIVE_METRIC_UNAVAILABLE",
+        "h2_effect": "NONE_DIRECT",
+        "practical_effect": "NONE_DIRECT",
+        "rule": "Serialize JSON null; never NaN/Infinity. Because fold Sharpe is descriptive and is not one of the seven H2 criteria, an isolated unavailable fold Sharpe does not by itself fail H2 if every required consolidated H2 quantity remains valid."
+      },
+      {
+        "metric_id": "CONSOLIDATED_BASELINE_ASD_UNAVAILABLE",
+        "scope": "consolidated",
+        "metric": "BASELINE_SIGN_ASD",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Consolidated BASELINE_SIGN ASD is mathematically unavailable on the otherwise valid registered finite-return sequence.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "h2_effect": "H2_CRITERION_7_FALSE",
+        "practical_effect": "NONE_DIRECT",
+        "rule": "Serialize ASD and dependent Sharpe as JSON null; H2 criterion 7 cannot be satisfied."
+      },
+      {
+        "metric_id": "CONSOLIDATED_BASELINE_SHARPE_UNAVAILABLE",
+        "scope": "consolidated",
+        "metric": "BASELINE_SIGN_SHARPE",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Required consolidated BASELINE_SIGN Sharpe is mathematically unavailable on the otherwise valid registered finite-return sequence.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "h2_effect": "H2_CRITERION_7_FALSE",
+        "practical_effect": "NONE_DIRECT",
+        "validation_result_token": "PSR01B_VALIDATION_BOUNDED_H2_NOT_REPLICATED"
+      },
+      {
+        "metric_id": "CONSOLIDATED_COST_AWARE_ASD_UNAVAILABLE",
+        "scope": "consolidated",
+        "metric": "COST_AWARE_ASD",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Consolidated COST_AWARE ASD is mathematically unavailable on the otherwise valid registered finite-return sequence.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "h2_effect": "H2_CRITERION_7_FALSE",
+        "practical_effect": "PRACTICAL_BENCHMARK_FAIL",
+        "rule": "Serialize ASD and dependent Sharpe as JSON null; both H2 criterion 7 and the practical inequality requiring COST_AWARE Sharpe cannot pass."
+      },
+      {
+        "metric_id": "CONSOLIDATED_COST_AWARE_SHARPE_UNAVAILABLE",
+        "scope": "consolidated",
+        "metric": "COST_AWARE_SHARPE",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Required consolidated COST_AWARE Sharpe is mathematically unavailable on the otherwise valid registered finite-return sequence.",
+        "classification": "SCIENTIFIC_NON_REPLICATION",
+        "h2_effect": "H2_CRITERION_7_FALSE",
+        "practical_effect": "PRACTICAL_BENCHMARK_FAIL",
+        "validation_result_token": "PSR01B_VALIDATION_BOUNDED_H2_NOT_REPLICATED"
+      },
+      {
+        "metric_id": "CONSOLIDATED_BUY_AND_HOLD_ASD_UNAVAILABLE",
+        "scope": "consolidated benchmark",
+        "metric": "BUY_AND_HOLD_ASD",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Consolidated BUY_AND_HOLD ASD is mathematically unavailable on the otherwise valid registered finite-return sequence.",
+        "classification": "PRACTICAL_BENCHMARK_FAIL",
+        "h2_effect": "H2_SEPARATELY_CLASSIFIED",
+        "practical_effect": "FAIL",
+        "rule": "Serialize ASD and dependent BUY_AND_HOLD Sharpe as JSON null."
+      },
+      {
+        "metric_id": "CONSOLIDATED_BUY_AND_HOLD_SHARPE_UNAVAILABLE",
+        "scope": "consolidated benchmark",
+        "metric": "BUY_AND_HOLD_SHARPE",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Consolidated BUY_AND_HOLD Sharpe is unavailable on the otherwise valid registered finite-return sequence.",
+        "classification": "PRACTICAL_BENCHMARK_FAIL",
+        "h2_effect": "H2_SEPARATELY_CLASSIFIED",
+        "practical_effect": "FAIL",
+        "practical_benchmark_token": "PSR01B_VALIDATION_PRACTICAL_BENCHMARK_FAIL"
+      },
+      {
+        "metric_id": "CONSOLIDATED_MOMENTUM_24H_ASD_UNAVAILABLE",
+        "scope": "consolidated descriptive benchmark",
+        "metric": "MOMENTUM_24H_ASD",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Consolidated MOMENTUM_24H ASD is mathematically unavailable on the otherwise valid registered finite-return sequence.",
+        "classification": "DESCRIPTIVE_METRIC_UNAVAILABLE",
+        "h2_effect": "NONE_DIRECT",
+        "practical_effect": "NONE_DIRECT",
+        "rule": "Serialize ASD and dependent Sharpe as JSON null."
+      },
+      {
+        "metric_id": "CONSOLIDATED_MOMENTUM_24H_SHARPE_UNAVAILABLE",
+        "scope": "consolidated descriptive benchmark",
+        "metric": "MOMENTUM_24H_SHARPE",
+        "allowed_serialization": "JSON_NULL_WHEN_PARENT_FORMULA_PERMITS",
+        "when": "Consolidated MOMENTUM_24H Sharpe is mathematically unavailable on the otherwise valid registered finite-return sequence.",
+        "classification": "DESCRIPTIVE_METRIC_UNAVAILABLE",
+        "h2_effect": "NONE_DIRECT",
+        "practical_effect": "NONE_DIRECT",
+        "rule": "No direct H2 or practical-gate change unless another registered invariant is violated."
+      },
+      {
+        "metric_id": "NONFINITE_FOLD_METRIC_NOT_PERMITTED_AS_NULL",
+        "scope": "per-fold",
+        "metric": "ANY_FOLD_METRIC",
+        "allowed_serialization": "FORBIDDEN",
+        "when": "Any fold metric is NaN/Infinity/nonfinite and is not one of the specifically permitted mathematical ASD/Sharpe-unavailability cases normalized to JSON null.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "h2_effect": "NO_H2_JUDGMENT_IF_TECHNICAL_TERMINAL",
+        "practical_effect": "NO_PRACTICAL_JUDGMENT_IF_TECHNICAL_TERMINAL",
+        "validation_result_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE"
+      },
+      {
+        "metric_id": "NONFINITE_CONSOLIDATED_METRIC_NOT_PERMITTED_AS_NULL",
+        "scope": "consolidated",
+        "metric": "ANY_CONSOLIDATED_METRIC",
+        "allowed_serialization": "FORBIDDEN",
+        "when": "Any consolidated metric is NaN/Infinity/nonfinite and is not a specifically registered ASD/Sharpe-unavailability case normalized to JSON null.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "h2_effect": "NO_H2_JUDGMENT_IF_TECHNICAL_TERMINAL",
+        "practical_effect": "NO_PRACTICAL_JUDGMENT_IF_TECHNICAL_TERMINAL",
+        "validation_result_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE"
+      },
+      {
+        "metric_id": "INVALID_FOLD_TOTAL_RETURN_OR_ARC",
+        "scope": "per-fold",
+        "metric": "fold_total_return or fold_ARC",
+        "allowed_serialization": "FORBIDDEN",
+        "when": "fold_total_return or fold_ARC is nonfinite/invalid under an otherwise supposedly registered return sequence.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "Invalid total-return/equity mathematics is an invariant failure, not an empirical H2 failure."
+      },
+      {
+        "metric_id": "INVALID_CONSOLIDATED_TOTAL_RETURN_OR_ARC",
+        "scope": "consolidated",
+        "metric": "consolidated_total_return or consolidated_ARC",
+        "allowed_serialization": "FORBIDDEN",
+        "when": "Consolidated total return or ARC is nonfinite/invalid.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "Invalid total-return/equity mathematics is an invariant failure."
+      },
+      {
+        "metric_id": "NONFINITE_REGISTERED_RETURN",
+        "scope": "registered strategy or benchmark return",
+        "metric": "r_t",
+        "allowed_serialization": "FORBIDDEN",
+        "when": "Any registered evaluation return is nonfinite.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "Impossible/nonfinite registered-return construction is an invariant failure."
+      },
+      {
+        "metric_id": "ONE_PLUS_RETURN_NONPOSITIVE",
+        "scope": "registered strategy or benchmark return",
+        "metric": "1+r_t",
+        "allowed_serialization": "FORBIDDEN",
+        "when": "Any registered evaluation return satisfies 1+r_t <= 0.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "The registered return construction exp(log_return)-1 plus explicit costs must not produce an invalid equity multiplier without triggering an invariant failure."
+      },
+      {
+        "metric_id": "INVALID_EQUITY_OR_DRAWDOWN_STATE",
+        "scope": "registered equity path",
+        "metric": "equity/drawdown accounting",
+        "allowed_serialization": "FORBIDDEN",
+        "when": "Equity, running peak, drawdown, or another required accounting state becomes mathematically impossible/nonfinite.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "reason": "Accounting invariant violation."
+      }
+    ]
+  }
+}
