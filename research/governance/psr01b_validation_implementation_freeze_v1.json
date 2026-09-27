@@ -1,0 +1,147 @@
+{
+  "freeze_id": "PSR01B-VALIDATION-IMPLEMENTATION-FREEZE-V1",
+  "version": 1,
+  "status": "FROZEN_PENDING_INDEPENDENT_IMPLEMENTATION_AND_HOLDOUT_FIREWALL_REVIEW",
+  "approved_specification": {
+    "issue": 111,
+    "approval_decision": "APPROVE_PSR01B_VALIDATION_V1_SPEC_FOR_IMPLEMENTATION",
+    "approval_comment_id": 5858766177,
+    "exact_approved_head": "e6f20db11aaff9f9ce1e2ac73ce9324ae2a4897a",
+    "registration_id": "PSR01B-BOUNDED-VALIDATION-SPOT-V1",
+    "markdown_path": "docs/PSR01B_VALIDATION_SPEC_V1.md",
+    "markdown_git_blob_sha1": "fd16d0e9c408b96e596ef3b8f86786fcde2c9e08",
+    "json_path": "research/governance/psr01b_validation_spec_v1.json",
+    "json_git_blob_sha1": "bd6b1a325a921ee60559ec44c54d97b3dc40e72a"
+  },
+  "implementation": {
+    "branch": "psr-01b-validation-implementation",
+    "implementation_candidate_commit": "d90f41b15f953a25b7ee9f220beb7858b1b305c8",
+    "independent_implementation_and_holdout_firewall_review_required": true,
+    "independent_reviewed": false,
+    "reviewed_candidate_anchor_ref": "refs/heads/psr-01b-validation-implementation-reviewed-v1"
+  },
+  "implementation_file_git_blob_sha1": {
+    ".github/workflows/psr01b-validation-bounded-engineering.yml": "622ec495071db3a72c22ffcddb55ce53d3887157",
+    "research/scripts/run_psr01b_validation_v1.py": "2bca5f4f3354d30af062e82b22bdb94007db081e",
+    "src/research_core/psr01b_validation.py": "fff66e877feac01ddee176c7bc82f3fd1715e9c0",
+    "tests/test_psr01b_validation_v1.py": "560cde5cfd29ad6227c95f8fc7918f820f303161"
+  },
+  "scientific_module_git_blob_sha1": {
+    "src/research_core/psr01b_core.py": "2b98cd2d49983bdd703ff448b00b7114faabe3c1",
+    "src/research_core/psr01b_features.py": "e9819b4a62a9fc117ead656abc2b6c344c4c0158",
+    "src/research_core/psr01b_ta.py": "1936d62b2d62e38ceab91118e2e6214b3338af11",
+    "src/research_core/psr01b_egarch.py": "af2806a9fb9fb25519623a59a682a5689b7601e1",
+    "src/research_core/psr01b_model.py": "812279770dee0c5479f3fb94c81e6abf356712fb",
+    "src/research_core/psr01b_matrix.py": "b255c53bfcdf3ddc094969185515843781238c31",
+    "src/research_core/psr01b_benchmarks.py": "1eb84d0ba14e9d6c430afa7c28b870612cb0f1e9"
+  },
+  "parent_source_normalization_git_blob_sha1": {
+    "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
+    "src/research_core/data_quality.py": "a8251c4288013d8264a85bb4cda44007459e1adf",
+    "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+    "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+    "src/research_core/archive_security.py": "cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b",
+    "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534",
+    "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
+    "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+    "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+    "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
+  },
+  "candidate_evidence": {
+    "workflow_run_id": 36344159748,
+    "workflow_event": "push",
+    "workflow_name": "PSR-01B Validation Bounded Engineering",
+    "branch": "psr-01b-validation-implementation",
+    "exact_head": "d90f41b15f953a25b7ee9f220beb7858b1b305c8",
+    "conclusion": "success",
+    "synthetic_offline_job_id": 108689884056,
+    "bounded_static_identity_firewall_self_check": "PASS",
+    "mandatory_validation_synthetic_fault_injection_tests": {
+      "passed": 9,
+      "failed": 0
+    },
+    "full_validation_suite": {
+      "passed": 21,
+      "skipped": 1,
+      "failed": 0
+    },
+    "pinned_scientific_core_regression_tests": {
+      "passed": 74,
+      "failed": 0
+    },
+    "dedicated_unmocked_fold12_probe": {
+      "passed": 1,
+      "token": "PSR01B_VALIDATION_UNMOCKED_FOLD12_PASS",
+      "protected_data_used": false
+    },
+    "complete_offline_orchestration": "PASS",
+    "deterministic_type_state_failure_classification": "PASS",
+    "terminal_incident_required_fields_supported": 24,
+    "protected_validation_source_accessed": false,
+    "oos_accessed": false,
+    "empirical_validation_execution_dispatched": false,
+    "rehearsal_dispatched": false,
+    "real_validation_claim_created": false
+  },
+  "implementation_notes": {
+    "approved_specification_changed": false,
+    "scientific_modules_byte_identical_to_frozen_pins": true,
+    "parent_source_normalization_modules_byte_identical_to_frozen_pins": true,
+    "validation_specific_adaptation_is_separate_wrapper_code": true,
+    "network_acquisition_path_present_in_bounded_validation_module": false,
+    "current_phase": "PRE_INDEPENDENT_IMPLEMENTATION_REVIEW"
+  },
+  "authorizations": {
+    "implementation_authorized": false,
+    "validation_source_access_authorized": false,
+    "validation_empirical_feature_generation_authorized": false,
+    "validation_empirical_model_fit_authorized": false,
+    "validation_empirical_forecast_generation_authorized": false,
+    "validation_strategy_pnl_authorized": false,
+    "oos_access_authorized": false,
+    "paper_trading_authorized": false,
+    "live_trading_authorized": false,
+    "leverage_authorized": false,
+    "derivatives_execution_authorized": false,
+    "rehearsal_authorized": false,
+    "empirical_validation_execution_authorized": false,
+    "real_validation_claim_creation_authorized": false
+  },
+  "future_governance": {
+    "reviewed_candidate_anchor_required": true,
+    "reviewed_candidate_anchor_ref": "refs/heads/psr-01b-validation-implementation-reviewed-v1",
+    "reviewed_candidate_anchor_target_sha": "d90f41b15f953a25b7ee9f220beb7858b1b305c8",
+    "reviewed_candidate_anchor_protection_required": {
+      "enforcement": "active",
+      "rules": [
+        "deletion",
+        "non_fast_forward",
+        "update"
+      ],
+      "bypass_actors": []
+    },
+    "future_real_claim_ref": "refs/tags/psr01b-validation-one-shot-claim-v1",
+    "future_real_claim_exists": false,
+    "future_real_claim_protection_required": {
+      "enforcement": "active",
+      "rules": [
+        "deletion",
+        "non_fast_forward",
+        "update"
+      ],
+      "bypass_actors": []
+    },
+    "independent_implementation_and_holdout_firewall_review_required": true,
+    "separate_rehearsal_authorization_required": true,
+    "separate_execution_authorization_required": true,
+    "owner_manual_confirmation_required_before_real_claim": true,
+    "no_protected_source_access_before_real_claim_creation_and_verification": true,
+    "no_oos_access": true,
+    "no_empirical_execution_authorized": true,
+    "no_trading_authorized": true
+  },
+  "allowed_post_candidate_repository_change": {
+    "path": "research/governance/psr01b_validation_implementation_freeze_v1.json",
+    "scope": "GOVERNANCE_ONLY"
+  }
+}
