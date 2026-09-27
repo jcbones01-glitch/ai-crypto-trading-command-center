@@ -5,9 +5,13 @@ on:
     branches: [psr-01b-validation-implementation]
     paths:
       - 'src/research_core/psr01b_validation.py'
+      - 'src/research_core/psr01b_validation_execution.py'
       - 'research/scripts/run_psr01b_validation_v1.py'
+      - 'research/scripts/run_psr01b_validation_execution_v1.py'
       - 'tests/test_psr01b_validation_v1.py'
+      - 'tests/test_psr01b_validation_execution_v1.py'
       - '.github/workflows/psr01b-validation-bounded-engineering.yml'
+      - '.github/workflows/psr01b-validation-execution-v1.yml'
 
 permissions:
   contents: read
@@ -56,8 +60,11 @@ jobs:
             tests/test_psr01b_validation_v1.py::test_EXACT_MANIFEST_BUILD_AND_PRE_SOURCE_FAIL_CLOSED \
             tests/test_psr01b_validation_v1.py::test_PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE
 
-      - name: Run all Validation bounded tests
-        run: python -m pytest -q tests/test_psr01b_validation_v1.py
+      - name: Run all Validation bounded and execution-control tests
+        run: |
+          python -m pytest -q \
+            tests/test_psr01b_validation_v1.py \
+            tests/test_psr01b_validation_execution_v1.py
 
       - name: Pinned PSR scientific-core regression tests
         run: |
@@ -76,6 +83,28 @@ jobs:
         run: |
           python -m pytest -q -s \
             tests/test_psr01b_validation_v1.py::test_unmocked_representative_validation_fold12_real_pinned_modules
+
+      - name: Real-library operator-log leakage probe
+        env:
+          PSR01B_VALIDATION_REAL_LIBRARY_LOG_PROBE: '1'
+        run: |
+          python -m pytest -q -s \
+            tests/test_psr01b_validation_execution_v1.py::test_operator_log_suppression_through_real_libraries
+
+      - name: Full unmocked Validation 8x2 production-math synthetic dry run
+        env:
+          PSR01B_VALIDATION_FULL_SYNTHETIC_DRY_RUN: '1'
+        run: |
+          python -m pytest -q -s \
+            tests/test_psr01b_validation_execution_v1.py::test_full_unmocked_validation_8x2_synthetic_dry_run
+
+      - name: Report complete Validation execution import closure
+        run: |
+          python - <<'PY'
+          import json
+          from research_core.psr01b_validation_execution import project_import_closure_blobs
+          print("PSR01B_VALIDATION_IMPORT_CLOSURE_JSON=" + json.dumps(project_import_closure_blobs(), sort_keys=True, separators=(",",":")))
+          PY
 
       - name: Confirm bounded implementation did not add protected evidence or claims
         run: |

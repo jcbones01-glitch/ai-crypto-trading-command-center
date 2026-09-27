@@ -8,13 +8,14 @@ from __future__ import annotations
 
 import csv
 from contextlib import redirect_stderr, redirect_stdout
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 import hashlib
 import io
 import json
 import logging
 import math
+import os
 from pathlib import Path
 import warnings
 from typing import Any, Callable, Mapping, Sequence
@@ -24,6 +25,8 @@ from zipfile import ZipFile
 import numpy as np
 
 from . import psr01b_runner as parent_runner
+from . import psr01b_egarch as parent_egarch
+from . import psr01b_ta as parent_ta
 from .ams_dep_treatment_aware_normalization_v2 import (
     ArchiveRowAccounting,
     RejectedRawRow,
@@ -103,6 +106,23 @@ class TechnicalIndeterminateError(PSR01BError):
     def __init__(self, message: str, *, failure_code: str):
         super().__init__(message)
         self.failure_code = failure_code
+
+
+class ValidationNormalizationFailure(ValidationContractError):
+    """Normalization failure enriched with parent-equivalent progressive evidence."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        failure_code: str,
+        evidence: Mapping[str, Any],
+    ):
+        super().__init__(message, failure_code=failure_code)
+        self._evidence = dict(evidence)
+
+    def incident_evidence(self) -> dict[str, Any]:
+        return dict(self._evidence)
 
 
 class EGARCHScientificUnavailable(ScientificNonReplicationError):
@@ -687,6 +707,22 @@ def normalize_validation_archive_with_phase_treatment(
     return tuple(bars), tuple(units), accounting
 
 
+def _normalization_failure_evidence(
+    exc: TreatmentAwareNormalizationError,
+    completed: Sequence[ArchiveRowAccounting],
+    *,
+    archive: str,
+) -> dict[str, Any]:
+    evidence = exc.incident_evidence()
+    prior = [asdict(item) for item in completed]
+    inherited = list(evidence.get("completed_archive_accounting") or [])
+    evidence["completed_archive_accounting"] = prior + inherited
+    evidence["completed_archive_count"] = len(evidence["completed_archive_accounting"])
+    evidence["current_archive"] = archive
+    evidence["validation_enrichment"] = "PARENT_EQUIVALENT_PROGRESSIVE_EVIDENCE"
+    return evidence
+
+
 def normalize_registered_local_archives(
     paths: Sequence[Path],
     reports: Sequence[ArchiveQualityReport],
@@ -694,7 +730,12 @@ def normalize_registered_local_archives(
     *,
     spec: Mapping[str, Any] | None = None,
 ) -> PhaseNormalizationResult:
-    """Normalize already-local archives only; never acquire source bytes."""
+    """Normalize already-local archives only; never acquire source bytes.
+
+    Parent treatment-aware failures are enriched with completed-archive progress
+    so terminal incident evidence retains the same fail-closed information as
+    the frozen Development aggregate normalizer.
+    """
     registration = dict(spec or load_validation_spec())
     inventory = registered_archive_inventory(registration)
     ordered_paths = tuple(sorted((Path(path) for path in paths), key=lambda p: p.name))
@@ -710,19 +751,36 @@ def normalize_registered_local_archives(
     units: set[str] = set()
     accounting: list[ArchiveRowAccounting] = []
     for path in ordered_paths:
-        if path.name <= "BTCUSDT-1h-2021-12.zip":
-            archive_bars, archive_units, record = normalize_archive_with_treatment(
-                path,
-                "BTCUSDT",
-                report_by_name[path.name],
-                manifest,
-            )
-        else:
-            archive_bars, archive_units, record = normalize_validation_archive_with_phase_treatment(
-                path,
-                report_by_name[path.name],
-                manifest,
-            )
+        try:
+            if path.name <= "BTCUSDT-1h-2021-12.zip":
+                archive_bars, archive_units, record = normalize_archive_with_treatment(
+                    path,
+                    "BTCUSDT",
+                    report_by_name[path.name],
+                    manifest,
+                )
+            else:
+                archive_bars, archive_units, record = normalize_validation_archive_with_phase_treatment(
+                    path,
+                    report_by_name[path.name],
+                    manifest,
+                )
+        except TreatmentAwareNormalizationError as exc:
+            raise ValidationNormalizationFailure(
+                f"treatment-aware normalization failed for {path.name}: {exc}",
+                failure_code=exc.failure_code,
+                evidence=_normalization_failure_evidence(
+                    exc, accounting, archive=path.name
+                ),
+            ) from exc
+        except ValidationContractError:
+            raise
+        except Exception as exc:
+            raise ValidationContractError(
+                f"normalization structural failure for {path.name}",
+                failure_code="NORMALIZATION_STRUCTURAL_FAILURE",
+            ) from exc
+
         bars.extend(
             bar for bar in archive_bars if SOURCE_START <= bar.timestamp < HARD_END
         )
@@ -730,22 +788,58 @@ def normalize_registered_local_archives(
         accounting.append(record)
 
     if not bars:
-        raise ValidationContractError(
+        raise ValidationNormalizationFailure(
             "Validation normalization produced no registered rows",
             failure_code="NO_NORMALIZED_BARS",
+            evidence={
+                "evidence_status": "PARTIAL_PROGRESSIVE_NOT_FINAL",
+                "failure_code": "NO_NORMALIZED_BARS",
+                "completed_archive_accounting": [asdict(item) for item in accounting],
+                "completed_archive_count": len(accounting),
+                "current_archive_progress": None,
+                "failing_row": None,
+                "anomaly_ids": [],
+                "anomaly_types": [],
+                "parsed_timestamps": [],
+                "validation_enrichment": "PARENT_EQUIVALENT_PROGRESSIVE_EVIDENCE",
+            },
         )
     if len(units) != 1:
-        raise ValidationContractError(
+        raise ValidationNormalizationFailure(
             "mixed timestamp precision across accepted rows",
             failure_code="MIXED_TIMESTAMP_PRECISION",
+            evidence={
+                "evidence_status": "PARTIAL_PROGRESSIVE_NOT_FINAL",
+                "failure_code": "MIXED_TIMESTAMP_PRECISION",
+                "completed_archive_accounting": [asdict(item) for item in accounting],
+                "completed_archive_count": len(accounting),
+                "current_archive_progress": None,
+                "failing_row": None,
+                "anomaly_ids": [],
+                "anomaly_types": [],
+                "parsed_timestamps": [],
+                "validation_enrichment": "PARENT_EQUIVALENT_PROGRESSIVE_EVIDENCE",
+            },
         )
     bars.sort(key=lambda bar: bar.timestamp)
     try:
         validate_market_data(bars)
     except ValueError as exc:
-        raise ValidationContractError(
+        raise ValidationNormalizationFailure(
             f"accepted normalized bars fail strict ordering: {exc}",
             failure_code="NORMALIZED_BAR_VALIDATION_FAIL",
+            evidence={
+                "evidence_status": "PARTIAL_PROGRESSIVE_NOT_FINAL",
+                "failure_code": "NORMALIZED_BAR_VALIDATION_FAIL",
+                "completed_archive_accounting": [asdict(item) for item in accounting],
+                "completed_archive_count": len(accounting),
+                "current_archive_progress": None,
+                "failing_row": None,
+                "anomaly_ids": [],
+                "anomaly_types": [],
+                "parsed_timestamps": [],
+                "validation_enrichment": "PARENT_EQUIVALENT_PROGRESSIVE_EVIDENCE",
+            },
         ) from exc
     if bars[0].timestamp < SOURCE_START or bars[-1].timestamp >= HARD_END:
         raise ValidationContractError(
@@ -939,6 +1033,136 @@ def _require_positive_target_std(values: Sequence[float], *, stage: str) -> None
         )
 
 
+def _ta_sample_state_unavailable(
+    arm: Any,
+    candidates: Any,
+    *,
+    train_start: datetime,
+    train_end: datetime,
+) -> bool:
+    """Independently identify only the registered common-four-block sample state."""
+    if parent_ta._add_months(train_start, 12) != train_end:
+        return False
+    stamps = [bar.timestamp.astimezone(UTC) for bar in arm.bars]
+    name_to_col = {name: i for i, name in enumerate(candidates.names)}
+    correlations: dict[str, tuple[float | None, ...]] = {}
+    for name in candidates.names:
+        col = candidates.matrix[:, name_to_col[name]]
+        values: list[float | None] = []
+        for block in range(4):
+            start = parent_ta._add_months(train_start, 3 * block)
+            end = parent_ta._add_months(train_start, 3 * (block + 1))
+            mask = np.asarray(
+                [
+                    start <= stamp < end and start <= stamp + timedelta(hours=1) < end
+                    for stamp in stamps
+                ],
+                dtype=bool,
+            )
+            mask &= np.asarray(candidates.deployable, dtype=bool)
+            values.append(
+                parent_ta.spearman_block_correlation(
+                    col[mask], candidates.target_next_hour[mask]
+                )
+            )
+        correlations[name] = tuple(values)
+    for group in parent_ta.GROUP_ORDER:
+        allowed = parent_ta.GROUPS[group]
+        names = [
+            name
+            for name, family in zip(candidates.names, candidates.families)
+            if family in allowed
+        ]
+        common = [
+            name
+            for name in names
+            if len(correlations.get(name, ())) == 4
+            and all(
+                value is not None and np.isfinite(float(value))
+                for value in correlations[name]
+            )
+        ]
+        if not common:
+            return True
+    return False
+
+
+def _select_validation_ta_features(
+    arm: Any,
+    candidates: Any,
+    *,
+    train_start: datetime,
+    train_end: datetime,
+) -> Any:
+    try:
+        return parent_runner.select_four_block_features(
+            arm,
+            candidates,
+            train_start=train_start,
+            train_end=train_end,
+        )
+    except PSR01BError as exc:
+        try:
+            unavailable = _ta_sample_state_unavailable(
+                arm,
+                candidates,
+                train_start=train_start,
+                train_end=train_end,
+            )
+        except Exception as probe_exc:
+            raise TechnicalIndeterminateError(
+                "TA failure-state probe failed structurally",
+                failure_code="TA_FAILURE_STATE_PROBE_STRUCTURAL_FAILURE",
+            ) from probe_exc
+        if unavailable:
+            raise SampleScientificUnavailable(
+                "registered TA selection group has no eligible candidate",
+                failure_code="TA_SELECTION_CANDIDATE_UNAVAILABLE",
+            ) from exc
+        raise TechnicalIndeterminateError(
+            "TA selection raised outside registered sample-unavailability state",
+            failure_code="TA_SELECTION_STRUCTURAL_FAILURE",
+        ) from exc
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "TA selection failed structurally",
+            failure_code="TA_SELECTION_STRUCTURAL_FAILURE",
+        ) from exc
+
+
+def _select_validation_egarch_fit(
+    training_segments: Sequence[Sequence[float]],
+) -> Any:
+    """Fit all registered orders and classify by explicit returned fit state."""
+    fits = []
+    try:
+        for order in parent_egarch.ORDERS:
+            fit = parent_egarch.fit_order(training_segments, order)
+            if not isinstance(fit, parent_egarch.EGARCHFit):
+                raise TypeError("EGARCH fit_order returned wrong contract type")
+            fits.append(fit)
+    except Exception as exc:
+        raise TechnicalIndeterminateError(
+            "EGARCH dependency/runtime/ABI/contract failure",
+            failure_code="EGARCH_STRUCTURAL_FAILURE",
+        ) from exc
+    available = [
+        fit
+        for fit in fits
+        if fit.available
+        and fit.params is not None
+        and fit.aic is not None
+        and np.isfinite(float(fit.aic))
+        and np.isfinite(np.asarray(fit.params, dtype=np.float64)).all()
+    ]
+    if not available:
+        raise EGARCHScientificUnavailable(
+            "all registered EGARCH orders unavailable on valid sample",
+            failure_code="EGARCH_REGISTERED_ORDERS_UNAVAILABLE",
+        )
+    return min(available, key=lambda fit: float(fit.aic))
+
+
 def _run_validation_arm_fold(
     normalized_bars: Sequence[MarketBar],
     *,
@@ -976,26 +1200,12 @@ def _run_validation_arm_fold(
             "TA candidate alignment violates frozen contract",
             failure_code="TA_SELECTION_INPUT_ALIGNMENT_FAILURE",
         )
-    try:
-        selection_features = parent_runner.select_four_block_features(
-            arm,
-            candidates,
-            train_start=train_start,
-            train_end=validation_start,
-        )
-    except PSR01BError as exc:
-        # With frozen module identity plus the alignment and fold checks above,
-        # a PSR01BError at this exact call boundary is the registered
-        # common-four-block candidate-unavailability sample state.
-        raise SampleScientificUnavailable(
-            "registered TA selection group has no eligible candidate",
-            failure_code="TA_SELECTION_CANDIDATE_UNAVAILABLE",
-        ) from exc
-    except Exception as exc:
-        raise TechnicalIndeterminateError(
-            "TA selection failed structurally",
-            failure_code="TA_SELECTION_STRUCTURAL_FAILURE",
-        ) from exc
+    selection_features = _select_validation_ta_features(
+        arm,
+        candidates,
+        train_start=train_start,
+        train_end=validation_start,
+    )
 
     try:
         training_segments = parent_runner._training_return_segments(
@@ -1003,19 +1213,12 @@ def _run_validation_arm_fold(
             train_start=train_start,
             train_end=validation_start,
         )
-        egarch_fit = parent_runner.select_best_order(training_segments)
-    except PSR01BError as exc:
-        # select_best_order absorbs registered order-level numerical failures and
-        # raises only when all four registered orders are unavailable.
-        raise EGARCHScientificUnavailable(
-            "all registered EGARCH orders unavailable on valid sample",
-            failure_code="EGARCH_REGISTERED_ORDERS_UNAVAILABLE",
-        ) from exc
     except Exception as exc:
         raise TechnicalIndeterminateError(
-            "EGARCH dependency/runtime/ABI/contract failure",
-            failure_code="EGARCH_STRUCTURAL_FAILURE",
+            "EGARCH training-segment construction failed structurally",
+            failure_code="EGARCH_TRAINING_SEGMENT_STRUCTURAL_FAILURE",
         ) from exc
+    egarch_fit = _select_validation_egarch_fit(training_segments)
     if egarch_fit.params is None or egarch_fit.aic is None:
         raise TechnicalIndeterminateError(
             "selected EGARCH result violates fitted-state invariant",
@@ -1339,13 +1542,14 @@ def run_validation_from_normalized_bars(
 
 
 def write_json_exclusive(path: Path, record: Mapping[str, Any]) -> None:
+    """Crash-safe exclusive JSON write with canonical newline and fsync."""
     payload = json.dumps(
         record,
         sort_keys=True,
         separators=(",", ":"),
         allow_nan=False,
-    )
-    path = Path(path)
+    ) + "\n"
+    path = Path(path).resolve()
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(path.name + ".tmp")
     if path.exists() or temporary.exists():
@@ -1353,14 +1557,28 @@ def write_json_exclusive(path: Path, record: Mapping[str, Any]) -> None:
             "Validation evidence path or staging path already exists",
             failure_code="EVIDENCE_NO_OVERWRITE_VIOLATION",
         )
+    linked = False
     try:
         with temporary.open("x", encoding="utf-8") as handle:
             handle.write(payload)
             handle.flush()
-        temporary.replace(path)
+            os.fsync(handle.fileno())
+        os.link(temporary, path)
+        linked = True
+        temporary.unlink()
+        try:
+            directory_fd = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+        except OSError:
+            pass
     except Exception:
         if temporary.exists():
             temporary.unlink()
+        if linked and path.exists():
+            path.unlink()
         raise
 
 

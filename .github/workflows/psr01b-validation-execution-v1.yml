@@ -1,0 +1,110 @@
+name: PSR-01B Validation One-Shot V1
+# Future protected claim: refs/tags/psr01b-validation-one-shot-claim-v1
+# This workflow is inert until separate governance turns the frozen authorization gates on.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'offline_review is bounded only; rehearsal stops PRE_SOURCE; execute is the future one-shot Validation path'
+        required: true
+        default: offline_review
+        type: choice
+        options:
+          - offline_review
+          - rehearsal
+          - execute
+      confirmation:
+        description: 'Execute: PSR01B_VALIDATION_V1:<candidate>:<head>; rehearsal: PSR01B_VALIDATION_REHEARSAL_V1:<candidate>:<head>'
+        required: false
+        type: string
+
+concurrency:
+  group: psr01b-validation-one-shot-v1
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[dev]'
+      - name: Install exact PSR-01B runtime additions
+        run: pip install pandas==3.0.6 xgboost==3.4.1 optuna==5.0.0 arch==8.0.0 statsmodels==0.15.0
+      - name: Run Validation execution-control synthetic tests
+        run: |
+          python -m pytest -q             tests/test_psr01b_validation_v1.py             tests/test_psr01b_validation_execution_v1.py
+      - name: Run full unmocked Validation 8x2 production-math synthetic dry run
+        env:
+          PSR01B_VALIDATION_FULL_SYNTHETIC_DRY_RUN: '1'
+        run: |
+          python -m pytest -q -s             tests/test_psr01b_validation_execution_v1.py::test_full_unmocked_validation_8x2_synthetic_dry_run
+      - name: Offline review cannot create claim or read protected source
+        if: inputs.mode == 'offline_review'
+        run: |
+          echo "PSR01B_VALIDATION_V1_OFFLINE_REVIEW_PASS"
+
+  execute:
+    if: inputs.mode == 'execute' || inputs.mode == 'rehearsal'
+    needs: bounded-offline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    permissions:
+      contents: write
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+      PSR01B_VALIDATION_EXECUTION_MODE: ${{ inputs.mode }}
+      GITHUB_TOKEN: ${{ github.token }}
+      PSR01B_VALIDATION_V1_CONFIRMATION: ${{ inputs.confirmation }}
+    steps:
+      - name: Checkout exact Validation execution commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -e '.[research]'
+      - name: Install exact PSR-01B runtime additions
+        run: pip install pandas==3.0.6 xgboost==3.4.1 optuna==5.0.0 arch==8.0.0 statsmodels==0.15.0
+      - name: Reserve Validation result path and verify authority before claim
+        run: |
+          python -m research_core.psr01b_validation_execution preflight             --repository "$GITHUB_REPOSITORY"             --sha "$GITHUB_SHA"
+      - name: Atomically create durable Validation claim
+        id: claim
+        run: |
+          python -m research_core.psr01b_validation_execution claim             --repository "$GITHUB_REPOSITORY"             --sha "$GITHUB_SHA"             --github-output "$GITHUB_OUTPUT"
+      - name: Reverify durable Validation claim and run registered Validation path
+        env:
+          PSR01B_VALIDATION_V1_CLAIM_REF: ${{ steps.claim.outputs.claim_ref }}
+          PSR01B_VALIDATION_V1_CLAIM_SHA: ${{ steps.claim.outputs.claim_sha }}
+          PSR01B_VALIDATION_V1_CLAIM_TAG_OBJECT_SHA: ${{ steps.claim.outputs.claim_tag_object_sha }}
+          PSR01B_VALIDATION_V1_CLAIM_RUN_ID: ${{ steps.claim.outputs.claim_run_id }}
+        run: python research/scripts/run_psr01b_validation_execution_v1.py
+      - name: Upload Validation execution/rehearsal evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: psr01b-validation-${{ inputs.mode }}-v1
+          path: |
+            research/experiments/psr01b_validation_v1/
+            research/experiments/psr01b_validation_rehearsals/
+          if-no-files-found: error
+          retention-days: 90
