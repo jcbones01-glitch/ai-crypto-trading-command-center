@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "V2_DEVELOPMENT_EXECUTION_AUTHORIZED_PRE_REHEARSAL",
+  "status": "V2_DEVELOPMENT_EXECUTION_COMPLETE_EVIDENCE_PERSISTED",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -141,11 +141,11 @@
       "one_shot_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v2"
     },
     "reviewed_candidate_anchor_created": true,
-    "one_shot_claim_created": false,
+    "one_shot_claim_created": true,
     "allowed_post_candidate_paths": [
       "research/governance/psr01b_implementation_freeze_v1.json"
     ],
-    "manual_confirmation_created": false,
+    "manual_confirmation_created": true,
     "evidence_persistence_plan": {
       "status": "HISTORICAL_V1_INCIDENT_EVIDENCE_PLAN",
       "trigger": "After the one-shot workflow reaches a final conclusion, before any downstream research step or Validation/OOS access.",
@@ -187,7 +187,7 @@
       "validation_or_oos_access_required": false
     },
     "ref_protection": {
-      "status": "V2_REVIEWED_IMPLEMENTATION_AND_FUTURE_CLAIM_PROTECTION_VERIFIED_PRE_AUTHORIZATION",
+      "status": "V2_REVIEWED_IMPLEMENTATION_AND_CONSUMED_CLAIM_PROTECTION_VERIFIED_POST_EXECUTION",
       "existing_reviewed_v2_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v2",
       "existing_reviewed_v2_anchor_sha": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
       "existing_reviewed_v2_ruleset_id": 24038523,
@@ -220,7 +220,7 @@
       "reviewed_v4_anchor_created": true,
       "reviewed_v4_protection_verified": true,
       "claim_v2_ref": "refs/tags/psr01b-development-one-shot-claim-v2",
-      "claim_v2_exists": false,
+      "claim_v2_exists": true,
       "existing_reviewed_v2_status": "HISTORICAL_PRESERVED",
       "reviewed_v3_status": "HISTORICAL_PRESERVED",
       "existing_claim_ruleset_status": "HISTORICAL_V1_CLAIM_PROTECTION_PRESERVED",
@@ -290,13 +290,13 @@
       },
       "current_future_claim_protection": {
         "ref": "refs/tags/psr01b-development-one-shot-claim-v2",
-        "claim_exists": false,
+        "claim_exists": true,
         "ruleset_id": 24058545,
-        "status": "CURRENT_FUTURE_ONE_SHOT_CLAIM_PROTECTION_PRE_CREATION"
+        "status": "CURRENT_CONSUMED_ONE_SHOT_CLAIM_PROTECTION_POST_EXECUTION"
       }
     },
     "execution_prerequisites": {
-      "status": "V2_DEVELOPMENT_EXECUTION_AUTHORIZED_PRE_REHEARSAL",
+      "status": "V2_DEVELOPMENT_EXECUTION_COMPLETE_EVIDENCE_PERSISTED",
       "prior_prerequisite_issue": 96,
       "evidence_persistence_plan_frozen": true,
       "v2_evidence_persistence_plan_recorded": true,
@@ -328,14 +328,14 @@
       "historical_v1_claim_consumed": true
     },
     "rehearsal_authorized": true,
-    "rehearsal_dispatched": false,
+    "rehearsal_dispatched": true,
     "development_v2_execution_authorized": true,
-    "development_v2_execution_dispatched": false,
+    "development_v2_execution_dispatched": true,
     "rerun_authorized": false,
     "overwrite_authorized": false,
     "proposed_future_real_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v2",
     "v2_evidence_persistence_plan": {
-      "status": "RECORDED_PRE_AUTHORIZATION_NO_EVIDENCE_CREATED",
+      "status": "EXECUTION_AND_REHEARSAL_EVIDENCE_PERSISTED",
       "workflow_blob_sha1": "12253674f2b0d47981fa31a365d9ca3c13cee292",
       "real_execution": {
         "mode": "execute",
@@ -382,7 +382,7 @@
       "validation_or_oos_access_part_of_evidence_persistence": false
     },
     "empirical_execution_authorized": true,
-    "claim_v2_created": false,
+    "claim_v2_created": true,
     "v2_execution_authorization_review": {
       "issue": 106,
       "decision": "APPROVE_PSR01B_V2_DEVELOPMENT_EXECUTION_AUTHORIZATION",
@@ -396,6 +396,60 @@
       "rehearsal_failure_authorizes_retry_or_execute": false,
       "rehearsal_first_ordering_mandatory": true,
       "implementation_independently_enforces_rehearsal_first_after_execution_authorized": false
+    },
+    "v2_execution_evidence_record": {
+      "status": "V2_DEVELOPMENT_EXECUTION_COMPLETE_EVIDENCE_PERSISTED",
+      "execution_sha": "b328892b2b0c2f0e513a6b3157a821055391369a",
+      "reviewed_candidate_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+      "implementation_freeze_blob_sha1": "9c75ee03edacc8e653b89c6d3fd761ba6831da44",
+      "workflow_run_id": 36297773808,
+      "run_attempt": 1,
+      "actor": "jcbones01-glitch",
+      "workflow_conclusion": "success",
+      "success_token": "BOUNDED_H2_REPLICATION",
+      "claim": {
+        "ref": "refs/tags/psr01b-development-one-shot-claim-v2",
+        "target_sha": "b328892b2b0c2f0e513a6b3157a821055391369a",
+        "tag_object_sha": "fe82fcc44448826f13345ad73c9b549709eb5e54",
+        "run_id": 36297773808,
+        "run_attempt": 1,
+        "actor": "jcbones01-glitch",
+        "status": "CONSUMED_IMMUTABLE_ONE_SHOT_EVIDENCE"
+      },
+      "execution_artifact": {
+        "artifact_id": 10927156300,
+        "name": "psr01b-execute-v2",
+        "zip_sha256": "577d57438d388a34691288895f2d9e165512090c6fe4541d6356c1ca713ac036"
+      },
+      "rehearsal": {
+        "run_id": 36289274005,
+        "run_attempt": 1,
+        "execution_sha": "b328892b2b0c2f0e513a6b3157a821055391369a",
+        "success_token": "PSR01B_REHEARSAL_V2_PRE_SOURCE_PASS",
+        "throwaway_claim_ref": "refs/tags/psr01b-rehearsal-36289274005-1",
+        "throwaway_claim_tag_object_sha": "b30724c5d193de47736c73f5c6201a62ebac1fed",
+        "artifact_id": 10922981948,
+        "artifact_name": "psr01b-rehearsal-v2",
+        "artifact_zip_sha256": "e7593222649011e66d2e88f45d8e91d5260f98884a4b24524b43d589915c0fd1",
+        "market_data_accessed": false
+      },
+      "evidence_manifest": {
+        "path": "research/experiments/psr01b_development_v2/evidence/evidence_manifest.json",
+        "git_blob_sha1": "fbd4253d9a88d0cb97df6e8287ab3df689aaf9aa",
+        "sha256": "c436d3b80cad48cf2f948138756f19267951863328390304d482aa08a202a449",
+        "byte_length": 11330
+      },
+      "source_boundary": {
+        "first_timestamp": "2017-12-01T00:00:00Z",
+        "last_timestamp": "2021-12-31T23:00:00Z",
+        "normalized_row_count": 35646,
+        "monthly_archive_count": 49,
+        "first_archive": "BTCUSDT-1h-2017-12.zip",
+        "last_archive": "BTCUSDT-1h-2021-12.zip"
+      },
+      "validation_or_oos_accessed": false,
+      "rerun_authorized": false,
+      "overwrite_authorized": false
     }
   },
   "protected_access": {
@@ -410,7 +464,7 @@
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "PSR-01B V2 Development authorization is recorded following independent Issue #106 review comment 5851833902. No rehearsal or real Development workflow has been dispatched; claim-v2 remains absent; no manual confirmation has been supplied. An independent exact-head recheck is mandatory before rehearsal. Rehearsal is mandatory before any real execute dispatch, and a second independent unchanged-head/post-rehearsal recheck is mandatory before any real execute dispatch. Rehearsal failure does not authorize a retry or real execute. Validation/OOS access, parameter tuning, paper trading, live trading, leverage, and derivatives execution remain unauthorized.",
+  "notes": "PSR-01B V2 completed its single authorized Development execution in workflow run 36297773808 at unchanged execution head b328892b2b0c2f0e513a6b3157a821055391369a. Claim-v2 is consumed immutable evidence. Exact execution and rehearsal artifact bytes plus the evidence manifest are persisted by this governance/evidence commit. No rerun or overwrite is authorized. Validation/OOS access, parameter tuning, paper trading, live trading, leverage, and derivatives execution remain unauthorized. Historical V1 incident #103 remains unchanged.",
   "remediation": {
     "type": "PRE_EXECUTION_DOWNLOAD_RETRY_SAFETY_HARDENING",
     "superseded_candidate": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
@@ -461,9 +515,9 @@
     "Historical reviewed-v1/v2/v3 anchors and their protection evidence remain preserved as historical evidence only.",
     "Historical V1 authorization is not current V2 authority; the V1 one-shot claim remains permanently consumed and is not reset or reused.",
     "Current reviewed implementation protection is reviewed-v4 at ebd0b1087878932d6f2759ca5c0acb57d3364392 under ruleset 24058404.",
-    "Current future one-shot claim protection is ruleset 24058545 for refs/tags/psr01b-development-one-shot-claim-v2; the claim itself does not exist.",
-    "A separate V2 evidence-persistence plan is recorded; no V2 evidence files are created by this governance commit.",
-    "Manual confirmation remains absent; rehearsal is authorized but not dispatched; Development V2 execution is authorized but not dispatched; exactly the five Development empirical permissions are authorized; Validation/OOS, paper/live trading, leverage, and derivatives remain unauthorized."
+    "Current V2 one-shot claim protection is ruleset 24058545 for refs/tags/psr01b-development-one-shot-claim-v2; the claim now exists as consumed immutable evidence at tag object fe82fcc44448826f13345ad73c9b549709eb5e54 targeting b328892b2b0c2f0e513a6b3157a821055391369a.",
+    "The V2 evidence-persistence plan is fulfilled: exact execution and rehearsal artifact-derived bytes plus the evidence manifest are persisted; rerun and overwrite remain unauthorized.",
+    "Manual confirmation was supplied for run 36297773808; the authorized rehearsal and the one real Development V2 execution completed. No further execution attempt is authorized. Exactly the five registered Development empirical permissions remain authorized; Validation/OOS, paper/live trading, leverage, and derivatives remain unauthorized."
   ],
   "historical_review_anchors": [
     {
@@ -496,7 +550,7 @@
     "independent_review_decision": "APPROVE_PSR01B_V2_EXECUTION_SAFETY_IMPLEMENTATION_FREEZE",
     "independent_review_comment_id": 5851592472,
     "external_reviewer": "Claude",
-    "phase": "V2_DEVELOPMENT_EXECUTION_AUTHORIZED_PRE_REHEARSAL",
+    "phase": "V2_DEVELOPMENT_EXECUTION_COMPLETE_EVIDENCE_PERSISTED",
     "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v4",
     "review_anchor_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
     "reviewed_v4_anchor_created": true,
@@ -504,12 +558,12 @@
     "reviewed_v4_ruleset_id": 24058404,
     "proposed_real_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v2",
     "claim_v2_ruleset_id": 24058545,
-    "claim_v2_created": false,
-    "manual_confirmation": false,
+    "claim_v2_created": true,
+    "manual_confirmation": true,
     "rehearsal_authorized": true,
-    "rehearsal_dispatched": false,
+    "rehearsal_dispatched": true,
     "development_v2_execution_authorized": true,
-    "development_v2_execution_dispatched": false,
+    "development_v2_execution_dispatched": true,
     "empirical_execution_authorized": true,
     "rerun_authorized": false,
     "overwrite_authorized": false
