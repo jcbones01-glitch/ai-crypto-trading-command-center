@@ -1,0 +1,88 @@
+name: PSR-01B Validation Bounded Engineering
+
+on:
+  push:
+    branches: [psr-01b-validation-implementation]
+    paths:
+      - 'src/research_core/psr01b_validation.py'
+      - 'research/scripts/run_psr01b_validation_v1.py'
+      - 'tests/test_psr01b_validation_v1.py'
+      - '.github/workflows/psr01b-validation-bounded-engineering.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+
+      - run: pip install -e '.[dev]'
+
+      - name: Install exact PSR-01B runtime additions
+        run: pip install pandas==3.0.6 xgboost==3.4.1 optuna==5.0.0 arch==8.0.0 statsmodels==0.15.0
+
+      - name: Verify approved Validation specification is unchanged
+        run: |
+          test "$(git hash-object docs/PSR01B_VALIDATION_SPEC_V1.md)" = "fd16d0e9c408b96e596ef3b8f86786fcde2c9e08"
+          test "$(git hash-object research/governance/psr01b_validation_spec_v1.json)" = "bd6b1a325a921ee60559ec44c54d97b3dc40e72a"
+
+      - name: Bounded static identity/firewall self-check
+        run: python research/scripts/run_psr01b_validation_v1.py --mode bounded-self-check
+
+      - name: Run nine mandatory Validation synthetic/fault-injection tests
+        run: |
+          python -m pytest -q \
+            tests/test_psr01b_validation_v1.py::test_PRE_BOUNDARY_DEVELOPMENT_LINKAGE_EQUIVALENCE \
+            tests/test_psr01b_validation_v1.py::test_BOUNDARY_DISPATCH \
+            tests/test_psr01b_validation_v1.py::test_VALIDATION_LINKAGE \
+            tests/test_psr01b_validation_v1.py::test_HARD_END_REJECTION \
+            tests/test_psr01b_validation_v1.py::test_HISTORICAL_SIDE_DOES_NOT_CHANGE_ANOMALY_TREATMENT \
+            tests/test_psr01b_validation_v1.py::test_NO_OOS_PARTITION_READ_ENUMERATION_OR_FALLBACK \
+            tests/test_psr01b_validation_v1.py::test_OPERATOR_LOG_OUTCOME_SUPPRESSION \
+            tests/test_psr01b_validation_v1.py::test_EXACT_MANIFEST_BUILD_AND_PRE_SOURCE_FAIL_CLOSED \
+            tests/test_psr01b_validation_v1.py::test_PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE
+
+      - name: Run additional Validation bounded contract tests
+        run: |
+          python -m pytest -q tests/test_psr01b_validation_v1.py \
+            --deselect tests/test_psr01b_validation_v1.py::test_PRE_BOUNDARY_DEVELOPMENT_LINKAGE_EQUIVALENCE \
+            --deselect tests/test_psr01b_validation_v1.py::test_BOUNDARY_DISPATCH \
+            --deselect tests/test_psr01b_validation_v1.py::test_VALIDATION_LINKAGE \
+            --deselect tests/test_psr01b_validation_v1.py::test_HARD_END_REJECTION \
+            --deselect tests/test_psr01b_validation_v1.py::test_HISTORICAL_SIDE_DOES_NOT_CHANGE_ANOMALY_TREATMENT \
+            --deselect tests/test_psr01b_validation_v1.py::test_NO_OOS_PARTITION_READ_ENUMERATION_OR_FALLBACK \
+            --deselect tests/test_psr01b_validation_v1.py::test_OPERATOR_LOG_OUTCOME_SUPPRESSION \
+            --deselect tests/test_psr01b_validation_v1.py::test_EXACT_MANIFEST_BUILD_AND_PRE_SOURCE_FAIL_CLOSED \
+            --deselect tests/test_psr01b_validation_v1.py::test_PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE
+
+      - name: Pinned PSR scientific-core regression tests
+        run: |
+          python -m pytest -q \
+            tests/test_psr01b_core.py \
+            tests/test_psr01b_features.py \
+            tests/test_psr01b_ta.py \
+            tests/test_psr01b_egarch.py \
+            tests/test_psr01b_model.py \
+            tests/test_psr01b_matrix.py \
+            tests/test_psr01b_benchmarks.py
+
+      - name: Confirm bounded implementation did not add protected evidence or claims
+        run: |
+          test ! -e research/experiments/psr01b_validation_v1/result.json
+          test ! -e research/experiments/psr01b_validation_v1/terminal_incident.json
+          test ! -e research/experiments/psr01b_validation_v1/raw_source_manifest.json
+          test ! -d research/experiments/psr01b_validation_v1/raw_source
