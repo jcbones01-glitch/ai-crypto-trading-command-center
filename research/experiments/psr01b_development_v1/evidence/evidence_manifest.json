@@ -1,0 +1,62 @@
+{
+  "execution_sha": "709bd680b79d6b0c6e11552a49ca0ed546a48752",
+  "reviewed_candidate_sha": "9ef234210163dba8633a11acc74be0de8581be7c",
+  "governance_head_sha": "709bd680b79d6b0c6e11552a49ca0ed546a48752",
+  "implementation_freeze_git_blob_sha1": "e6d66846970ccd54ee17e942282e9d7597e6d97b",
+  "workflow_run_id": 36259020278,
+  "workflow_run_attempt": 1,
+  "workflow_actor": "jcbones01-glitch",
+  "workflow_conclusion": "failure",
+  "claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1",
+  "claim_tag_object_sha": "0c33b63d9845b96be28ad6b30f154edae37a8ab0",
+  "claim_target_sha": "709bd680b79d6b0c6e11552a49ca0ed546a48752",
+  "claim_run_id": 36259020278,
+  "source_registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+  "source_checksum_evidence": [],
+  "source_acquisition_attempts": [],
+  "market_data_accessed": false,
+  "result_status": "ABSENT",
+  "result_generated": false,
+  "result_sha256": null,
+  "result_absence_reason": "PSR-01B result reservation identity mismatch at PRE_SOURCE before result generation",
+  "incident_sha256": "86b28657881ce8ea2da36e3f222fad82715eeadfe464f7acc867b5172bd6be49",
+  "persisted_at_utc": "2026-09-26T22:21:54.870482Z",
+  "incident_issue": 103,
+  "exception_approval_comment_id": 5850407853,
+  "outcome": "EXECUTION_INCIDENT_NO_SCIENTIFIC_CONCLUSION",
+  "artifact_id": 10912673632,
+  "artifact_name": "psr01b-development-v1",
+  "artifact_zip_sha256": "2d519f21af42f852153231b73234a582f12eb7d22591921ee4d2f845b0fc5919",
+  "failing_step": {
+    "name": "Reverify durable claim and run registered Development execution",
+    "started_at": "2026-09-26T18:26:36Z",
+    "completed_at": "2026-09-26T18:26:38Z",
+    "duration_seconds": 2
+  },
+  "execute_job_id": 108460911268,
+  "run_jobs_source": "https://api.github.com/repos/jcbones01-glitch/ai-crypto-trading-command-center/actions/runs/36259020278/jobs",
+  "files": {
+    "incident.json": {
+      "sha256": "86b28657881ce8ea2da36e3f222fad82715eeadfe464f7acc867b5172bd6be49",
+      "byte_length": 397,
+      "git_blob_sha1": "a27f9403ff90a6d134c4503c4ae355d6841b2fdd"
+    },
+    "result.json.reservation": {
+      "sha256": "1c23a895ee47288d7d63caa8f01abc0ebaaf3debf9fdc2d785c80e5b88790d4f",
+      "byte_length": 187,
+      "git_blob_sha1": "38fd9e33f2c2ac5412e53dd6816341a3abb451ee"
+    },
+    "execute_job_log.txt": {
+      "sha256": "f027104970601e4e25f1d40e85c85083f50ef683056d3ab12bac09695fe096a2",
+      "byte_length": 44291,
+      "git_blob_sha1": "b558b38f3f72af2f7bc33496c7b97b3eccaa1f5b"
+    },
+    "run_jobs.json": {
+      "sha256": "fec4bc717951f31c0cb26feaf23699d8cd39d618b90db0c3cafb4832b0b88be5",
+      "byte_length": 6137,
+      "git_blob_sha1": "6225dbc842566e3f3bf8d042d1c4f5167d2bad13"
+    }
+  },
+  "rerun_authorized": false,
+  "overwrite_authorized": false
+}

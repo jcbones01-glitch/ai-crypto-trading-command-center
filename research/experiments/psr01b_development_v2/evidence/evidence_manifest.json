@@ -1,0 +1,203 @@
+{
+  "derivatives_execution_authorized": false,
+  "execution": {
+    "actor": "jcbones01-glitch",
+    "artifact": {
+      "artifact_id": 10927156300,
+      "name": "psr01b-execute-v2",
+      "persisted_files": [
+        {
+          "artifact_path": "psr01b_development_v2/result.json",
+          "byte_length": 40635,
+          "git_blob_sha1": "08916f68f041870de1542ffe8c4158e07eacbeb8",
+          "repository_path": "research/experiments/psr01b_development_v2/evidence/result.json",
+          "sha256": "5f3c97ec95f48ef8e7a53fc2316fb697af24e9e9d7b18da96766f41e3981e86a"
+        },
+        {
+          "artifact_path": "psr01b_development_v2/incident.json",
+          "byte_length": 3634,
+          "git_blob_sha1": "4daf3bc3a35243ecb5ba265e267f916253102bd0",
+          "repository_path": "research/experiments/psr01b_development_v2/evidence/incident.json",
+          "sha256": "89bf6fc035f747a256e8e3f54ae374daeebbe20f4b43cf6b15c0658e66e19d07"
+        },
+        {
+          "artifact_path": "psr01b_development_v2/result.json.reservation",
+          "byte_length": 271,
+          "git_blob_sha1": "ae154ea7fb648827176667fe8923b9f7cf475d16",
+          "repository_path": "research/experiments/psr01b_development_v2/evidence/result.json.reservation",
+          "sha256": "fe72c6758256c4514cba2ca824a9ef26d25de5c3c7d2099c6bb1bc34658b77ae"
+        }
+      ],
+      "zip_sha256": "577d57438d388a34691288895f2d9e165512090c6fe4541d6356c1ca713ac036"
+    },
+    "claim": {
+      "ref": "refs/tags/psr01b-development-one-shot-claim-v2",
+      "run_provenance": {
+        "actor": "jcbones01-glitch",
+        "execution_sha": "b328892b2b0c2f0e513a6b3157a821055391369a",
+        "run_attempt": 1,
+        "run_id": 36297773808
+      },
+      "status": "CONSUMED_IMMUTABLE_ONE_SHOT_EVIDENCE",
+      "tag_object_sha": "fe82fcc44448826f13345ad73c9b549709eb5e54",
+      "target_sha": "b328892b2b0c2f0e513a6b3157a821055391369a"
+    },
+    "execution_sha": "b328892b2b0c2f0e513a6b3157a821055391369a",
+    "execution_time_governance_head_sha": "b328892b2b0c2f0e513a6b3157a821055391369a",
+    "implementation_freeze_blob_sha1": "9c75ee03edacc8e653b89c6d3fd761ba6831da44",
+    "incident_record": {
+      "completed": true,
+      "market_data_accessed": true,
+      "source_acquisition_attempt_count": 49,
+      "stage": "COMPLETE",
+      "success_token": "BOUNDED_H2_REPLICATION"
+    },
+    "registration": {
+      "execution_limit": 1,
+      "market": "spot",
+      "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
+      "revision": 4,
+      "source_end_exclusive": "2022-01-01T00:00:00Z",
+      "source_start": "2017-12-01T00:00:00Z",
+      "symbol": "BTCUSDT",
+      "timeframe": "1h"
+    },
+    "reviewed_candidate_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+    "run_attempt": 1,
+    "source_evidence": {
+      "archive_sha256": {
+        "BTCUSDT-1h-2017-12.zip": "9b86b43c9a649065cc1e7f3b8fe4825e614d9e8ca43808b74a0efe96465bd90c",
+        "BTCUSDT-1h-2018-01.zip": "b649198039645124717f334443ae550d1060661ee03c5fb605cf067fab26dc85",
+        "BTCUSDT-1h-2018-02.zip": "4e040b57a38af99b1f86efb12d95aed406b575af67b8038831523ff6362225d1",
+        "BTCUSDT-1h-2018-03.zip": "a3f45f20d28eab88292d1baac72402ebf59f4462d0bb834288f69b59a65cbf5f",
+        "BTCUSDT-1h-2018-04.zip": "d0fe439f2afab8677e423c9748bc96ef9694b8d60bf8a59790fd776d8ed18d87",
+        "BTCUSDT-1h-2018-05.zip": "a365154fb49c29060df5f5b6a79181e4e667ca1bac049df26a067faa634ffa62",
+        "BTCUSDT-1h-2018-06.zip": "20894cb34d1049cbdd93df83be5f218c6ae1b5ca27b689b1b076ac5bc809fb81",
+        "BTCUSDT-1h-2018-07.zip": "29610f0bb84011e494b83881584d1eb2d3a61c5801ee51ebea7c1c4e6a9b4210",
+        "BTCUSDT-1h-2018-08.zip": "cad3b2b11aefa082a07ae3d8f11dfd6ee5018702dfd3986277151b66ae002991",
+        "BTCUSDT-1h-2018-09.zip": "d8109c9f64af195fb9babf498f84ece9e7ac471618977202dcf710461e124d00",
+        "BTCUSDT-1h-2018-10.zip": "959094f6d37e7cae75951cea30fdc3d5b1eb9de58a6cf1ce40f0e49d0adfb79b",
+        "BTCUSDT-1h-2018-11.zip": "a75aba58d80b798809e47819990fad71418c0982be1c4643b5a0490e0f86bd91",
+        "BTCUSDT-1h-2018-12.zip": "c5f05f2966529220add51dc1ee66ab7408ae787179f96c288e4f6ff021f51edd",
+        "BTCUSDT-1h-2019-01.zip": "41cb84ccff03d5372f22e7502a1c563dd7b3b15347fe086b16daa98aced7a179",
+        "BTCUSDT-1h-2019-02.zip": "fc054507a0f33b54bcc2f292243b8caa765927572e92731283f42498c64dc4e6",
+        "BTCUSDT-1h-2019-03.zip": "2c4a969908c2570299052b4faf27b4a39561b1043babc7a65a846a6a65abaa2e",
+        "BTCUSDT-1h-2019-04.zip": "d37e1150e8f4556a22cb2ed98d9b6eefe7b5df3be9f06587e273baea2bbf960e",
+        "BTCUSDT-1h-2019-05.zip": "ddffd71adc100760d31ab5ea0fb8d8ccf5f3c80a06a31808a024324b4a693799",
+        "BTCUSDT-1h-2019-06.zip": "079b0071aaf0642d3608bca3ee14e50e394550176da3e4029d22761e288466e8",
+        "BTCUSDT-1h-2019-07.zip": "f45beec30a4812d42b8eb3a34da3f75e5dee0433032a06ba57ff48644ee7c2f9",
+        "BTCUSDT-1h-2019-08.zip": "50b058b5774190b577f1bc45767aeb33f4e947dc00e8d143f6c4afa0f5a3cd34",
+        "BTCUSDT-1h-2019-09.zip": "2aaaf6e4d0455b889225ca1cfde23a15e2359850f803bc9998df30ac1bbef63f",
+        "BTCUSDT-1h-2019-10.zip": "d44a2b3e463683c8bfc61c2f15f156665dc3dd3835e69c2ea3b49a518ca14b43",
+        "BTCUSDT-1h-2019-11.zip": "63572600e87350f1d5679049a44e8338cf7b692d0c67220dc316267a91af108b",
+        "BTCUSDT-1h-2019-12.zip": "87267b84d9f0e64ec94799d62de6730825c6a44f154ada5ed8c2dd267df78481",
+        "BTCUSDT-1h-2020-01.zip": "4ef7fa698b6821493f4c8317bc616d48bcdf5951d32fe6e40aaa7608886e51ca",
+        "BTCUSDT-1h-2020-02.zip": "0189065a1b789825448530cb3fdddcefa45ca13b0a6bca181f358c72d3a6d5e6",
+        "BTCUSDT-1h-2020-03.zip": "cc36c481c31ef93115d96b5a7045ec2ef737e5339546d6688cb1f677526c6787",
+        "BTCUSDT-1h-2020-04.zip": "4f08d13c81cadf8d5fc7afcd0924d084d2f81c7d004323812e7508ad135f89e7",
+        "BTCUSDT-1h-2020-05.zip": "1559b30329851938a54e6782cd28dcbf34ec27a6cc82132250db9a357f4eaf5a",
+        "BTCUSDT-1h-2020-06.zip": "2ccf45a7307e09dec1fd3622d54057e7e44371bf70a8be1030687f654341799e",
+        "BTCUSDT-1h-2020-07.zip": "378b83c163c8d315075189b039b027d705c3ae225461f04c1226569a4edfcb99",
+        "BTCUSDT-1h-2020-08.zip": "3b4fbdfe798389a1317e333772f176bce711856d87e68c1b77f09631b0cf4b84",
+        "BTCUSDT-1h-2020-09.zip": "46f236c7cd38d72d4a37e80a45e357e7bec48bc89cc6a36c0c17ceb92ce8d101",
+        "BTCUSDT-1h-2020-10.zip": "72fe011922ace0851a44ffa51327d75545212a7e8179867d514a5934ce93a6e0",
+        "BTCUSDT-1h-2020-11.zip": "c3f3548fd082f0fa63d2138a5aca3b572729f6351de8a20c895a80acd3ae395b",
+        "BTCUSDT-1h-2020-12.zip": "c880c8e76e2dbcbed04bc1ddd549949a94a4314520dc1f1becbd881453aa5ede",
+        "BTCUSDT-1h-2021-01.zip": "a2fa12bec12d942e58dbc7fb223973bd2173dfccf8e09edc501bda40b3c3638e",
+        "BTCUSDT-1h-2021-02.zip": "8cd20f5058dc7585cfa874a3ab0e5fd0096f369c182d8fda80dc16495050e018",
+        "BTCUSDT-1h-2021-03.zip": "748783e9715835dd334fbc0cbbff0518962ebbcbe0430acb65f2f506193bad2d",
+        "BTCUSDT-1h-2021-04.zip": "e5a33803814e6771c4c85e8f2e28e90e46d40f14ca3180a8c10c305cf07fab74",
+        "BTCUSDT-1h-2021-05.zip": "728503d417904afff17b403e66f74c18ed0067d3f8e4215130c8a97180c9fccc",
+        "BTCUSDT-1h-2021-06.zip": "9ea9585cf2c938044d2d1b613f451ff9482bd7d2a38da2c9d22cf0c9f00f65ac",
+        "BTCUSDT-1h-2021-07.zip": "993a88728e31b4c4e6f3b28442ab251de5ee434fe06865e1b57063a4f91fc8d9",
+        "BTCUSDT-1h-2021-08.zip": "5cadb462255761842326a2c4b5fe2a91c8a2135c3ba6dd5f0969877f0722f4be",
+        "BTCUSDT-1h-2021-09.zip": "0d344f8ab39d910c148b89fada91256afcb3e8b20eb812ebc158ac8ac527ea07",
+        "BTCUSDT-1h-2021-10.zip": "8065fe2ddd9992398b49fb76e83a60e51392e1ecd4b46c438c075d3e5f6e2291",
+        "BTCUSDT-1h-2021-11.zip": "64d376e949c3518c3b526cac41322114a2e7287395e9089f0da34e25079c2940",
+        "BTCUSDT-1h-2021-12.zip": "b01133a69b22aa7904742a06a892ff3811152377f61e23977051a937afe2fbaa"
+      },
+      "first_timestamp": "2017-12-01T00:00:00Z",
+      "last_timestamp": "2021-12-31T23:00:00Z",
+      "monthly_archive_count": 49,
+      "monthly_archive_first": "BTCUSDT-1h-2017-12.zip",
+      "monthly_archive_last": "BTCUSDT-1h-2021-12.zip",
+      "normalized_row_count": 35646
+    },
+    "success_token": "BOUNDED_H2_REPLICATION",
+    "validation_oos": {
+      "accessed": false,
+      "authorized": false,
+      "evidence": "Execution scope ended before 2022-01-01T00:00:00Z; persisted source evidence contains only BTCUSDT monthly archives from 2017-12 through 2021-12, with last timestamp 2021-12-31T23:00:00Z."
+    },
+    "workflow_conclusion": "success",
+    "workflow_event": "workflow_dispatch",
+    "workflow_name": "PSR-01B Development One-Shot V2",
+    "workflow_run_id": 36297773808
+  },
+  "governance_reviews": {
+    "authorization": {
+      "comment_id": 5851833902,
+      "decision": "APPROVE_PSR01B_V2_DEVELOPMENT_EXECUTION_AUTHORIZATION",
+      "issue": 106
+    },
+    "post_rehearsal_unchanged_head": {
+      "comment_id": 5852988177,
+      "decision": "APPROVE_PSR01B_V2_POST_REHEARSAL_UNCHANGED_HEAD_RECHECK",
+      "issue": 109
+    },
+    "pre_rehearsal_exact_head": {
+      "comment_id": 5851998773,
+      "decision": "APPROVE_PSR01B_V2_AUTHORIZED_HEAD_RECHECK_FOR_REHEARSAL",
+      "issue": 108
+    }
+  },
+  "leverage_authorized": false,
+  "live_trading_authorized": false,
+  "manifest_id": "PSR01B-V2-POST-RUN-EVIDENCE-V1",
+  "overwrite_authorized": false,
+  "paper_trading_authorized": false,
+  "rehearsal": {
+    "artifact": {
+      "artifact_id": 10922981948,
+      "name": "psr01b-rehearsal-v2",
+      "persisted_files": [
+        {
+          "artifact_path": "psr01b_rehearsals/psr01b-rehearsal-36289274005-1/rehearsal.json",
+          "byte_length": 185,
+          "git_blob_sha1": "ab759977da14afd39ae10d2c6eb045ec861cba1f",
+          "repository_path": "research/experiments/psr01b_rehearsals/psr01b-rehearsal-36289274005-1/rehearsal.json",
+          "sha256": "b1cbbb1924053f97844bed77407fdaae609b9f91f2cf997a0ce28cb9f1708762"
+        },
+        {
+          "artifact_path": "psr01b_rehearsals/psr01b-rehearsal-36289274005-1/result.json.reservation",
+          "byte_length": 298,
+          "git_blob_sha1": "84fc37cf6e1ce888635a5dba1fba17a309d6ff0f",
+          "repository_path": "research/experiments/psr01b_rehearsals/psr01b-rehearsal-36289274005-1/result.json.reservation",
+          "sha256": "6265e1ad7e2184c3c4e86cf0d8b53a54da4ebc8993ed5da1c10f148e9be30fa0"
+        }
+      ],
+      "zip_sha256": "e7593222649011e66d2e88f45d8e91d5260f98884a4b24524b43d589915c0fd1"
+    },
+    "execution_sha": "b328892b2b0c2f0e513a6b3157a821055391369a",
+    "market_data_accessed": false,
+    "real_claim_v2_created_by_rehearsal": false,
+    "run_attempt": 1,
+    "source_acquisition_reached": false,
+    "success_token": "PSR01B_REHEARSAL_V2_PRE_SOURCE_PASS",
+    "throwaway_claim": {
+      "actor": "jcbones01-glitch",
+      "ref": "refs/tags/psr01b-rehearsal-36289274005-1",
+      "run_attempt": 1,
+      "run_id": 36289274005,
+      "tag_object_sha": "b30724c5d193de47736c73f5c6201a62ebac1fed",
+      "target_sha": "b328892b2b0c2f0e513a6b3157a821055391369a"
+    },
+    "workflow_conclusion": "success",
+    "workflow_run_id": 36289274005
+  },
+  "repository": "jcbones01-glitch/ai-crypto-trading-command-center",
+  "rerun_authorized": false,
+  "status": "EXECUTION_AND_REHEARSAL_EVIDENCE_PERSISTED",
+  "validation_or_oos_access_authorized": false,
+  "version": 1
+}
