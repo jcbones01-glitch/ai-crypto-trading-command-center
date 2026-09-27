@@ -99,7 +99,7 @@ The registered source interval is **[2020-08-31T00:00:00Z, 2024-01-01T00:00:00Z)
 | 18 | 17 | 2022-04-01T00:00:00Z | 2023-04-01T00:00:00Z | 2023-07-01T00:00:00Z | 2023-10-01T00:00:00Z |
 | 19 | 18 | 2022-07-01T00:00:00Z | 2023-07-01T00:00:00Z | 2023-10-01T00:00:00Z | 2024-01-01T00:00:00Z |
 
-The seed sequence is a continuation, not a reset. `fold_index = fold - 1`, so folds 12–19 use indices 11–18. The parent roots and paths remain:
+The seed sequence is a continuation, not a reset. `fold_index = fold - 1`, so folds 12–19 use indices 11–18. Model/Optuna/XGBoost coordinates therefore continue prospectively through indices 11–18. The bootstrap coordinate remains exactly `[bootstrap_root,block_hours,arm_index]`, intentionally has no fold/phase coordinate, and is therefore intentionally reused across Development and Validation; this is frozen parent behavior, not a reset or Validation tuning choice. The parent roots and paths remain:
 
 - model root `2026092401`;
 - bootstrap root `2026092402`;
@@ -110,7 +110,9 @@ The seed sequence is a continuation, not a reset. `fold_index = fold - 1`, so fo
 
 ## 4. Source identity and acquisition
 
-Source remains Binance Public Data, BTCUSDT Spot, 1h, UTC, monthly kline ZIPs. The archive inventory remains the 41 monthly archives from **2020-08 through 2023-12 inclusive**. Only accepted normalized rows in **[2020-08-31T00:00:00Z, 2024-01-01T00:00:00Z)** may enter the experiment.
+Source remains Binance Public Data, BTCUSDT Spot, 1h, UTC, monthly kline ZIPs. The archive inventory is exactly the 41 monthly archives from **2020-08 through 2023-12 inclusive**: `BTCUSDT-1h-2020-08.zip`, `BTCUSDT-1h-2020-09.zip`, `BTCUSDT-1h-2020-10.zip`, `BTCUSDT-1h-2020-11.zip`, `BTCUSDT-1h-2020-12.zip`, `BTCUSDT-1h-2021-01.zip`, `BTCUSDT-1h-2021-02.zip`, `BTCUSDT-1h-2021-03.zip`, `BTCUSDT-1h-2021-04.zip`, `BTCUSDT-1h-2021-05.zip`, `BTCUSDT-1h-2021-06.zip`, `BTCUSDT-1h-2021-07.zip`, `BTCUSDT-1h-2021-08.zip`, `BTCUSDT-1h-2021-09.zip`, `BTCUSDT-1h-2021-10.zip`, `BTCUSDT-1h-2021-11.zip`, `BTCUSDT-1h-2021-12.zip`, `BTCUSDT-1h-2022-01.zip`, `BTCUSDT-1h-2022-02.zip`, `BTCUSDT-1h-2022-03.zip`, `BTCUSDT-1h-2022-04.zip`, `BTCUSDT-1h-2022-05.zip`, `BTCUSDT-1h-2022-06.zip`, `BTCUSDT-1h-2022-07.zip`, `BTCUSDT-1h-2022-08.zip`, `BTCUSDT-1h-2022-09.zip`, `BTCUSDT-1h-2022-10.zip`, `BTCUSDT-1h-2022-11.zip`, `BTCUSDT-1h-2022-12.zip`, `BTCUSDT-1h-2023-01.zip`, `BTCUSDT-1h-2023-02.zip`, `BTCUSDT-1h-2023-03.zip`, `BTCUSDT-1h-2023-04.zip`, `BTCUSDT-1h-2023-05.zip`, `BTCUSDT-1h-2023-06.zip`, `BTCUSDT-1h-2023-07.zip`, `BTCUSDT-1h-2023-08.zip`, `BTCUSDT-1h-2023-09.zip`, `BTCUSDT-1h-2023-10.zip`, `BTCUSDT-1h-2023-11.zip`, `BTCUSDT-1h-2023-12.zip`. Only accepted normalized rows in **[2020-08-31T00:00:00Z, 2024-01-01T00:00:00Z)** may enter the experiment.
+
+The phase-adapted manifest boundaries are frozen explicitly: Development is **[2017-08-17T00:00:00Z, 2022-01-01T00:00:00Z)**, Validation is **[2022-01-01T00:00:00Z, 2024-01-01T00:00:00Z)**, and OOS begins at **2024-01-01T00:00:00Z**. The Validation implementation must never read, enumerate, inspect, select, infer from, or fall back to the OOS partition. Rows/events earlier than **2020-08-31T00:00:00Z** that physically exist in the August 2020 archive are outside the registered PSR source interval and cannot enter returned PSR rows, anomaly treatment, state, features, or fold-12 warmup propagation.
 
 ### 4.1 Historical overlap
 
@@ -121,6 +123,8 @@ For overlapping archives 2020-08 through 2021-12, use the exact SHA-256 identiti
 Before the durable real Validation claim and successful post-create claim verification, there may be no `HEAD`, `GET`, checksum request, or equivalent metadata/byte request to a protected 2022-2023 source URL.
 
 On the first successful verified acquisition of a protected archive, those bytes and their SHA-256 are latched for the remainder of the one-shot attempt. The archive may not be redownloaded after success or replaced by later upstream bytes.
+
+**Permanent protected-interval consumption boundary:** after atomic real-claim creation and successful post-create verification, the **first protected 2022–2023 source or checksum request permanently consumes the full protected Validation interval [2022-01-01T00:00:00Z, 2024-01-01T00:00:00Z)** for PSR-01B Validation V1, even if no archive bytes are ultimately accepted. After that first protected request, operator cancellation, runner loss/cancellation, timeout, workflow termination, infrastructure failure, artifact/evidence failure, or any other non-scientific terminal path is terminal `PSR01B_VALIDATION_TECHNICAL_INDETERMINATE`; the one-shot attempt remains consumed, no rerun/second claim/alternate request sequence/OOS progression is permitted, and all independently recoverable request/evidence material must be preserved with explicit permanent evidence gaps for anything unrecoverable.
 
 For **every registered archive actually used**, immutable evidence persists:
 
@@ -169,6 +173,8 @@ There is no Validation-specific change to Development retry count or delays.
 
 The frozen Development normalizer blob is `8c257290ff04e726b53cafa433596311dcec32c4` at `src/research_core/ams_dep_treatment_aware_normalization_v2.py`.
 
+The complete parent Development project-local normalization/scanner/archive/source import closure and its exact Git blob SHA-1 map are frozen in the JSON `row_treatment_contract.required_blob_sha1`, inherited from parent revision 4. Every pinned parent module must remain byte-identical. Validation-specific phase adaptation must be implemented only in **new wrapper/adapter code** that calls the pinned parent modules without editing their registered semantics. The exact new wrapper/adapter inventory must itself be frozen and independently reviewed before any protected Validation source access. No wrapper/adapter may read, enumerate, inspect, select, infer from, or fall back to an OOS partition.
+
 The prior idea of simply changing the Development constants, partition selector and names is insufficient because the Validation source interval spans pre-2022 historical rows plus 2022-2023 protected rows.
 
 ### 5.1 Chosen machine-enforceable rule: Design B — timestamp-directed registered partition
@@ -199,7 +205,8 @@ Implementation must prove, without protected data:
 - **Validation linkage:** synthetic 2022 and 2023 events obey the identical event-ID/exclusion-window rule.
 - **Hard end:** 2024-01-01 00:00 and later fail before row use, feature/state propagation, model input, forecast, return or scientific classification.
 - **No historical-side distortion:** paired synthetic anomalies on opposite sides of the boundary prove that only the registered partition changes; scanner classification, event ID, exclusion-membership rule, rejected-row accounting and normalization semantics remain identical.
-- **No OOS access:** fault injection proving no OOS partition can be selected or used as fallback.
+- **No OOS access:** fault injection proving no OOS partition can be read, enumerated, inspected, selected, inferred from, or used as fallback. Instrument an OOS sentinel that raises on any such access and exercise pre-boundary, Validation, missing-link and hard-end paths; the sentinel must never be touched.
+- **Operator-log outcome suppression:** synthetic-only fault injection with recognizable sentinel empirical values across Optuna, XGBoost, arch, statsmodels, feature/model selection, fold/test return/P&L, H2-progress and practical-gate paths. Capture stdout/stderr/workflow-visible logs and fail if any forbidden sentinel empirical value/pattern is emitted; required final synthetic evidence may retain the values.
 
 ## 7. Failure taxonomy and complete undefined-metric semantics
 
@@ -248,7 +255,7 @@ The accepted scientific classifications remain:
 - BUY_AND_HOLD Sharpe unavailable → practical FAIL, with H2 separately classified;
 - MOMENTUM_24H Sharpe unavailable → descriptive benchmark unavailable, with no direct H2/practical effect.
 
-Every post-claim terminal state consumes the single attempt. No rerun is authorized.
+Every post-claim terminal state consumes the single attempt. No rerun is authorized. After the first protected source/checksum request, cancellation, runner loss, timeout, workflow termination, infrastructure loss or inability to finalize local evidence is specifically `TECHNICAL_INDETERMINATE`, permanently consumes the protected Validation interval, and makes the attempt ineligible for OOS progression. No scientific H2/practical judgment may be inferred from that terminal path.
 
 ## 8. Exact result, incident, evidence and outcome-suppression contract
 
@@ -326,10 +333,18 @@ Before immutable terminal evidence:
 - no partial practical-gate status in logs;
 - no intermediate empirical result artifact;
 - no operator-facing partial test metric intended to permit outcome-based cancellation;
-- model/feature-selection details may be persisted in final evidence but should not be streamed as partial empirical outcome evidence where avoidable;
+- model/feature-selection details may be persisted in final registered evidence but **must not** be streamed as partial empirical outcome evidence;
+- empirical progress/output from Optuna, XGBoost, arch and statsmodels must be configured, captured, suppressed or redacted so trial objectives/best values, losses/early-stopping values, EGARCH likelihood/AIC/fit summaries, statistical summaries and other protected empirical values do not reach operator-facing stdout/stderr/GitHub logs;
+- synthetic/offline implementation testing must include the mandatory `OPERATOR_LOG_OUTCOME_SUPPRESSION` no-leak test described above; any forbidden sentinel leakage fails the gate;
 - no cancellation, retry, runner-loss or failure path after the real claim can create a second real claim or second empirical Validation attempt.
 
 Artifact upload must execute on success or failure using `if: always()` or equivalent and include all evidence paths that exist, including permanent-raw-source staging/binding material.
+
+### 8.5 Runner-loss and permanent evidence-gap closeout
+
+After the first protected Validation request, loss/cancellation of the runner or inability to finalize local result/incident/raw-source evidence is terminal `PSR01B_VALIDATION_TECHNICAL_INDETERMINATE`. The consumed real claim and attempt are never reopened. Governance must preserve independently recoverable run/attempt/actor/execution-SHA/claim provenance, source-request ledger material, source hashes/raw bytes and artifact/object identities that exist outside the lost runner. Any expected local object that cannot be recovered is recorded as an explicit **permanent evidence gap** with the last independently provable stage; it is never fabricated or reconstructed as if the runner produced it.
+
+The canonical non-expiring Git raw-source evidence namespace is `research/experiments/psr01b_validation_v1/evidence/raw_source/`. Exact accepted protected ZIP bytes must be preserved there as immutable Git blobs, or in an exact byte-identical separately immutable non-expiring object/store whose stable identifier and SHA-256 are bound into closeout evidence. An expiring Actions artifact alone is insufficient. A consumed technical-indeterminate attempt is not eligible for OOS progression.
 
 ## 9. Complete one-shot governance lifecycle
 
@@ -371,6 +386,8 @@ Freeze all of the following:
 - no bypass actor is allowed;
 - real-claim recreation is forbidden;
 - every post-claim terminal state consumes the attempt;
+- after successful post-create verification, the first protected 2022–2023 source/checksum request permanently consumes the full Validation interval for this program, even if no archive is accepted;
+- cancellation/runner loss after that first protected request is terminal `PSR01B_VALIDATION_TECHNICAL_INDETERMINATE`, cannot be retried and cannot become OOS-eligible;
 - no second real claim or second empirical Validation attempt exists.
 
 ### 9.2 PRE_SOURCE rehearsal
@@ -389,6 +406,7 @@ The final-freeze blockers are resolved prospectively without Validation/OOS acce
 - the full 18-step governance lifecycle, real-claim protections and downloader-free rehearsal are frozen;
 - exact result/reservation/incident paths, deterministic write order, always-run artifact upload and empirical outcome suppression are frozen;
 - Development transport semantics are preserved with explicit HTTPS/checksum/60-second timeout/redirect/ledger rules, and the exact raw ZIP bytes used are required as permanent immutable evidence;
-- the accepted folds 12–19, indices 11–18, source/Validation intervals, timestamp-directed Development/Validation treatment linkage, no-OOS fallback, revision-4 scientific/statistical procedure, 4-attempt 5/15/45 transport retry schedule, sample-driven scientific-failure principle, and one-shot/no-rescue principle are unchanged.
+- the accepted folds 12–19, indices 11–18, source/Validation intervals, timestamp-directed Development/Validation treatment linkage, no-OOS fallback, revision-4 scientific/statistical procedure, 4-attempt 5/15/45 transport retry schedule, sample-driven scientific-failure principle, and one-shot/no-rescue principle are unchanged;
+- Issue #111 remediation additionally freezes permanent interval consumption after first protected request, mandatory operator-log outcome suppression/no-leak tests, explicit phase-adapted manifest/archive/pinned-wrapper/OOS contracts, runner-loss permanent evidence-gap handling with a canonical non-expiring Git raw-source evidence namespace, and the intentional distinction between fold-index seed continuation and bootstrap-seed reuse.
 
 **Freeze status:** `FROZEN_PENDING_INDEPENDENT_SPECIFICATION_REVIEW`

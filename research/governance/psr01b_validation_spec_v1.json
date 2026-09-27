@@ -193,7 +193,9 @@
     "xgboost_trial_seed_path": "[model_root,2,arm_index,fold_index,trial_index]",
     "xgboost_final_seed_path": "[model_root,3,arm_index,fold_index,selected_trial_index]",
     "bootstrap_seed_path": "[bootstrap_root,block_hours,arm_index]",
-    "uncontrolled_rng_allowed": false
+    "uncontrolled_rng_allowed": false,
+    "model_seed_continuation_clarification": "Model/Optuna/XGBoost stochastic coordinates continue prospectively with Validation fold_index = 11..18; the registered model-root coordinate paths are not reset at the Development/Validation boundary.",
+    "bootstrap_seed_reuse_clarification": "The inherited bootstrap coordinate is exactly [bootstrap_root,block_hours,arm_index] and intentionally contains no fold or phase coordinate. Therefore the same block-hours/arm bootstrap seeds are intentionally reused across Development and Validation. This is frozen parent behavior, not a reset, omission, or Validation tuning choice."
   },
   "source": {
     "provider": "Binance Public Data",
@@ -286,7 +288,159 @@
         "binding": "Final evidence records package SHA-256, package byte length, manifest SHA-256 and every per-archive SHA-256/checksum/source URL."
       },
       "permanent_external_persistence": "Governance closeout is forbidden until the raw-source package or an exact byte-identical equivalent has been copied from the ephemeral runner to a separately immutable, non-expiring evidence object/store and its stable identifier plus SHA-256 is bound into closeout evidence. An expiring Actions artifact alone does not satisfy permanent preservation.",
-      "scientific_use_hard_end": "No raw source row with timestamp >= 2024-01-01T00:00:00Z may enter treatment output, state, features, model fitting, forecasts, returns, metrics or inference."
+      "scientific_use_hard_end": "No raw source row with timestamp >= 2024-01-01T00:00:00Z may enter treatment output, state, features, model fitting, forecasts, returns, metrics or inference.",
+      "canonical_non_expiring_git_evidence_namespace": "research/experiments/psr01b_validation_v1/evidence/raw_source/",
+      "git_persistence_rule": "Exact accepted ZIP bytes are canonically preservable as immutable Git blobs under the non-expiring evidence namespace. A byte-identical separately immutable non-expiring object/store is acceptable only when its stable identifier and SHA-256 are bound into closeout evidence. Expiring Actions artifacts alone are insufficient."
+    },
+    "registered_archive_inventory": [
+      "BTCUSDT-1h-2020-08.zip",
+      "BTCUSDT-1h-2020-09.zip",
+      "BTCUSDT-1h-2020-10.zip",
+      "BTCUSDT-1h-2020-11.zip",
+      "BTCUSDT-1h-2020-12.zip",
+      "BTCUSDT-1h-2021-01.zip",
+      "BTCUSDT-1h-2021-02.zip",
+      "BTCUSDT-1h-2021-03.zip",
+      "BTCUSDT-1h-2021-04.zip",
+      "BTCUSDT-1h-2021-05.zip",
+      "BTCUSDT-1h-2021-06.zip",
+      "BTCUSDT-1h-2021-07.zip",
+      "BTCUSDT-1h-2021-08.zip",
+      "BTCUSDT-1h-2021-09.zip",
+      "BTCUSDT-1h-2021-10.zip",
+      "BTCUSDT-1h-2021-11.zip",
+      "BTCUSDT-1h-2021-12.zip",
+      "BTCUSDT-1h-2022-01.zip",
+      "BTCUSDT-1h-2022-02.zip",
+      "BTCUSDT-1h-2022-03.zip",
+      "BTCUSDT-1h-2022-04.zip",
+      "BTCUSDT-1h-2022-05.zip",
+      "BTCUSDT-1h-2022-06.zip",
+      "BTCUSDT-1h-2022-07.zip",
+      "BTCUSDT-1h-2022-08.zip",
+      "BTCUSDT-1h-2022-09.zip",
+      "BTCUSDT-1h-2022-10.zip",
+      "BTCUSDT-1h-2022-11.zip",
+      "BTCUSDT-1h-2022-12.zip",
+      "BTCUSDT-1h-2023-01.zip",
+      "BTCUSDT-1h-2023-02.zip",
+      "BTCUSDT-1h-2023-03.zip",
+      "BTCUSDT-1h-2023-04.zip",
+      "BTCUSDT-1h-2023-05.zip",
+      "BTCUSDT-1h-2023-06.zip",
+      "BTCUSDT-1h-2023-07.zip",
+      "BTCUSDT-1h-2023-08.zip",
+      "BTCUSDT-1h-2023-09.zip",
+      "BTCUSDT-1h-2023-10.zip",
+      "BTCUSDT-1h-2023-11.zip",
+      "BTCUSDT-1h-2023-12.zip"
+    ],
+    "archive_identity_contract": {
+      "historical_overlap_2020_08_through_2021_12": {
+        "filenames": [
+          "BTCUSDT-1h-2020-08.zip",
+          "BTCUSDT-1h-2020-09.zip",
+          "BTCUSDT-1h-2020-10.zip",
+          "BTCUSDT-1h-2020-11.zip",
+          "BTCUSDT-1h-2020-12.zip",
+          "BTCUSDT-1h-2021-01.zip",
+          "BTCUSDT-1h-2021-02.zip",
+          "BTCUSDT-1h-2021-03.zip",
+          "BTCUSDT-1h-2021-04.zip",
+          "BTCUSDT-1h-2021-05.zip",
+          "BTCUSDT-1h-2021-06.zip",
+          "BTCUSDT-1h-2021-07.zip",
+          "BTCUSDT-1h-2021-08.zip",
+          "BTCUSDT-1h-2021-09.zip",
+          "BTCUSDT-1h-2021-10.zip",
+          "BTCUSDT-1h-2021-11.zip",
+          "BTCUSDT-1h-2021-12.zip"
+        ],
+        "sha256_from_parent_revision_4": {
+          "BTCUSDT-1h-2020-08.zip": "3b4fbdfe798389a1317e333772f176bce711856d87e68c1b77f09631b0cf4b84",
+          "BTCUSDT-1h-2020-09.zip": "46f236c7cd38d72d4a37e80a45e357e7bec48bc89cc6a36c0c17ceb92ce8d101",
+          "BTCUSDT-1h-2020-10.zip": "72fe011922ace0851a44ffa51327d75545212a7e8179867d514a5934ce93a6e0",
+          "BTCUSDT-1h-2020-11.zip": "c3f3548fd082f0fa63d2138a5aca3b572729f6351de8a20c895a80acd3ae395b",
+          "BTCUSDT-1h-2020-12.zip": "c880c8e76e2dbcbed04bc1ddd549949a94a4314520dc1f1becbd881453aa5ede",
+          "BTCUSDT-1h-2021-01.zip": "a2fa12bec12d942e58dbc7fb223973bd2173dfccf8e09edc501bda40b3c3638e",
+          "BTCUSDT-1h-2021-02.zip": "8cd20f5058dc7585cfa874a3ab0e5fd0096f369c182d8fda80dc16495050e018",
+          "BTCUSDT-1h-2021-03.zip": "748783e9715835dd334fbc0cbbff0518962ebbcbe0430acb65f2f506193bad2d",
+          "BTCUSDT-1h-2021-04.zip": "e5a33803814e6771c4c85e8f2e28e90e46d40f14ca3180a8c10c305cf07fab74",
+          "BTCUSDT-1h-2021-05.zip": "728503d417904afff17b403e66f74c18ed0067d3f8e4215130c8a97180c9fccc",
+          "BTCUSDT-1h-2021-06.zip": "9ea9585cf2c938044d2d1b613f451ff9482bd7d2a38da2c9d22cf0c9f00f65ac",
+          "BTCUSDT-1h-2021-07.zip": "993a88728e31b4c4e6f3b28442ab251de5ee434fe06865e1b57063a4f91fc8d9",
+          "BTCUSDT-1h-2021-08.zip": "5cadb462255761842326a2c4b5fe2a91c8a2135c3ba6dd5f0969877f0722f4be",
+          "BTCUSDT-1h-2021-09.zip": "0d344f8ab39d910c148b89fada91256afcb3e8b20eb812ebc158ac8ac527ea07",
+          "BTCUSDT-1h-2021-10.zip": "8065fe2ddd9992398b49fb76e83a60e51392e1ecd4b46c438c075d3e5f6e2291",
+          "BTCUSDT-1h-2021-11.zip": "64d376e949c3518c3b526cac41322114a2e7287395e9089f0da34e25079c2940",
+          "BTCUSDT-1h-2021-12.zip": "b01133a69b22aa7904742a06a892ff3811152377f61e23977051a937afe2fbaa"
+        },
+        "rule": "These identities are inherited exactly from parent Development revision 4; a different identity is forbidden."
+      },
+      "protected_2022_01_through_2023_12": {
+        "filenames": [
+          "BTCUSDT-1h-2022-01.zip",
+          "BTCUSDT-1h-2022-02.zip",
+          "BTCUSDT-1h-2022-03.zip",
+          "BTCUSDT-1h-2022-04.zip",
+          "BTCUSDT-1h-2022-05.zip",
+          "BTCUSDT-1h-2022-06.zip",
+          "BTCUSDT-1h-2022-07.zip",
+          "BTCUSDT-1h-2022-08.zip",
+          "BTCUSDT-1h-2022-09.zip",
+          "BTCUSDT-1h-2022-10.zip",
+          "BTCUSDT-1h-2022-11.zip",
+          "BTCUSDT-1h-2022-12.zip",
+          "BTCUSDT-1h-2023-01.zip",
+          "BTCUSDT-1h-2023-02.zip",
+          "BTCUSDT-1h-2023-03.zip",
+          "BTCUSDT-1h-2023-04.zip",
+          "BTCUSDT-1h-2023-05.zip",
+          "BTCUSDT-1h-2023-06.zip",
+          "BTCUSDT-1h-2023-07.zip",
+          "BTCUSDT-1h-2023-08.zip",
+          "BTCUSDT-1h-2023-09.zip",
+          "BTCUSDT-1h-2023-10.zip",
+          "BTCUSDT-1h-2023-11.zip",
+          "BTCUSDT-1h-2023-12.zip"
+        ],
+        "pre_claim_identity_values_registered": false,
+        "rule": "No protected 2022-2023 archive/checksum identity may be read or preregistered before the real claim. After atomic real-claim creation and successful post-create verification, the first accepted official-checksum-verified bytes establish the immutable per-archive identity for the consumed attempt."
+      }
+    },
+    "phase_adapted_manifest_contract": {
+      "development_partition": {
+        "name": "development",
+        "start": "2017-08-17T00:00:00Z",
+        "end_exclusive": "2022-01-01T00:00:00Z"
+      },
+      "validation_partition": {
+        "name": "validation",
+        "start": "2022-01-01T00:00:00Z",
+        "end_exclusive": "2024-01-01T00:00:00Z"
+      },
+      "oos_partition": {
+        "name": "oos",
+        "start": "2024-01-01T00:00:00Z",
+        "read_enumerate_inspect_select_infer_or_fallback_allowed": false
+      },
+      "registered_psr_source_start": "2020-08-31T00:00:00Z",
+      "registered_psr_source_end_exclusive": "2024-01-01T00:00:00Z",
+      "pre_2020_08_31_rule": "Rows/events earlier than 2020-08-31T00:00:00Z, even if physically present in the August 2020 archive, are outside the registered PSR source interval and may not enter returned PSR rows, anomaly treatment, state, features, or fold-12 warmup propagation.",
+      "no_oos_read_rule": "Validation implementation must not read, enumerate, inspect, select, infer from, or fall back to the OOS partition or any source/evidence at or after 2024-01-01T00:00:00Z."
+    },
+    "protected_interval_consumption_contract": {
+      "interval": "[2022-01-01T00:00:00Z,2024-01-01T00:00:00Z)",
+      "trigger": "The first protected 2022-2023 source or checksum request of any method/equivalent issued after atomic real-claim creation and successful post-create verification.",
+      "permanently_consumed": true,
+      "consumes_even_if_no_archive_bytes_are_accepted": true,
+      "cancellation_runner_loss_timeout_or_workflow_termination_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE",
+      "infrastructure_or_evidence_failure_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE",
+      "rerun_allowed": false,
+      "second_real_claim_allowed": false,
+      "alternate_source_sequence_allowed": false,
+      "oos_progression_allowed": false,
+      "evidence_rule": "Preserve the source-acquisition ledger plus every independently recoverable request/checksum/hash/raw-byte/evidence object obtained before termination; any unrecoverable expected evidence becomes an explicit permanent evidence gap and must never be fabricated."
     }
   },
   "row_treatment_contract": {
@@ -319,7 +473,30 @@
       "pre_2022_equivalence": "The event-id, exclusion-window and anomaly-id test is exactly the frozen Development test; only partition dispatch is generalized. Thus an event in the historical side is judged against the Development partition and must receive the same treatment it would under frozen Development semantics.",
       "validation_prospective_rule": "The identical test is applied prospectively against the Validation partition for 2022-2023 events. No rule may be chosen or changed based on observed Validation contents."
     },
-    "implementation_characterization": "This remediation is NOT characterized as merely five AST substitutions. The phase-safe treatment-linkage dispatch is an explicit additional semantic adaptation and must receive independent review before any Validation source access."
+    "implementation_characterization": "This remediation is NOT characterized as merely five AST substitutions. The phase-safe treatment-linkage dispatch is an explicit additional semantic adaptation and must receive independent review before any Validation source access.",
+    "required_blob_sha1": {
+      "src/research_core/ams_dep_treatment_aware_normalization_v2.py": "8c257290ff04e726b53cafa433596311dcec32c4",
+      "src/research_core/data_quality.py": "a8251c4288013d8264a85bb4cda44007459e1adf",
+      "src/research_core/data_quality_treatment_v2.py": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+      "src/research_core/data_ingestion.py": "bbed81b3ffed215b04dc162368ef9866a4753875",
+      "src/research_core/archive_security.py": "cf31519ead9538a59422c7d3dfdb1b3e9d43bb4b",
+      "src/research_core/data_interfaces.py": "579b27b515d25ce69d565208416a88506286e534",
+      "src/research_core/ams_dep_pipeline.py": "f2c14fffd72369bbf0dc119b8a001dc9193e5975",
+      "src/research_core/dependence_statistics.py": "c902bf2c8c85320933fcb8d0d1fd43e1d5fb694b",
+      "src/research_core/market_state.py": "0d7a60bf581142bab5439ed93992839105d61e1f",
+      "src/research_core/source_identity.py": "8445e4bb1f36d0f9ef5f45961848bf8aea57c6f9"
+    },
+    "upstream_registration_path": "research/governance/ams_dep_development_execution_v3.json",
+    "upstream_registration_blob_sha1": "946dea1c852cd8a23d26d3a90ba99e88db5779a2",
+    "phase_adaptation_module_policy": {
+      "inherited_required_blob_sha1_source": "parent Development revision-4 source.row_treatment_contract.required_blob_sha1",
+      "pinned_parent_modules_must_remain_byte_identical": true,
+      "edits_to_pinned_parent_modules_allowed": false,
+      "validation_specific_phase_adaptation_must_use_new_wrapper_or_adapter_code": true,
+      "new_wrapper_or_adapter_inventory_must_be_frozen_and_independently_reviewed_before_any_validation_source_access": true,
+      "wrapper_may_call_pinned_parent_modules_but_may_not_change_their_registered_semantics": true,
+      "oos_partition_read_enumeration_inspection_selection_inference_or_fallback_allowed": false
+    }
   },
   "mandatory_synthetic_fault_injection_tests": [
     {
@@ -358,6 +535,14 @@
     {
       "name": "HISTORICAL_SIDE_DOES_NOT_CHANGE_ANOMALY_TREATMENT",
       "required_proof": "Construct paired synthetic events/exclusions with identical anomaly semantics on each side of the boundary and prove that only the selected registered partition changes; scanner classification, event_id generation, exclusion membership rule, rejected-row accounting and normalization behavior are otherwise identical."
+    },
+    {
+      "name": "NO_OOS_PARTITION_READ_ENUMERATION_OR_FALLBACK",
+      "required_proof": "Instrument the phase-safe Validation adapter with a synthetic OOS sentinel that raises on any OOS partition read, enumeration, inspection, selection, inference or fallback. Exercise pre-boundary, Validation-boundary, missing-link and hard-end paths and prove the OOS sentinel is never touched. Any OOS access attempt fails the gate."
+    },
+    {
+      "name": "OPERATOR_LOG_OUTCOME_SUPPRESSION",
+      "required_proof": "Using synthetic data only, inject recognizable sentinel empirical values into Optuna, XGBoost, arch, statsmodels, feature/model-selection, fold/test-return, P&L, H2-progress and practical-gate paths; capture stdout, stderr and workflow-visible logs and prove no forbidden sentinel value/pattern is emitted. Required final synthetic evidence may retain the values. Any operator-log leakage fails the gate."
     }
   ],
   "failure_taxonomy": {
@@ -424,6 +609,17 @@
         "condition": "An EGARCH/library call raises a structural exception attributable to missing/wrong dependency, ABI/runtime corruption, wrong function contract, or another frozen-implementation invariant rather than registered numerical non-convergence on valid data.",
         "classification": "TECHNICAL_INDETERMINATE",
         "reason": "Deterministic structural/runtime failure, not sample-driven scientific failure."
+      },
+      {
+        "condition": "After the real claim is created/reverified and the first protected 2022-2023 source/checksum request has occurred, the runner is cancelled/lost, times out, the workflow terminates, infrastructure is lost, or local result/incident/raw-source evidence cannot be normally finalized.",
+        "classification": "TECHNICAL_INDETERMINATE",
+        "validation_result_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE",
+        "parent_h2_classification": null,
+        "practical_benchmark_token": null,
+        "attempt_consumed": true,
+        "rerun_allowed": false,
+        "oos_progression_allowed": false,
+        "reason": "Protected Validation access has occurred but a fair complete scientific/evidence closeout was not obtained. The interval and one-shot attempt remain permanently consumed; independently recoverable evidence is preserved and unrecoverable expected evidence is recorded as a permanent gap."
       }
     ],
     "nonfinite_forecast_deterministic_rule": "Shape-correct and length-correct vector + all prior integrity gates passed + normal model return + any nonfinite element => SCIENTIFIC_NON_REPLICATION. Wrong shape/length/alignment or structural exception/invariant failure => TECHNICAL_INDETERMINATE. No reviewer discretion.",
@@ -465,8 +661,34 @@
       "partial_practical_gate_status_in_logs_allowed": false,
       "intermediate_empirical_result_artifact_allowed": false,
       "operator_facing_partial_test_metric_for_outcome_based_cancellation_allowed": false,
-      "model_or_feature_selection_details": "May be persisted in final evidence, but should not be streamed as partial empirical outcome evidence where avoidable.",
-      "post_claim_cancel_retry_semantics": "Cancellation, runner loss, artifact failure, technical failure, or any other post-claim terminal state consumes the single attempt. No legal retry/cancel pathway may create a second real claim or second empirical Validation attempt."
+      "model_or_feature_selection_details": "Required model/feature-selection details may be persisted only in final registered evidence; they MUST NOT be streamed to operator-facing stdout/stderr/GitHub logs as partial empirical outcome evidence.",
+      "post_claim_cancel_retry_semantics": "Cancellation, runner loss, artifact failure, technical failure, or any other post-claim terminal state consumes the single attempt. No legal retry/cancel pathway may create a second real claim or second empirical Validation attempt.",
+      "enforcement": "MANDATORY_FAIL_CLOSED",
+      "operator_facing_channels": [
+        "stdout",
+        "stderr",
+        "GitHub Actions logs"
+      ],
+      "libraries_requiring_empirical_output_suppression": [
+        "Optuna",
+        "XGBoost",
+        "arch",
+        "statsmodels"
+      ],
+      "forbidden_partial_log_content": [
+        "trial objective values or best-value progress",
+        "training/validation loss or early-stopping empirical values",
+        "EGARCH likelihood/AIC/parameter/fit summaries",
+        "statsmodels fit/statistical summaries",
+        "feature/model-selection empirical scores",
+        "fold/test returns or P&L",
+        "partial H2 criteria/status",
+        "partial practical-benchmark status",
+        "other partial Validation scientific outcomes"
+      ],
+      "implementation_rule": "Validation implementation must configure, capture, suppress or redact library/model progress so forbidden empirical partial outcomes cannot reach operator-facing channels. Structural status/errors may be logged only when they do not reveal protected empirical outcome values.",
+      "synthetic_no_leak_test_required": true,
+      "synthetic_no_leak_test_name": "OPERATOR_LOG_OUTCOME_SUPPRESSION"
     },
     "execution_namespace": "research/experiments/psr01b_validation_v1",
     "result_path": "research/experiments/psr01b_validation_v1/result.json",
@@ -511,7 +733,10 @@
       "validation_boundary_status",
       "oos_boundary_status",
       "parent_h2_classification",
-      "practical_benchmark_token"
+      "practical_benchmark_token",
+      "first_protected_request_occurred",
+      "protected_validation_interval_consumed",
+      "evidence_gap_status"
     ],
     "incident_metric_rule": "terminal_incident.json never fabricates scientific metrics; unavailable/not-reached scientific values are omitted or JSON null only where explicitly defined, and a technical terminal state has parent_h2_classification=null.",
     "artifact_upload": {
@@ -531,7 +756,30 @@
       "validation_result_token": "Exactly one of PSR01B_VALIDATION_BOUNDED_H2_REPLICATION, PSR01B_VALIDATION_BOUNDED_H2_NOT_REPLICATED, PSR01B_VALIDATION_TECHNICAL_INDETERMINATE.",
       "practical_benchmark_token": "On a scientific terminal path, exactly PASS or FAIL token. On a TECHNICAL_INDETERMINATE terminal path, JSON null."
     },
-    "scientifically_completed_definition": "A scientifically classifiable terminal state includes a completed parent-H2 pass/fail evaluation or an earlier sample-driven SCIENTIFIC_NON_REPLICATION under the frozen procedure. It excludes every TECHNICAL_INDETERMINATE state."
+    "scientifically_completed_definition": "A scientifically classifiable terminal state includes a completed parent-H2 pass/fail evaluation or an earlier sample-driven SCIENTIFIC_NON_REPLICATION under the frozen procedure. It excludes every TECHNICAL_INDETERMINATE state.",
+    "runner_loss_and_evidence_gap_contract": {
+      "applies_after_real_claim": true,
+      "protected_access_boundary": "After the first protected Validation source/checksum request, runner loss, cancellation, timeout, workflow termination, infrastructure loss or inability to finalize local evidence is terminal.",
+      "terminal_classification": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE",
+      "parent_h2_classification": null,
+      "practical_benchmark_token": null,
+      "attempt_consumed": true,
+      "rerun_allowed": false,
+      "oos_progression_allowed": false,
+      "no_scientific_result_may_be_inferred": true,
+      "recoverable_metadata_must_be_preserved": [
+        "workflow run ID and attempt",
+        "actor and execution SHA",
+        "real claim ref/tag-object/target provenance",
+        "source-acquisition request ledger recoverable from independent logs/artifacts",
+        "archive/checksum identities, hashes or raw bytes independently recoverable before loss",
+        "artifact/object identifiers and digests that exist independently of the lost runner"
+      ],
+      "evidence_gap_rule": "Any expected result, terminal_incident, raw-source, ledger or provenance object that cannot be recovered must be recorded explicitly as a permanent evidence gap with the last independently provable stage. Missing evidence must never be fabricated or reconstructed as if produced by the lost runner.",
+      "canonical_non_expiring_git_evidence_namespace": "research/experiments/psr01b_validation_v1/evidence/raw_source/",
+      "canonical_git_evidence_rule": "For normal successful persistence, exact protected raw-source bytes must be committed as immutable Git blobs under the canonical non-expiring evidence namespace (or an exact byte-identical separately immutable non-expiring object/store whose stable identifier and SHA-256 are bound into governance evidence). Expiring Actions artifacts alone are insufficient.",
+      "closeout_rule": "Governance closeout of a lost-runner technical-indeterminate attempt must bind the consumed claim/run, last provable stage, recovered evidence identities and explicit evidence gaps. It cannot reopen Validation or make the attempt OOS-eligible."
+    }
   },
   "one_shot_governance": {
     "claim_ref": "refs/tags/psr01b-validation-one-shot-claim-v1",
@@ -580,7 +828,12 @@
     "rehearsal_validation_source_access_allowed": false,
     "rehearsal_downloader_invocation_allowed": false,
     "post_claim_terminal_state_consumes_attempt": true,
-    "second_real_claim_or_second_empirical_attempt_allowed": false
+    "second_real_claim_or_second_empirical_attempt_allowed": false,
+    "protected_interval_consumption_trigger": "first protected 2022-2023 source or checksum request after successful post-create verification",
+    "protected_interval_permanently_consumed_after_trigger": true,
+    "cancellation_or_runner_loss_after_trigger_terminal_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE",
+    "cancellation_or_runner_loss_after_trigger_rerun_allowed": false,
+    "cancellation_or_runner_loss_after_trigger_oos_progression_allowed": false
   },
   "required_pre_execution_lifecycle": [
     "frozen Validation specification committed",
@@ -623,7 +876,9 @@
     "conditions_authorize_oos": false,
     "oos_source_access_authorized": false,
     "oos_implementation_authorized": false,
-    "oos_execution_authorized": false
+    "oos_execution_authorized": false,
+    "technical_indeterminate_attempt_may_be_considered_for_oos": false,
+    "cancelled_or_runner_lost_consumed_attempt_may_be_considered_for_oos": false
   },
   "metric_unavailability_contract": {
     "serialization_rule": "JSON null is permitted only for the explicitly registered mathematical ASD/Sharpe-unavailability cases below. NaN and Infinity are forbidden everywhere.",
