@@ -440,7 +440,61 @@
       "second_real_claim_allowed": false,
       "alternate_source_sequence_allowed": false,
       "oos_progression_allowed": false,
-      "evidence_rule": "Preserve the source-acquisition ledger plus every independently recoverable request/checksum/hash/raw-byte/evidence object obtained before termination; any unrecoverable expected evidence becomes an explicit permanent evidence gap and must never be fabricated."
+      "evidence_rule": "Preserve the source-acquisition ledger plus every independently recoverable request/checksum/hash/raw-byte/evidence object obtained before termination; any unrecoverable expected evidence becomes an explicit permanent evidence gap and must never be fabricated.",
+      "confirmatory_scope": {
+        "scope_id": "PSR01B_VALIDATION_2022_2023_CONFIRMATORY_INTERVAL_V1",
+        "current_registration_id": "PSR01B-BOUNDED-VALIDATION-SPOT-V1",
+        "protected_interval": "[2022-01-01T00:00:00Z,2024-01-01T00:00:00Z)",
+        "applies_to": "Current registration plus any successor, renamed, retry, rescue, replacement, substitute, or confirmatory registration/workflow/branch/claim intended to use the same protected interval as confirmatory evidence for the same PSR-01B mechanism/program.",
+        "identity_change_resets_consumption": false,
+        "successor_confirmatory_reuse_allowed": false,
+        "later_same_interval_use_classification": "EXPLORATORY_OR_DESCRIPTIVE_ONLY",
+        "later_same_interval_use_may_satisfy_validation_gate": false,
+        "later_same_interval_use_may_restore_oos_eligibility": false
+      }
+    },
+    "manifest_construction_contract": {
+      "builder_module": "src/research_core/data_quality_treatment_v2.py",
+      "builder_module_git_blob_sha1": "f4876660fd88b91f0cfb9b9e87a8f9f09f1ddf19",
+      "exact_call": "build_manifest(\"BTCUSDT\", reports, research_start=2020-08-31T00:00:00Z, research_end=2024-01-01T00:00:00Z)",
+      "reports_contract": {
+        "registered_archive_count": 41,
+        "inventory_source": "source.registered_archive_inventory",
+        "one_report_per_registered_archive_required": true,
+        "report_order": "lexicographic registered archive filename order",
+        "missing_or_duplicate_archive_or_report": "HARD_FAIL_PRE_SCIENTIFIC_EXECUTION",
+        "every_report_checksum_verified_required": true,
+        "checksum_failure_event": "HARD_FAIL_PRE_SCIENTIFIC_EXECUTION",
+        "unlocalized_non_checksum_event": "HARD_FAIL_PRE_SCIENTIFIC_EXECUTION",
+        "source_integrity_required": "SOURCE VERIFIED",
+        "allowed_research_certification": [
+          "VALID",
+          "VALID WITH DOCUMENTED EXCLUSIONS"
+        ],
+        "unverified_or_unusable_manifest": "HARD_FAIL_PRE_SCIENTIFIC_EXECUTION"
+      },
+      "localized_pre_source_event_rule": {
+        "before": "2020-08-31T00:00:00Z",
+        "may_remain_manifest_provenance": true,
+        "may_enter_psr_rows": false,
+        "may_drive_psr_treatment": false,
+        "may_propagate_state_features_or_warmup": false,
+        "rule": "Only intersections within [research_start,research_end) may affect PSR source exclusions or treatment."
+      },
+      "partition_contract": {
+        "development": "[2017-08-17T00:00:00Z,2022-01-01T00:00:00Z)",
+        "validation": "[2022-01-01T00:00:00Z,2024-01-01T00:00:00Z)",
+        "oos_begins": "2024-01-01T00:00:00Z",
+        "pinned_builder_may_construct_oos_metadata": true,
+        "oos_metadata_construction_is_not_oos_source_access": true,
+        "validation_adapter_may_read_or_inspect_oos_partition_entry": false,
+        "validation_adapter_may_select_only": [
+          "development",
+          "validation"
+        ],
+        "oos_selection_inference_or_fallback_allowed": false
+      },
+      "fail_closed_before": "returned PSR rows, phase-specific treatment, features, fitting, forecasts, inference, or P&L"
     }
   },
   "row_treatment_contract": {
@@ -543,6 +597,10 @@
     {
       "name": "OPERATOR_LOG_OUTCOME_SUPPRESSION",
       "required_proof": "Using synthetic data only, inject recognizable sentinel empirical values into Optuna, XGBoost, arch, statsmodels, feature/model-selection, fold/test-return, P&L, H2-progress and practical-gate paths; capture stdout, stderr and workflow-visible logs and prove no forbidden sentinel value/pattern is emitted. Required final synthetic evidence may retain the values. Any operator-log leakage fails the gate."
+    },
+    {
+      "name": "EXACT_MANIFEST_BUILD_AND_PRE_SOURCE_FAIL_CLOSED",
+      "required_proof": "Using synthetic reports only, invoke pinned build_manifest with BTCUSDT, research_start=2020-08-31T00:00:00Z and research_end=2024-01-01T00:00:00Z. Prove exact bounds and Development/Validation split; localized pre-start events remain provenance only and cannot affect PSR treatment/state; missing/duplicate reports, checksum-unverified/checksum-failure reports and unlocalized non-checksum events fail closed before scientific execution; and the Validation adapter never reads or inspects the OOS partition entry."
     }
   ],
   "failure_taxonomy": {
@@ -833,7 +891,9 @@
     "protected_interval_permanently_consumed_after_trigger": true,
     "cancellation_or_runner_loss_after_trigger_terminal_token": "PSR01B_VALIDATION_TECHNICAL_INDETERMINATE",
     "cancellation_or_runner_loss_after_trigger_rerun_allowed": false,
-    "cancellation_or_runner_loss_after_trigger_oos_progression_allowed": false
+    "cancellation_or_runner_loss_after_trigger_oos_progression_allowed": false,
+    "successor_wide_confirmatory_consumption_scope_id": "PSR01B_VALIDATION_2022_2023_CONFIRMATORY_INTERVAL_V1",
+    "successor_or_replacement_registration_may_reset_consumption": false
   },
   "required_pre_execution_lifecycle": [
     "frozen Validation specification committed",
@@ -878,7 +938,8 @@
     "oos_implementation_authorized": false,
     "oos_execution_authorized": false,
     "technical_indeterminate_attempt_may_be_considered_for_oos": false,
-    "cancelled_or_runner_lost_consumed_attempt_may_be_considered_for_oos": false
+    "cancelled_or_runner_lost_consumed_attempt_may_be_considered_for_oos": false,
+    "exploratory_reuse_of_consumed_validation_interval_may_satisfy_oos_gate": false
   },
   "metric_unavailability_contract": {
     "serialization_rule": "JSON null is permitted only for the explicitly registered mathematical ASD/Sharpe-unavailability cases below. NaN and Infinity are forbidden everywhere.",
@@ -1062,5 +1123,23 @@
         "reason": "Accounting invariant violation."
       }
     ]
+  },
+  "psr_scientific_module_pin_contract": {
+    "reviewed_development_candidate_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
+    "inherited_scientific_modules_git_blob_sha1": {
+      "src/research_core/psr01b_core.py": "2b98cd2d49983bdd703ff448b00b7114faabe3c1",
+      "src/research_core/psr01b_features.py": "e9819b4a62a9fc117ead656abc2b6c344c4c0158",
+      "src/research_core/psr01b_ta.py": "1936d62b2d62e38ceab91118e2e6214b3338af11",
+      "src/research_core/psr01b_egarch.py": "af2806a9fb9fb25519623a59a682a5689b7601e1",
+      "src/research_core/psr01b_model.py": "812279770dee0c5479f3fb94c81e6abf356712fb",
+      "src/research_core/psr01b_matrix.py": "b255c53bfcdf3ddc094969185515843781238c31",
+      "src/research_core/psr01b_benchmarks.py": "1eb84d0ba14e9d6c430afa7c28b870612cb0f1e9"
+    },
+    "required_module_count": 7,
+    "byte_identity_required": true,
+    "validation_edits_to_these_modules_allowed": false,
+    "validation_specific_adaptation_location": "New separately reviewed Validation wrapper/adapter code only.",
+    "wrapper_may_change_registered_scientific_semantics": false,
+    "pre_source_identity_gate": "All seven Git blob SHA-1 values must match before any protected Validation source/checksum request; mismatch is HARD_FAIL."
   }
 }
