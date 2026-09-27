@@ -463,7 +463,7 @@
     "Current reviewed implementation protection is reviewed-v4 at ebd0b1087878932d6f2759ca5c0acb57d3364392 under ruleset 24058404.",
     "Current future one-shot claim protection is ruleset 24058545 for refs/tags/psr01b-development-one-shot-claim-v2; the claim itself does not exist.",
     "A separate V2 evidence-persistence plan is recorded; no V2 evidence files are created by this governance commit.",
-    "Manual confirmation, rehearsal authorization/dispatch, Development V2 authorization/dispatch, and all protected empirical access remain false."
+    "Manual confirmation remains absent; rehearsal is authorized but not dispatched; Development V2 execution is authorized but not dispatched; exactly the five Development empirical permissions are authorized; Validation/OOS, paper/live trading, leverage, and derivatives remain unauthorized."
   ],
   "historical_review_anchors": [
     {
@@ -506,11 +506,11 @@
     "claim_v2_ruleset_id": 24058545,
     "claim_v2_created": false,
     "manual_confirmation": false,
-    "rehearsal_authorized": false,
+    "rehearsal_authorized": true,
     "rehearsal_dispatched": false,
-    "development_v2_execution_authorized": false,
+    "development_v2_execution_authorized": true,
     "development_v2_execution_dispatched": false,
-    "empirical_execution_authorized": false,
+    "empirical_execution_authorized": true,
     "rerun_authorized": false,
     "overwrite_authorized": false
   },
