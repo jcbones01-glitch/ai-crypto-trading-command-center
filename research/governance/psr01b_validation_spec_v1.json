@@ -474,12 +474,24 @@
         "unverified_or_unusable_manifest": "HARD_FAIL_PRE_SCIENTIFIC_EXECUTION"
       },
       "localized_pre_source_event_rule": {
-        "before": "2020-08-31T00:00:00Z",
-        "may_remain_manifest_provenance": true,
-        "may_enter_psr_rows": false,
-        "may_drive_psr_treatment": false,
-        "may_propagate_state_features_or_warmup": false,
-        "rule": "Only intersections within [research_start,research_end) may affect PSR source exclusions or treatment."
+        "physical_archive_scope": "Rows/events physically present before 2020-08-31T00:00:00Z in BTCUSDT-1h-2020-08.zip.",
+        "pinned_parent_normalizer": "src/research_core/ams_dep_treatment_aware_normalization_v2.py",
+        "pinned_parent_normalizer_git_blob_sha1": "8c257290ff04e726b53cafa433596311dcec32c4",
+        "processing_order": [
+          "Scan/build manifest provenance using the pinned parent scanner/manifest code.",
+          "Run the unedited pinned parent treatment-aware normalizer on the August archive.",
+          "For localized pre-source anomaly rows, require exact frozen Development-partition event_id/exclusion linkage; linked anomaly rows are rejected exactly as under parent Development semantics.",
+          "For clean pre-source rows accepted by the parent normalizer, clip them only after normalization so returned PSR rows satisfy 2020-08-31T00:00:00Z <= timestamp < 2024-01-01T00:00:00Z.",
+          "Reset the PSR state/feature/warmup input to the clipped returned rows; no pre-source accepted row or state may propagate across the registered source start."
+        ],
+        "localized_pre_source_anomaly_partition": "development",
+        "localized_pre_source_anomaly_uses_unedited_parent_linkage": true,
+        "clean_pre_source_rows_may_be_normalized_by_parent": true,
+        "clean_pre_source_rows_may_enter_returned_psr_rows": false,
+        "clean_pre_source_rows_may_propagate_state_features_or_warmup": false,
+        "unlocalized_non_checksum_event": "HARD_FAIL_PRE_SCIENTIFIC_EXECUTION",
+        "oos_partition_may_be_read_inspected_selected_or_used": false,
+        "scientific_semantics_changed": false
       },
       "partition_contract": {
         "development": "[2017-08-17T00:00:00Z,2022-01-01T00:00:00Z)",
@@ -524,8 +536,18 @@
         "The adapter must never inspect, select, infer from, or fall back to an OOS partition.",
         "Rows earlier than 2020-08-31T00:00:00Z that physically exist in the August 2020 monthly archive are outside the registered source interval and cannot enter the returned PSR source rows; their presence cannot supply state across the mandatory 2020-08-31 fold-12 warmup boundary."
       ],
-      "pre_2022_equivalence": "The event-id, exclusion-window and anomaly-id test is exactly the frozen Development test; only partition dispatch is generalized. Thus an event in the historical side is judged against the Development partition and must receive the same treatment it would under frozen Development semantics.",
-      "validation_prospective_rule": "The identical test is applied prospectively against the Validation partition for 2022-2023 events. No rule may be chosen or changed based on observed Validation contents."
+      "pre_2022_equivalence": "The event-id, exclusion-window and anomaly-id test is exactly the frozen Development test. For localized August 2020 events before the registered PSR source start, the unedited pinned parent normalizer still uses Development-partition linkage before the accepted-row source clip. For in-source historical events from 2020-08-31 through 2021-12-31, the adapter selects the Development partition with the same frozen linkage rule. Only phase dispatch/source clipping is generalized; anomaly-treatment semantics are unchanged.",
+      "validation_prospective_rule": "The identical test is applied prospectively against the Validation partition for 2022-2023 events. No rule may be chosen or changed based on observed Validation contents.",
+      "pre_source_august_2020_rule": {
+        "archive": "BTCUSDT-1h-2020-08.zip",
+        "before": "2020-08-31T00:00:00Z",
+        "localized_anomaly_handling": "Use the unedited pinned parent Development normalizer/linkage against the development partition before any source clip.",
+        "clean_row_handling": "Allow the pinned parent normalizer to normalize clean rows, then clip accepted rows before any PSR state/feature/warmup construction.",
+        "returned_psr_row_rule": "Only normalized accepted rows with timestamp >= 2020-08-31T00:00:00Z and < 2024-01-01T00:00:00Z may enter PSR processing.",
+        "pre_source_state_propagation_allowed": false,
+        "unlocalized_non_checksum_event": "HARD_FAIL_PRE_SCIENTIFIC_EXECUTION",
+        "oos_partition_touched": false
+      }
     },
     "implementation_characterization": "This remediation is NOT characterized as merely five AST substitutions. The phase-safe treatment-linkage dispatch is an explicit additional semantic adaptation and must receive independent review before any Validation source access.",
     "required_blob_sha1": {
@@ -601,6 +623,17 @@
     {
       "name": "EXACT_MANIFEST_BUILD_AND_PRE_SOURCE_FAIL_CLOSED",
       "required_proof": "Using synthetic reports only, invoke pinned build_manifest with BTCUSDT, research_start=2020-08-31T00:00:00Z and research_end=2024-01-01T00:00:00Z. Prove exact bounds and Development/Validation split; localized pre-start events remain provenance only and cannot affect PSR treatment/state; missing/duplicate reports, checksum-unverified/checksum-failure reports and unlocalized non-checksum events fail closed before scientific execution; and the Validation adapter never reads or inspects the OOS partition entry."
+    },
+    {
+      "name": "PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE",
+      "required_proof": [
+        "Using synthetic August-2020 archive rows/reports only, run the unedited pinned parent treatment-aware normalizer before applying the registered PSR source clip.",
+        "A localized anomaly before 2020-08-31T00:00:00Z uses the Development partition and produces the same reject/linkage result and failure code as frozen parent Development semantics.",
+        "A clean pre-source row may be accepted/normalized by the pinned parent normalizer but is removed by the subsequent source clip and cannot appear in returned PSR rows.",
+        "No pre-source accepted row, feature state, EGARCH state, TA state, target state, or warmup state propagates across 2020-08-31T00:00:00Z.",
+        "An unlocalized non-checksum event hard-fails before scientific execution.",
+        "The OOS partition sentinel remains untouched."
+      ]
     }
   ],
   "failure_taxonomy": {
@@ -1141,5 +1174,21 @@
     "validation_specific_adaptation_location": "New separately reviewed Validation wrapper/adapter code only.",
     "wrapper_may_change_registered_scientific_semantics": false,
     "pre_source_identity_gate": "All seven Git blob SHA-1 values must match before any protected Validation source/checksum request; mismatch is HARD_FAIL."
+  },
+  "split_endpoint_contract": {
+    "inherited_source_module": "src/research_core/psr01b_core.py",
+    "inherited_source_module_git_blob_sha1": "2b98cd2d49983bdd703ff448b00b7114faabe3c1",
+    "inherited_callable": "split_origin_eligible",
+    "split_interval_notation": "[S,E)",
+    "origin_eligibility_rule": "S <= t < E",
+    "target_label_definition": "t_plus_1h = t + 1 hour",
+    "target_label_eligibility_rule": "S <= t_plus_1h < E",
+    "combined_rule": "eligible iff (S <= t < E) AND (S <= t+1h < E)",
+    "target_may_cross_split_end": false,
+    "final_validation_test_end_exclusive": "2024-01-01T00:00:00Z",
+    "final_target_label_must_be_before": "2024-01-01T00:00:00Z",
+    "origin_at_2023_12_31T23_00Z_eligible": false,
+    "reason": "Its target label would be 2024-01-01T00:00:00Z, which is outside the half-open final split.",
+    "scientific_semantics_changed": false
   }
 }

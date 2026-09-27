@@ -100,6 +100,10 @@ The registered source interval is **[2020-08-31T00:00:00Z, 2024-01-01T00:00:00Z)
 | 18 | 17 | 2022-04-01T00:00:00Z | 2023-04-01T00:00:00Z | 2023-07-01T00:00:00Z | 2023-10-01T00:00:00Z |
 | 19 | 18 | 2022-07-01T00:00:00Z | 2023-07-01T00:00:00Z | 2023-10-01T00:00:00Z | 2024-01-01T00:00:00Z |
 
+### 3.1 Exact inherited split endpoint rule
+
+For every registered train/validation/test split `[S,E)`, an origin timestamp `t` is eligible only when **both** `S <= t < E` **and** `S <= t+1h < E`. This is the existing frozen `psr01b_core.split_origin_eligible` rule, not a Validation-specific method change. The next-hour target label may never spill across the split end. For fold 19, whose test end is `2024-01-01T00:00:00Z`, every target label must be strictly **before** `2024-01-01T00:00:00Z`; an origin at `2023-12-31T23:00:00Z` is therefore ineligible because its target is exactly the hard OOS cutoff.
+
 The seed sequence is a continuation, not a reset. `fold_index = fold - 1`, so folds 12–19 use indices 11–18. Model/Optuna/XGBoost coordinates therefore continue prospectively through indices 11–18. The bootstrap coordinate remains exactly `[bootstrap_root,block_hours,arm_index]`, intentionally has no fold/phase coordinate, and is therefore intentionally reused across Development and Validation; this is frozen parent behavior, not a reset or Validation tuning choice. The parent roots and paths remain:
 
 - model root `2026092401`;
@@ -115,7 +119,9 @@ Source remains Binance Public Data, BTCUSDT Spot, 1h, UTC, monthly kline ZIPs. T
 
 The phase-adapted manifest boundaries are frozen explicitly: Development is **[2017-08-17T00:00:00Z, 2022-01-01T00:00:00Z)**, Validation is **[2022-01-01T00:00:00Z, 2024-01-01T00:00:00Z)**, and OOS begins at **2024-01-01T00:00:00Z**. The Validation implementation must never read, enumerate, inspect, select, infer from, or fall back to the OOS partition. Rows/events earlier than **2020-08-31T00:00:00Z** that physically exist in the August 2020 archive are outside the registered PSR source interval and cannot enter returned PSR rows, anomaly treatment, state, features, or fold-12 warmup propagation.
 
-**Exact manifest construction contract:** after all 41 registered archives have exactly one scan report and before any scientific row use, construct the treatment manifest exactly as `build_manifest("BTCUSDT", reports, research_start=2020-08-31T00:00:00Z, research_end=2024-01-01T00:00:00Z)` using the pinned `src/research_core/data_quality_treatment_v2.py`. Reports are ordered by lexicographic registered archive filename. Missing or duplicate archive/report entries, any report with `checksum_verified=false`, any checksum-failure event, `source_integrity != "SOURCE VERIFIED"`, any unlocalized non-checksum event, or manifest certification `UNVERIFIED`/`UNUSABLE` is a fail-closed pre-scientific hard stop. Localized events physically before `2020-08-31T00:00:00Z` may remain archive-scan/manifest provenance, but only intersections at or after research start may affect PSR exclusions/treatment; those pre-start events may not enter returned rows, state, features, or warmup. The pinned builder may construct registered OOS partition metadata from `PARTITIONS`; that metadata construction is not protected OOS source access, but the Validation adapter must never read/inspect/select/infer from the OOS partition entry and may select only `development` or `validation`.
+**Exact manifest construction contract:** after all 41 registered archives have exactly one scan report and before any scientific row use, construct the treatment manifest exactly as `build_manifest("BTCUSDT", reports, research_start=2020-08-31T00:00:00Z, research_end=2024-01-01T00:00:00Z)` using the pinned `src/research_core/data_quality_treatment_v2.py`. Reports are ordered by lexicographic registered archive filename. Missing or duplicate archive/report entries, any report with `checksum_verified=false`, any checksum-failure event, `source_integrity != "SOURCE VERIFIED"`, any unlocalized non-checksum event, or manifest certification `UNVERIFIED`/`UNUSABLE` is a fail-closed pre-scientific hard stop.
+
+For rows/events physically before `2020-08-31T00:00:00Z` in `BTCUSDT-1h-2020-08.zip`, preserve the **unedited pinned parent treatment-aware normalizer first**. A localized pre-source anomaly must use the frozen **Development-partition** event-ID/exclusion linkage and receive the same rejection/linkage outcome as under parent Development semantics. Clean pre-source rows may be normalized by the parent normalizer, but the registered source clip is applied **after normalization**: only accepted rows with `2020-08-31T00:00:00Z <= timestamp < 2024-01-01T00:00:00Z` may be returned to PSR processing. No pre-source accepted row or state may propagate into features, EGARCH/TA state, targets, or fold-12 warmup. Unlocalized non-checksum events remain fail-closed. The pinned builder may construct registered OOS partition metadata from `PARTITIONS`; that metadata construction is not protected OOS source access, but the Validation adapter must never read/inspect/select/infer from the OOS partition entry and may select only `development` or `validation`.
 
 ### 4.1 Historical overlap
 
@@ -184,20 +190,21 @@ The prior idea of simply changing the Development constants, partition selector 
 
 ### 5.1 Chosen machine-enforceable rule: Design B — timestamp-directed registered partition
 
-For every localized scanner `DataQualityEvent` with `parsed_timestamp` inside the registered source interval:
+For localized scanner `DataQualityEvent` records from the registered archive inventory:
 
 1. Compute `affected = hour(parsed_timestamp)` exactly as the frozen normalizer does.
 2. Compute the exact frozen `event_id(event)`.
-3. If `2020-08-31T00:00:00Z <= affected < 2022-01-01T00:00:00Z`, select **exactly one** manifest partition named `development`.
-4. If `2022-01-01T00:00:00Z <= affected < 2024-01-01T00:00:00Z`, select **exactly one** manifest partition named `validation`.
-5. Partition cardinality must be exactly one.
-6. The event is treatment-linked iff an exclusion in that selected partition satisfies `start <= affected < end` and the exact frozen event ID is in `exclusion.anomaly_ids`.
-7. An in-interval localized anomaly without such linkage hard-fails source integrity; it is never silently accepted.
-8. A timestamp at/after `2024-01-01T00:00:00Z` hard-fails before treatment or any scientific use.
-9. The adapter must never inspect, select, infer from, or fall back to an OOS partition.
-10. Rows physically present before 2020-08-31 in the August 2020 archive cannot enter returned PSR source rows or propagate state across the mandatory fold-12 warmup boundary.
+3. If the event is physically in `BTCUSDT-1h-2020-08.zip` and `affected < 2020-08-31T00:00:00Z`, preserve the **unedited pinned parent normalizer** and require exact frozen **Development-partition** event-ID/exclusion linkage before any source clipping.
+4. If `2020-08-31T00:00:00Z <= affected < 2022-01-01T00:00:00Z`, select **exactly one** manifest partition named `development`.
+5. If `2022-01-01T00:00:00Z <= affected < 2024-01-01T00:00:00Z`, select **exactly one** manifest partition named `validation`.
+6. Partition cardinality must be exactly one for every event requiring treatment linkage.
+7. The event is treatment-linked iff an exclusion in that selected partition satisfies `start <= affected < end` and the exact frozen event ID is in `exclusion.anomaly_ids`.
+8. A localized anomaly requiring linkage without such linkage hard-fails source integrity; it is never silently accepted.
+9. A timestamp at/after `2024-01-01T00:00:00Z` hard-fails before treatment or any scientific use.
+10. The adapter must never inspect, select, infer from, or fall back to an OOS partition.
+11. After the pinned parent normalizer completes, clip accepted rows to `2020-08-31T00:00:00Z <= timestamp < 2024-01-01T00:00:00Z`. Clean pre-source August rows may have been normalized, but they cannot enter returned PSR rows or propagate any state/features/targets/warmup across the registered source start.
 
-For pre-2022 events, the event-ID/exclusion test is therefore the **same frozen Development rule against the Development partition**. For 2022-2023 events the same rule is applied prospectively against the Validation partition. No treatment rule is chosen from observed Validation contents.
+For all pre-2022 localized anomalies—including pre-source August anomalies before the registered PSR start—the event-ID/exclusion test is the **same frozen Development rule against the Development partition**. The only Validation adaptation is partition dispatch for in-source 2022-2023 events plus the post-normalization registered-source clip. No treatment rule is chosen from observed Validation contents.
 
 This remediation is explicitly **not** characterized as only five AST substitutions.
 
@@ -213,6 +220,7 @@ Implementation must prove, without protected data:
 - **No OOS access:** fault injection proving no OOS partition can be read, enumerated, inspected, selected, inferred from, or used as fallback. Instrument an OOS sentinel that raises on any such access and exercise pre-boundary, Validation, missing-link and hard-end paths; the sentinel must never be touched.
 - **Operator-log outcome suppression:** synthetic-only fault injection with recognizable sentinel empirical values across Optuna, XGBoost, arch, statsmodels, feature/model selection, fold/test return/P&L, H2-progress and practical-gate paths. Capture stdout/stderr/workflow-visible logs and fail if any forbidden sentinel empirical value/pattern is emitted; required final synthetic evidence may retain the values.
 - **Exact manifest build and pre-source fail-closed:** with synthetic reports only, invoke the pinned builder using exact `BTCUSDT`, `2020-08-31T00:00:00Z`, and `2024-01-01T00:00:00Z` arguments; prove exact manifest bounds/Development–Validation split, pre-start localized-event clipping from PSR treatment/state, fail-closed missing/duplicate/checksum-unverified/unlocalized-report cases, and no adapter read/inspection/use of the OOS partition entry.
+- **`PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE`:** using synthetic August-2020 rows/reports only, run the unedited pinned parent normalizer before the registered source clip. Prove that a localized pre-source anomaly uses Development linkage and exactly matches frozen parent rejection/failure semantics; a clean pre-source row may normalize but is clipped from returned PSR rows; no pre-source row/state/feature/target/warmup propagates across `2020-08-31T00:00:00Z`; an unlocalized non-checksum event fails closed; and the OOS sentinel is never touched.
 
 ## 7. Failure taxonomy and complete undefined-metric semantics
 
@@ -415,5 +423,6 @@ The final-freeze blockers are resolved prospectively without Validation/OOS acce
 - the accepted folds 12–19, indices 11–18, source/Validation intervals, timestamp-directed Development/Validation treatment linkage, no-OOS fallback, revision-4 scientific/statistical procedure, 4-attempt 5/15/45 transport retry schedule, sample-driven scientific-failure principle, and one-shot/no-rescue principle are unchanged;
 - Issue #111 remediation additionally freezes permanent interval consumption after first protected request, mandatory operator-log outcome suppression/no-leak tests, explicit phase-adapted manifest/archive/pinned-wrapper/OOS contracts, runner-loss permanent evidence-gap handling with a canonical non-expiring Git raw-source evidence namespace, and the intentional distinction between fold-index seed continuation and bootstrap-seed reuse.
 - The second Issue #111 exact-head remediation further binds consumption across successor/renamed/retry/rescue/replacement confirmatory registrations, freezes the exact `build_manifest("BTCUSDT", reports, research_start=2020-08-31T00:00:00Z, research_end=2024-01-01T00:00:00Z)` pre-source/fail-closed contract with mandatory synthetic proof, and pins the seven inherited PSR scientific modules byte-identically at reviewed candidate `ebd0b1087878932d6f2759ca5c0acb57d3364392`.
+- The final C2 clarification makes the inherited split endpoint rule explicit as `S <= t < E` and `S <= t+1h < E`, requires every fold-19 target label to remain strictly before `2024-01-01T00:00:00Z`, and preserves the unedited pinned parent normalizer for pre-source August rows/events before clipping accepted rows to the registered PSR source interval; the mandatory `PRE_SOURCE_AUGUST_2020_PINNED_NORMALIZER_EQUIVALENCE` synthetic test proves this behavior.
 
 **Freeze status:** `FROZEN_PENDING_INDEPENDENT_SPECIFICATION_REVIEW`
