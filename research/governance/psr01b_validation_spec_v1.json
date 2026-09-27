@@ -426,7 +426,7 @@
       },
       "registered_psr_source_start": "2020-08-31T00:00:00Z",
       "registered_psr_source_end_exclusive": "2024-01-01T00:00:00Z",
-      "pre_2020_08_31_rule": "Rows/events earlier than 2020-08-31T00:00:00Z, even if physically present in the August 2020 archive, are outside the registered PSR source interval and may not enter returned PSR rows, anomaly treatment, state, features, or fold-12 warmup propagation.",
+      "pre_2020_08_31_rule": "Rows/events earlier than 2020-08-31T00:00:00Z that are physically present in BTCUSDT-1h-2020-08.zip are outside the returned PSR source interval. Localized pre-source event handling is governed by source.manifest_construction_contract.localized_pre_source_event_rule and the unedited pinned parent Development-partition treatment/exclusion linkage before source clipping. After parent normalization, accepted pre-source rows may not enter returned PSR rows or propagate state, features, targets, or fold-12 warmup.",
       "no_oos_read_rule": "Validation implementation must not read, enumerate, inspect, select, infer from, or fall back to the OOS partition or any source/evidence at or after 2024-01-01T00:00:00Z."
     },
     "protected_interval_consumption_contract": {
