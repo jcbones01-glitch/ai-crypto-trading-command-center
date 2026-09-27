@@ -1,7 +1,7 @@
 {
   "freeze_id": "PSR01B-IMPLEMENTATION-FREEZE-V1",
   "version": 1,
-  "status": "V2_IMPLEMENTATION_REVIEWED_PROTECTED_PRE_AUTHORIZATION",
+  "status": "V2_DEVELOPMENT_EXECUTION_AUTHORIZED_PRE_REHEARSAL",
   "approved_specification": {
     "issue": 90,
     "approval_decision": "APPROVE_PSR01B_BOUNDED_SPEC_FOR_IMPLEMENTATION",
@@ -127,7 +127,7 @@
     "separate_execution_authorization_required": true,
     "manual_confirmation_required": true,
     "one_shot_execution_claim_required": true,
-    "execution_authorized": false,
+    "execution_authorized": true,
     "execution_scope": {
       "registration_id": "PSR01B-BOUNDED-DEVELOPMENT-SPOT-V1",
       "revision": 4,
@@ -296,11 +296,11 @@
       }
     },
     "execution_prerequisites": {
-      "status": "V2_IMPLEMENTATION_REVIEWED_PROTECTED_PRE_AUTHORIZATION",
+      "status": "V2_DEVELOPMENT_EXECUTION_AUTHORIZED_PRE_REHEARSAL",
       "prior_prerequisite_issue": 96,
       "evidence_persistence_plan_frozen": true,
       "v2_evidence_persistence_plan_recorded": true,
-      "empirical_execution_authorized": false
+      "empirical_execution_authorized": true
     },
     "execution_authorization_review": {
       "issue": 100,
@@ -327,9 +327,9 @@
       "historical_v1_claim_ref": "refs/tags/psr01b-development-one-shot-claim-v1",
       "historical_v1_claim_consumed": true
     },
-    "rehearsal_authorized": false,
+    "rehearsal_authorized": true,
     "rehearsal_dispatched": false,
-    "development_v2_execution_authorized": false,
+    "development_v2_execution_authorized": true,
     "development_v2_execution_dispatched": false,
     "rerun_authorized": false,
     "overwrite_authorized": false,
@@ -380,21 +380,37 @@
       "overwrite_authorized": false,
       "validation_or_oos_access_required": false,
       "validation_or_oos_access_part_of_evidence_persistence": false
+    },
+    "empirical_execution_authorized": true,
+    "claim_v2_created": false,
+    "v2_execution_authorization_review": {
+      "issue": 106,
+      "decision": "APPROVE_PSR01B_V2_DEVELOPMENT_EXECUTION_AUTHORIZATION",
+      "external_reviewer": "Claude",
+      "comment_id": 5851833902,
+      "reviewed_governance_head": "5564f95ab2adcbe5f9e55561bb79cebf5ab40af0",
+      "reviewed_freeze_blob": "9a08576a2239425a970c114879f777ddb2d0241f",
+      "authorized_head_independent_recheck_required": true,
+      "rehearsal_required_before_execute": true,
+      "post_rehearsal_unchanged_head_recheck_required": true,
+      "rehearsal_failure_authorizes_retry_or_execute": false,
+      "rehearsal_first_ordering_mandatory": true,
+      "implementation_independently_enforces_rehearsal_first_after_execution_authorized": false
     }
   },
   "protected_access": {
-    "empirical_binance_archive_access_authorized": false,
-    "empirical_feature_generation_authorized": false,
-    "empirical_model_fit_authorized": false,
-    "empirical_forecast_generation_authorized": false,
-    "empirical_pnl_authorized": false,
+    "empirical_binance_archive_access_authorized": true,
+    "empirical_feature_generation_authorized": true,
+    "empirical_model_fit_authorized": true,
+    "empirical_forecast_generation_authorized": true,
+    "empirical_pnl_authorized": true,
     "validation_or_oos_access_authorized": false,
     "paper_trading_authorized": false,
     "live_trading_authorized": false,
     "leverage_authorized": false,
     "derivatives_execution_authorized": false
   },
-  "notes": "PSR-01B V2 execution-safety candidate ebd0b1087878932d6f2759ca5c0acb57d3364392 is independently reviewed under Issue #105 and anchored at protected reviewed-v4. Claim-v2 remains absent but its exact future tag ref is protected by ruleset 24058545. This state is PRE-AUTHORIZATION: rehearsal, Development V2 execution, empirical source access, Validation/OOS, tuning, paper/live trading, leverage, and derivatives remain unauthorized. V1 claim remains permanently consumed historical evidence under incident #103 and evidence commit 4025bd1506cf3d3ad52458945bb782dfad46689c.",
+  "notes": "PSR-01B V2 Development authorization is recorded following independent Issue #106 review comment 5851833902. No rehearsal or real Development workflow has been dispatched; claim-v2 remains absent; no manual confirmation has been supplied. An independent exact-head recheck is mandatory before rehearsal. Rehearsal is mandatory before any real execute dispatch, and a second independent unchanged-head/post-rehearsal recheck is mandatory before any real execute dispatch. Rehearsal failure does not authorize a retry or real execute. Validation/OOS access, parameter tuning, paper trading, live trading, leverage, and derivatives execution remain unauthorized.",
   "remediation": {
     "type": "PRE_EXECUTION_DOWNLOAD_RETRY_SAFETY_HARDENING",
     "superseded_candidate": "097df9c22abd2ca01cdd93754bbf55ff9129d7ac",
@@ -480,7 +496,7 @@
     "independent_review_decision": "APPROVE_PSR01B_V2_EXECUTION_SAFETY_IMPLEMENTATION_FREEZE",
     "independent_review_comment_id": 5851592472,
     "external_reviewer": "Claude",
-    "phase": "V2_IMPLEMENTATION_REVIEWED_PROTECTED_PRE_AUTHORIZATION",
+    "phase": "V2_DEVELOPMENT_EXECUTION_AUTHORIZED_PRE_REHEARSAL",
     "review_anchor_ref": "refs/heads/psr-01b-bounded-implementation-reviewed-v4",
     "review_anchor_sha": "ebd0b1087878932d6f2759ca5c0acb57d3364392",
     "reviewed_v4_anchor_created": true,
