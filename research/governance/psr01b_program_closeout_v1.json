@@ -1,0 +1,49 @@
+{
+  "record_id": "PSR01B-PROGRAM-CLOSEOUT-V1",
+  "version": 1,
+  "status": "PROGRAM_CLOSED_BEFORE_VALIDATION",
+  "decision": {
+    "decided_by": "repository owner (jcbones01-glitch)",
+    "decision_date": "2026-09-28",
+    "summary": "Close the PSR-01B program before Validation. Release the protected BTCUSDT 2022-01-01+ intervals for new, separately registered research, and record that they can no longer serve as clean PSR-01B holdouts."
+  },
+  "linked_issues": [103, 104, 105, 106, 107, 108, 109, 110, 111, 112],
+  "development": {
+    "registration": "PSR-01B Development V2",
+    "execution_run_id": 36297773808,
+    "executed_commit": "b328892b2b0c2f0e513a6b3157a821055391369a",
+    "claim_tag": "refs/tags/psr01b-development-one-shot-claim-v2",
+    "evidence_commit": "7ba09ce3083aa09328eadc5947bfefe03c381ad8",
+    "certification_closeout_commit": "614859472715ac8dfa4489913ccb4a70d185412a",
+    "certified_outcome": "BOUNDED_H2_REPLICATION",
+    "certification_issue": 110,
+    "interpretation": "Beat its registered baseline; underperformed buy-and-hold in both arms; not an exact paper replication; Development-period evidence only, not Validation or out-of-sample evidence."
+  },
+  "validation": {
+    "specification_approved_head": "e6f20db11aaff9f9ce1e2ac73ce9324ae2a4897a",
+    "specification_issue": 111,
+    "implementation_candidate_reviewed": "d90f41b15f953a25b7ee9f220beb7858b1b305c8",
+    "implementation_review_issue": 112,
+    "implementation_review_decision": "REQUIRE_CHANGES_BEFORE_PSR01B_VALIDATION_V1_REHEARSAL",
+    "post_review_commits_on_implementation_branch": {
+      "freeze": "95fe97065f5df889e0da8acc6818c3fe601da4cf",
+      "remediation": "17974e091c397d2c55ed4cbcb702b1a8103e1f55",
+      "remediation_independently_reviewed": false
+    },
+    "validation_rehearsed": false,
+    "validation_executed": false,
+    "validation_claim_created": false,
+    "validation_claim_ref": "refs/tags/psr01b-validation-one-shot-claim-v1",
+    "verification_notes": "Checked 2026-09-28: no tag or branch matching the Validation claim exists on origin, and the repository's Actions history shows no run of a PSR-01B Validation execution workflow. Push-triggered 'PSR-01B Validation Bounded Engineering' runs (job name synthetic-offline) exist; their data access was not re-audited for this record."
+  },
+  "protected_intervals_released": ["2022-01-01..2024-01-01", "2024-01-01.."],
+  "released_intervals_confirmatory_reuse_by_psr01b_family": false,
+  "consequences": [
+    "No PSR-01B Validation result exists. No validated, out-of-sample or tradable performance claim may be made for PSR-01B.",
+    "BTCUSDT data from 2022-01-01 onward may be used by new, separately registered research.",
+    "No PSR-01B-family registration (renamed, successor, retry or rescue) may present the released periods as untouched confirmatory Validation or OOS evidence; any such use is exploratory only.",
+    "Existing Development evidence, certifications, claim tags, anchors and rulesets remain as historical record and are not modified or deleted.",
+    "Existing safety rulesets (including the Validation claim lock) stay active so that no claim can be created that might be misread as a real Validation run.",
+    "This closeout authorizes no trading, leverage or derivatives."
+  ]
+}

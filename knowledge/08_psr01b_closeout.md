@@ -1,4 +1,6 @@
-# PSR-01B Program Closeout (DRAFT — not committed)
+# PSR-01B Program Closeout (committed)
+
+**Machine-readable record:** `research/governance/psr01b_program_closeout_v1.json` (committed 2026-09-28 with owner approval).
 
 **Decision owner:** repository owner (jcbones01-glitch)
 **Decision date:** 2026-09-28
@@ -10,9 +12,9 @@
 | Development V2 | Executed once (run 36297773808). `BOUNDED_H2_REPLICATION` certified under Issue #110. Evidence commit `7ba09ce`; closeout `6148594`. |
 | Development interpretation | Beat its registered baseline. **Underperformed buy-and-hold** in both arms. Not an exact paper replication. Not Validation or OOS evidence. |
 | Validation V1 spec | Approved at `e6f20db` (Issue #111). |
-| Validation V1 implementation | Candidate `d90f41b`. Review under Issue #112 returned `REQUIRE_CHANGES_BEFORE_PSR01B_VALIDATION_V1_REHEARSAL` (B1–B3). **Never remediated, rehearsed or executed.** |
+| Validation V1 implementation | Candidate `d90f41b`. Review under Issue #112 returned `REQUIRE_CHANGES_BEFORE_PSR01B_VALIDATION_V1_REHEARSAL` (B1–B3). A freeze (`95fe970`) and a remediation commit (`17974e0`) were later pushed to the implementation branch, but the remediation was **never independently reviewed, rehearsed or executed**. (Corrected from the draft, which said "never remediated".) |
 | Validation claim `refs/tags/psr01b-validation-one-shot-claim-v1` | **Never created.** |
-| Protected 2022–2023 Validation and 2024+ OOS data | **Never accessed** by any PSR-01B workflow. |
+| Protected 2022–2023 Validation and 2024+ OOS data | No Validation execution run exists in the Actions history. Push-triggered "Validation Bounded Engineering" runs are declared synthetic-offline; their data access was not re-audited for this record. |
 
 ## 2. What closing means
 1. **No PSR-01B Validation result exists.** PSR-01B ends with Development-only evidence. No claim of validated, out-of-sample or tradable performance may be made for it.
@@ -22,7 +24,7 @@
 5. **Safety rulesets stay.** Keep ruleset 24086205 (Validation claim lock) and the anchor rulesets active. This prevents an accidental claim that could be misread as a real Validation run.
 6. **No authorization is granted.** Closing PSR-01B authorizes no trading, leverage or derivatives.
 
-## 3. Governance record to add (when the owner approves)
+## 3. Governance record (added)
 - Set `status: PROGRAM_CLOSED_BEFORE_VALIDATION` in a new file, `research/governance/psr01b_program_closeout_v1.json`.
 - Link Issues #104–#112 and set:
   - `validation_executed: false`

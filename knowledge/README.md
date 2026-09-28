@@ -30,6 +30,7 @@ This folder stores what the system has learned, so knowledge survives across ses
 | [05_twelve_month_plan.md](05_twelve_month_plan.md) | Learning and paper-trading roadmap, month by month |
 | [06_decisions_log.md](06_decisions_log.md) | Owner decisions, and the state of each project |
 | [07_paper_trading_setup.md](07_paper_trading_setup.md) | How to set up and run the paper-trading system |
+| [08_psr01b_closeout.md](08_psr01b_closeout.md) | Why and how the PSR-01B research program was closed |
 | [drafts/](drafts/) | Unapproved proposals awaiting the owner's decision |
 
 *Last updated: 2026-09-28 by the creator (Claude).*
