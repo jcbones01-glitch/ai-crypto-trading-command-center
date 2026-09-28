@@ -80,6 +80,32 @@ class PaperBroker:
             out[symbol] = [float(b["c"]) for b in done]
         return out
 
+    def daily_equity(self) -> list[tuple[str, float]]:
+        """End-of-day account value for the last year, as (YYYY-MM-DD, equity)."""
+        query = urllib.parse.urlencode({"period": "1A", "timeframe": "1D"})
+        payload = self._request("GET", f"{self.base_url}/v2/account/portfolio/history?{query}") or {}
+        out = []
+        for ts, eq in zip(payload.get("timestamp") or [], payload.get("equity") or []):
+            if eq is None:
+                continue
+            day = datetime.fromtimestamp(int(ts), timezone.utc).date().isoformat()
+            out.append((day, float(eq)))
+        return out
+
+    def daily_closes(self, symbol: str, start: str) -> list[tuple[str, float]]:
+        """Dividend-adjusted daily closes from `start` (YYYY-MM-DD), as (date, close)."""
+        query = urllib.parse.urlencode({
+            "symbols": symbol,
+            "timeframe": "1Day",
+            "start": start,
+            "adjustment": "all",
+            "feed": "iex",
+            "limit": 10000,
+        })
+        payload = self._request("GET", f"{MARKET_DATA_BASE_URL}/v2/stocks/bars?{query}") or {}
+        bars = (payload.get("bars") or {}).get(symbol) or []
+        return [(str(b["t"])[:10], float(b["c"])) for b in bars]
+
     def submit_notional_order(self, symbol: str, side: str, notional: float) -> dict:
         if side not in {"buy", "sell"}:
             raise ValueError("side must be buy or sell")

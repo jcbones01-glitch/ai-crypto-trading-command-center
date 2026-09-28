@@ -26,9 +26,17 @@ This is Meb Faber's well-known trend-following rule ([paper on SSRN](https://pap
 - **Actions → Paper Trade Monthly → Run workflow**:
   - `dry-run` shows what it *would* buy or sell. Nothing is placed.
   - `submit` places the **paper** orders.
+  - `report` only shows the monthly report (below). Nothing is placed.
 - Start with `dry-run` to check everything works, then use `submit`.
 - Run `submit` **once per month**. If earlier orders haven't filled yet (for example, you ran it at night or on a weekend), the system refuses to place new ones and the run shows red with a "blocked" message. That is a safety stop, not a crash: wait until the orders fill.
 - Automatic monthly runs can be switched on later, with your approval.
+
+## The monthly report
+Every run ends with a report comparing your paper account with **just holding SPY** (the simplest alternative), both measured from the close on 2026-09-28. Open the run and scroll to the **summary** at the top of the page to see a small table with:
+- **Return:** how much each went up or down.
+- **Worst drop from a high:** the biggest fall along the way (smaller is better).
+
+How to judge it: a few months mostly show luck. The trend rule is expected to trail SPY when markets rise strongly and to help mainly during big crashes. It needs years, not months, to judge fairly.
 
 ## Where the code lives
 | File | Role |
@@ -37,11 +45,12 @@ This is Meb Faber's well-known trend-following rule ([paper on SSRN](https://pap
 | `src/papertrade/strategy.py` | The trend rule |
 | `src/papertrade/rebalance.py` | Works out the orders; dry run by default |
 | `src/papertrade/broker.py` | Talks to the Alpaca **paper** API only |
+| `src/papertrade/report.py` | Monthly report: account vs. just holding SPY |
 | `src/papertrade/backtest.py` | A simple history test, for learning |
-| `tests/test_papertrade.py` | Safety and logic tests (9 passing) |
+| `tests/test_papertrade.py` | Safety and logic tests (11 passing) |
 | `.github/workflows/paper-trade-monthly.yml` | The monthly button (manual for now) |
 
 ## Honest limits
 - The Alpaca connection was **verified live on 2026-09-28**: the first dry run read the account and prices, and the first submit had 4 paper orders accepted. (The new pending-order check uses Alpaca's standard `/v2/orders?status=open` call; its first live use will be the next run.)
 - Paper fills are idealized. Real trading has extra slippage.
-- Monthly reports comparing results with simply holding SPY are the next thing to build, with your approval.
+- The report's two Alpaca calls (account history and daily SPY prices) follow Alpaca's public v2 API from the creator's knowledge; their first live use is the next run. The SPY comparison ignores the small delay between cash sitting idle and orders filling on day one.

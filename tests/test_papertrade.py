@@ -91,3 +91,26 @@ def test_backtest_moves_to_cash_in_downtrend():
     assert result["strategy_total_return"] > result["benchmark_total_return"]
     result_up = run_backtest({"A": rising, "BM": rising}, ["A"], "BM")
     assert result_up["strategy_total_return"] > 0
+
+
+def test_report_compares_account_with_benchmark():
+    from papertrade.report import compare, render_markdown
+
+    account = [("2026-09-25", 100000.0), ("2026-09-28", 100000.0), ("2026-09-29", 90000.0), ("2026-09-30", 99000.0)]
+    spy = [("2026-09-28", 500.0), ("2026-09-29", 510.0), ("2026-09-30", 525.0)]
+    r = compare(account, spy, start="2026-09-28")
+    assert r["status"] == "ok" and r["trading_days"] == 3
+    assert r["account_return"] == pytest.approx(-0.01)
+    assert r["benchmark_return"] == pytest.approx(0.05)
+    assert r["difference"] == pytest.approx(-0.06)
+    assert r["account_max_drawdown"] == pytest.approx(-0.10)
+    assert r["benchmark_max_drawdown"] == 0.0
+    assert "-1.00%" in render_markdown(r)
+
+
+def test_report_waits_for_enough_data():
+    from papertrade.report import compare, render_markdown
+
+    r = compare([("2026-09-28", 100000.0)], [("2026-09-28", 500.0)], start="2026-09-28")
+    assert r["status"] == "not enough data yet"
+    assert "Not enough data" in render_markdown(r)

@@ -12,6 +12,10 @@ BENCHMARK = "SPY"
 LOOKBACK_MONTHS = 10
 MIN_TRADE_DOLLARS = 50.0
 
+# First day of paper trading (first orders placed 2026-09-28).  The monthly
+# report measures the account and buy-and-hold SPY from this date's close.
+TRACKING_START = "2026-09-28"
+
 # Safety locks.  Only the Alpaca PAPER trading endpoint is allowed.
 PAPER_TRADING_BASE_URL = "https://paper-api.alpaca.markets"
 MARKET_DATA_BASE_URL = "https://data.alpaca.markets"
