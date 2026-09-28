@@ -29,6 +29,7 @@ This folder stores what the system has learned, so knowledge survives across ses
 | [04_what_pros_agree_on.md](04_what_pros_agree_on.md) | Principles that legitimate traders share |
 | [05_twelve_month_plan.md](05_twelve_month_plan.md) | Learning and paper-trading roadmap, month by month |
 | [06_decisions_log.md](06_decisions_log.md) | Owner decisions, and the state of each project |
+| [07_paper_trading_setup.md](07_paper_trading_setup.md) | How to set up and run the paper-trading system |
 | [drafts/](drafts/) | Unapproved proposals awaiting the owner's decision |
 
 *Last updated: 2026-09-28 by the creator (Claude).*
