@@ -13,13 +13,14 @@
 | 2026-09-28 | Creator fix: refuse `submit` while earlier orders are still pending (prevents accidental double orders). | Owner (approved plan) | **Done.** 9 tests passing. |
 | 2026-09-28 | Build a monthly report: paper account vs. just holding SPY, from 2026-09-28. | Owner | **Built.** Runs at the end of every workflow run (new `report` mode runs it alone); shown on the run's summary page. 11 tests passing. |
 | 2026-09-28 | Commit the PSR-01B closeout record. | Owner | **Done.** `research/governance/psr01b_program_closeout_v1.json`, with a plain-language summary in `08_psr01b_closeout.md`. Issue #112 closed with a link. |
+| 2026-09-28 | Shelve the H-ST1 short-term trading draft for now. | Owner | **Shelved.** Moved to `shelved/HST1_SPEC_DRAFT.md`, unbuilt and unfrozen. Reopening needs the owner's decision. |
 
 ## Project status
 | Project | State |
 |---|---|
 | PSR-01B (BTC XGBoost/EGARCH replication) | Development certified (Issue #110). Validation never executed. **Closed** 2026-09-28 (`research/governance/psr01b_program_closeout_v1.json`); 2022+ BTCUSDT data released for new research. |
-| H-ST1 (short-horizon order-flow idea) | **Draft only** (`drafts/HST1_SPEC_DRAFT.md`). Parked until the owner decides. |
+| H-ST1 (short-horizon order-flow idea) | **Shelved** 2026-09-28 (`shelved/HST1_SPEC_DRAFT.md`). |
 | Paper-trading learning setup | **Running, month 1** (started 2026-09-28; paper-only, monthly SPY comparison report, 11 tests passing). Next rebalance: first trading days of October (after September's monthly close). |
 
 ## Awaiting the owner's decision
-1. Keep or shelve the H-ST1 draft?
+Nothing pending.

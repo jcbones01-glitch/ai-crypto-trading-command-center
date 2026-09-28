@@ -1,6 +1,8 @@
 # H-ST1 — Short-Horizon Order-Flow Imbalance (Spec DRAFT v0.1, not frozen)
 
-**Status:** DRAFT. Freeze it by committing it and recording the Git blob SHA-1 **before** any feature or model code touches data beyond what the sanity checks in §9 need.
+> **SHELVED by the owner on 2026-09-28.** Kept for reference only. Do not build, freeze or run any part of it unless the owner reopens it (record that in `../06_decisions_log.md`).
+
+**Status (when drafted):** DRAFT. Freeze it by committing it and recording the Git blob SHA-1 **before** any feature or model code touches data beyond what the sanity checks in §9 need.
 **Scope:** research and paper trading only. **No live orders, no leverage, no real money.**
 
 ## 1. Hypothesis

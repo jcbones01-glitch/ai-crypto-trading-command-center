@@ -11,7 +11,7 @@ Built for an owner with **no trading capital for about 12 months**, whose future
 ## Months 4–6: Paper trade and keep score
 - The paper strategy runs automatically. The creator writes a weekly or monthly report: return vs an S&P 500 index fund, the largest drop (drawdown), and number of trades.
 - Log every change and every idea tried.
-- Optional: test one short-term idea (the H-ST1 draft) on historical data, with pass and kill rules fixed in advance.
+- ~~Optional: test one short-term idea (the H-ST1 draft) on historical data.~~ Shelved by the owner on 2026-09-28; only if the owner reopens it.
 
 ## Months 7–9: Evaluate honestly
 - Compare the paper results with simply holding an index fund.
