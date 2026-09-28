@@ -7,6 +7,7 @@
 | 2026-09-28 | Current phase is learning plus paper trading only. No real money, leverage or derivatives. | Owner (confirmed by situation) | **Active.** |
 | 2026-09-28 | Research legitimate traders and evidence, and store it in `knowledge/`. | Owner | **Done** (this folder). |
 | 2026-09-28 | Build the free paper-trading setup (Alpaca paper, monthly 10-month trend rule on SPY/EFA/IEF/VNQ/DBC). | Owner | **Built** on branch `claude/pensive-feynman-98imr1`. The owner still needs to create an Alpaca paper account, add the two GitHub secrets, and approve merging the workflow to `main`. See `07_paper_trading_setup.md`. |
+| 2026-09-28 | Alpaca paper secrets added. Merge the paper-trading system directly into `main` (Option B). | Owner | **Done.** Fast-forwarded `main` to `3850397`. Next step: the first dry run. |
 
 ## Project status
 | Project | State |
@@ -17,5 +18,5 @@
 
 ## Awaiting the owner's decision
 1. Approve committing the PSR-01B closeout record?
-2. Approve merging the paper-trading workflow into `main`, after the Alpaca paper keys are added as GitHub secrets.
+2. Run the first paper-trading **dry run** (Actions → Paper Trade Monthly) and share the result.
 3. Keep or shelve the H-ST1 draft?
