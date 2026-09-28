@@ -3,7 +3,7 @@ import pytest
 from papertrade.backtest import run_backtest
 from papertrade.broker import PaperBroker, PaperOnlyError
 from papertrade.config import PAPER_TRADING_BASE_URL, UNIVERSE
-from papertrade.rebalance import PlannedOrder, build_plan, plan_orders
+from papertrade.rebalance import PlannedOrder, build_plan, plan_orders, run
 from papertrade.strategy import is_uptrend, target_weights
 
 
@@ -44,8 +44,10 @@ def test_broker_requires_keys():
 
 
 class FakeBroker:
-    def __init__(self):
+    def __init__(self, pending=()):
         self.base_url = PAPER_TRADING_BASE_URL
+        self.pending = list(pending)
+        self.submitted = []
 
     def monthly_closes(self, symbols, months):
         return {s: list(range(1, 13)) for s in symbols}
@@ -56,12 +58,30 @@ class FakeBroker:
     def position_values(self):
         return {}
 
+    def open_orders(self):
+        return self.pending
+
+    def submit_notional_order(self, symbol, side, notional):
+        self.submitted.append((symbol, side, notional))
+
 
 def test_build_plan_all_uptrend_buys_equal_weights():
     plan = build_plan(FakeBroker())
     assert plan["paper_only"] is True
+    assert plan["pending_orders"] == []
     assert len(plan["orders"]) == len(UNIVERSE)
     assert all(o["side"] == "buy" and o["notional"] == 20000.0 for o in plan["orders"])
+
+
+def test_submit_blocked_while_orders_pending():
+    broker = FakeBroker(pending=[{"symbol": "SPY", "side": "buy", "notional": "20000", "status": "accepted"}])
+    plan = run(broker, submit=True)
+    assert plan["submitted"] is False
+    assert "blocked" in plan
+    assert broker.submitted == []
+    clean = FakeBroker()
+    assert run(clean, submit=True)["submitted"] is True
+    assert len(clean.submitted) == len(UNIVERSE)
 
 
 def test_backtest_moves_to_cash_in_downtrend():

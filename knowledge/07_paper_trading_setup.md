@@ -27,6 +27,7 @@ This is Meb Faber's well-known trend-following rule ([paper on SSRN](https://pap
   - `dry-run` shows what it *would* buy or sell. Nothing is placed.
   - `submit` places the **paper** orders.
 - Start with `dry-run` to check everything works, then use `submit`.
+- Run `submit` **once per month**. If earlier orders haven't filled yet (for example, you ran it at night or on a weekend), the system refuses to place new ones and the run shows red with a "blocked" message. That is a safety stop, not a crash: wait until the orders fill.
 - Automatic monthly runs can be switched on later, with your approval.
 
 ## Where the code lives
@@ -37,10 +38,10 @@ This is Meb Faber's well-known trend-following rule ([paper on SSRN](https://pap
 | `src/papertrade/rebalance.py` | Works out the orders; dry run by default |
 | `src/papertrade/broker.py` | Talks to the Alpaca **paper** API only |
 | `src/papertrade/backtest.py` | A simple history test, for learning |
-| `tests/test_papertrade.py` | Safety and logic tests (8 passing) |
+| `tests/test_papertrade.py` | Safety and logic tests (9 passing) |
 | `.github/workflows/paper-trade-monthly.yml` | The monthly button (manual for now) |
 
 ## Honest limits
-- The Alpaca API details are written from the creator's knowledge of Alpaca's public v2 API. The build environment could not reach Alpaca, so the **first dry run is the real test**. It only reads data and places nothing.
+- The Alpaca connection was **verified live on 2026-09-28**: the first dry run read the account and prices, and the first submit had 4 paper orders accepted. (The new pending-order check uses Alpaca's standard `/v2/orders?status=open` call; its first live use will be the next run.)
 - Paper fills are idealized. Real trading has extra slippage.
 - Monthly reports comparing results with simply holding SPY are the next thing to build, with your approval.

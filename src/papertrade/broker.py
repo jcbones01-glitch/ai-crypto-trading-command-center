@@ -57,6 +57,10 @@ class PaperBroker:
         positions = self._request("GET", f"{self.base_url}/v2/positions") or []
         return {p["symbol"]: float(p["market_value"]) for p in positions}
 
+    def open_orders(self) -> list[dict]:
+        """Orders not yet filled or cancelled (e.g. waiting for the market to open)."""
+        return self._request("GET", f"{self.base_url}/v2/orders?status=open") or []
+
     def monthly_closes(self, symbols: Sequence[str], months: int) -> dict[str, list[float]]:
         """Completed monthly closes (the current, unfinished month is dropped)."""
         start = (datetime.now(timezone.utc) - timedelta(days=31 * (months + 2))).date().isoformat()

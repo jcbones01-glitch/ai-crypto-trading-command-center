@@ -49,14 +49,36 @@ def build_plan(broker, universe: Sequence[str] = UNIVERSE) -> dict:
     account = broker.account()
     values = broker.position_values()
     orders = plan_orders(weights, float(account["equity"]), values)
+    pending = [
+        {"symbol": o.get("symbol"), "side": o.get("side"), "notional": o.get("notional"), "status": o.get("status")}
+        for o in broker.open_orders()
+    ]
     return {
         "time_utc": datetime.now(timezone.utc).isoformat(),
         "paper_only": True,
         "equity": float(account["equity"]),
         "weights": weights,
         "current_values": values,
+        "pending_orders": pending,
         "orders": [asdict(o) for o in orders],
     }
+
+
+def run(broker, submit: bool) -> dict:
+    """Build the plan and, if asked, submit it.
+
+    Refuses to submit while earlier orders are still open: until they fill,
+    positions look empty and the same buys would be placed twice.
+    """
+    plan = build_plan(broker)
+    plan["submitted"] = False
+    if submit and plan["pending_orders"]:
+        plan["blocked"] = "earlier orders are still pending; nothing placed. Try again after they fill."
+    elif submit:
+        for order in plan["orders"]:
+            broker.submit_notional_order(order["symbol"], order["side"], order["notional"])
+        plan["submitted"] = True
+    return plan
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -66,16 +88,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     from .broker import PaperBroker  # imported here so tests need no network
 
-    broker = PaperBroker.from_env()
-    plan = build_plan(broker)
-    if args.submit:
-        for order in plan["orders"]:
-            broker.submit_notional_order(order["symbol"], order["side"], order["notional"])
-        plan["submitted"] = True
-    else:
-        plan["submitted"] = False
+    plan = run(PaperBroker.from_env(), args.submit)
     print(json.dumps(plan, indent=2, sort_keys=True))
-    return 0
+    return 2 if "blocked" in plan else 0  # a red run makes "nothing placed" obvious
 
 
 if __name__ == "__main__":
